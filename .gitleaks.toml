@@ -1,0 +1,7 @@
+# Gitleaks configuration for the web repo.
+# https://github.com/gitleaks/gitleaks#configuration
+#
+# No SOPS stores here (unlike kubelab), so the default ruleset with no allowlist
+# is enough. Add path allowlists only when a real false positive appears.
+[extend]
+useDefault = true

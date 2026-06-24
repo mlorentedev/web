@@ -1,0 +1,16 @@
+# Line-ending policy: keep all text as LF on every platform. Windows
+# core.autocrlf=true would otherwise check files out as CRLF, churning diffs
+# and breaking linters/yamllint. CI/Linux is already LF, so this is a no-op there.
+* text=auto eol=lf
+
+# Binary assets — never normalize
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary

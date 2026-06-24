@@ -1,0 +1,68 @@
+# Pre-commit hooks for the web repo (mlorente.dev frontend).
+# Requires pre-commit (Python tool): pipx install pre-commit
+# Install: pre-commit install
+# Run manually: pre-commit run --all-files
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '\.md$'
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+        exclude: 'tsconfig\.json$'   # tsconfig is JSONC (allows comments)
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: mixed-line-ending
+      - id: detect-private-key
+
+  # Secret detection
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.46.0
+    hooks:
+      - id: markdownlint
+        args: ['--fix', '--disable', 'MD013', 'MD033', 'MD041']
+        exclude: 'CHANGELOG\.md'
+
+  # YAML linting (workflow files)
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
+        args:
+          - '-d'
+          - >-
+            {extends: default,
+            rules: {
+              line-length: {max: 130},
+              document-start: disable,
+              truthy: {check-keys: false},
+              comments-indentation: disable
+            }}
+
+  # Dockerfile linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.14.0
+    hooks:
+      - id: hadolint-docker
+
+# Files to exclude
+exclude: |
+  (?x)^(
+      \.claude/.*|
+      \.vscode/.*|
+      \.git/.*|
+      node_modules/.*|
+      site/node_modules/.*|
+      site/dist/.*
+  )$

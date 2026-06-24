@@ -1,315 +1,66 @@
- . Web - Frontend Portfolio
+# mlorente.dev
 
-The main frontend website for [kubelab.live](https://kubelab.live) - my personal portfolio and landing page. Built with Astro for maximum performance and developer experience.
+Frontend for **mlorente.dev** — a personal site / portfolio built with [Astro](https://astro.build).
+The code lives in this repo; it is built to a Docker image and deployed through the
+**[kubelab](https://github.com/mlorentedev/kubelab)** platform (ADR-053). Kubernetes
+manifests and the Go API stay in kubelab.
 
- What it is
+> Later this repo will also serve `kubelab.live`. Today it ships `mlorente.dev` only.
 
-This is my personal website where I showcase my portfolio, share downloadable resources, and provide information about what I do. I chose Astro because it handles SSR and SSG perfectly, it's fast, and doesn't ship unnecessary JavaScript to users.
+## Local development
 
-The site includes my portfolio projects, lead magnets like DevOps checklists, newsletter signup forms, and contact information - all integrated with my Go API backend.
-
- Tech stack
-
-- Astro .. - Modern meta-framework for content-focused sites
-- TypeScript - Static typing for better development experience  
-- Tailwind CSS - Utility-first CSS framework for rapid styling
-- MDX - Markdown with JSX for dynamic content creation
-- Docker - Containerized for consistent deployment
-
- Project structure
-
-```
-site/
-├── astro.config.mjs           Astro configuration
-├── package.json               Dependencies and scripts
-├── tailwind.config.mjs        Tailwind customization
-├── public/                    Static assets
-├── src/
-│   ├── components/            Reusable UI components
-│   │   ├── forms/            Contact and subscription forms
-│   │   ├── sections/         Page sections
-│   │   └── ui/              Base UI components
-│   ├── content/             Content collections
-│   │   ├── projects/        Portfolio projects
-│   │   └── resources/       Downloadable resources
-│   ├── layouts/             Page layouts
-│   ├── pages/               Routes and pages
-│   └── styles/              Global styles
-└── Dockerfile               Container definition
-```
-
- Key features
-
- For visitors
-- Lightning fast loading - Thanks to Astro's partial hydration
-- Interactive portfolio - Projects with demos and GitHub links
-- Free resources - Lead magnets with integrated download forms
-- Newsletter signup - Connected to my API for subscriptions
-- Fully responsive - Works great on mobile, tablet, and desktop
-
- For development
-- Full TypeScript - Type safety across the entire codebase
-- Content collections - Projects and resources are typed and validated
-- Modern architecture - Astro components without the complexity
-- Automatic optimization - Image compression and multiple formats
-- Smart caching - Static assets cache efficiently
-
- Configuration
-
- Environment variables
+No cluster required:
 
 ```bash
- Server configuration
-PORT=
-HOST=...
-NODE_ENV=production
-
- API integration
-API_BASE_URL=https://api.kubelab.live
-API_TIMEOUT=
-
- Feature flags
-ENABLE_ANALYTICS=true
-ENABLE_NEWSLETTER=true
-```
-
- Running the website
-
- Development mode
-
-```bash
- Navigate to the web app
-cd apps/web/site
-
- Install dependencies
+cd site
 npm install
-
- Copy environment configuration
-cp .env.example .env
-
- Start development server
-npm run dev
-
- Access at http://localhost:
+npm run dev        # Astro dev server
 ```
 
- With Docker
+The API base URL is read from `PUBLIC_API_URL` (see `site/src/data/site.ts`).
 
 ```bash
- Development with hot reload
-make up-web
-
- Production build
-docker-compose -f docker-compose.prod.yml up -d
+PUBLIC_API_URL=https://api.kubelab.live npm run dev
 ```
 
- Available commands
+## Project structure
 
-```bash
- Development with hot reload
-npm run dev
-
- Production build
-npm run build
-
- Preview production build
-npm run preview
-
- Type checking
-npm run type-check
-
- Code quality
-npm run lint
-npm run format
+```text
+.
+├── Dockerfile        # build: Astro static output → nginx (build context = repo root, COPY site/…)
+├── site/             # the Astro app
+│   ├── astro.config.mjs
+│   ├── package.json
+│   ├── tailwind.config.mjs
+│   ├── public/       # static assets
+│   └── src/
+│       ├── components/
+│       ├── content/  # content collections (notes, projects)
+│       ├── data/     # site config (site.ts)
+│       ├── layouts/
+│       ├── pages/
+│       └── styles/
+├── CLAUDE.md         # agent instructions (two-repo flow)
+└── docs/             # build/operate docs (adr, runbooks, troubleshooting, lessons)
 ```
 
- Adding content
+## Deployment — the two-repo flow (ADR-053)
 
- New portfolio project
+This repo holds **code**; the platform repo (`kubelab`) holds the **K8s manifests**. Delivery is push-based:
 
-Create a new MDX file in `src/content/projects/`:
+1. A push to `master` builds an immutable `sha-<short>` image and pushes it to Docker Hub
+   (`mlorentedev/kubelab-web`).
+2. On success, CI fires a `repository_dispatch` (`web-image-published`) to `mlorentedev/kubelab`.
+3. kubelab's receiver runs `toolkit deployment promote --env staging --app web --version sha-<short>`;
+   Argo CD syncs the new tag to staging, then prod via the gated promotion.
 
-```markdown
----
-title: "My Awesome Project"
-description: "A brief description that sells the project"
-technologies: ["Astro", "TypeScript", "Tailwind"]
-github: "https://github.com/mlorentedev/project"
-demo: "https://project.kubelab.live"
-image: "/images/projects/project.jpg"
-featured: true
-date: --
----
+A change that **also** needs a manifest/overlay edit spans two repos — open that PR in `kubelab`.
 
- What the project does
+## Conventions
 
-Here I explain what it does, why I built it, and how it works...
+- **Trunk-based**: `master` only; `feature/` `fix/` `chore/` `docs/` branches; **squash-merge**.
+- **Conventional commits** (`feat:`, `fix:`, `chore:`, `docs:` …) drive release automation.
+- **English** in all git/GitHub artifacts. **Auto-merge is disabled** — every PR merges after review.
+- Run `pre-commit install` after cloning.
 
- What I'm most proud of
-
-- Key feature 
-- Key feature   
-- Key feature 
-
- Technical challenges I solved
-
-There's always some interesting problem to tackle...
-```
-
- New downloadable resource
-
-Create a new MDX file in `src/content/resources/`:
-
-```markdown
----
-title: "DevOps Checklist"
-description: "Everything you need to check before deployment"
-category: "DevOps"
-fileType: "PDF"
-fileSize: ". MB"
-downloadCount: 
-tags: ["devops", "checklist", "automation"]
-featured: true
-gated: true   Requires email for download
----
-
-Description of what they'll download and why it's useful...
-```
-
- Design system
-
-I use Tailwind with custom configurations:
-
-```javascript
-// tailwind.config.mjs
-module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          : 'effff',
-          : 'bf',
-          : 'eaa'
-        }
-      },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif']
-      }
-    }
-  }
-}
-```
-
- Reusable components
-
-```astro
----
-// src/components/ui/Button.astro
-interface Props {
-  variant?: 'primary' | 'secondary';
-  size?: 'sm' | 'md' | 'lg';
-}
-
-const { variant = 'primary', size = 'md' } = Astro.props;
----
-
-<button 
-  class:list={[
-    'font-semibold rounded-lg transition-colors',
-    {
-      'bg-primary- text-white hover:bg-primary-': variant === 'primary',
-      'bg-gray- text-gray- hover:bg-gray-': variant === 'secondary',
-      'px- py- text-sm': size === 'sm',
-      'px- py-': size === 'md',
-      'px- py- text-lg': size === 'lg'
-    }
-  ]}
->
-  <slot />
-</button>
-```
-
- Analytics and tracking
-
-The website includes comprehensive tracking:
-
-- Google Analytics - Traffic and user behavior analysis
-- Form tracking - Download and conversion metrics
-- Newsletter metrics - Subscription rates and sources
-- Core Web Vitals - Performance monitoring
-
- Security measures
-
-- Server-side validation - All forms validate through the API
-- Security headers - CSP, HSTS, and other protection headers
-- Rate limiting - Prevents form spam and abuse
-- Input sanitization - All user input is cleaned and validated
-
- SEO optimization
-
-- Dynamic meta tags - Each page has unique titles and descriptions
-- Structured data - JSON-LD for better search engine understanding
-- Automatic sitemap - Generated during build process
-- Canonical URLs - Prevents duplicate content issues
-- Image alt text - Accessibility and SEO compliance
-
- API integration
-
-Forms connect to my Go API backend:
-
-```typescript
-// Newsletter subscription
-POST /api/subscribe
-{
-  "email": "user@example.com",
-  "tags": ["newsletter", "website"]
-}
-
-// Resource download
-POST /api/lead-magnet  
-{
-  "email": "user@example.com",
-  "resource_id": "devops-checklist",
-  "utm_source": "website"
-}
-
-// Contact form
-POST /api/contact
-{
-  "name": "Name",
-  "email": "email@example.com", 
-  "message": "The message"
-}
-```
-
- Contributing
-
-. Fork the repository
-. Make changes following TypeScript/Astro conventions
-. Test everything locally
-. Update documentation for new features
-. Ensure Docker build works
-. Submit pull request
-
- Key dependencies
-
- Core framework
-- @astrojs/node - Node.js adapter for server-side rendering
-- astro - The meta-framework itself
-- typescript - Static type checking
-
- Styling and UI
-- @astrojs/tailwind - Tailwind CSS integration
-- tailwindcss - Utility-first CSS framework
-
- Content management
-- @astrojs/mdx - MDX support for dynamic content
-- zod - Runtime type validation for content collections
-
- Local development URLs
-
-When running locally with `make up-web`:
-- Website: http://mlorentedev.test
-- Development server: http://localhost:
-
-Add `... mlorentedev.test` to your `/etc/hosts` file for local domain access.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
