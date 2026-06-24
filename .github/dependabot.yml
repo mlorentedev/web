@@ -9,6 +9,12 @@ updates:
       npm:
         patterns: ["*"]
     open-pull-requests-limit: 5
+    ignore:
+      # Astro 6 is a major upgrade: it needs every @astrojs/* integration bumped
+      # together + breaking-change handling. Stay on Astro 5 (kubelab #617) until
+      # that migration is planned — a Dependabot major drive-by broke the build once.
+      - dependency-name: astro
+        update-types: ["version-update:semver-major"]
 
   # GitHub Actions used by the workflows
   - package-ecosystem: github-actions
