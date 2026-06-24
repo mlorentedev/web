@@ -18,6 +18,7 @@ on:
 
 permissions:
   contents: read
+  security-events: write   # upload the Trivy SARIF to the Security tab
 
 env:
   # Docker Hub repo. The username is public (not a secret); only the token is secret,
@@ -61,6 +62,28 @@ jobs:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ steps.meta.outputs.sha_tag }}
+
+      # Image security scan — restored from the kubelab pipeline (don't orphan it).
+      # Non-blocking for now (known npm vulns tracked in WEB-022); the SARIF still
+      # lands in the Security tab. Flip to a blocking gate once the deps are clean.
+      - name: Trivy image scan
+        if: github.event_name == 'push'
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
+        continue-on-error: true
+        with:
+          image-ref: ${{ env.IMAGE }}:${{ steps.meta.outputs.sha_tag }}
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      - name: Upload Trivy SARIF
+        if: github.event_name == 'push' && hashFiles('trivy-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        continue-on-error: true
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy-web
 
   dispatch:
     name: Notify kubelab
