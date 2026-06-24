@@ -20,7 +20,7 @@ npm run dev        # Astro dev server
 The API base URL is read from `PUBLIC_API_URL` (see `site/src/data/site.ts`).
 
 ```bash
-PUBLIC_API_URL=https://api.kubelab.live npm run dev
+cd site && PUBLIC_API_URL=https://api.kubelab.live npm run dev
 ```
 
 ## Project structure
