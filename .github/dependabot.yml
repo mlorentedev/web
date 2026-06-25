@@ -10,10 +10,13 @@ updates:
         patterns: ["*"]
     open-pull-requests-limit: 5
     ignore:
-      # Astro 6 is a major upgrade: it needs every @astrojs/* integration bumped
-      # together + breaking-change handling. Stay on Astro 5 (kubelab #617) until
-      # that migration is planned — a Dependabot major drive-by broke the build once.
-      - dependency-name: astro
+      # Majors are deliberate migrations, never Dependabot drive-bys. A major
+      # needs coordinated bumps + breaking-change handling — Astro 5->6 wants
+      # every @astrojs/* integration together (WEB-022), and Tailwind 4 /
+      # TypeScript 6 are their own migrations. A grouped major drive-by broke
+      # the build once (stayed on Astro 5, kubelab #617). Dependabot stays on
+      # minor+patch; the ignore is lifted per migration when it is planned.
+      - dependency-name: "*"
         update-types: ["version-update:semver-major"]
 
   # GitHub Actions used by the workflows
