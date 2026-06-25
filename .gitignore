@@ -23,5 +23,4 @@ site/dist/
 .astro/
 
 # Deployed governance (compile-harness, ADR-021) — never committed here
-AGENTS.md
 .claude/
