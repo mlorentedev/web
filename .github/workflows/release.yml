@@ -1,0 +1,68 @@
+---
+name: Release
+
+# Semver release automation (ADR-046 — prod tracks semver). release-please
+# accumulates conventional commits on master into a release PR (version bump +
+# CHANGELOG). When that PR merges it cuts a GitHub release + `vX.Y.Z` git tag,
+# then build-image.yml builds and pushes the immutable multi-arch image
+# `<user>/kubelab-web:X.Y.Z`. kubelab's gated promote-prod.yml (manual
+# workflow_dispatch) ships that exact semver tag to prod (ADR-053 — manifests
+# stay in kubelab). This re-homes the release automation removed from kubelab
+# in the platform/product split.
+#
+# Required secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN (build/push).
+# Optional: RELEASE_PLEASE_PAT — a PAT so the release PR triggers pull_request
+# checks; falls back to GITHUB_TOKEN during rollout.
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.gate.outputs.created }}
+      version: ${{ steps.gate.outputs.version }}
+    steps:
+      - uses: googleapis/release-please-action@v5
+        id: release
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_PAT || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      # Normalize outputs. Manifest mode keys them by package path ('.--version',
+      # '.--release_created'); simple mode exposes them top-level. Parse with a
+      # fallback so an output-format change can never silently skip the publish.
+      - id: gate
+        env:
+          OUTPUTS: ${{ toJSON(steps.release.outputs) }}
+        run: |
+          echo "$OUTPUTS"
+          created=$(jq -r '.["release_created"] // .[".--release_created"] // "false"' <<<"$OUTPUTS")
+          version=$(jq -r '.["version"] // .[".--version"] // ""' <<<"$OUTPUTS")
+          echo "created=$created" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+  publish:
+    name: Publish semver image
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    permissions:
+      contents: read
+      security-events: write
+    uses: ./.github/workflows/build-image.yml
+    with:
+      tag: ${{ needs.release-please.outputs.version }}
+      push: true
+      platforms: linux/amd64,linux/arm64
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

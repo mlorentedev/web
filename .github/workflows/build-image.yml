@@ -1,0 +1,93 @@
+---
+name: Build Image
+
+# Reusable image build (ADR-053 / ADR-046). Builds the Astro site image and
+# optionally pushes it to Docker Hub `<user>/kubelab-web:<tag>`, then scans it
+# with Trivy (SARIF -> Security tab). Two callers share this one definition so
+# the image staging validates and the image prod ships come from identical build
+# inputs (arch + Dockerfile parity):
+#   - build-deploy.yml  -> tag=sha-<short>, push on master  (staging delivery)
+#   - release.yml       -> tag=<semver>,    push on release (prod artifact)
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: Image tag to build (e.g. sha-abc1234 or 1.2.3)
+        type: string
+        required: true
+      push:
+        description: Push to Docker Hub (false = PR validation build only)
+        type: boolean
+        default: false
+      platforms:
+        description: Target platforms (comma-separated)
+        type: string
+        default: linux/amd64
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: false
+      DOCKERHUB_TOKEN:
+        required: false
+
+permissions:
+  contents: read
+  security-events: write   # upload the Trivy SARIF to the Security tab
+
+env:
+  IMAGE: mlorentedev/kubelab-web
+
+jobs:
+  build:
+    name: Build ${{ inputs.tag }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-qemu-action@v4
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Login to Docker Hub
+        if: inputs.push
+        uses: docker/login-action@v4
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: ${{ inputs.platforms }}
+          push: ${{ inputs.push }}
+          tags: ${{ env.IMAGE }}:${{ inputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ inputs.tag }}
+
+      # Image security scan — non-blocking for now (known npm vulns tracked in
+      # WEB-022); the SARIF still lands in the Security tab. Flip to a blocking
+      # gate once the deps are clean.
+      - name: Trivy image scan
+        if: inputs.push
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
+        continue-on-error: true
+        with:
+          image-ref: ${{ env.IMAGE }}:${{ inputs.tag }}
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      - name: Upload Trivy SARIF
+        if: ${{ inputs.push && hashFiles('trivy-results.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@v4
+        continue-on-error: true
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy-web
