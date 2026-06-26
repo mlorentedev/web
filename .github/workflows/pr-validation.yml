@@ -1,0 +1,29 @@
+---
+name: PR Validation
+
+# Validate that the Dockerfile builds on pull requests (no push, no deploy).
+# The master-push delivery — build the `sha-<short>` image, ship it to staging,
+# and re-tag that digest to a semver release for prod — lives in release.yml
+# (ADR-055: one build serves both environments by digest).
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  validate:
+    name: Validate build
+    permissions:
+      contents: read
+      security-events: write
+    uses: ./.github/workflows/build-image.yml
+    with:
+      tag: pr-${{ github.event.pull_request.number }}
+      push: false
+      platforms: linux/amd64
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

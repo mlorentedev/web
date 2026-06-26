@@ -1,13 +1,12 @@
 ---
 name: Build Image
 
-# Reusable image build (ADR-053 / ADR-046). Builds the Astro site image and
-# optionally pushes it to Docker Hub `<user>/kubelab-web:<tag>`, then scans it
-# with Trivy (SARIF -> Security tab). Two callers share this one definition so
-# the image staging validates and the image prod ships come from identical build
-# inputs (arch + Dockerfile parity):
-#   - build-deploy.yml  -> tag=sha-<short>, push on master  (staging delivery)
-#   - release.yml       -> tag=<semver>,    push on release (prod artifact)
+# Reusable image build (ADR-053 / ADR-046 / ADR-055). Builds the Astro site image
+# and optionally pushes it to Docker Hub `<user>/kubelab-web:<tag>`, then scans it
+# with Trivy (SARIF -> Security tab). Callers:
+#   - release.yml       -> tag=sha-<short>, push on master (staging; the same
+#                          digest is re-tagged to the semver release for prod)
+#   - pr-validation.yml -> tag=pr-<n>,      no push        (Dockerfile validation)
 
 on:
   workflow_call:
