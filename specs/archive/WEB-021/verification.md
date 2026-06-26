@@ -25,7 +25,9 @@ Verified on `feature/web-021-same-origin-api-brand-config` (build 2026-06-26).
 ## Test status
 
 - Build: `npm run build` (astro check && astro build) -> Complete, 74 pages, no type errors.
-- Manual smoke test: pending live (form POST against staging) — exercise after deploy.
+- Manual smoke test: e2e POST deferred to TOOLKIT-010 (kubelab#774) — the web-host
+  `/api` route doesn't exist yet, so a live POST 404s until then. WEB-021's own scope
+  (relative call site + build) is verified above.
 - No regressions in existing build: yes (clean build; diff limited to config + wiring).
 
 ## Decisions made during implementation
@@ -38,13 +40,14 @@ Verified on `feature/web-021-same-origin-api-brand-config` (build 2026-06-26).
 
 ## Promotion candidates
 
-- [ ] Lesson for `docs/lessons.md`? <yes / no>
-- [ ] ADR-worthy? <no — implements existing ADR-054>
-- [ ] New pattern candidate? <no>
+- [x] Lesson for `docs/lessons.md`? no — the non-obvious bits (double `/api`,
+  Cloudflare edge auto-inject) already live in `site.ts` comments + this spec.
+- [x] ADR-worthy? no — implements existing ADR-054.
+- [x] New pattern candidate? no.
 
 ## Archive checklist
 
-- [ ] `proposal.md` frontmatter set to `status: archived`
-- [ ] Folder moved: `specs/WEB-021/` -> `specs/archive/WEB-021/`
-- [ ] Bitácora #6 closed with PR link (ADR-018)
-- [ ] Follow-up issues filed (GDPR banner; legacy GA id cleanup)
+- [x] `proposal.md` frontmatter set to `status: archived`
+- [x] Folder moved: `specs/WEB-021/` -> `specs/archive/WEB-021/`
+- [x] Bitácora #6 closed with PR link (web#53, ADR-018)
+- [x] Follow-up issues filed: web#52 (GDPR banner), kubelab#770 (GA id cleanup), kubelab#774 (TOOLKIT-010 `/api` route)

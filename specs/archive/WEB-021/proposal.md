@@ -1,7 +1,7 @@
 ---
 id: "WEB-021"
 type: spec
-status: implementing
+status: archived
 created: "2026-06-26"
 issue: "web#6"
 tags: [spec, proposal, web, runtime-config, api, analytics]
@@ -11,6 +11,10 @@ template_version: "1.0"
 # WEB-021: Same-origin /api + own brand build-config
 
 <!-- from issue #6: WEB-021: implement ADR-054 — same-origin /api + own brand build-config -->
+
+> **Archived 2026-06-26** — shipped in PR web#53 (`Closes #6`), released in 1.3.0.
+> The kubelab-side `/api` route (the end-to-end enabler) is tracked separately as
+> TOOLKIT-010 (kubelab#774).
 
 ## Why
 
