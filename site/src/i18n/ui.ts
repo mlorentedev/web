@@ -79,6 +79,12 @@ export const ui = {
     // Meta
     'meta.description': 'Platform engineering for AI workloads. I build and operate agent infrastructure on Kubernetes — on-prem, reproducible.',
     'meta.ghchart.alt': "Manu's GitHub contribution chart",
+
+    // Cookie consent (GDPR — gates GA4; Cloudflare analytics is cookieless)
+    'cookie.text': 'I use cookies only for analytics. You choose.',
+    'cookie.accept': 'Accept',
+    'cookie.reject': 'Reject',
+    'cookie.policy': 'Privacy policy',
   },
   es: {
     // Nav
@@ -151,5 +157,11 @@ export const ui = {
     // Meta
     'meta.description': 'Infraestructura para agentes de IA, en producción. Construyo, automatizo y opero plataformas en Kubernetes — on-prem y reproducible.',
     'meta.ghchart.alt': 'Contribuciones de Manu en GitHub',
+
+    // Cookie consent (GDPR — gates GA4; Cloudflare analytics is cookieless)
+    'cookie.text': 'Uso cookies solo para analítica. Tú decides.',
+    'cookie.accept': 'Aceptar',
+    'cookie.reject': 'Rechazar',
+    'cookie.policy': 'Política de privacidad',
   },
 } as const;
