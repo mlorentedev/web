@@ -1,5 +1,10 @@
 # WEB-023 — Release automation (semver image for prod)
 
+> Status: archived 2026-06-25 · shipped via #17–#24. The delivery mechanism
+> diverged from the "Decisions / notes" below: instead of rebuild-from-release-commit,
+> we shipped **build-once / promote-by-digest** (ADR-055) to avoid the cross-workflow
+> race. Verified `:1.2.0` == `:sha-60b24e7` (identical digests).
+>
 > Issue: #10 · ADR-046 (prod tracks semver) · ADR-053 (platform/product split)
 
 ## Context
