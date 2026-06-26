@@ -31,7 +31,8 @@ static site built to a Docker image and deployed through the **kubelab** platfor
 ## Inner loop
 
 From `site/`: `npm install && npm run dev` (Astro dev server, no cluster needed).
-API base via `PUBLIC_API_URL` (`site/src/data/site.ts`). `make help` lists repo tasks.
+API base is same-origin `/api` (ADR-054); set `PUBLIC_API_URL` to a real API host for
+local dev only (`site/src/data/site.ts`). `make help` lists repo tasks.
 
 ## Conventions
 
