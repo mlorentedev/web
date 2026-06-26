@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { site } from '../data/site';
 import Analytics from '../components/Analytics.astro';
+import CookieBanner from '../components/CookieBanner.astro';
 import { languages } from '../i18n/ui';
 import { getLocale, useTranslations, switchLangUrl } from '../i18n/utils';
 
@@ -67,5 +68,6 @@ const canonicalUrl = new URL(Astro.url.pathname, site.url);
       Skip to content
     </a>
     <slot />
+    <CookieBanner />
   </body>
 </html>
