@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/mlorentedev/web/compare/v1.2.0...v1.3.0) (2026-06-26)
+
+
+### Features
+
+* same-origin /api and own brand build-config (ADR-054) ([#53](https://github.com/mlorentedev/web/issues/53)) ([17923f5](https://github.com/mlorentedev/web/commit/17923f5069a3a4051f89675f174ef90262aff548))
+
 ## [1.2.0](https://github.com/mlorentedev/web/compare/v1.1.2...v1.2.0) (2026-06-26)
 
 
