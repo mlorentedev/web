@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/mlorentedev/web/compare/v1.3.0...v1.4.0) (2026-06-26)
+
+
+### Features
+
+* GDPR cookie-consent banner gating GA4 (WEB-024) ([#57](https://github.com/mlorentedev/web/issues/57)) ([0b48208](https://github.com/mlorentedev/web/commit/0b48208f914a44ecb5de976ffc2a219f7f405391))
+
 ## [1.3.0](https://github.com/mlorentedev/web/compare/v1.2.0...v1.3.0) (2026-06-26)
 
 
