@@ -17,10 +17,12 @@ npm install
 npm run dev        # Astro dev server
 ```
 
-The API base URL is read from `PUBLIC_API_URL` (see `site/src/data/site.ts`).
+The site calls the API **same-origin** at a relative `/api` (ADR-054); the production
+image bakes no API host. The dev server has no backend, so set `PUBLIC_API_URL` to a
+real API **host** for local development (host only — the call sites add `/api/...`):
 
 ```bash
-PUBLIC_API_URL=https://api.kubelab.live npm run dev
+PUBLIC_API_URL=https://api.staging.kubelab.live npm run dev
 ```
 
 ## Project structure

@@ -20,7 +20,9 @@ npm install
 npm run dev        # Astro dev server; no cluster required
 ```
 
-API base is read from `PUBLIC_API_URL` (see `site/src/data/site.ts`).
+The site calls the API same-origin at a relative `/api` (ADR-054). For local dev
+(no backend), set `PUBLIC_API_URL` to a real API host — host only; the call sites
+add `/api/...`. See `site/src/data/site.ts`.
 
 ## Before you push
 

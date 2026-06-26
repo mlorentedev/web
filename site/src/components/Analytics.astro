@@ -1,0 +1,24 @@
+---
+// Google Analytics 4. Renders nothing when no measurement ID is configured.
+// Cloudflare Web Analytics is handled at the edge (proxied site), not here — see
+// `site.analytics` in src/data/site.ts.
+import { site } from '../data/site';
+
+const gaId = site.analytics.googleAnalyticsId;
+---
+
+{
+  gaId && (
+    <>
+      <script async is:inline src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+      <script is:inline define:vars={{ gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', gaId);
+      </script>
+    </>
+  )
+}
