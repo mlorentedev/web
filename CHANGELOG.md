@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.2.0](https://github.com/mlorentedev/web/compare/v0.1.0...v0.2.0) (2026-06-26)
+
+
+### Features
+
+* **infra:** ADR-020 Phase 3, errors service, SSOT audit, trunk-based CI, release-please ([a93727f](https://github.com/mlorentedev/web/commit/a93727f48a7d8cbf477f097b7bca801a29a45bcc))
+* **infra:** Helm H1 — umbrella chart, unified deploy, CI hardening ([#93](https://github.com/mlorentedev/web/issues/93)) ([f450ea8](https://github.com/mlorentedev/web/commit/f450ea889ff245bb0a5bebb729bbb94732db134f))
+* **infra:** Helm H1, CI release-please, test cleanup ([#94](https://github.com/mlorentedev/web/issues/94)) ([93aa940](https://github.com/mlorentedev/web/commit/93aa9403b4a1078412c239780dedfa3cedb3316a))
+* **web:** reposition mlorente.dev hero to "Platform engineering for AI workloads" ([#613](https://github.com/mlorentedev/web/issues/613)) ([c7dbcc0](https://github.com/mlorentedev/web/commit/c7dbcc03407fe1da5191425b773c7fbc6bb10839))
+
+
+### Bug Fixes
+
+* **deps:** override fast-uri to ^3.1.2 (security GHSA-v39h-62p7-jpjc), stay on Astro 5 ([#617](https://github.com/mlorentedev/web/issues/617)) ([5db3a69](https://github.com/mlorentedev/web/commit/5db3a69d939284cfcb996a50133ef02bfde5139e))
+* **deps:** pin astro to ^5.5.2 — stay on Astro 5 ([#4](https://github.com/mlorentedev/web/issues/4)) ([6395c7b](https://github.com/mlorentedev/web/commit/6395c7b1e8015d08f201d7d75940162b65513cb3))
+* **infra:** separate generated K8s overlays + fix web nginx PID (NET-002) ([#136](https://github.com/mlorentedev/web/issues/136)) ([7208046](https://github.com/mlorentedev/web/commit/7208046f85e4f81a0977ae0cda20effa8b6c3d75))
+
 ## [1.1.2](https://github.com/mlorentedev/kubelab/compare/web-v1.1.1...web-v1.1.2) (2026-06-18)
 
 
