@@ -1,18 +1,22 @@
 ---
-name: Release
+name: Release & Deploy
 
-# Semver release automation (ADR-046 — prod tracks semver). release-please
-# accumulates conventional commits on master into a release PR (version bump +
-# CHANGELOG). When that PR merges it cuts a GitHub release + `vX.Y.Z` git tag,
-# then build-image.yml builds and pushes the immutable multi-arch image
-# `<user>/kubelab-web:X.Y.Z`. kubelab's gated promote-prod.yml (manual
-# workflow_dispatch) ships that exact semver tag to prod (ADR-053 — manifests
-# stay in kubelab). This re-homes the release automation removed from kubelab
-# in the platform/product split.
+# Consolidated master-push delivery (ADR-046 / ADR-053 / ADR-055). One build per
+# push serves BOTH environments by digest — build-once, promote-by-digest:
 #
-# Required secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN (build/push).
-# Optional: RELEASE_PLEASE_PAT — a PAT so the release PR triggers pull_request
-# checks; falls back to GITHUB_TOKEN during rollout.
+#   1. release-please accumulates Conventional Commits into a release PR.
+#   2. Every push builds ONE immutable `sha-<short>` image (multi-arch), pushes it,
+#      then fires a repository_dispatch to mlorentedev/kubelab → staging.
+#   3. When a release PR merges, the SAME image digest is re-tagged to the clean
+#      semver `X.Y.Z` (no rebuild) — so prod ships the exact bytes staging
+#      validated. kubelab's gated promote-prod.yml then ships that semver tag.
+#
+# Pull-request validation (Dockerfile build, no push) lives in pr-validation.yml.
+#
+# Required secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN (build/push/re-tag);
+# KUBELAB_DISPATCH_TOKEN (kubelab contents:write — the dispatch).
+# Optional: RELEASE_PLEASE_PAT — so the release PR triggers pull_request checks;
+# falls back to GITHUB_TOKEN.
 
 on:
   push:
@@ -51,18 +55,73 @@ jobs:
           echo "created=$created" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-  publish:
-    name: Publish semver image
-    needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
+  meta:
+    name: Compute tag
+    runs-on: ubuntu-latest
+    outputs:
+      sha_tag: ${{ steps.meta.outputs.sha_tag }}
+    steps:
+      - id: meta
+        run: echo "sha_tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build staging image
+    needs: meta
     permissions:
       contents: read
       security-events: write
     uses: ./.github/workflows/build-image.yml
     with:
-      tag: ${{ needs.release-please.outputs.version }}
+      tag: ${{ needs.meta.outputs.sha_tag }}
       push: true
       platforms: linux/amd64,linux/arm64
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  dispatch-staging:
+    name: Notify kubelab (staging)
+    needs: [meta, build]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fire repository_dispatch to kubelab
+        env:
+          TOKEN: ${{ secrets.KUBELAB_DISPATCH_TOKEN }}
+          TAG: ${{ needs.meta.outputs.sha_tag }}
+        run: |
+          curl --fail-with-body -sS -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/mlorentedev/kubelab/dispatches \
+            -d "$(printf '{"event_type":"web-image-published","client_payload":{"tag":"%s","sha":"%s"}}' "$TAG" "$GITHUB_SHA")"
+          echo "Dispatched web-image-published (tag=$TAG) to mlorentedev/kubelab"
+
+  promote-prod:
+    name: Promote digest to semver
+    needs: [release-please, meta, build]
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Re-tag the validated digest as the semver release
+        env:
+          IMAGE: docker.io/mlorentedev/kubelab-web
+          SHA_TAG: ${{ needs.meta.outputs.sha_tag }}
+          VERSION: ${{ needs.release-please.outputs.version }}
+        run: |
+          # ADR-055 build-once / promote-by-digest: the prod semver tag points at
+          # the exact image staging validated — re-tag the manifest (multi-arch
+          # preserved), never rebuild.
+          docker buildx imagetools create -t "${IMAGE}:${VERSION}" "${IMAGE}:${SHA_TAG}"
+          echo "Promoted ${IMAGE}:${SHA_TAG} -> ${IMAGE}:${VERSION} (same digest)"
+          docker buildx imagetools inspect "${IMAGE}:${VERSION}"
