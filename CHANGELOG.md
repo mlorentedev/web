@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/mlorentedev/web/compare/v1.1.2...v1.2.0) (2026-06-26)
+
+
+### Miscellaneous Chores
+
+* cut the first standalone semver release ([#21](https://github.com/mlorentedev/web/issues/21)) ([accca6a](https://github.com/mlorentedev/web/commit/accca6ab3f75829e11ba4a2fb1f62a6e1d08d830))
+
 ## [1.1.2](https://github.com/mlorentedev/kubelab/compare/web-v1.1.1...web-v1.1.2) (2026-06-18)
 
 
