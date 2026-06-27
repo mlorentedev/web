@@ -35,10 +35,10 @@ const stack = [
   <main id="main-content" class="flex-grow pt-16">
     <Hero />
 
-    <section class="py-10">
-      <div class="max-w-3xl mx-auto px-4">
-        <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-8">
-          {t('home.projects')}
+    <section class="py-14 border-t border-gray-100">
+      <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-8">
+          <span class="text-cyan-700">[ 01 /</span> {t('home.projects')} <span class="text-cyan-700">]</span>
         </h2>
         <a href="https://github.com/mlorentedev" target="_blank" rel="noopener noreferrer">
           <img
@@ -53,7 +53,7 @@ const stack = [
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {allProjects.map((project) => (
             <div class="border border-gray-200 rounded-md p-4 hover:border-cyan-700 transition-colors flex flex-col">
-              <h3 class="font-bold text-gray-800 text-sm leading-snug mb-2">
+              <h3 class="font-bold text-gray-800 text-base leading-snug mb-2">
                 {(project.url || project.github) ? (
                   <a
                     href={project.url || project.github}
@@ -67,7 +67,7 @@ const stack = [
                   project.title
                 )}
               </h3>
-              <p class="text-gray-600 text-sm leading-relaxed mb-3 flex-grow">{project.description}</p>
+              <p class="text-gray-600 text-base leading-relaxed mb-3 flex-grow">{project.description}</p>
               <div class="flex flex-wrap gap-1.5">
                 {project.tags.map((tag) => (
                   <a href={translatePath(`/tags/${tag.toLowerCase()}`)} class="px-1.5 py-0.5 text-xs rounded bg-gray-100 text-gray-500 hover:bg-cyan-700 hover:text-white transition-colors">
@@ -81,26 +81,26 @@ const stack = [
       </div>
     </section>
 
-    <section class="py-10">
-      <div class="max-w-3xl mx-auto px-4">
-        <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-6">
-          {t('home.stack')}
+    <section class="py-14 border-t border-gray-100">
+      <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6">
+          <span class="text-cyan-700">[ 02 /</span> {t('home.stack')} <span class="text-cyan-700">]</span>
         </h2>
         <div class="space-y-2">
           {stack.map(({ label, items }) => (
             <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-              <span class="text-xs text-gray-500 uppercase tracking-wide sm:w-32 shrink-0">{label}</span>
-              <span class="text-sm text-gray-700">{items}</span>
+              <span class="text-sm text-gray-500 uppercase tracking-wide sm:w-40 shrink-0">{label}</span>
+              <span class="text-base text-gray-700">{items}</span>
             </div>
           ))}
         </div>
       </div>
     </section>
 
-    <section class="py-10">
-      <div class="max-w-3xl mx-auto px-4">
-        <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-6">
-          {t('home.community')}
+    <section class="py-14 border-t border-gray-100">
+      <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6">
+          <span class="text-cyan-700">[ 03 /</span> {t('home.community')} <span class="text-cyan-700">]</span>
         </h2>
         <div class="space-y-3">
           <div class="flex items-baseline gap-3">
@@ -108,30 +108,50 @@ const stack = [
               href="https://community.cncf.io/cloud-native-sevilla/"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-sm text-gray-700 hover:text-cyan-700 transition-colors"
+              class="text-base text-gray-700 hover:text-cyan-700 transition-colors"
             >
               Cloud Native Sevilla
             </a>
-            <span class="text-xs text-gray-500">CNCF</span>
+            <span class="text-sm text-gray-500">CNCF</span>
           </div>
-          <p class="text-sm text-gray-500">
-            Rower. Multi-year national champion, actively competing
-          </p>
+          <div class="flex items-baseline gap-3">
+            <a
+              href="https://nan.builders/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-base text-gray-700 hover:text-cyan-700 transition-colors"
+            >
+              NaN
+            </a>
+            <span class="text-sm text-gray-500">AI builders</span>
+          </div>
+          <div class="flex items-baseline gap-3">
+            <a
+              href="https://remoandaluz.es/"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Federación Andaluza de Remo"
+              class="text-base text-gray-700 hover:text-cyan-700 transition-colors"
+            >
+              FAR
+            </a>
+            <span class="text-sm text-gray-500">Active rower</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="py-8">
-      <div class="max-w-3xl mx-auto px-4">
-        <a href={translatePath('/notes')} class="text-sm text-gray-500 tracking-wide uppercase mb-6 block hover:text-cyan-700 transition-colors">
-          {t('home.latest')}
+    <section class="py-14 border-t border-gray-100">
+      <div class="max-w-4xl mx-auto px-4">
+        <a href={translatePath('/notes')} class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6 block group">
+          <span class="text-cyan-700">[ 04 /</span> <span class="group-hover:text-cyan-700 transition-colors">{t('home.latest')}</span> <span class="text-cyan-700">]</span>
         </a>
         {notes.length > 0 && (
           <div class="divide-y divide-gray-100">
             {notes.map((note) => (
               <a href={translatePath(`/notes/${note.id}`)} class="group block py-3 first:pt-0">
-                <span class="text-xs text-gray-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
-                <span class="text-sm text-gray-700 group-hover:text-cyan-700 transition-colors">{note.data.title}</span>
+                <span class="text-sm text-gray-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
+                <span class="text-base text-gray-700 group-hover:text-cyan-700 transition-colors">{note.data.title}</span>
               </a>
             ))}
           </div>

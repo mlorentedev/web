@@ -5,18 +5,22 @@ const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-const isEs = lang === 'es';
-const ctaHref = isEs ? '#newsletter-home' : translatePath('/notes');
+const ctaHref = translatePath('/contact');
 ---
 
-<div class="max-w-3xl mx-auto p-2 text-center text-gray-800">
-  <h1 class="text-6xl font-extrabold">{t('hero.title')}</h1>
-  <hr class="my-2 border-gray-300" />
-  <p class="text-lg text-gray-500 mt-2">{t('hero.subtitle')}</p>
-  <p class="mt-4">
-    <span class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-3 py-1 text-sm text-gray-500">
+<div class="max-w-4xl mx-auto px-4 pt-6 pb-12 text-gray-800">
+  <p class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-5">
+    <span class="text-cyan-700">[</span> {t('hero.eyebrow')} <span class="text-cyan-700">]</span>
+  </p>
+  <h1 class="text-5xl sm:text-6xl font-extrabold leading-tight">{t('hero.title')}</h1>
+  <p class="text-xl text-gray-500 mt-5 leading-relaxed">{t('hero.subtitle')}</p>
+  <p class="mt-7">
+    <a
+      href={ctaHref}
+      class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:border-cyan-700 hover:text-cyan-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300"
+    >
       <span class="inline-block h-2 w-2 rounded-full bg-emerald-500"></span>
-      {t('hero.status')}
-    </span>
+      {t('hero.cta')}
+    </a>
   </p>
 </div>
