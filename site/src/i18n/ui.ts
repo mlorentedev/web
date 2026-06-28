@@ -11,14 +11,15 @@ export const ui = {
   en: {
     // Nav
     'nav.notes': 'Notes',
+    'nav.contact': 'Contact',
     'nav.consulting': 'Consulting',
     'nav.toggle': 'Toggle menu',
 
     // Hero
+    'hero.eyebrow': 'Builder & operator',
     'hero.title': 'Platform engineering for AI workloads',
     'hero.subtitle': 'I build, automate, and operate the infrastructure AI agents run on — Kubernetes, on-prem, reproducible. I run a 40-service homelab and document what breaks.',
-    'hero.status': 'Open to opportunities',
-    'hero.cta': 'Read my notes',
+    'hero.cta': 'Tell me about your project',
 
     // Home sections
     'home.stack': 'What I work with',
@@ -89,14 +90,15 @@ export const ui = {
   es: {
     // Nav
     'nav.notes': 'Notas',
+    'nav.contact': 'Contacto',
     'nav.consulting': 'Consultoría',
     'nav.toggle': 'Abrir menú',
 
     // Hero
+    'hero.eyebrow': 'Builder & operator',
     'hero.title': 'Infraestructura para agentes de IA, en producción',
     'hero.subtitle': 'Construyo, automatizo y opero la infraestructura sobre la que corren los agentes de IA — Kubernetes, on-prem, reproducible. Tengo un homelab de 40 servicios y documento lo que se rompe.',
-    'hero.status': 'Abierto a oportunidades',
-    'hero.cta': 'Empieza ahora',
+    'hero.cta': 'Cuéntame tu proyecto',
 
     // Home sections
     'home.stack': 'Con qué trabajo',

@@ -6,7 +6,10 @@ const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-const navItems: { label: string; href: string }[] = [];
+const navItems: { label: string; href: string }[] = [
+  { label: t('nav.notes'), href: translatePath('/notes') },
+  { label: t('nav.contact'), href: translatePath('/contact') },
+];
 
 const currentPath = Astro.url.pathname;
 const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
@@ -14,7 +17,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
 
 <header class="bg-cyan-50 text-gray-700 fixed w-full border-b border-cyan-100 z-50">
   <nav class="px-4 py-3 flex items-center justify-between">
-    <span class="text-lg font-extrabold">
+    <span class="text-xl font-extrabold">
       <a href={translatePath('/')} class="no-underline hover:text-cyan-700 transition-colors duration-200 focus:outline-none focus:text-cyan-700">
         Manu Lorente
       </a>
