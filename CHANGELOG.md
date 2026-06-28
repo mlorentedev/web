@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/mlorentedev/web/compare/v1.4.0...v1.5.0) (2026-06-28)
+
+
+### Features
+
+* reposition hero and design pass on the landing (WEB-011) ([#61](https://github.com/mlorentedev/web/issues/61)) ([ae17d2c](https://github.com/mlorentedev/web/commit/ae17d2c8e7a71c434d5648567ae9cf1d4a60fa0a))
+
 ## [1.4.0](https://github.com/mlorentedev/web/compare/v1.3.0...v1.4.0) (2026-06-26)
 
 
