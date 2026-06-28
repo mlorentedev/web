@@ -1,0 +1,44 @@
+[
+  {
+    "id": "WEB-027-f1",
+    "behavior": "A typed `features` SSOT exists with every flag defaulting to off; the TypeScript build passes with the flags typed (no `any`).",
+    "verification": "test -f site/src/data/features.ts && cd site && npx astro check 2>&1 | grep -q '0 errors'",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-027-f2",
+    "behavior": "With features.youtube disabled, the built static output contains no YouTube footer anchor; with it enabled, the anchor is present.",
+    "verification": "cd site && npm run build >/dev/null 2>&1 && ! grep -rq 'youtube.com/@mlorentedev' dist/",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-027-f3",
+    "behavior": "Toggling only the flag value (no other code change) flips the YouTube link in the rebuilt output.",
+    "verification": "echo 'manual: set features.youtube=true, rebuild, grep dist/ finds the anchor; revert to false, rebuild, anchor gone'",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-027-f4",
+    "behavior": "The youtube:'' empty-string hack is removed: site.social.youtube holds the real URL again, visibility controlled solely by the flag.",
+    "verification": "grep -q \"youtube: 'https://youtube.com/@mlorentedev'\" site/src/data/site.ts && ! grep -q \"youtube: ''\" site/src/data/site.ts",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-027-f5",
+    "behavior": "Self-documenting: each flag declared with a one-line comment and a 'how to add a flag' note exists.",
+    "verification": "grep -qi 'how to add a flag' site/src/data/features.ts",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-027-f6",
+    "behavior": "No regression: the build still produces 74 pages and existing pages are unchanged except the footer.",
+    "verification": "cd site && npm run build 2>&1 | grep -q '74 page(s) built'",
+    "state": "pending",
+    "evidence": ""
+  }
+]
