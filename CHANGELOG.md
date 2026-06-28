@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/mlorentedev/web/compare/v1.5.0...v1.6.0) (2026-06-28)
+
+
+### Features
+
+* add build-time feature-flag infrastructure (WEB-027) ([#63](https://github.com/mlorentedev/web/issues/63)) ([be6d4f6](https://github.com/mlorentedev/web/commit/be6d4f637a940086e1304b879083d27a8da1d7a5))
+
+
+### Bug Fixes
+
+* replace dead Calendly contact CTA with a mailto link ([#65](https://github.com/mlorentedev/web/issues/65)) ([e523783](https://github.com/mlorentedev/web/commit/e52378376addab02afa66ca8dd7481fc85ee5e6b)), closes [#43](https://github.com/mlorentedev/web/issues/43)
+
 ## [1.5.0](https://github.com/mlorentedev/web/compare/v1.4.0...v1.5.0) (2026-06-28)
 
 
