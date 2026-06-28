@@ -1,7 +1,7 @@
 ---
 id: "WEB-027"
 type: spec
-status: draft # draft | implementing | verifying | archived
+status: verifying # draft | implementing | verifying | archived
 created: "2026-06-27"
 issue: "web#60"   # repo#NNN — GitHub issue / Project item that tracks this spec
 tags: [spec, proposal]
