@@ -1,0 +1,44 @@
+[
+  {
+    "id": "WEB-027-f1",
+    "behavior": "A typed `features` SSOT exists with every flag defaulting to off; the TypeScript build passes with the flags typed (no `any`).",
+    "verification": "test -f site/src/data/features.ts && cd site && npx astro check 2>&1 | grep -q '0 errors'",
+    "state": "pending",
+    "evidence": "local: features.ts present (as const, youtube:false, exported Features type — no any); `npx astro check` -> Result (28 files): 0 errors, 0 warnings, 1 hint (pre-existing ts6133 in index.astro, untouched). exit 0."
+  },
+  {
+    "id": "WEB-027-f2",
+    "behavior": "With features.youtube disabled, the built static output contains no YouTube footer anchor; with it enabled, the anchor is present.",
+    "verification": "cd site && npm run build >/dev/null 2>&1 && ! grep -rq 'youtube.com/@mlorentedev' dist/",
+    "state": "pending",
+    "evidence": "local: flag OFF -> `npm run build` ok, `grep -rl youtube.com/@mlorentedev dist/` -> no match (exit 1). flag ON -> same grep matches every page (Footer is global). PASS both directions."
+  },
+  {
+    "id": "WEB-027-f3",
+    "behavior": "Toggling only the flag value (no other code change) flips the YouTube link in the rebuilt output.",
+    "verification": "echo 'manual: set features.youtube=true, rebuild, grep dist/ finds the anchor; revert to false, rebuild, anchor gone'",
+    "state": "pending",
+    "evidence": "local: edited only features.ts youtube:false->true, rebuilt (74 pages) -> anchor present in dist/; reverted true->false, rebuilt -> anchor gone. No other file touched between the two builds."
+  },
+  {
+    "id": "WEB-027-f4",
+    "behavior": "The youtube:'' empty-string hack is removed: site.social.youtube holds the real URL again, visibility controlled solely by the flag.",
+    "verification": "grep -q \"youtube: 'https://youtube.com/@mlorentedev'\" site/src/data/site.ts && ! grep -q \"youtube: ''\" site/src/data/site.ts",
+    "state": "pending",
+    "evidence": "local: site.ts holds youtube: 'https://youtube.com/@mlorentedev'; `youtube: ''` absent. Footer gate is `features.youtube`, href reads the real URL from site.social.youtube."
+  },
+  {
+    "id": "WEB-027-f5",
+    "behavior": "Self-documenting: each flag declared with a one-line comment and a 'how to add a flag' note exists.",
+    "verification": "grep -qi 'how to add a flag' site/src/data/features.ts",
+    "state": "pending",
+    "evidence": "local: features.ts has a top-of-file 'How to add a flag' 3-step note + a one-line /** */ on the youtube flag (what it is, why off). `grep -qi 'how to add a flag'` exit 0."
+  },
+  {
+    "id": "WEB-027-f6",
+    "behavior": "No regression: the build still produces 74 pages and existing pages are unchanged except the footer.",
+    "verification": "cd site && npm run build 2>&1 | grep -q '74 page(s) built'",
+    "state": "pending",
+    "evidence": "local: `npm run build` -> '74 page(s) built'. Working-tree diff scoped to Footer.astro (M), site.ts (M), features.ts (new) — no other pages changed."
+  }
+]

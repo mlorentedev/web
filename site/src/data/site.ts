@@ -16,8 +16,8 @@ export const site = {
     github: 'https://github.com/mlorentedev',
     x: 'https://x.com/mlorentedev',
     xHandle: '@mlorentedev',
-    // Hidden for now (channel not active yet) — feature-flag candidate. Empty string hides the footer icon.
-    youtube: '',
+    // Real URL; footer visibility is gated by `features.youtube` (WEB-027), not by this value.
+    youtube: 'https://youtube.com/@mlorentedev',
   },
   analytics: {
     // GA4 measurement ID (public; ships in client HTML). Empty string disables the tag.
