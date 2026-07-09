@@ -34,6 +34,10 @@ export const ui = {
     'credibility.tokens': 'fewer tokens · Hive',
     'credibility.projects': 'projects shipped',
     'credibility.notes': 'field notes',
+
+    // Experience timeline (WEB-012)
+    'home.experience': 'My path',
+    'experience.present': 'Present',
     'home.community': 'Community & background',
     'home.latest': 'Latest notes',
     'home.allNotes': 'All notes',
@@ -123,6 +127,10 @@ export const ui = {
     'credibility.tokens': 'menos tokens · Hive',
     'credibility.projects': 'proyectos publicados',
     'credibility.notes': 'notas de campo',
+
+    // Experience timeline (WEB-012)
+    'home.experience': 'Mi camino',
+    'experience.present': 'Actualidad',
     'home.community': 'Comunidad y más',
     'home.latest': 'Últimas notas',
     'home.allNotes': 'Todas las notas',

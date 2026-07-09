@@ -26,5 +26,19 @@
     "verification": "cd site && npx --no-install astro check && npx --no-install astro build",
     "state": "pending",
     "evidence": "2026-07-09: astro check -> 0 errors/0 warnings/0 hints (30 files). astro build -> 74 pages, Complete."
+  },
+  {
+    "id": "WEB-012-f5",
+    "behavior": "Timeline.astro renders 4 experience roles on both landings (bracketed section [ 01 / My path | Mi camino ]).",
+    "verification": "grep -q 'data-experience' site/dist/index.html && grep -q 'data-experience' site/dist/es/index.html && test $(grep -o 'data-role' site/dist/index.html | wc -l) -eq 4",
+    "state": "pending",
+    "evidence": "2026-07-09: PASS. data-experience on / and /es/; 4 data-role entries."
+  },
+  {
+    "id": "WEB-012-f6",
+    "behavior": "Timeline is bilingual (EN 'My path' / ES 'Mi camino', roles + locations translated) and landing section numbering reads 00->05 with no gaps.",
+    "verification": "grep -q 'My path' site/dist/index.html && grep -q 'Mi camino' site/dist/es/index.html && grep -q 'Ingeniero de Plataforma' site/dist/es/index.html && test \"$(grep -oE '\\[ 0[0-9] /' site/dist/index.html | tr -d ' /[]' | tr '\\n' ' ')\" = '00 01 02 03 04 05 '",
+    "state": "pending",
+    "evidence": "2026-07-09: PASS. EN 'My path', ES 'Mi camino' + 'Ingeniero de Plataforma...'; numbering 00 01 02 03 04 05."
   }
 ]
