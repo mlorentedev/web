@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/mlorentedev/web/compare/v1.8.0...v1.9.0) (2026-07-09)
+
+
+### Features
+
+* ES landing parity via shared section components (WEB-012) ([#75](https://github.com/mlorentedev/web/issues/75)) ([c73d950](https://github.com/mlorentedev/web/commit/c73d9506fe21404631cd6c9561503eba1613627e))
+
 ## [1.8.0](https://github.com/mlorentedev/web/compare/v1.7.0...v1.8.0) (2026-07-09)
 
 
