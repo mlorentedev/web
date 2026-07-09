@@ -4,7 +4,7 @@ import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { projects, type Project } from '../../../data/portfolio';
+import { projects, localize, type Project } from '../../../data/portfolio';
 import { getLocale, useTranslations, useTranslatedPath } from '../../../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -64,7 +64,9 @@ const displayTag = matchingProjects.find((p) => p.tags.some((t) => t.toLowerCase
         <div class="max-w-3xl mx-auto px-4">
           <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-8">{t('tags.projects')}</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {matchingProjects.map((project) => (
+            {matchingProjects.map((rawProject) => {
+              const project = localize(rawProject, lang);
+              return (
               <div class="border border-gray-200 rounded-md p-4 hover:border-cyan-700 transition-colors flex flex-col">
                 <h3 class="font-bold text-gray-800 text-sm leading-snug mb-2">
                   {project.url ? (
@@ -82,7 +84,8 @@ const displayTag = matchingProjects.find((p) => p.tags.some((t) => t.toLowerCase
                   ))}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

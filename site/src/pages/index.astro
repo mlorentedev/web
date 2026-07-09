@@ -4,16 +4,13 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Hero from '../components/Hero.astro';
 import { useTranslations, useTranslatedPath, getLocale } from '../i18n/utils';
-import { projects } from '../data/portfolio';
+import { projects, localize } from '../data/portfolio';
+import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
-
-const [page] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'home' && data.lang === 'en');
-
-const allProjects = projects;
 
 const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === 'en'))
   .sort((a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -51,31 +48,8 @@ const stack = [
           />
         </a>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {allProjects.map((project) => (
-            <div class="border border-gray-200 rounded-md p-4 hover:border-cyan-700 transition-colors flex flex-col">
-              <h3 class="font-bold text-gray-800 text-base leading-snug mb-2">
-                {(project.url || project.github) ? (
-                  <a
-                    href={project.url || project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="hover:text-cyan-700 transition-colors"
-                  >
-                    {project.title}
-                  </a>
-                ) : (
-                  project.title
-                )}
-              </h3>
-              <p class="text-gray-600 text-base leading-relaxed mb-3 flex-grow">{project.description}</p>
-              <div class="flex flex-wrap gap-1.5">
-                {project.tags.map((tag) => (
-                  <a href={translatePath(`/tags/${tag.toLowerCase()}`)} class="px-1.5 py-0.5 text-xs rounded bg-gray-100 text-gray-500 hover:bg-cyan-700 hover:text-white transition-colors">
-                    {tag}
-                  </a>
-                ))}
-              </div>
-            </div>
+          {projects.map((project) => (
+            <ProjectCard project={localize(project, lang)} lang={lang} />
           ))}
         </div>
       </div>
