@@ -12,6 +12,10 @@ created: "2026-07-09"
 - [x] AC3 (derived counts) -> `f3` PASS. projects=8 (`projects.length`), notes=15 (published) — identical on EN/ES; ES labels translated.
 - [x] AC4 (check + build) -> `f4` PASS. `astro check` 0/0/0 (30 files); `astro build` 74 pages.
 
+**Increment 2 — experience timeline:**
+- [x] `f5` PASS. `Timeline.astro` renders 4 `data-role` entries on `/` and `/es/`, labelled `[ 01 / My path | Mi camino ]`.
+- [x] `f6` PASS. Bilingual: EN "My path" / ES "Mi camino" + "Ingeniero de Plataforma y Aplicaciones" / "España / EE. UU." / "2019 — Actualidad"; landing numbering `00 01 02 03 04 05` (no gaps). `astro check` 0/0/0 (32 files); build 74 pages.
+
 ## Test status
 
 - Type check: `npx astro check` -> **0 errors, 0 warnings, 0 hints** (30 files).

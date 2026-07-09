@@ -7,6 +7,7 @@ import { useTranslations, useTranslatedPath, getLocale } from '../i18n/utils';
 import { projects, localize } from '../data/portfolio';
 import ProjectCard from '../components/ProjectCard.astro';
 import CredibilityBand from '../components/CredibilityBand.astro';
+import Timeline from '../components/Timeline.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 const lang = getLocale(Astro.currentLocale);
@@ -35,10 +36,12 @@ const stack = [
 
     <CredibilityBand lang={lang} />
 
+    <Timeline lang={lang} />
+
     <section class="py-14 border-t border-gray-100">
       <div class="max-w-4xl mx-auto px-4">
         <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-8">
-          <span class="text-cyan-700">[ 01 /</span> {t('home.projects')} <span class="text-cyan-700">]</span>
+          <span class="text-cyan-700">[ 02 /</span> {t('home.projects')} <span class="text-cyan-700">]</span>
         </h2>
         <a href="https://github.com/mlorentedev" target="_blank" rel="noopener noreferrer">
           <img
@@ -61,7 +64,7 @@ const stack = [
     <section class="py-14 border-t border-gray-100">
       <div class="max-w-4xl mx-auto px-4">
         <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6">
-          <span class="text-cyan-700">[ 02 /</span> {t('home.stack')} <span class="text-cyan-700">]</span>
+          <span class="text-cyan-700">[ 03 /</span> {t('home.stack')} <span class="text-cyan-700">]</span>
         </h2>
         <div class="space-y-2">
           {stack.map(({ label, items }) => (
@@ -77,7 +80,7 @@ const stack = [
     <section class="py-14 border-t border-gray-100">
       <div class="max-w-4xl mx-auto px-4">
         <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6">
-          <span class="text-cyan-700">[ 03 /</span> {t('home.community')} <span class="text-cyan-700">]</span>
+          <span class="text-cyan-700">[ 04 /</span> {t('home.community')} <span class="text-cyan-700">]</span>
         </h2>
         <div class="space-y-3">
           <div class="flex items-baseline gap-3">
@@ -121,7 +124,7 @@ const stack = [
     <section class="py-14 border-t border-gray-100">
       <div class="max-w-4xl mx-auto px-4">
         <a href={translatePath('/notes')} class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6 block group">
-          <span class="text-cyan-700">[ 04 /</span> <span class="group-hover:text-cyan-700 transition-colors">{t('home.latest')}</span> <span class="text-cyan-700">]</span>
+          <span class="text-cyan-700">[ 05 /</span> <span class="group-hover:text-cyan-700 transition-colors">{t('home.latest')}</span> <span class="text-cyan-700">]</span>
         </a>
         {notes.length > 0 && (
           <div class="divide-y divide-gray-100">
