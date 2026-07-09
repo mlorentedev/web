@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/mlorentedev/web/compare/v1.6.0...v1.7.0) (2026-07-09)
+
+
+### Features
+
+* rich project cards with metric + bilingual data (WEB-026) ([#69](https://github.com/mlorentedev/web/issues/69)) ([fb7be6d](https://github.com/mlorentedev/web/commit/fb7be6d43e01c1bc3c783956fe64c0b37e2d3adc))
+
 ## [1.6.0](https://github.com/mlorentedev/web/compare/v1.5.0...v1.6.0) (2026-06-28)
 
 
