@@ -27,6 +27,13 @@ export const ui = {
 
     // Projects
     'projects.viewProject': 'View project',
+
+    // Credibility band (WEB-012)
+    'credibility.heading': 'By the numbers',
+    'credibility.services': 'services · homelab',
+    'credibility.tokens': 'fewer tokens · Hive',
+    'credibility.projects': 'projects shipped',
+    'credibility.notes': 'field notes',
     'home.community': 'Community & background',
     'home.latest': 'Latest notes',
     'home.allNotes': 'All notes',
@@ -109,6 +116,13 @@ export const ui = {
 
     // Projects
     'projects.viewProject': 'Ver proyecto',
+
+    // Credibility band (WEB-012)
+    'credibility.heading': 'En números',
+    'credibility.services': 'servicios · homelab',
+    'credibility.tokens': 'menos tokens · Hive',
+    'credibility.projects': 'proyectos publicados',
+    'credibility.notes': 'notas de campo',
     'home.community': 'Comunidad y más',
     'home.latest': 'Últimas notas',
     'home.allNotes': 'Todas las notas',

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "WEB-012-f1",
+    "behavior": "CredibilityBand.astro exists and renders a bracketed-label section with exactly 4 stats.",
+    "verification": "test -f site/src/components/CredibilityBand.astro && test $(grep -o 'data-stat' site/dist/index.html | wc -l) -eq 4",
+    "state": "pending",
+    "evidence": "2026-07-09: PASS. Component present; 4 data-stat entries (services, tokens, projects, notes) on /. Label [ 00 / By the numbers ]."
+  },
+  {
+    "id": "WEB-012-f2",
+    "behavior": "The band renders on both the EN and ES landings, after the hero.",
+    "verification": "grep -q 'data-credibility-band' site/dist/index.html && grep -q 'data-credibility-band' site/dist/es/index.html",
+    "state": "pending",
+    "evidence": "2026-07-09: PASS. data-credibility-band present in dist/index.html and dist/es/index.html; ES heading 'En números', labels translated."
+  },
+  {
+    "id": "WEB-012-f3",
+    "behavior": "Counts are derived and correct: project stat = projects.length (8); note stat = published notes (15), identical on EN and ES.",
+    "verification": "en=$(tr -d ' \\t\\n' < site/dist/index.html); es=$(tr -d ' \\t\\n' < site/dist/es/index.html); echo \"$en\" | grep -qE 'data-stat=\"projects\"><span[^>]*>8</span>' && echo \"$en\" | grep -qE 'data-stat=\"notes\"><span[^>]*>15</span>' && echo \"$es\" | grep -qE 'data-stat=\"notes\"><span[^>]*>15</span>'",
+    "state": "pending",
+    "evidence": "2026-07-09: PASS. EN projects=8, EN notes=15, ES notes=15 (whitespace-stripped match). Language-agnostic proof numbers, identical on both bands."
+  },
+  {
+    "id": "WEB-012-f4",
+    "behavior": "Types pass and the static build completes.",
+    "verification": "cd site && npx --no-install astro check && npx --no-install astro build",
+    "state": "pending",
+    "evidence": "2026-07-09: astro check -> 0 errors/0 warnings/0 hints (30 files). astro build -> 74 pages, Complete."
+  }
+]
