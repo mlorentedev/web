@@ -1,0 +1,50 @@
+---
+import { projects } from '../data/portfolio';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  /** Current UI language — selects the stat labels. */
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Counts are derived at build time so the band stays honest as content grows —
+// the "40 services" figure is the only external claim (mirrors the hero copy).
+// These are language-agnostic facts (proof of output, not a per-locale content
+// inventory), so the count is NOT filtered by lang — both bands show the same
+// true numbers, only the labels translate. (Notes are EN-only today; a lang
+// filter would render a misleading "0" on the ES band.)
+const projectCount = projects.length;
+const noteCount = (
+  await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft)
+).length;
+
+const stats = [
+  { key: 'services', value: '40', label: t('credibility.services') },
+  { key: 'tokens', value: '67–82%', label: t('credibility.tokens') },
+  { key: 'projects', value: String(projectCount), label: t('credibility.projects') },
+  { key: 'notes', value: String(noteCount), label: t('credibility.notes') },
+];
+---
+
+<section data-credibility-band class="py-10 border-t border-gray-100">
+  <div class="max-w-4xl mx-auto px-4">
+    <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-8">
+      <span class="text-cyan-700">[ 00 /</span> {t('credibility.heading')} <span class="text-cyan-700">]</span>
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8">
+      {stats.map((s) => (
+        <div data-stat={s.key}>
+          <span class="block text-3xl md:text-4xl font-extrabold text-gray-800 tabular-nums leading-none">
+            {s.value}
+          </span>
+          <span class="block text-xs text-gray-500 mt-2 leading-snug">{s.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

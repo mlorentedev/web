@@ -6,6 +6,7 @@ import Hero from '../components/Hero.astro';
 import { useTranslations, useTranslatedPath, getLocale } from '../i18n/utils';
 import { projects, localize } from '../data/portfolio';
 import ProjectCard from '../components/ProjectCard.astro';
+import CredibilityBand from '../components/CredibilityBand.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 const lang = getLocale(Astro.currentLocale);
@@ -31,6 +32,8 @@ const stack = [
   <Header />
   <main id="main-content" class="flex-grow pt-16">
     <Hero />
+
+    <CredibilityBand lang={lang} />
 
     <section class="py-14 border-t border-gray-100">
       <div class="max-w-4xl mx-auto px-4">
