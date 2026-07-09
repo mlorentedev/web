@@ -24,6 +24,9 @@ export const ui = {
     // Home sections
     'home.stack': 'What I work with',
     'home.projects': 'What I build',
+
+    // Projects
+    'projects.viewProject': 'View project',
     'home.community': 'Community & background',
     'home.latest': 'Latest notes',
     'home.allNotes': 'All notes',
@@ -103,6 +106,9 @@ export const ui = {
     // Home sections
     'home.stack': 'Con qué trabajo',
     'home.projects': 'Lo que construyo',
+
+    // Projects
+    'projects.viewProject': 'Ver proyecto',
     'home.community': 'Comunidad y más',
     'home.latest': 'Últimas notas',
     'home.allNotes': 'Todas las notas',

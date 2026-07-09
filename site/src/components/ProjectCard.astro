@@ -1,0 +1,66 @@
+---
+import type { LocalizedProject } from '../data/portfolio';
+import type { Lang } from '../i18n/ui';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+
+interface Props {
+  /** A project already flattened to the current language (see `localize`). */
+  project: LocalizedProject;
+  /** Current UI language — drives tag links and the "View project" label. */
+  lang: Lang;
+}
+
+const { project, lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+// Preferred link: the live/demo URL, falling back to the source repo.
+const link = project.url ?? project.github;
+---
+
+<div class="border border-gray-200 rounded-md p-4 hover:border-cyan-700 transition-colors flex flex-col">
+  <h3 class="font-bold text-gray-800 text-base leading-snug mb-2">
+    {link ? (
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:text-cyan-700 transition-colors"
+      >
+        {project.title}
+      </a>
+    ) : (
+      project.title
+    )}
+  </h3>
+
+  <span
+    data-metric
+    class="self-start mb-2 px-2 py-0.5 rounded bg-cyan-50 text-cyan-700 text-xs font-semibold tabular-nums"
+  >
+    {project.metric}
+  </span>
+
+  <p class="text-gray-600 text-base leading-relaxed mb-3 flex-grow">{project.description}</p>
+
+  <div class="flex flex-wrap items-center gap-1.5">
+    {project.tags.map((tag) => (
+      <a
+        href={translatePath(`/tags/${tag.toLowerCase()}`)}
+        class="px-1.5 py-0.5 text-xs rounded bg-gray-100 text-gray-500 hover:bg-cyan-700 hover:text-white transition-colors"
+      >
+        {tag}
+      </a>
+    ))}
+    {link && (
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="ml-auto text-xs font-medium text-cyan-700 hover:underline whitespace-nowrap"
+      >
+        {t('projects.viewProject')} &rarr;
+      </a>
+    )}
+  </div>
+</div>

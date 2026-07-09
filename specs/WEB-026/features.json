@@ -1,0 +1,30 @@
+[
+  {
+    "id": "WEB-026-f1",
+    "behavior": "A single ProjectCard.astro component exists and is imported by both index.astro and projects.astro (no duplicated card markup remains in either).",
+    "verification": "test -f site/src/components/ProjectCard.astro && grep -q ProjectCard site/src/pages/index.astro && grep -q ProjectCard site/src/pages/projects.astro && ! grep -RqF 'border border-gray-200 rounded-md p-4' site/src/pages/index.astro site/src/pages/projects.astro",
+    "state": "pending",
+    "evidence": "2026-07-09: command exited 0 (PASS). Component present; imported in both pages; the duplicated card class string no longer appears in index.astro/projects.astro."
+  },
+  {
+    "id": "WEB-026-f2",
+    "behavior": "portfolio.ts exposes bilingual data and localize() resolves per-language; the same project renders Spanish on an ES tag page and English on the EN tag page.",
+    "verification": "grep -qi 'nodos' site/dist/es/tags/kubernetes/index.html && grep -qi 'nodes' site/dist/tags/kubernetes/index.html",
+    "state": "pending",
+    "evidence": "2026-07-09: PASS. /es/tags/kubernetes renders 'nodos' (ES), /tags/kubernetes renders 'nodes' (EN) — KubeLab localized by Astro.currentLocale."
+  },
+  {
+    "id": "WEB-026-f3",
+    "behavior": "Every rendered project card displays a non-empty metric (marked with a data-metric hook on the card).",
+    "verification": "test $(grep -c 'data-metric' site/dist/projects/index.html) -ge 8",
+    "state": "pending",
+    "evidence": "2026-07-09: PASS. 8 'data-metric' badges rendered on /projects (all 8 projects); 8 also on the landing."
+  },
+  {
+    "id": "WEB-026-f4",
+    "behavior": "Types pass and the static build completes with no errors.",
+    "verification": "cd site && npx --no-install astro check && npx --no-install astro build",
+    "state": "pending",
+    "evidence": "2026-07-09: astro check -> 0 errors, 0 warnings, 0 hints (29 files). astro build -> 74 pages built, Complete."
+  }
+]
