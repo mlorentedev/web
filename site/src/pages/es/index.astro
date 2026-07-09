@@ -5,28 +5,25 @@ import Footer from '../../components/Footer.astro';
 import Hero from '../../components/Hero.astro';
 import CredibilityBand from '../../components/CredibilityBand.astro';
 import Timeline from '../../components/Timeline.astro';
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import ProjectsSection from '../../components/ProjectsSection.astro';
+import StackSection from '../../components/StackSection.astro';
+import CommunitySection from '../../components/CommunitySection.astro';
+import LatestNotesSection from '../../components/LatestNotesSection.astro';
+import { getLocale } from '../../i18n/utils';
 
-const [page] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'home' && data.lang === 'es');
-const { Content } = await render(page);
+const lang = getLocale(Astro.currentLocale);
 ---
 
 <BaseLayout>
   <Header />
-  <main id="main-content" class="flex-grow py-16">
+  <main id="main-content" class="flex-grow pt-16">
     <Hero />
-
-    <CredibilityBand lang="es" />
-
-    <Timeline lang="es" />
-
-    <section class="py-8">
-      <div class="max-w-3xl mx-auto px-4">
-        <div class="prose prose-base max-w-none prose-p:text-base prose-p:text-gray-700 prose-headings:text-lg prose-headings:font-bold prose-headings:text-gray-800 prose-li:text-base prose-li:text-gray-700 prose-strong:text-gray-700 prose-a:text-cyan-700 hover:prose-a:text-cyan-800 prose-hr:border-gray-300">
-          <Content />
-        </div>
-      </div>
-    </section>
+    <CredibilityBand lang={lang} />
+    <Timeline lang={lang} />
+    <ProjectsSection lang={lang} />
+    <StackSection lang={lang} />
+    <CommunitySection lang={lang} />
+    <LatestNotesSection lang={lang} />
   </main>
   <Footer />
 </BaseLayout>

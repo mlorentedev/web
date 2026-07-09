@@ -1,0 +1,38 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Category labels are bilingual; the tool lists are language-neutral.
+const stack: { label: { en: string; es: string }; items: string }[] = [
+  { label: { en: 'On-Premises', es: 'On-Premises' }, items: 'Linux · Proxmox · Bare metal' },
+  { label: { en: 'Orchestration', es: 'Orquestación' }, items: 'Kubernetes · Docker · Helm' },
+  { label: { en: 'IaC', es: 'IaC' }, items: 'Terraform · Ansible' },
+  { label: { en: 'Languages', es: 'Lenguajes' }, items: 'Python · Go' },
+  { label: { en: 'Observability', es: 'Observabilidad' }, items: 'Prometheus · Grafana · Loki' },
+  { label: { en: 'CI/CD', es: 'CI/CD' }, items: 'GitHub Actions · ArgoCD' },
+  { label: { en: 'Cloud', es: 'Cloud' }, items: 'AWS' },
+];
+---
+
+<section class="py-14 border-t border-gray-100">
+  <div class="max-w-4xl mx-auto px-4">
+    <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6">
+      <span class="text-cyan-700">[ 03 /</span> {t('home.stack')} <span class="text-cyan-700">]</span>
+    </h2>
+    <div class="space-y-2">
+      {stack.map((row) => (
+        <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+          <span class="text-sm text-gray-500 uppercase tracking-wide sm:w-40 shrink-0">{row.label[lang]}</span>
+          <span class="text-base text-gray-700">{row.items}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

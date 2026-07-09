@@ -28,12 +28,20 @@ created: "2026-07-09"
 - [x] Add i18n keys `home.experience` + `experience.present` (EN + ES).
 - [x] Place `<Timeline lang=… />` after the band on `index.astro` and `es/index.astro`; renumber sections (projects 01→02, stack 02→03, community 03→04, notes 04→05).
 
+## Implementation — increment 3 (ES parity + componentization)
+
+- [x] Extract 4 shared bilingual section components: `ProjectsSection` `[ 02 ]`, `StackSection` `[ 03 ]`, `CommunitySection` `[ 04 ]`, `LatestNotesSection` `[ 05 ]` (stack/community labels bilingual; notes filtered per lang with `notes.empty` fallback).
+- [x] Rewrite `index.astro` (EN) to compose Hero + band + timeline + the 4 sections — frontmatter reduced to `lang` only (removed inline stack/notes/duplicated markup).
+- [x] Rewrite `es/index.astro` to compose the same components → structural parity, ES localized.
+- [x] Preserve the ES newsletter essay: `git mv es-home.mdx es-newsletter.mdx` (`page: newsletter`) + new `es/newsletter.astro` route at `/es/newsletter`.
+- [ ] KNOWN: `en-home.mdx` (empty, `page: home`) now orphaned — left in place (not deleted; empty stub), flagged for a future decision.
+
 ## Closing
 
-- [x] `astro check` 0 errors (32 files)
-- [x] `astro build` 74 pages; band + timeline in `dist/index.html` + `dist/es/index.html`
+- [x] `astro check` 0 errors (37 files)
+- [x] `astro build` 75 pages (+1 = `/es/newsletter`); parity 00–05 on both landings
 - [x] `verification.md` filled
-- [ ] PR opened referencing this spec (increment 1 = #72 merged; increment 2 = this PR)
+- [ ] PR opened referencing this spec (increments 1 #72 + 2 #74 merged; increment 3 = this PR)
 
 ## Machine-readable features
 

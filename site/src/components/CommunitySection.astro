@@ -1,0 +1,41 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const community: { name: string; href: string; title?: string; tag: { en: string; es: string } }[] = [
+  { name: 'Cloud Native Sevilla', href: 'https://community.cncf.io/cloud-native-sevilla/', tag: { en: 'CNCF', es: 'CNCF' } },
+  { name: 'NaN', href: 'https://nan.builders/', tag: { en: 'AI builders', es: 'Constructores de IA' } },
+  { name: 'FAR', href: 'https://remoandaluz.es/', title: 'Federación Andaluza de Remo', tag: { en: 'Active rower', es: 'Remero en activo' } },
+];
+---
+
+<section class="py-14 border-t border-gray-100">
+  <div class="max-w-4xl mx-auto px-4">
+    <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6">
+      <span class="text-cyan-700">[ 04 /</span> {t('home.community')} <span class="text-cyan-700">]</span>
+    </h2>
+    <div class="space-y-3">
+      {community.map((c) => (
+        <div class="flex items-baseline gap-3">
+          <a
+            href={c.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={c.title}
+            class="text-base text-gray-700 hover:text-cyan-700 transition-colors"
+          >
+            {c.name}
+          </a>
+          <span class="text-sm text-gray-500">{c.tag[lang]}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
