@@ -16,6 +16,11 @@ created: "2026-07-09"
 - [x] `f5` PASS. `Timeline.astro` renders 4 `data-role` entries on `/` and `/es/`, labelled `[ 01 / My path | Mi camino ]`.
 - [x] `f6` PASS. Bilingual: EN "My path" / ES "Mi camino" + "Ingeniero de Plataforma y Aplicaciones" / "España / EE. UU." / "2019 — Actualidad"; landing numbering `00 01 02 03 04 05` (no gaps). `astro check` 0/0/0 (32 files); build 74 pages.
 
+**Increment 3 — ES parity + componentization:**
+- [x] `f7` PASS. EN + ES landings compose the same 4 shared components; both numbered `00..05`; ES landing has 8 ProjectCards + translated stack/community ("Con qué trabajo", "Orquestación", "Observabilidad", "Constructores de IA", "Remero en activo", "Próximamente", "Todas las notas").
+- [x] `f8` PASS. Spanish essay preserved at `/es/newsletter` (`lazarillo` present there, 0 on `/es/` home). `astro check` 0/0/0 (37 files); `astro build` 75 pages.
+- Decision: user chose **full parity** (2026-07-09) knowing the essay leaves the home; preserved it at `/es/newsletter` rather than delete (don't-destroy-content). `en-home.mdx` left as an empty orphan, flagged.
+
 ## Test status
 
 - Type check: `npx astro check` -> **0 errors, 0 warnings, 0 hints** (30 files).

@@ -40,5 +40,19 @@
     "verification": "grep -q 'My path' site/dist/index.html && grep -q 'Mi camino' site/dist/es/index.html && grep -q 'Ingeniero de Plataforma' site/dist/es/index.html && test \"$(grep -oE '\\[ 0[0-9] /' site/dist/index.html | tr -d ' /[]' | tr '\\n' ' ')\" = '00 01 02 03 04 05 '",
     "state": "pending",
     "evidence": "2026-07-09: PASS. EN 'My path', ES 'Mi camino' + 'Ingeniero de Plataforma...'; numbering 00 01 02 03 04 05."
+  },
+  {
+    "id": "WEB-012-f7",
+    "behavior": "ES landing reaches structural parity with EN: same sections via shared components, numbering 00..05 on both, ES fully localized.",
+    "verification": "test \"$(grep -oE '\\[ 0[0-9] /' site/dist/es/index.html | tr -d ' /[]' | tr '\\n' ' ')\" = '00 01 02 03 04 05 ' && test $(grep -c 'data-metric' site/dist/es/index.html) -eq 8 && grep -q 'Con qué trabajo' site/dist/es/index.html && grep -q 'Constructores de IA' site/dist/es/index.html",
+    "state": "pending",
+    "evidence": "2026-07-09: PASS. ES numbering 00-05, 8 ProjectCards, stack/community translated. index.astro + es/index.astro both compose ProjectsSection/StackSection/CommunitySection/LatestNotesSection."
+  },
+  {
+    "id": "WEB-012-f8",
+    "behavior": "The Spanish newsletter essay is preserved at /es/newsletter (not destroyed); the ES home no longer renders it.",
+    "verification": "test -f site/dist/es/newsletter/index.html && grep -q 'lazarillo' site/dist/es/newsletter/index.html && test $(grep -c 'lazarillo' site/dist/es/index.html) -eq 0",
+    "state": "pending",
+    "evidence": "2026-07-09: PASS. es-home.mdx moved to es-newsletter.mdx (page: newsletter) + new es/newsletter.astro route; essay lives at /es/newsletter, gone from /es/ home. Build 75 pages (+1)."
   }
 ]

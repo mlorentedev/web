@@ -1,0 +1,45 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import type { Lang } from '../i18n/ui';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+const notes: CollectionEntry<'notes'>[] = (
+  await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === lang)
+)
+  .sort((a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<section class="py-14 border-t border-gray-100">
+  <div class="max-w-4xl mx-auto px-4">
+    <a href={translatePath('/notes')} class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6 block group">
+      <span class="text-cyan-700">[ 05 /</span> <span class="group-hover:text-cyan-700 transition-colors">{t('home.latest')}</span> <span class="text-cyan-700">]</span>
+    </a>
+    {notes.length > 0 ? (
+      <div class="divide-y divide-gray-100">
+        {notes.map((note) => (
+          <a href={translatePath(`/notes/${note.id}`)} class="group block py-3 first:pt-0">
+            <span class="text-sm text-gray-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
+            <span class="text-base text-gray-700 group-hover:text-cyan-700 transition-colors">{note.data.title}</span>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="text-base text-gray-500">{t('notes.empty')}</p>
+    )}
+    <a
+      href={translatePath('/notes')}
+      class="text-xs text-gray-500 hover:text-cyan-700 transition-colors mt-4 block"
+    >
+      {t('home.allNotes')} &rarr;
+    </a>
+  </div>
+</section>

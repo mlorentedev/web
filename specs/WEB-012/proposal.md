@@ -16,8 +16,11 @@ template_version: "1.0"
 > *engine/IA* (experience-first spine, proof, cases), NOT the visual look (confirmed 2026-06-26).
 >
 > - **Increment 1 — quantified-credibility band** — MERGED (PR #72, `[ 00 / By the numbers ]`).
-> - **Increment 2 — experience timeline** — THIS PR (`[ 01 / My path | Mi camino ]`).
-> - **Increment 3 — ES landing parity / EN-ES componentization** — later (kills `es/index.astro` markdown drift).
+> - **Increment 2 — experience timeline** — MERGED (PR #74, `[ 01 / My path | Mi camino ]`).
+> - **Increment 3 — ES landing parity + EN-ES componentization** — THIS PR. Extract the 4 landing sections
+>   (projects/stack/community/notes) into shared bilingual components; EN + ES landings compose the same
+>   set → structural parity, no drift. The Spanish newsletter essay (`es-home.mdx`) is **preserved** at a
+>   new `/es/newsletter` route, not deleted. (User chose full parity, 2026-07-09.)
 
 ## Why
 
