@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/mlorentedev/web/compare/v1.7.0...v1.8.0) (2026-07-09)
+
+
+### Features
+
+* experience timeline on the landing (WEB-012) ([#74](https://github.com/mlorentedev/web/issues/74)) ([e5b9299](https://github.com/mlorentedev/web/commit/e5b9299d587a9856685b42ced24c5ffce102e14c))
+* quantified-credibility band on the landing (WEB-012) ([#72](https://github.com/mlorentedev/web/issues/72)) ([78a6044](https://github.com/mlorentedev/web/commit/78a6044c7a878c3b474f02e9b14ec7c888d2a6bd))
+
 ## [1.7.0](https://github.com/mlorentedev/web/compare/v1.6.0...v1.7.0) (2026-07-09)
 
 
