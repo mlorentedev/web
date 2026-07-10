@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.10.0](https://github.com/mlorentedev/web/compare/v1.9.0...v1.10.0) (2026-07-10)
+
+
+### Features
+
+* GitHub OSS telemetry proof surface — baked metrics (WEB-019) ([#78](https://github.com/mlorentedev/web/issues/78)) ([a78a6a4](https://github.com/mlorentedev/web/commit/a78a6a461849b7231fa860f00288b13bdfce6efe)), closes [#46](https://github.com/mlorentedev/web/issues/46)
+* live client-side hydration for the proof surface (WEB-019) ([#80](https://github.com/mlorentedev/web/issues/80)) ([e943f13](https://github.com/mlorentedev/web/commit/e943f13ff6fce5203ddccb7d28e79fb1d63ddf52)), closes [#46](https://github.com/mlorentedev/web/issues/46)
+
 ## [1.9.0](https://github.com/mlorentedev/web/compare/v1.8.0...v1.9.0) (2026-07-09)
 
 
