@@ -28,6 +28,26 @@ owner: manu
 
 ## Lessons
 
+### [2026-07-09] Bilingual data is a type-contract change — grep ALL consumers, not the obvious ones
+
+**Context**: WEB-026 then WEB-012 — restructuring `portfolio.ts` (and later the landing section data) from a flat single-language shape into per-language `{ en, es }` objects read through a `localize(item, locale)` helper.
+
+**Problem**: Changing a data module's shape from `{ title, description }` to `{ en: {…}, es: {…} }` is a breaking type change for *every* importer. The estimate assumed ~2 consumers; there were actually **5** — `index.astro`, `projects.astro`, both `tags/[tag].astro` pages, and the `ProjectCard` component. The missed call sites don't fail at the edit site; they surface downstream as `astro check` type errors or wrong-language renders.
+
+**Solution**: Before touching the shape, grep all of `src/` for every import of the module *and* every field access (`project.title`, `.description`, …), then migrate all sites in the same PR. `astro check` (0/0/0) is the backstop that proves no consumer was left on the old shape.
+
+**Rule**: Treat a data-module shape change as a public-contract change: enumerate every consumer by grep first (imports + field accesses), migrate them atomically, and let the type-checker prove completeness. "It's just a data file" undercounts the blast radius.
+
+### [2026-07-09] `grep -c` counts matching LINES, not matches — useless on minified HTML
+
+**Context**: Verifying the WEB-012 landing build — counting how many `ProjectCard` / `data-metric` / bracketed-section markers appear in `dist/index.html` and `dist/es/index.html`.
+
+**Problem**: `grep -c 'data-metric' dist/index.html` returned `1` for content that plainly appeared 8 times. Astro's build minifies HTML onto essentially one line, and `grep -c` counts matching *lines*, so it reports `1` no matter how many matches share that line — a silently wrong verification signal that reads as "the element is barely there".
+
+**Solution**: Count matches, not lines: `grep -o 'data-metric' file | wc -l`, or normalize whitespace first (`tr '>' '>\n' < file | grep -c …`) so each element lands on its own line.
+
+**Rule**: When grepping minified / single-line build output, never use `grep -c` for a count — use `grep -o … | wc -l`. `-c` is "lines with a match", which collapses to 0/1 on minified HTML and will quietly under-report.
+
 ### [2026-06-28] Feature-flag grep: verify the precise signal, not a broad token
 
 **Context**: Verifying WEB-027 feature flags — ensuring the footer YouTube link was gated off correctly.
