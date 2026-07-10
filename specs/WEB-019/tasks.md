@@ -14,26 +14,23 @@ created: "2026-07-10"
 
 - [x] Branch created from master: `feat/WEB-019-proof-surface`
 - [x] `proposal.md` complete; acceptance criteria testable
-- [ ] Open question "hive metric source" decided at start of increment 1 (lean: Hive repo GitHub stats)
+- [x] Open question "hive metric source" decided: Hive repo stargazers (flagship), GitHub-sourced
 
 ## Increment 1 — baked GitHub metrics (this PR)
 
-- [ ] [AC1] Add `src/data/github.ts`: typed `GithubMetrics` shape + `fetchGithubMetrics()` that
-      calls the public REST API (`/users/mlorentedev`, `/users/mlorentedev/repos?per_page=100`) at
-      build time, derives `{ publicRepos, totalStars, topLanguages[] }`, and returns a hardcoded
-      `FALLBACK` object on any throw / non-200 (build must never fail on GitHub downtime).
-- [ ] [AC1] Add i18n keys (`proof.heading`, `proof.repos`, `proof.stars`, `proof.languages`,
-      `proof.hive`) to the ui dict for EN + ES.
-- [ ] [AC1] Create `src/components/ProofSurface.astro`: `await fetchGithubMetrics()` in frontmatter,
+- [x] [AC1] Add `src/data/github.ts`: typed `GithubMetrics` shape + `fetchGithubMetrics()` that
+      calls the public REST API (`/users/mlorentedev/repos?per_page=100`, one call) at build time,
+      derives `{ publicRepos, totalStars, topLanguages[], hiveStars }`, and returns a hardcoded
+      `FALLBACK` on any throw / non-200 (build never fails on GitHub downtime).
+- [x] [AC1] Add i18n keys (`proof.heading`, `proof.repos`, `proof.stars`, `proof.hive`,
+      `proof.languages`) to the ui dict for EN + ES.
+- [x] [AC1] Create `src/components/ProofSurface.astro`: `await fetchGithubMetrics()` in frontmatter,
       render `[ 06 / … ]` bracketed section (cyan accent, `tabular-nums`, `data-proof` +
-      `data-stat` attrs) mirroring `CredibilityBand` markup.
-- [ ] [AC2] Wire `<ProofSurface lang={lang} />` into `index.astro` and `es/index.astro` after
+      `data-stat` attrs) mirroring `CredibilityBand` markup, with the languages as a tag list.
+- [x] [AC2] Wire `<ProofSurface lang={lang} />` into `index.astro` and `es/index.astro` after
       `LatestNotesSection` (`[ 05 ]`), keeping the spine `00 … 06`.
-- [ ] [AC3] Refactor: extract the fallback + language-count helper for clarity; confirm no unused
-      imports (`astro check` clean).
-- [ ] [AC1..3] Verify: `astro check` 0/0/0; `astro build`; grep `dist/index.html` +
-      `dist/es/index.html` for `data-proof` and the 06 label; force a fetch failure (bad host / offline)
-      and confirm the build still completes on `FALLBACK`.
+- [x] [AC1..3] Verify: `astro check` 0/0/0 (39 files); `astro build` 75 pages; `dist/{index,es/index}.html`
+      both carry `data-proof` + the `[ 06 ]` label; forced fetch failure -> build exit 0 on `FALLBACK`.
 
 ## Increment 2 — live client-side hydration (future PR)
 

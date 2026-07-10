@@ -4,20 +4,20 @@
     "behavior": "ProofSurface renders a [ 06 / ... ] section with >=3 GitHub metrics (repos, stars, top languages) + hive metric, fetched at build time and baked into dist for both locales",
     "verification": "cd site && npx astro build && grep -o 'data-proof' dist/index.html | head -1 && grep -o 'data-proof' dist/es/index.html | head -1",
     "state": "pending",
-    "evidence": ""
+    "evidence": "2026-07-10 build: data-proof present in dist/index.html + dist/es/index.html; baked 21 repos / 14 stars / 8 Hive; langs Python,Go,MDX,JavaScript; ES localized (Código abierto, estrellas · Hive)"
   },
   {
     "id": "WEB-019-f2",
     "behavior": "A build-time GitHub fetch failure degrades to the hardcoded FALLBACK and astro build still completes; astro check passes 0/0/0",
     "verification": "cd site && npx astro check && echo 'force-failure smoke: set an unreachable API base and confirm build completes on FALLBACK'",
     "state": "pending",
-    "evidence": ""
+    "evidence": "2026-07-10: astro check 0/0/0 (39 files); forced api.github.invalid -> astro build exit 0, section baked from FALLBACK (21/14/8); source reverted"
   },
   {
     "id": "WEB-019-f3",
     "behavior": "Proof-surface labels are localized per locale (EN vs ES) while the numeric values are identical across both bands",
     "verification": "cd site && npx astro build && test $(grep -o 'data-stat' dist/index.html | wc -l) -ge 3 && test $(grep -o 'data-stat' dist/es/index.html | wc -l) -ge 3",
     "state": "pending",
-    "evidence": ""
+    "evidence": "2026-07-10: both locales carry the 3 proof data-stat (repos/stars/hive); values identical EN/ES, labels differ (stars · GitHub / estrellas · GitHub)"
   }
 ]

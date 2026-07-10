@@ -52,10 +52,12 @@ the data source is external and free.
   absent, fetch the public REST API live and update both the DOM and the cache. The island only
   ever *updates* the baked number — on any error it leaves the baked/cached value untouched, so
   the visitor never sees a broken/empty state.
-- **Increment 3 (heatmap):** the GitHub contribution calendar (GraphQL `contributionsCollection`)
-  is fetched at build time using a `GITHUB_TOKEN` CI secret and baked as a compact heatmap; a
-  weekly scheduled rebuild (cron workflow) refreshes it. Heatmap is build-time only — a token
-  cannot be exposed client-side.
+- **Increment 3 (heatmap):** two candidate paths (decide when we reach it — see open questions):
+  (a) **reuse the existing tokenless third-party image** already on the site
+  (`ghchart.rshah.org/0e7490/mlorentedev`, used today in `ProjectsSection.astro` + `projects.astro`)
+  — zero token, zero secret, relocated/consolidated into the new `[ 06 ]` section; or
+  (b) **self-hosted** via GraphQL `contributionsCollection` fetched at build time with a `GITHUB_TOKEN`
+  CI secret (a token cannot be exposed client-side), baked + refreshed by a weekly scheduled rebuild.
 
 ## Out of scope
 
@@ -68,10 +70,13 @@ the data source is external and free.
 
 ## Risks / open questions
 
-- **[BLOCKS INC. 3] Token scope for the heatmap.** The GraphQL `user(login:).contributionsCollection`
-  read may NOT be available to the default Actions `GITHUB_TOKEN` (repo-scoped). Likely needs a PAT
-  with `read:user` stored as a CI secret in the **web** repo (where the Docker image builds, ADR-053).
-  Resolve before starting increment 3; does NOT block increments 1–2.
+- **[DECIDE AT INC. 3] Heatmap path — third-party image vs self-hosted token.** A tokenless
+  contribution heatmap ALREADY ships on the site (`ghchart.rshah.org/0e7490/mlorentedev` in
+  `ProjectsSection.astro` + `projects.astro`). So increment 3 is a choice, not a hard token
+  requirement: (a) reuse/relocate that image (zero secret, external dependency on rshah.org) or
+  (b) self-host via GraphQL + a `GITHUB_TOKEN` CI secret (the default Actions token is repo-scoped
+  and may NOT read `user.contributionsCollection` → likely a PAT with `read:user`). Does NOT block
+  increments 1–2. User initially picked (b); revisit given (a) already exists.
 - **Client-side rate limit (inc. 2):** GitHub's unauthenticated REST limit is 60 req/hr per visitor
   IP. The TTL-gated cache keeps a returning visitor to ≤ a couple of calls/window; a first visit is
   1–2 calls. Acceptable, but the island MUST no-op (keep baked value) on HTTP 403/429, not spin.

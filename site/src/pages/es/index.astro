@@ -9,6 +9,7 @@ import ProjectsSection from '../../components/ProjectsSection.astro';
 import StackSection from '../../components/StackSection.astro';
 import CommunitySection from '../../components/CommunitySection.astro';
 import LatestNotesSection from '../../components/LatestNotesSection.astro';
+import ProofSurface from '../../components/ProofSurface.astro';
 import { getLocale } from '../../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -24,6 +25,7 @@ const lang = getLocale(Astro.currentLocale);
     <StackSection lang={lang} />
     <CommunitySection lang={lang} />
     <LatestNotesSection lang={lang} />
+    <ProofSurface lang={lang} />
   </main>
   <Footer />
 </BaseLayout>

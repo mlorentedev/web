@@ -42,6 +42,13 @@ export const ui = {
     'home.latest': 'Latest notes',
     'home.allNotes': 'All notes',
 
+    // GitHub proof surface (WEB-019)
+    'proof.heading': 'Open source',
+    'proof.repos': 'public repos',
+    'proof.stars': 'stars · GitHub',
+    'proof.hive': 'stars · Hive',
+    'proof.languages': 'Shipped in',
+
     // Newsletter (keys exist for type safety — EN landing has no newsletter)
     'newsletter.placeholder': 'you@email.com',
     'newsletter.button': 'Subscribe',
@@ -134,6 +141,13 @@ export const ui = {
     'home.community': 'Comunidad y más',
     'home.latest': 'Últimas notas',
     'home.allNotes': 'Todas las notas',
+
+    // GitHub proof surface (WEB-019)
+    'proof.heading': 'Código abierto',
+    'proof.repos': 'repos públicos',
+    'proof.stars': 'estrellas · GitHub',
+    'proof.hive': 'estrellas · Hive',
+    'proof.languages': 'Construido en',
 
     // Newsletter (ES only — EN keys exist for type safety)
     'newsletter.placeholder': 'tu@email.com',
