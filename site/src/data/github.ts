@@ -9,6 +9,9 @@
 const GH_USER = 'mlorentedev';
 const GH_API = 'https://api.github.com';
 
+/** Public repos endpoint — shared by the build-time fetch and the increment-2 client island. */
+export const REPOS_ENDPOINT = `${GH_API}/users/${GH_USER}/repos?per_page=100&sort=updated`;
+
 export interface GithubMetrics {
   /** Count of the user's non-fork public repos (authored work, not forks). */
   publicRepos: number;
@@ -57,23 +60,32 @@ export function deriveTopLanguages(repos: GithubRepo[], limit = 4): string[] {
     .map(([language]) => language);
 }
 
+/**
+ * Pure: raw `/repos` payload (may include forks) -> metrics. The single source of truth
+ * for the derivation, shared by the build-time fetch below and the client island so the
+ * two execution times can never drift.
+ */
+export function deriveMetrics(rawRepos: GithubRepo[]): GithubMetrics {
+  const repos = rawRepos.filter((repo) => !repo.fork);
+  const hive = repos.find((repo) => repo.name.toLowerCase() === 'hive');
+  return {
+    publicRepos: repos.length,
+    totalStars: repos.reduce((sum, repo) => sum + repo.stargazers_count, 0),
+    topLanguages: deriveTopLanguages(repos),
+    hiveStars: hive?.stargazers_count ?? FALLBACK.hiveStars,
+  };
+}
+
 export async function fetchGithubMetrics(): Promise<GithubMetrics> {
   try {
-    const res = await fetch(`${GH_API}/users/${GH_USER}/repos?per_page=100&sort=updated`, {
-      headers: { Accept: 'application/vnd.github+json' },
-    });
+    const res = await fetch(REPOS_ENDPOINT, { headers: { Accept: 'application/vnd.github+json' } });
     if (!res.ok) return FALLBACK;
 
-    const repos = ((await res.json()) as GithubRepo[]).filter((repo) => !repo.fork);
-    if (repos.length === 0) return FALLBACK;
+    const raw = (await res.json()) as GithubRepo[];
+    if (!Array.isArray(raw) || raw.length === 0) return FALLBACK;
 
-    const hive = repos.find((repo) => repo.name.toLowerCase() === 'hive');
-    return {
-      publicRepos: repos.length,
-      totalStars: repos.reduce((sum, repo) => sum + repo.stargazers_count, 0),
-      topLanguages: deriveTopLanguages(repos),
-      hiveStars: hive?.stargazers_count ?? FALLBACK.hiveStars,
-    };
+    const metrics = deriveMetrics(raw);
+    return metrics.publicRepos === 0 ? FALLBACK : metrics;
   } catch {
     return FALLBACK;
   }

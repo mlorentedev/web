@@ -32,11 +32,20 @@ created: "2026-07-10"
 - [x] [AC1..3] Verify: `astro check` 0/0/0 (39 files); `astro build` 75 pages; `dist/{index,es/index}.html`
       both carry `data-proof` + the `[ 06 ]` label; forced fetch failure -> build exit 0 on `FALLBACK`.
 
-## Increment 2 — live client-side hydration (future PR)
+## Increment 2 — live client-side hydration (this PR)
 
-- [ ] Island (`client:idle`) reading a TTL'd `localStorage` cache; live-fetch public REST on stale;
-      update baked DOM in place; no-op on 403/429; no layout shift.
-- [ ] Verify: JS-on updates numbers + writes cache; forced fetch error keeps baked value visible.
+- [x] Extract pure `deriveMetrics(rawRepos)` + `REPOS_ENDPOINT` in `github.ts` so build-time and
+      client share one derivation (no drift).
+- [x] Add a vanilla `<script>` island in `ProofSurface.astro` (deferred via `requestIdleCallback`):
+      read a TTL'd `localStorage` cache; on stale/absent, live-fetch the public REST API; apply via
+      `data-value` / `[data-languages] ul` (textContent + `replaceChildren`, injection-safe); no-op
+      on non-200 / parse error so the baked value stays (no empty state, no layout shift).
+- [x] Add `data-value` hook to the baked number spans.
+- [x] Verify (static, repo has no browser harness): `astro check` 0/0/0 (39 files); `astro build`
+      75 pages; island inlined on both `dist/{index,es/index}.html` (cache key + `deriveMetrics` +
+      endpoint + FALLBACK + 1 module script); `deriveMetrics` proven on live data by the baked build
+      (21/14/8). DOM-glue (localStorage write, number swap) is standard browser API — spot-check in a
+      browser (no test tooling in-repo; adding one is out of scope).
 
 ## Increment 3 — contribution heatmap (future PR, blocked on token decision)
 

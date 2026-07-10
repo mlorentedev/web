@@ -19,5 +19,12 @@
     "verification": "cd site && npx astro build && test $(grep -o 'data-stat' dist/index.html | wc -l) -ge 3 && test $(grep -o 'data-stat' dist/es/index.html | wc -l) -ge 3",
     "state": "pending",
     "evidence": "2026-07-10: both locales carry the 3 proof data-stat (repos/stars/hive); values identical EN/ES, labels differ (stars · GitHub / estrellas · GitHub)"
+  },
+  {
+    "id": "WEB-019-f4",
+    "behavior": "Increment 2: a client island refreshes the baked numbers from the public REST API, caches them in localStorage with a TTL, and no-ops on failure (baked value stays, no empty state / layout shift)",
+    "verification": "cd site && npx astro build && grep -o 'web:gh-metrics:v1' dist/index.html | head -1 && grep -o 'web:gh-metrics:v1' dist/es/index.html | head -1",
+    "state": "pending",
+    "evidence": "2026-07-10: island inlined on both locales (cache key + deriveMetrics/stargazers_count + endpoint template + FALLBACK + 1 module script); data-value hooks present; deriveMetrics proven on live data by the baked build (21/14/8). DOM/localStorage runtime glue not machine-verified (no browser harness in-repo)."
   }
 ]

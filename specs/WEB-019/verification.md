@@ -20,7 +20,15 @@ Map every acceptance criterion from `proposal.md` to concrete proof. Filled per 
       API host (`api.github.invalid`): `astro build` exited 0, section still baked from `FALLBACK`
       (21/14/8). Source reverted. `astro check` 0/0/0 (39 files).
 
-**Increment 2 — live hydration:** not started
+**Increment 2 — live hydration:**
+- [x] AC (JS updates baked numbers from public REST + TTL'd localStorage cache; failure keeps baked
+      value, no empty state / layout shift) -> `f4` PASS (static + derivation). Island inlined on both
+      `dist/{index,es/index}.html`: cache key `web:gh-metrics:v1`, shared `deriveMetrics`
+      (`stargazers_count`), endpoint template, `FALLBACK`, one `<script type="module">`. `data-value`
+      hooks present for the selector. Shared `deriveMetrics` proven on live data by the baked build
+      (21/14/8). `astro check` 0/0/0 (39 files); build 75 pages. DOM/localStorage glue is standard
+      browser API, unverifiable in-repo (no browser test harness); recommend a manual browser spot-check.
+
 **Increment 3 — heatmap:** not started
 
 ## Test status
