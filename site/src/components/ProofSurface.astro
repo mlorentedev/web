@@ -1,0 +1,55 @@
+---
+import { fetchGithubMetrics } from '../data/github';
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  /** Current UI language — selects the stat labels. */
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Fetched at build time and baked into the static HTML (like CredibilityBand derives
+// its counts). Returns FALLBACK on any failure, so a flaky GitHub never breaks the
+// build. The numbers are language-agnostic facts — same on both locales, only the
+// labels translate. Live client-side refresh is increment 2.
+const gh = await fetchGithubMetrics();
+
+const stats = [
+  { key: 'repos', value: String(gh.publicRepos), label: t('proof.repos') },
+  { key: 'stars', value: String(gh.totalStars), label: t('proof.stars') },
+  { key: 'hive', value: String(gh.hiveStars), label: t('proof.hive') },
+];
+---
+
+<section data-proof class="py-14 border-t border-gray-100">
+  <div class="max-w-4xl mx-auto px-4">
+    <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-8">
+      <span class="text-cyan-700">[ 06 /</span> {t('proof.heading')} <span class="text-cyan-700">]</span>
+    </h2>
+    <div class="grid grid-cols-3 gap-x-6 gap-y-8 mb-10">
+      {stats.map((s) => (
+        <div data-stat={s.key}>
+          <span class="block text-3xl md:text-4xl font-extrabold text-gray-800 tabular-nums leading-none">
+            {s.value}
+          </span>
+          <span class="block text-xs text-gray-500 mt-2 leading-snug">{s.label}</span>
+        </div>
+      ))}
+    </div>
+    {gh.topLanguages.length > 0 && (
+      <div data-languages>
+        <span class="block text-xs text-gray-500 tracking-widest uppercase mb-3">
+          {t('proof.languages')}
+        </span>
+        <ul class="flex flex-wrap gap-2">
+          {gh.topLanguages.map((language) => (
+            <li class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700">{language}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</section>
