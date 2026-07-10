@@ -32,7 +32,7 @@ const stats = [
     <div class="grid grid-cols-3 gap-x-6 gap-y-8 mb-10">
       {stats.map((s) => (
         <div data-stat={s.key}>
-          <span class="block text-3xl md:text-4xl font-extrabold text-gray-800 tabular-nums leading-none">
+          <span data-value class="block text-3xl md:text-4xl font-extrabold text-gray-800 tabular-nums leading-none">
             {s.value}
           </span>
           <span class="block text-xs text-gray-500 mt-2 leading-snug">{s.label}</span>
@@ -53,3 +53,84 @@ const stats = [
     )}
   </div>
 </section>
+
+{/*
+  Increment 2 — progressive-enhancement live hydration.
+  The baked numbers above are the no-JS baseline. With JS, this island refreshes them from
+  the public GitHub REST API and caches the result in localStorage with a TTL (the "refresh
+  window"). It only ever UPDATES the baked DOM — on a stale-but-cached read it applies the
+  cache; on any fetch/parse failure it does nothing, so the visitor never sees an empty state
+  or a layout shift. Derivation is imported from github.ts, so it can't drift from the build.
+*/}
+<script>
+  import { REPOS_ENDPOINT, deriveMetrics, type GithubMetrics } from '../data/github';
+
+  const CACHE_KEY = 'web:gh-metrics:v1';
+  const TTL_MS = 6 * 60 * 60 * 1000; // 6h refresh window — throttles calls (60/hr unauth limit)
+
+  function applyMetrics(m: GithubMetrics): void {
+    const root = document.querySelector('[data-proof]');
+    if (!root) return;
+
+    const setStat = (key: string, value: number): void => {
+      const el = root.querySelector(`[data-stat="${key}"] [data-value]`);
+      if (el) el.textContent = String(value);
+    };
+    setStat('repos', m.publicRepos);
+    setStat('stars', m.totalStars);
+    setStat('hive', m.hiveStars);
+
+    const list = root.querySelector('[data-languages] ul');
+    if (list && m.topLanguages.length > 0) {
+      list.replaceChildren(
+        ...m.topLanguages.map((language) => {
+          const li = document.createElement('li');
+          li.className = 'text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700';
+          li.textContent = language;
+          return li;
+        }),
+      );
+    }
+  }
+
+  function readCache(): { metrics: GithubMetrics; ts: number } | null {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      return parsed && parsed.metrics && typeof parsed.ts === 'number' ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function hydrate(): Promise<void> {
+    const cached = readCache();
+    if (cached && Date.now() - cached.ts < TTL_MS) {
+      applyMetrics(cached.metrics); // fresh cache — show last-known, skip the network
+      return;
+    }
+    try {
+      const res = await fetch(REPOS_ENDPOINT, { headers: { Accept: 'application/vnd.github+json' } });
+      if (!res.ok) return; // 403 / 429 / etc. — keep the baked value, no-op
+      const raw = await res.json();
+      if (!Array.isArray(raw) || raw.length === 0) return;
+      const metrics = deriveMetrics(raw);
+      if (metrics.publicRepos === 0) return;
+      applyMetrics(metrics);
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ metrics, ts: Date.now() }));
+      } catch {
+        /* storage full / disabled — the live update still applied, just not cached */
+      }
+    } catch {
+      /* network/parse error — keep the baked value visible */
+    }
+  }
+
+  // Defer to idle so hydration never competes with first paint.
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => void hydrate());
+  } else {
+    setTimeout(() => void hydrate(), 0);
+  }
+</script>
