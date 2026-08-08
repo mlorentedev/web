@@ -28,6 +28,44 @@ owner: manu
 
 ## Lessons
 
+### [2026-07-10] Astro inlines small module scripts — grep the HTML, not for an `_astro/*.js` chunk
+
+**Context**: Verifying WEB-019 increment 2 — the client-side hydration island that refreshes the
+`[ 06 ]` proof-surface numbers from the public GitHub REST API.
+
+**Problem**: The obvious way to prove "the island shipped" is to look for an emitted JS chunk under
+`dist/_astro/` and a `<script src="...">` pointing at it. Neither exists. Astro inlines sufficiently
+small `<script type="module">` blocks directly into the HTML, so a verification that looks for an
+external bundle concludes the island was never built — when it is in fact present, inline, in every
+page that renders the component.
+
+**Solution**: Verified by grepping the built HTML for the island's own markers instead — the cache
+key `web:gh-metrics:v1`, the `deriveMetrics` symbol, the endpoint template, and the `data-value`
+selector hooks — in both `dist/index.html` and `dist/es/index.html`.
+
+**Rule**: To prove client JS shipped in an Astro build, grep the built **HTML** for a distinctive
+string from the script body. Do not assert presence or absence from `dist/_astro/*.js` or a `src`
+attribute: small module scripts get inlined and leave no external artifact.
+
+### [2026-07-10] A build-time external fetch needs a committed fallback, or a flaky API breaks deploys
+
+**Context**: WEB-019 — baking GitHub telemetry (repo count, stars, top languages) into the
+`[ 06 ]` proof surface at build time, via one unauthenticated `GET /users/{u}/repos` call.
+
+**Problem**: Build-time fetching moves a third-party dependency onto the deploy path. The
+unauthenticated GitHub budget is 60 req/hr, and the site builds on every push to `master` — so a
+rate-limited or briefly unreachable API turns a routine content commit into a failed deploy, or
+worse, silently bakes zeros into a page whose entire purpose is to look credible.
+
+**Solution**: A `FALLBACK` constant committed in `github.ts`, seeded from a real live response
+(2026-07-10) rather than zeros, with the fetch wrapped so any failure degrades to it. Proven by
+pointing the client at an unreachable host (`api.github.invalid`): `astro build` exited 0 and the
+section still rendered honest numbers.
+
+**Rule**: Any external fetch on the build path ships with a committed fallback seeded from real
+data, and the failure path is tested by forcing it (unreachable host), not assumed. Zeros are not a
+fallback — on a proof surface they are a worse failure than stale numbers.
+
 ### [2026-07-09] Bilingual data is a type-contract change — grep ALL consumers, not the obvious ones
 
 **Context**: WEB-026 then WEB-012 — restructuring `portfolio.ts` (and later the landing section data) from a flat single-language shape into per-language `{ en, es }` objects read through a `localize(item, locale)` helper.
