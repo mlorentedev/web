@@ -11,11 +11,16 @@ updates:
     open-pull-requests-limit: 5
     ignore:
       # Majors are deliberate migrations, never Dependabot drive-bys. A major
-      # needs coordinated bumps + breaking-change handling — Astro 5->6 wants
-      # every @astrojs/* integration together (WEB-022), and Tailwind 4 /
+      # needs coordinated bumps + breaking-change handling — Astro 5->7 wants
+      # every @astrojs/* integration together (WEB-022, #7), and Tailwind 4 /
       # TypeScript 6 are their own migrations. A grouped major drive-by broke
       # the build once (stayed on Astro 5, kubelab #617). Dependabot stays on
       # minor+patch; the ignore is lifted per migration when it is planned.
+      #
+      # NOTE: this does NOT stop security updates. Dependabot's security
+      # pipeline bypasses `ignore` by design, so an advisory with no fix on the
+      # held branch still arrives as a major-bump PR (see #85, closed). Only
+      # dismissing the alert or shipping the upgrade suppresses those.
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
 
