@@ -29,7 +29,11 @@ Map every acceptance criterion from `proposal.md` to concrete proof. Filled per 
       (21/14/8). `astro check` 0/0/0 (39 files); build 75 pages. DOM/localStorage glue is standard
       browser API, unverifiable in-repo (no browser test harness); recommend a manual browser spot-check.
 
-**Increment 3 — heatmap:** not started
+**Increment 3 — heatmap:** **not built.** The decision was to relocate the existing tokenless
+`ghchart.rshah.org` `<img>` from `[ 02 ]` into `[ 06 ]` (~10 lines) rather than self-host a
+GraphQL+token heatmap. It was deferred, then #46 was closed without it. The heatmap therefore
+still renders in `[ 02 ]` (`ProjectsSection.astro`, `projects.astro`) — working, just not
+consolidated into the proof surface. Not debt: a deliberate descope, recorded here.
 
 ## Test status
 
@@ -55,13 +59,23 @@ Map every acceptance criterion from `proposal.md` to concrete proof. Filled per 
 
 ## Promotion candidates
 
-- [ ] Lesson for `docs/lessons.md`? <tbd — candidate: build-time external fetch needs a committed/hardcoded fallback or a flaky API breaks deploys>
-- [ ] ADR-worthy? <tbd — build-time bake + client-side progressive-enhancement hydration as the "no new infra" proof-surface pattern may be worth an in-repo ADR if it recurs for PS3+>
-- [ ] Pattern candidate? <tbd>
+- [x] Lesson for `docs/lessons.md`? **Two written** — "A build-time external fetch needs a committed
+      fallback, or a flaky API breaks deploys" (the candidate named here) and "Astro inlines small
+      module scripts — grep the HTML, not for an `_astro/*.js` chunk" (surfaced while verifying
+      increment 2, queued in the 2026-07-10 handoff and unwritten until now).
+- [x] ADR-worthy? **No — deferred deliberately.** The bake + progressive-enhancement pattern has
+      exactly one instance (PS2). The trigger stated here was "if it recurs for PS3+", and PS3 does
+      not exist. Writing an ADR from a single instance would document a habit, not a decision.
+- [x] Pattern candidate? **No.** Nothing here generalizes past this repo: it is Astro-specific build
+      behaviour plus one API's rate budget. Both belong in `docs/lessons.md`, which is where they went.
 
 ## Archive checklist
 
-- [ ] `proposal.md` frontmatter set to `status: archived` (only when ALL of #46 is done)
-- [ ] Folder moved: `specs/WEB-019/` -> `specs/archive/WEB-019/`
-- [ ] Bitácora #46 closed with PR links (ADR-018)
-- [ ] Promotions above executed (if any)
+- [x] `proposal.md` frontmatter set to `status: archived`
+- [x] Folder moved: `specs/WEB-019/` -> `specs/archive/WEB-019/`
+- [x] Bitácora #46 closed (closed 2026-08-07, before this archive — the loop was reopened to run it)
+- [x] Promotions above executed
+
+> **Archived with increment 3 descoped.** The original gate read "only when ALL of #46 is done";
+> #46 was closed with 2 of 3 increments built. Archiving matches reality rather than blocking on an
+> increment the issue closure already gave up on.
