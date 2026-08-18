@@ -73,8 +73,8 @@ refactors, bug fixes <20 lines with obvious cause, doc-only changes.
 
 ## Workflow Rules (read before first tool call)
 
-This repo opts in to the global behaviour rules in `$DOTFILES/AGENTS.md` (resolved
-via machine.json per ADR-025; fallback `~/Projects/Workspace/dotfiles/AGENTS.md`) —
+This repo opts in to the global behaviour rules in `$DOTFILES/AGENTS.md`
+(the dotfiles repo root, resolved per-machine via the path cascade: explicit env → `~/.config/dotfiles/machine.json` → `env-contract.json` default) —
 the canonical cross-agent SSOT: Standing Orders, Decision Hierarchy, Model Selection,
 Security HALT rules, and Operational Rules (no AI attribution, English-only artifacts,
 auto-merge forbidden). Read it once at session start and apply it. The repo-specific
