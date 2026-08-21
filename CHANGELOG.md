@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.10.1](https://github.com/mlorentedev/web/compare/v1.10.0...v1.10.1) (2026-08-21)
+
+
+### Bug Fixes
+
+* **a11y:** meet AA contrast, honour reduced motion, declare the colour scheme ([#149](https://github.com/mlorentedev/web/issues/149)) ([cbe61f4](https://github.com/mlorentedev/web/commit/cbe61f4d635798882e360ac67365ede06b6ec192)), closes [#115](https://github.com/mlorentedev/web/issues/115) [#145](https://github.com/mlorentedev/web/issues/145)
+* **i18n:** render note dates in UTC so they stop showing a day early ([#148](https://github.com/mlorentedev/web/issues/148)) ([feb2dad](https://github.com/mlorentedev/web/commit/feb2daddc12a88a74418476f68efdaf1b7c9bc95)), closes [#122](https://github.com/mlorentedev/web/issues/122)
+* **i18n:** stop English strings leaking onto Spanish pages ([#150](https://github.com/mlorentedev/web/issues/150)) ([cf53fe5](https://github.com/mlorentedev/web/commit/cf53fe53d9e89d9dc6e1a6bcefc2387f3171ab9e)), closes [#111](https://github.com/mlorentedev/web/issues/111)
+* **layout:** derive the header offset from one token instead of per page ([#152](https://github.com/mlorentedev/web/issues/152)) ([ce9b944](https://github.com/mlorentedev/web/commit/ce9b9447331d96076e567e07c7edc9035506ac7d)), closes [#119](https://github.com/mlorentedev/web/issues/119)
+
 ## [1.10.0](https://github.com/mlorentedev/web/compare/v1.9.0...v1.10.0) (2026-07-10)
 
 
