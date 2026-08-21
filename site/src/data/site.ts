@@ -1,5 +1,7 @@
 export const site = {
-  title: 'Manu Lorente — Platform engineering for AI workloads',
+  // Page title and description are per-locale strings and live in i18n/ui.ts
+  // ('meta.title' / 'meta.description'). Keeping an English copy here is what let
+  // the Spanish homepage fall back to an English <title>.
   description: 'I build, automate, and operate the infrastructure AI agents run on — Kubernetes, on-prem, reproducible. I run a 40-service homelab and document what breaks.',
   author: 'Manu Lorente',
   domain: 'mlorente.dev',
