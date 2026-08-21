@@ -76,7 +76,17 @@ export function deriveMetrics(rawRepos: GithubRepo[]): GithubMetrics {
   };
 }
 
-export async function fetchGithubMetrics(): Promise<GithubMetrics> {
+// Memoised for the lifetime of the build. ProofSurface renders on both `index.astro`
+// and `es/index.astro`, and the metrics are language-agnostic, so without this the
+// build spends two of the 60/hr unauthenticated GitHub calls fetching the same thing.
+let inFlight: Promise<GithubMetrics> | null = null;
+
+export function fetchGithubMetrics(): Promise<GithubMetrics> {
+  inFlight ??= fetchGithubMetricsUncached();
+  return inFlight;
+}
+
+async function fetchGithubMetricsUncached(): Promise<GithubMetrics> {
   try {
     const res = await fetch(REPOS_ENDPOINT, { headers: { Accept: 'application/vnd.github+json' } });
     if (!res.ok) return FALLBACK;
