@@ -4,7 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
-import { getLocale, useTranslations, useTranslatedPath, getDateLocale } from '../../i18n/utils';
+import { getLocale, useTranslations, useTranslatedPath, formatDate, isoDate } from '../../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
@@ -13,9 +13,6 @@ const translatePath = useTranslatedPath(lang);
 const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === 'en'))
   .sort((a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const dateFormat: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-const locale = getDateLocale(lang);
-const formatDate = (d: Date) => d.toLocaleDateString(locale, dateFormat);
 ---
 
 <BaseLayout title="What I think" description={t('notes.description')}>
@@ -31,7 +28,7 @@ const formatDate = (d: Date) => d.toLocaleDateString(locale, dateFormat);
             {notes.map((note: CollectionEntry<'notes'>) => (
                 <div class="py-6 first:pt-0 last:pb-0">
                   <a href={translatePath(`/notes/${note.id}`)} class="group block">
-                    <time class="text-xs text-gray-400">{formatDate(note.data.pubDate)}</time>
+                    <time datetime={isoDate(note.data.pubDate)} class="text-xs text-gray-400">{formatDate(note.data.pubDate, lang)}</time>
                     <h3 class="font-bold text-gray-800 mt-1 group-hover:text-cyan-700 transition-colors">
                       {note.data.title}
                     </h3>
