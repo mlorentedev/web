@@ -14,6 +14,7 @@ export const ui = {
     'nav.contact': 'Contact',
     'nav.consulting': 'Consulting',
     'nav.toggle': 'Toggle menu',
+    'nav.skipToContent': 'Skip to content',
 
     // Hero
     'hero.eyebrow': 'Builder & operator',
@@ -99,6 +100,7 @@ export const ui = {
     '404.cta': 'Go home',
 
     // Meta
+    'meta.title': 'Manu Lorente — Platform engineering for AI workloads',
     'meta.description': 'Platform engineering for AI workloads. I build and operate agent infrastructure on Kubernetes — on-prem, reproducible.',
     'meta.ghchart.alt': "Manu's GitHub contribution chart",
 
@@ -114,6 +116,7 @@ export const ui = {
     'nav.contact': 'Contacto',
     'nav.consulting': 'Consultoría',
     'nav.toggle': 'Abrir menú',
+    'nav.skipToContent': 'Saltar al contenido',
 
     // Hero
     'hero.eyebrow': 'Builder & operator',
@@ -199,6 +202,7 @@ export const ui = {
     '404.cta': 'Ir al inicio',
 
     // Meta
+    'meta.title': 'Manu Lorente — Infraestructura para agentes de IA, en producción',
     'meta.description': 'Infraestructura para agentes de IA, en producción. Construyo, automatizo y opero plataformas en Kubernetes — on-prem y reproducible.',
     'meta.ghchart.alt': 'Contribuciones de Manu en GitHub',
 
