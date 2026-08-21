@@ -50,7 +50,10 @@ local dev only (`site/src/data/site.ts`). `make help` lists repo tasks.
 ## Documentation & knowledge placement
 
 Build/operate docs live in [`docs/`](docs/) (docs-as-code): ADRs in `docs/adr/`,
-runbooks, troubleshooting, and project lessons in [`docs/lessons.md`](docs/lessons.md).
+runbooks, troubleshooting, and project lessons one file each under
+[`docs/lessons/`](docs/lessons/_index.md) — format in
+[`docs/lessons/_format.md`](docs/lessons/_format.md), never appended to the
+`docs/lessons.md` stub.
 Cross-project patterns and session memory live in the maintainer's vault, not here.
 Task/backlog state lives in the **bitácora** GitHub Project (issues), per ADR-018 —
 not in git history or the vault.
