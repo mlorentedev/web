@@ -1,10 +1,10 @@
 ---
-id: lesson-003-a-build-time-external-fetch-needs-a-committed
+id: lesson-005-a-build-time-external-fetch-needs-a-committe
 type: lesson
 status: active
 created: "2026-07-10"
 owner: manu
-tags: [web, lesson]
+tags: [web, astro, build]
 ---
 
 # A build-time external fetch needs a committed fallback, or a flaky API breaks deploys

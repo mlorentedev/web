@@ -1,10 +1,10 @@
 ---
-id: lesson-007-release-please-on-a-history-carrying-repo-rep
+id: lesson-001-release-please-on-a-history-carrying-repo-re
 type: lesson
 status: active
 created: "2026-06-25"
 owner: manu
-tags: [web, lesson]
+tags: [web, ci-automation, release-please]
 ---
 
 # release-please on a history-carrying repo replays the whole inherited log

@@ -1,10 +1,10 @@
 ---
-id: lesson-005-grep-c-counts-matching-lines-not-matches-usel
+id: lesson-003-grep-c-counts-matching-lines-not-matches-use
 type: lesson
 status: active
 created: "2026-07-09"
 owner: manu
-tags: [web, lesson]
+tags: [web, verification, shell]
 ---
 
 # `grep -c` counts matching LINES, not matches — useless on minified HTML
