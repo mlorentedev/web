@@ -30,6 +30,22 @@
   font-display: swap;
 }
 
+
+/* The UA paints its own dark form controls, scrollbars and autofill backgrounds
+   against this deliberately light page when the visitor's OS is in dark mode.
+   This is not dark-mode support; it declares which scheme the page is authored for. */
+:root {
+  color-scheme: light;
+}
+
 html {
   scroll-behavior: smooth;
+}
+
+/* Honour an explicit OS-level request not to animate. Every in-page jump — the skip
+   link, the anchored MDX headings — otherwise animates for people who asked it not to. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

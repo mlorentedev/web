@@ -50,7 +50,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
       {otherLangs.map(([l, label]) => (
         <a
           href={switchLangUrl(Astro.url, l as keyof typeof languages)}
-          class="text-xs text-gray-400 hover:text-cyan-700 focus:outline-none focus:text-cyan-700 transition-colors uppercase tracking-wide"
+          class="text-xs text-gray-500 hover:text-cyan-700 focus:outline-none focus:text-cyan-700 transition-colors uppercase tracking-wide"
         >
           {label}
         </a>

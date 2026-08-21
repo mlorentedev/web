@@ -44,7 +44,7 @@ const formattedDate = formatDate(note.data.pubDate, lang);
             <h1 class="text-3xl font-extrabold text-gray-800 mt-3">{note.data.title}</h1>
             <div class="flex flex-wrap gap-2 mt-4">
               {note.data.tags.map((tag: string) => (
-                <a href={translatePath(`/tags/${tag.toLowerCase()}`)} class="px-2 py-0.5 text-xs rounded bg-gray-100 text-gray-500 border border-gray-200 hover:bg-cyan-700 hover:text-white hover:border-cyan-700 transition-colors">
+                <a href={translatePath(`/tags/${tag.toLowerCase()}`)} class="px-2 py-0.5 text-xs rounded bg-gray-100 text-gray-600 border border-gray-200 hover:bg-cyan-700 hover:text-white hover:border-cyan-700 transition-colors">
                   {tag}
                 </a>
               ))}
@@ -62,14 +62,14 @@ const formattedDate = formatDate(note.data.pubDate, lang);
         <div class="flex items-center justify-between gap-4">
           {prev ? (
             <a href={translatePath(`/notes/${prev.id}`)} class="group flex-1 min-w-0">
-              <span class="text-xs text-gray-400">&larr; {t('note.prev')}</span>
+              <span class="text-xs text-gray-500">&larr; {t('note.prev')}</span>
               <span class="block text-sm font-bold text-gray-700 group-hover:text-cyan-700 transition-colors truncate mt-0.5">{prev.title}</span>
             </a>
           ) : <div class="flex-1" />}
-          <a href={translatePath('/notes')} class="text-xs text-gray-400 hover:text-cyan-700 transition-colors shrink-0 px-2">{t('notes.all')}</a>
+          <a href={translatePath('/notes')} class="text-xs text-gray-500 hover:text-cyan-700 transition-colors shrink-0 px-2">{t('notes.all')}</a>
           {next ? (
             <a href={translatePath(`/notes/${next.id}`)} class="group flex-1 min-w-0 text-right">
-              <span class="text-xs text-gray-400">{t('note.next')} &rarr;</span>
+              <span class="text-xs text-gray-500">{t('note.next')} &rarr;</span>
               <span class="block text-sm font-bold text-gray-700 group-hover:text-cyan-700 transition-colors truncate mt-0.5">{next.title}</span>
             </a>
           ) : <div class="flex-1" />}
