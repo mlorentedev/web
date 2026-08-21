@@ -29,7 +29,7 @@ const stats = [
     <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-8">
       <span class="text-cyan-700">[ 06 /</span> {t('proof.heading')} <span class="text-cyan-700">]</span>
     </h2>
-    <div class="grid grid-cols-3 gap-x-6 gap-y-8 mb-10">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-8 mb-10">
       {stats.map((s) => (
         <div data-stat={s.key}>
           <span data-value class="block text-3xl md:text-4xl font-extrabold text-gray-800 tabular-nums leading-none">
@@ -39,18 +39,19 @@ const stats = [
         </div>
       ))}
     </div>
-    {gh.topLanguages.length > 0 && (
-      <div data-languages>
-        <span class="block text-xs text-gray-500 tracking-widest uppercase mb-3">
-          {t('proof.languages')}
-        </span>
-        <ul class="flex flex-wrap gap-2">
-          {gh.topLanguages.map((language) => (
-            <li class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700">{language}</li>
-          ))}
-        </ul>
-      </div>
-    )}
+    {/* Rendered unconditionally: hydration queries `[data-languages] ul` and can only
+        update a node that exists. Gating the wrapper on a non-empty baked list meant a
+        build that baked an empty one left the refresh permanently unable to fill it. */}
+    <div data-languages class:list={[gh.topLanguages.length === 0 && 'hidden']}>
+      <span class="block text-xs text-gray-500 tracking-widest uppercase mb-3">
+        {t('proof.languages')}
+      </span>
+      <ul class="flex flex-wrap gap-2">
+        {gh.topLanguages.map((language) => (
+          <li class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700">{language}</li>
+        ))}
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -82,6 +83,8 @@ const stats = [
 
     const list = root.querySelector('[data-languages] ul');
     if (list && m.topLanguages.length > 0) {
+      // the wrapper ships hidden when the build baked an empty list
+      list.closest('[data-languages]')?.classList.remove('hidden');
       list.replaceChildren(
         ...m.topLanguages.map((language) => {
           const li = document.createElement('li');
