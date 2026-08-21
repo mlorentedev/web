@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
-import { getLocale, useTranslations, useTranslatedPath, getDateLocale } from '../../i18n/utils';
+import { getLocale, useTranslations, useTranslatedPath, formatDate, isoDate } from '../../i18n/utils';
 
 export async function getStaticPaths() {
   const notes = (await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === 'en'))
@@ -30,11 +30,7 @@ const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-const formattedDate = note.data.pubDate.toLocaleDateString(getDateLocale(lang), {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const formattedDate = formatDate(note.data.pubDate, lang);
 ---
 
 <BaseLayout title={note.data.title} description={note.data.description} ogType="article">
@@ -44,7 +40,7 @@ const formattedDate = note.data.pubDate.toLocaleDateString(getDateLocale(lang), 
       <div class="max-w-3xl mx-auto px-4">
         <article>
           <header class="mb-10">
-            <time class="text-sm text-gray-500">{formattedDate}</time>
+            <time datetime={isoDate(note.data.pubDate)} class="text-sm text-gray-500">{formattedDate}</time>
             <h1 class="text-3xl font-extrabold text-gray-800 mt-3">{note.data.title}</h1>
             <div class="flex flex-wrap gap-2 mt-4">
               {note.data.tags.map((tag: string) => (
