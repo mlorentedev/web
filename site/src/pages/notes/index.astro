@@ -28,7 +28,7 @@ const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data 
             {notes.map((note: CollectionEntry<'notes'>) => (
                 <div class="py-6 first:pt-0 last:pb-0">
                   <a href={translatePath(`/notes/${note.id}`)} class="group block">
-                    <time datetime={isoDate(note.data.pubDate)} class="text-xs text-gray-400">{formatDate(note.data.pubDate, lang)}</time>
+                    <time datetime={isoDate(note.data.pubDate)} class="text-xs text-gray-500">{formatDate(note.data.pubDate, lang)}</time>
                     <h3 class="font-bold text-gray-800 mt-1 group-hover:text-cyan-700 transition-colors">
                       {note.data.title}
                     </h3>
@@ -36,7 +36,7 @@ const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data 
                   </a>
                   <div class="flex flex-wrap gap-1.5 mt-3">
                     {note.data.tags.map((tag: string) => (
-                      <a href={translatePath(`/tags/${tag.toLowerCase()}`)} class="px-2 py-0.5 text-xs rounded bg-gray-100 text-gray-500 hover:bg-cyan-700 hover:text-white transition-colors">
+                      <a href={translatePath(`/tags/${tag.toLowerCase()}`)} class="px-2 py-0.5 text-xs rounded bg-gray-100 text-gray-600 hover:bg-cyan-700 hover:text-white transition-colors">
                         {tag}
                       </a>
                     ))}
