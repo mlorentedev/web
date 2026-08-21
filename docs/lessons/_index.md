@@ -9,11 +9,14 @@ tags: [web, lessons, index]
 
 # Lessons
 
-7 lessons, one file each, newest first. Numbers are assigned in the order
+10 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 010 | [An untranslated default prop leaks the default locale into every page that omits it](lesson-010-an-untranslated-default-prop-leaks-the-defau.md) | 2026-08-21 | `#i18n` `#astro` |
+| 009 | [Obsidian wikilinks render as literal text on GitHub](lesson-009-obsidian-wikilinks-render-as-literal-text-on.md) | 2026-08-21 | `#docs` `#github` |
+| 008 | [A bare content date formatted without `timeZone` renders a day early](lesson-008-a-bare-content-date-formatted-without-timezo.md) | 2026-08-21 | `#i18n` `#dates` |
 | 007 | [Dependabot security updates bypass `ignore` — a major-version ignore will not stop them](lesson-007-dependabot-security-updates-bypass-ignore-a.md) | 2026-08-08 | `#ci-automation` `#dependencies` |
 | 006 | [Astro inlines small module scripts — grep the HTML, not for an `_astro/*.js` chunk](lesson-006-astro-inlines-small-module-scripts-grep-the.md) | 2026-07-10 | `#astro` `#verification` |
 | 005 | [A build-time external fetch needs a committed fallback, or a flaky API breaks deploys](lesson-005-a-build-time-external-fetch-needs-a-committe.md) | 2026-07-10 | `#astro` `#build` |
