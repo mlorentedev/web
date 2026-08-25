@@ -1,0 +1,25 @@
+---
+/**
+ * A top-level page section: vertical rhythm, the hairline rule that separates it
+ * from the one above, and the shared measure.
+ *
+ * The `py-14 border-t border-gray-100` / `max-w-4xl mx-auto px-4` pair was
+ * repeated in eight components. Any attribute not named below is forwarded to the
+ * `<section>`, which is how the `data-*` hooks the client scripts query keep
+ * working.
+ */
+interface Props {
+  /** Vertical padding, when the section wants something other than the default. */
+  padding?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { padding = 'py-14', class: className, ...rest } = Astro.props;
+---
+
+<section {...rest} class:list={[padding, 'border-t border-gray-100', className]}>
+  <div class="max-w-4xl mx-auto px-4">
+    <slot />
+  </div>
+</section>

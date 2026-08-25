@@ -1,4 +1,6 @@
 ---
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
 import { experience, localizeExperience } from '../data/experience';
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
@@ -14,12 +16,9 @@ const t = useTranslations(lang);
 const entries = experience.map((e) => localizeExperience(e, lang, t('experience.present')));
 ---
 
-<section data-experience class="py-14 border-t border-gray-100">
-  <div class="max-w-4xl mx-auto px-4">
-    <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-8">
-      <span class="text-cyan-700">[ 01 /</span> {t('home.experience')} <span class="text-cyan-700">]</span>
-    </h2>
-    <ol class="space-y-6">
+<Section data-experience>
+  <SectionHeading number="01" label={t('home.experience')} margin="mb-8" />
+  <ol class="space-y-6">
       {entries.map((e) => (
         <li data-role class="flex flex-col sm:flex-row sm:gap-6">
           <span class="text-sm text-gray-500 tabular-nums shrink-0 sm:w-28 mb-1 sm:mb-0">{e.period}</span>
@@ -32,6 +31,5 @@ const entries = experience.map((e) => localizeExperience(e, lang, t('experience.
           </div>
         </li>
       ))}
-    </ol>
-  </div>
-</section>
+  </ol>
+</Section>

@@ -1,4 +1,6 @@
 ---
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Lang } from '../i18n/ui';
 import { useTranslations, useTranslatedPath } from '../i18n/utils';
@@ -18,11 +20,8 @@ const notes: CollectionEntry<'notes'>[] = (
   .slice(0, 3);
 ---
 
-<section class="py-14 border-t border-gray-100">
-  <div class="max-w-4xl mx-auto px-4">
-    <a href={translatePath('/notes')} class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6 block group">
-      <span class="text-cyan-700">[ 05 /</span> <span class="group-hover:text-cyan-700 transition-colors">{t('home.latest')}</span> <span class="text-cyan-700">]</span>
-    </a>
+<Section>
+  <SectionHeading number="05" label={t('home.latest')} href={translatePath('/notes')} margin="mb-6" />
     {notes.length > 0 ? (
       <div class="divide-y divide-gray-100">
         {notes.map((note) => (
@@ -41,5 +40,4 @@ const notes: CollectionEntry<'notes'>[] = (
     >
       {t('home.allNotes')} &rarr;
     </a>
-  </div>
-</section>
+</Section>

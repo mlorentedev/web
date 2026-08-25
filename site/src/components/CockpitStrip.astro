@@ -1,4 +1,6 @@
 ---
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
 import { cockpit } from '../data/cockpit';
 import type { Lang } from '../i18n/ui';
 import { useTranslations, useTranslatedPath } from '../i18n/utils';
@@ -36,11 +38,8 @@ const indicators = [
 ];
 ---
 
-<section data-cockpit-strip class="py-12 border-t border-gray-100">
-  <div class="max-w-4xl mx-auto px-4">
-    <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6">
-      <span class="text-cyan-700">[ 06 /</span> {t('cockpit.heading')} <span class="text-cyan-700">]</span>
-    </h2>
+<Section data-cockpit-strip padding="py-12">
+  <SectionHeading number="06" label={t('cockpit.heading')} margin="mb-6" />
 
     <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800/80 rounded-2xl p-6 sm:p-8 text-slate-100 shadow-xl relative overflow-hidden">
       <div class="absolute -right-16 -top-16 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -103,5 +102,4 @@ const indicators = [
         </div>
       </div>
     </div>
-  </div>
-</section>
+</Section>

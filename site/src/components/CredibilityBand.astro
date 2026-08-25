@@ -1,4 +1,6 @@
 ---
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
 import { projects } from '../data/portfolio';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Lang } from '../i18n/ui';
@@ -31,11 +33,8 @@ const stats = [
 ];
 ---
 
-<section data-credibility-band class="py-10 border-t border-gray-100">
-  <div class="max-w-4xl mx-auto px-4">
-    <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-8">
-      <span class="text-cyan-700">[ 00 /</span> {t('credibility.heading')} <span class="text-cyan-700">]</span>
-    </h2>
+<Section data-credibility-band padding="py-10">
+  <SectionHeading number="00" label={t('credibility.heading')} margin="mb-8" />
     <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8">
       {stats.map((s) => (
         <div data-stat={s.key}>
@@ -46,5 +45,4 @@ const stats = [
         </div>
       ))}
     </div>
-  </div>
-</section>
+</Section>

@@ -1,4 +1,6 @@
 ---
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
 import { projects, localize } from '../data/portfolio';
 import ProjectCard from './ProjectCard.astro';
 import type { Lang } from '../i18n/ui';
@@ -12,11 +14,8 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<section class="py-14 border-t border-gray-100">
-  <div class="max-w-4xl mx-auto px-4">
-    <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-8">
-      <span class="text-cyan-700">[ 02 /</span> {t('home.projects')} <span class="text-cyan-700">]</span>
-    </h2>
+<Section>
+  <SectionHeading number="02" label={t('home.projects')} margin="mb-8" />
     <a href="https://github.com/mlorentedev" target="_blank" rel="noopener noreferrer">
       <img
         src="https://ghchart.rshah.org/0e7490/mlorentedev"
@@ -32,5 +31,4 @@ const t = useTranslations(lang);
         <ProjectCard project={localize(project, lang)} lang={lang} />
       ))}
     </div>
-  </div>
-</section>
+</Section>
