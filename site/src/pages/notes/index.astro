@@ -17,7 +17,7 @@ const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data 
 
 <BaseLayout title="What I think" description={t('notes.description')}>
   <Header />
-  <main id="main-content" class="flex-grow main-offset">
+  <main id="main-content" class="flex-grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">
       <div class="max-w-3xl mx-auto px-4">
         <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-10">{t('notes.articles')}</h2>
