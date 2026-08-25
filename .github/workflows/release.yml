@@ -121,7 +121,10 @@ jobs:
         run: |
           # ADR-055 build-once / promote-by-digest: the prod semver tag points at
           # the exact image staging validated — re-tag the manifest (multi-arch
-          # preserved), never rebuild.
-          docker buildx imagetools create -t "${IMAGE}:${VERSION}" "${IMAGE}:${SHA_TAG}"
-          echo "Promoted ${IMAGE}:${SHA_TAG} -> ${IMAGE}:${VERSION} (same digest)"
+          # preserved), never rebuild. Tags semver (e.g. 1.11.0) and latest.
+          docker buildx imagetools create \
+            -t "${IMAGE}:${VERSION}" \
+            -t "${IMAGE}:latest" \
+            "${IMAGE}:${SHA_TAG}"
+          echo "Promoted ${IMAGE}:${SHA_TAG} -> ${IMAGE}:${VERSION}, ${IMAGE}:latest"
           docker buildx imagetools inspect "${IMAGE}:${VERSION}"
