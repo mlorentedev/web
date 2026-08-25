@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-13 lessons, one file each, newest first. Numbers are assigned in the order
+14 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 014 | [A subagent's finding is a claim to verify, not a result to act on](lesson-014-a-subagent-finding-is-a-claim-to-verify-no.md) | 2026-08-25 | `#verification` `#agents` |
 | 013 | [Removing a theme override reveals the plugin default, it does not remove the property](lesson-013-removing-a-theme-override-reveals-the-plug.md) | 2026-08-24 | `#tailwind` `#css` |
 | 012 | [HTML entities inside a `t()` value render literally](lesson-012-html-entities-inside-a-t-value-render-liter.md) | 2026-08-24 | `#i18n` `#astro` |
 | 010 | [An untranslated default prop leaks the default locale into every page that omits it](lesson-010-an-untranslated-default-prop-leaks-the-defau.md) | 2026-08-21 | `#i18n` `#astro` |
