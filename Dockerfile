@@ -1,6 +1,6 @@
 # ---------- Build Stage — Static site (Astro output: 'static') ----------
 # CI context: ./apps/web — files copied from site/ subdirectory
-FROM node:22-alpine AS build
+FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 
 ARG TARGETPLATFORM
 ARG TARGETOS
@@ -45,7 +45,7 @@ ENV PUBLIC_SITE_TITLE=${PUBLIC_SITE_TITLE} \
 
 COPY --chown=node:node site/package.json site/package-lock.json ./
 
-USER node
+USER 1000:1000
 
 RUN --mount=type=cache,target=/home/node/.npm,uid=1000,gid=1000 \
     npm ci --include=dev
@@ -70,4 +70,4 @@ USER 1001
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -qO- http://localhost:8080/ || exit 1
+  CMD ["wget", "-qO-", "http://localhost:8080/"]
