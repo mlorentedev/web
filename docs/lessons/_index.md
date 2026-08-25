@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-12 lessons, one file each, newest first. Numbers are assigned in the order
+13 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 013 | [Removing a theme override reveals the plugin default, it does not remove the property](lesson-013-removing-a-theme-override-reveals-the-plug.md) | 2026-08-24 | `#tailwind` `#css` |
 | 012 | [HTML entities inside a `t()` value render literally](lesson-012-html-entities-inside-a-t-value-render-liter.md) | 2026-08-24 | `#i18n` `#astro` |
 | 010 | [An untranslated default prop leaks the default locale into every page that omits it](lesson-010-an-untranslated-default-prop-leaks-the-defau.md) | 2026-08-21 | `#i18n` `#astro` |
 | 009 | [Obsidian wikilinks render as literal text on GitHub](lesson-009-obsidian-wikilinks-render-as-literal-text-on.md) | 2026-08-21 | `#docs` `#github` |
