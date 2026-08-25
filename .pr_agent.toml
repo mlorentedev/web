@@ -1,0 +1,53 @@
+# PR-Agent configuration for mlorentedev/web (TOOL-013 / ADR-032).
+# Backed by NaN cluster inference with zero per-hour account quota limits.
+
+[config]
+model = "openai/mimo-v2.5"
+fallback_models = ["openai/deepseek-v4-flash"]
+model_weak = "openai/qwen3.6"
+
+custom_model_max_tokens = 200000
+max_model_tokens = 200000
+
+response_language = "en-US"
+repo_context_files = ["AGENTS.md"]
+
+[pr_reviewer]
+require_score_review = false
+require_tests_review = true
+require_security_review = true
+persistent_comment = true
+final_update_message = false
+
+extra_instructions = """
+Open every review with a HARNESS COMPLIANCE pass over AGENTS.md, stating PASS or FAIL per item with the offending file and line. Report it even when everything passes:
+
+- English only in the durable record: commit messages, branch name, PR title and body, code comments.
+- No AI attribution anywhere in git or GitHub artifacts: no Co-Authored-By naming an agent, no "Generated with" footer, no bot emoji signature.
+- No internal phase or milestone reference in branch names, commit messages or PR titles.
+- Definition of Done, on the PR as submitted: debt fixed or ticketed, knowledge written where it belongs (docs/lessons/, docs/adr/), ticket moved, review output dispositioned, and completion claims backed by command output.
+- Spec-Driven Development: changes follow SDD or state written rationale for small bugfixes/docs.
+- No auto-merge: nothing in the diff enables it, and no workflow merges a PR without a human.
+- Astro 5 static architecture: verify output stays static ('static' mode), zero runtime backend dependency for critical rendering path.
+- Responsive design and i18n: bilingual parity (EN/ES) for user-facing copy.
+
+Then continue with the substance.
+
+Do not restate what ESLint/Prettier/typecheck reports. Spend the budget on what static analysis cannot see:
+- Edge cases, subtle styling bugs, broken localized paths, race conditions in client islands.
+- Verify that health probe logic is non-blocking and degrades gracefully on network/CORS failure.
+- Classify each finding as REAL, THEORETICAL, or SPECULATIVE.
+- All review outputs, tables, findings, and suggestions must be authored strictly in English.
+"""
+
+[pr_code_suggestions]
+dual_publishing_score_threshold = 7
+suggestions_score_threshold = 5
+publish_output_no_suggestions = false
+
+[ignore]
+glob = [
+  "sensitive/**",
+  "site/dist/**",
+  "site/node_modules/**",
+]
