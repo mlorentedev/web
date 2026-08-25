@@ -1,6 +1,12 @@
 # ---------- Build Stage — Static site (Astro output: 'static') ----------
 # CI context: ./apps/web — files copied from site/ subdirectory
-FROM --platform=$BUILDPLATFORM node:22-alpine AS build
+#
+# Debian rather than Alpine: the build renders the notes' mermaid diagrams to
+# SVG through a headless browser, and Playwright ships no musl build. Nothing
+# from this stage is published — the runtime image below is still Alpine, and
+# only dist/ crosses over — so the larger base costs layer cache, not registry
+# size or attack surface.
+FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS build
 
 ARG TARGETPLATFORM
 ARG TARGETOS
@@ -43,12 +49,21 @@ ENV PUBLIC_SITE_TITLE=${PUBLIC_SITE_TITLE} \
     PUBLIC_GOOGLE_TAG_MANAGER_ID=${PUBLIC_GOOGLE_TAG_MANAGER_ID} \
     BACKEND_URL=${BACKEND_URL}
 
+# Chromium's shared libraries, as root and before dropping privileges. Their
+# own layer so they survive every source edit in the cache.
+RUN npx --yes playwright@1.62.1 install-deps chromium \
+ && rm -rf /var/lib/apt/lists/*
+
 COPY --chown=node:node site/package.json site/package-lock.json ./
 
 USER 1000:1000
 
 RUN --mount=type=cache,target=/home/node/.npm,uid=1000,gid=1000 \
     npm ci --include=dev
+
+# The browser itself, unprivileged, after the dependency install so it is
+# refetched only when Playwright's version moves.
+RUN npx playwright install chromium
 
 COPY --chown=node:node site/ ./
 
