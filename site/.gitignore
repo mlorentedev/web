@@ -1,3 +1,7 @@
 .astro/
 node_modules/
 dist/
+
+# Rendered mermaid diagrams — generated from the .mdx sources at build time.
+# Committing them would create a second source of truth that can go stale.
+public/beoe/
