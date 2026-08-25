@@ -1,0 +1,76 @@
+import cockpitData from './cockpit.json';
+
+export interface ClusterInfo {
+  name: string;
+  version: string;
+  gitops: string;
+  uptime: string;
+  activeNodes: number;
+  totalServices: number;
+}
+
+export interface PlatformMetrics {
+  inferenceLatency: string;
+  contextReduction: string;
+  reconciliationTime: string;
+  edgeArchitecture: string;
+  uptimeScore: string;
+  gitopsSyncLoop: string;
+}
+
+export interface NodeTopology {
+  id: string;
+  name: string;
+  tier?: 'cloud' | 'homelab';
+  role: string;
+  roleEs: string;
+  summary?: string;
+  summaryEs?: string;
+  environment: 'Production' | 'Staging' | 'Edge AI' | 'Infrastructure';
+  provider: string;
+  arch: string;
+  cpu: string;
+  ram: string;
+  storage: string;
+  os: string;
+  location: string;
+  status: 'healthy' | 'warning' | 'offline';
+}
+
+export interface PlatformService {
+  slug: string;
+  name: string;
+  category: 'AI & Inference' | 'Core Gateway' | 'GitOps & Delivery' | 'Observability' | 'Storage & Data';
+  categoryEs: string;
+  description: string;
+  descriptionEs: string;
+  /** Public services only — internal endpoints are not shipped to the client. */
+  url?: string;
+  healthEndpoint?: string;
+  node: string;
+  env: 'common' | 'prod' | 'staging' | 'Production' | 'Staging' | 'Both' | 'Edge';
+  tech: string[];
+  isPublic: boolean;
+  status: 'operational' | 'degraded' | 'maintenance';
+}
+
+export interface ArchitectureDiagram {
+  id: string;
+  title: string;
+  titleEs: string;
+  category: string;
+  categoryEs: string;
+  description: string;
+  descriptionEs: string;
+  mermaid: string;
+}
+
+export interface CockpitManifest {
+  cluster: ClusterInfo;
+  metrics: PlatformMetrics;
+  nodes: NodeTopology[];
+  services: PlatformService[];
+  diagrams: ArchitectureDiagram[];
+}
+
+export const cockpit: CockpitManifest = cockpitData as CockpitManifest;
