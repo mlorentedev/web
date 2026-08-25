@@ -486,8 +486,8 @@
       "titleEs": "Ruta de Peticiones Zero-Trust y Defensa Perimetral",
       "category": "Security & Gateway",
       "categoryEs": "Seguridad y Gateway",
-      "description": "Multi-tier security stack enforcing DDoS mitigation, token-bucket rate limiting, CrowdSec IPS and 2FA forward authentication.",
-      "descriptionEs": "Pila de seguridad multicapa con mitigación DDoS, rate limiting, IPS CrowdSec y autenticación 2FA.",
+      "description": "Layered security at the edge: Traefik terminates TLS and applies token-bucket rate limiting, CrowdSec blocks by behaviour, and Authelia enforces 2FA forward auth on the internal services. Cloudflare fronts api.kubelab.live only.",
+      "descriptionEs": "Seguridad en capas en el edge: Traefik termina TLS y aplica rate limiting por token bucket, CrowdSec bloquea por comportamiento y Authelia exige 2FA en los servicios internos. Cloudflare solo hace de proxy en api.kubelab.live.",
       "mermaid": "flowchart TD\n    Client([\"Client / Browser\"]):::client -->|HTTPS 443| CF[\"Cloudflare DNS<br/>proxied for api.kubelab.live only\"]\n    CF -->|Forward| Traefik[\"Traefik L7 Ingress Router<br/>Rate Limiting & Secure Headers\"]\n    Traefik --> CrowdSec{\"CrowdSec IPS Bouncer<br/>Behavioral Threat Analysis\"}\n    CrowdSec -->|Malicious IP| Block[\"403 Forbidden / Drop\"]\n    CrowdSec -->|Clean Traffic| Auth{\"Route Inspection\"}\n    Auth -->|Public Route| PublicApps[\"Public Services<br/>mlorente.dev · API · Pollex\"]\n    Auth -->|Private / Admin| Authelia[\"Authelia Forward-Auth<br/>2FA / Duo / TOTP Session\"]\n    Authelia -->|Authenticated| InternalApps[\"Internal Platform<br/>Grafana · ArgoCD · Gitea · MinIO\"]\n    InternalApps --> WireGuard[\"Tailscale WireGuard Mesh<br/>Direct Pod Encapsulation\"]"
     },
     {
