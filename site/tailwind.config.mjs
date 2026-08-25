@@ -43,6 +43,9 @@ export default {
             'code::before': { content: '""' },
             'code::after': { content: '""' },
             code: {
+              // An inline path — /var/lib/rancher/k3s/server/tls/ — is one
+              // unbreakable 315px token, wider than a 320px viewport allows.
+              overflowWrap: 'break-word',
               fontWeight: '400',
               backgroundColor: CODE_SURFACE,
               paddingLeft: '0.25rem',
@@ -52,12 +55,29 @@ export default {
               borderRadius: '0.25rem',
               color: ACCENT,
             },
+            'figure.mermaid': {
+              // Rendered diagrams are as wide as their content — up to 1,940px.
+              // Scroll the figure rather than letting the page scroll.
+              overflowX: 'auto',
+              marginTop: '2rem',
+              marginBottom: '2rem',
+            },
+            'figure.mermaid img': {
+              maxWidth: 'none',
+              marginTop: '0',
+              marginBottom: '0',
+            },
             pre: {
               backgroundColor: PRE_SURFACE,
               color: PRE_INK,
               overflowX: 'auto',
             },
             table: {
+              // A seven-column table in picking-hardware-budget-k3s rendered
+              // 553px wide inside a 320px viewport and pushed the whole
+              // document sideways. `pre` already scrolls; tables did not.
+              display: 'block',
+              overflowX: 'auto',
               width: '100%',
               marginTop: '2rem',
               marginBottom: '2rem',

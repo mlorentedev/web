@@ -52,7 +52,7 @@ const displayTag = matchingProjects.find((p) => p.tags.some((t) => t.toLowerCase
 
 <BaseLayout title={`${displayTag}`} description={`${t('tags.projects')} & ${t('tags.notes')} — ${displayTag}.`}>
   <Header />
-  <main id="main-content" class="flex-grow main-offset">
+  <main id="main-content" class="flex-grow">
     <section class="pt-12 pb-6 md:pt-16 md:pb-10">
       <div class="max-w-3xl mx-auto px-4">
         <a href={translatePath('/notes')} class="text-sm text-gray-500 hover:text-cyan-700 transition-colors">&larr; {t('tags.all')}</a>

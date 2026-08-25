@@ -16,7 +16,7 @@ const currentPath = Astro.url.pathname;
 const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
 ---
 
-<header class="bg-cyan-50 text-gray-700 fixed w-full border-b border-cyan-100 z-50">
+<header class="bg-cyan-50 text-gray-700 sticky top-0 w-full border-b border-cyan-100 z-50">
   <nav class="px-3 sm:px-4 py-3 flex items-center justify-between">
     <span class="text-xl font-extrabold">
       <a href={translatePath('/')} class="no-underline hover:text-cyan-700 transition-colors duration-200 focus:outline-none focus:text-cyan-700">

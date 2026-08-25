@@ -36,7 +36,11 @@
    This is not dark-mode support; it declares which scheme the page is authored for. */
 :root {
   color-scheme: light;
-  --header-offset: 4rem;
+  /* Only anchor jumps need this now: the header is in flow and reserves its
+     own height, so nothing has to guess at it for layout. Generous on purpose —
+     overshooting a heading leaves a little air above it, undershooting hides it
+     under the header, and the header is taller when its nav wraps. */
+  --header-offset: 5.5rem;
 }
 
 html {
@@ -49,21 +53,6 @@ html {
   html {
     scroll-behavior: auto;
   }
-}
-
-/* The header is fixed, so every <main> has to offset by its height. That value was
-   hardcoded per page and had already drifted: five page types used pt-12 (48px)
-   against a 53px header, putting content 5px underneath it. Below 360px the wordmark
-   wraps and the header grows to ~81px, which is why the token has a breakpoint.
-   scroll-padding-top keeps anchor jumps from landing under it too. */
-@media (max-width: 360px) {
-  :root {
-    --header-offset: 5.5rem;
-  }
-}
-
-.main-offset {
-  padding-top: var(--header-offset);
 }
 
 html {
