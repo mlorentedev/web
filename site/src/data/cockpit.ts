@@ -5,7 +5,13 @@ export interface ClusterInfo {
   version: string;
   gitops: string;
   uptime: string;
+  /** Machines in the fleet, Kubernetes or not. */
   activeNodes: number;
+  /** Independent single-node K3s clusters: production, staging, Argo CD hub. */
+  kubernetesClusters: number;
+  /** Machines that actually run Kubernetes — three of the eight. */
+  kubernetesNodes: number;
+  /** Workloads across all three clusters, excluding kube-system. */
   totalServices: number;
 }
 
@@ -27,6 +33,9 @@ export interface NodeTopology {
   summary?: string;
   summaryEs?: string;
   environment: 'Production' | 'Staging' | 'Edge AI' | 'Infrastructure';
+  /** What actually schedules work here. Five of the eight run no Kubernetes. */
+  runtime: 'k3s' | 'docker' | 'systemd' | 'standby';
+  runtimeRole: string;
   provider: string;
   arch: string;
   cpu: string;
@@ -34,7 +43,7 @@ export interface NodeTopology {
   storage: string;
   os: string;
   location: string;
-  status: 'healthy' | 'warning' | 'offline';
+  status: 'healthy' | 'warning' | 'offline' | 'standby';
 }
 
 export interface PlatformService {

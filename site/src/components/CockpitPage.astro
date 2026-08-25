@@ -345,15 +345,15 @@ const t = useTranslations(lang);
                     <ServiceIcon slug="gitea" class="w-4 h-4 shrink-0" />
                     <span class="font-bold text-emerald-900 block">ace1 (Staging)</span>
                   </div>
-                  <span class="text-[10px] text-emerald-700 block">Ryzen 7 · 32GB</span>
+                  <span class="text-[10px] text-emerald-700 block">Intel N95 · 11.5GB</span>
                   <p class="text-[10px] text-gray-500 mt-1">{t('cockpit.d.k3sStagingGiteaForge')}</p>
                 </div>
                 <div class="bg-white p-3 rounded-lg border border-emerald-200 shadow-2xs">
                   <div class="flex items-center gap-1.5 mb-1">
                     <ServiceIcon slug="kubelab-api" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-emerald-900 block">ace2 (Worker)</span>
+                    <span class="font-bold text-emerald-900 block">ace2 (Spare)</span>
                   </div>
-                  <span class="text-[10px] text-emerald-700 block">Ryzen 7 · 32GB</span>
+                  <span class="text-[10px] text-emerald-700 block">Intel N95 · 11.5GB</span>
                   <p class="text-[10px] text-gray-500 mt-1">{t('cockpit.d.distributedStagingWorkloads')}</p>
                 </div>
                 <div class="bg-white p-3 rounded-lg border border-yellow-300 shadow-2xs">
@@ -361,8 +361,8 @@ const t = useTranslations(lang);
                     <ServiceIcon slug="pollex" class="w-4 h-4 shrink-0" />
                     <span class="font-bold text-yellow-900 block">Jetson Nano</span>
                   </div>
-                  <span class="text-[10px] text-yellow-700 font-semibold block">128 CUDA Cores</span>
-                  <p class="text-[10px] text-gray-500 mt-1">Pollex Edge AI (Qwen 1.5B)</p>
+                  <span class="text-[10px] text-yellow-700 font-semibold block">4c Cortex-A57 · 3.9GB</span>
+                  <p class="text-[10px] text-gray-500 mt-1">Pollex Edge AI (Qwen 2.5 1.5B, CPU)</p>
                 </div>
                 <div class="bg-white p-3 rounded-lg border border-teal-200 shadow-2xs">
                   <div class="flex items-center gap-1.5 mb-1">
@@ -496,7 +496,7 @@ const t = useTranslations(lang);
               <div class="flex items-center gap-3">
                 <span class="h-6 w-6 rounded-full bg-cyan-800 text-white flex items-center justify-center font-bold text-[11px]">1</span>
                 <div>
-                  <strong class="text-gray-900">Cloudflare Edge WAF:</strong>
+                  <strong class="text-gray-900">Cloudflare DNS:</strong>
                   <span class="text-gray-600 text-[11px] ml-1 font-sans">{t('cockpit.d.terminatesTlsFiltersL3')}</span>
                 </div>
               </div>
@@ -565,15 +565,15 @@ const t = useTranslations(lang);
             <div class="bg-purple-50/40 border border-purple-200 rounded-xl p-5 shadow-xs">
               <div class="flex items-center justify-between mb-2">
                 <span class="font-bold text-purple-900 text-sm">{t('cockpit.d.1PhysicalEdgeGpu')}</span>
-                <span class="text-purple-600 font-bold">CUDA ⚡</span>
+                <span class="text-purple-600 font-bold">On-device</span>
               </div>
               <p class="text-xs text-gray-600 font-sans mb-3">{t('cockpit.d.runsLocalLanguageModels')}</p>
               <div class="space-y-2 text-[11px]">
                 <div class="bg-white p-2.5 rounded border border-purple-100 flex items-start gap-2">
                   <ServiceIcon slug="pollex" class="w-4 h-4 shrink-0 mt-0.5" />
                   <div>
-                    <span class="text-purple-900 font-semibold block">NVIDIA Jetson Nano (128 CUDA)</span>
-                    <span class="text-[10px] text-gray-500">Qwen 1.5B TensorRT · ~3.2s TTFT</span>
+                    <span class="text-purple-900 font-semibold block">NVIDIA Jetson Nano</span>
+                    <span class="text-[10px] text-gray-500">Qwen 2.5 1.5B via Ollama · CPU inference</span>
                   </div>
                 </div>
               </div>
