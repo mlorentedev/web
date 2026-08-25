@@ -1,4 +1,4 @@
-import cockpitData from './cockpit.json';
+import platformData from './platform.json';
 
 export interface ClusterInfo {
   name: string;
@@ -74,7 +74,7 @@ export interface ArchitectureDiagram {
   mermaid: string;
 }
 
-export interface CockpitManifest {
+export interface PlatformManifest {
   cluster: ClusterInfo;
   metrics: PlatformMetrics;
   nodes: NodeTopology[];
@@ -82,4 +82,4 @@ export interface CockpitManifest {
   diagrams: ArchitectureDiagram[];
 }
 
-export const cockpit: CockpitManifest = cockpitData as CockpitManifest;
+export const platform: PlatformManifest = platformData as PlatformManifest;

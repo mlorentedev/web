@@ -5,7 +5,7 @@ import Footer from './Footer.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import ServiceIcon from './ServiceIcon.astro';
-import { cockpit } from '../data/cockpit';
+import { platform } from '../data/platform';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -13,8 +13,8 @@ const t = useTranslations(lang);
 ---
 
 <BaseLayout
-  title={`${t('cockpit.title')} — Manu Lorente`}
-  description={t('cockpit.description')}
+  title={`${t('idp.title')} — Manu Lorente`}
+  description={t('idp.description')}
 >
   <Header />
 
@@ -22,64 +22,64 @@ const t = useTranslations(lang);
     <!-- Hero / Title Section -->
     <section class="max-w-4xl mx-auto px-4 pt-10 pb-8">
       <p class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-3">
-        <span class="text-cyan-700">[ 00 /</span> {t('cockpit.eyebrow')} <span class="text-cyan-700">]</span>
+        <span class="text-cyan-700">[ 00 /</span> {t('idp.eyebrow')} <span class="text-cyan-700">]</span>
       </p>
 
       <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3">
         <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-          {t('cockpit.title')}
+          {t('idp.title')}
         </h1>
         <div class="flex items-center gap-2 shrink-0 text-xs font-mono">
           <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            {cockpit.cluster.gitops}
+            {platform.cluster.gitops}
           </span>
           <span class="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 border border-gray-200">
-            {cockpit.cluster.version}
+            {platform.cluster.version}
           </span>
         </div>
       </div>
 
       <p class="text-lg text-gray-600 mt-4 leading-relaxed max-w-3xl">
-        {t('cockpit.description')}
+        {t('idp.description')}
       </p>
     </section>
 
     <!-- SECTION 1: Platform Purpose & Storytelling -->
     <Section padding="py-10">
-        <SectionHeading number="01" label={t('cockpit.story.heading')} margin="mb-6" />
+        <SectionHeading number="01" label={t('idp.story.heading')} margin="mb-6" />
 
         <div class="space-y-4 text-base text-gray-700 leading-relaxed max-w-3xl">
-          <p>{t('cockpit.story.p1')}</p>
-          <p>{t('cockpit.story.p2')}</p>
+          <p>{t('idp.story.p1')}</p>
+          <p>{t('idp.story.p2')}</p>
         </div>
 
         <!-- 3 Core Architectural Pillars -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
           <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
             <div class="text-xs font-mono font-semibold text-cyan-800 uppercase tracking-wider mb-1">
-              01 · {t('cockpit.pillar.gitops')}
+              01 · {t('idp.pillar.gitops')}
             </div>
             <p class="text-xs text-gray-600 mt-2 leading-relaxed font-sans">
-              {t('cockpit.pillar.gitopsDesc')}
+              {t('idp.pillar.gitopsDesc')}
             </p>
           </div>
 
           <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
             <div class="text-xs font-mono font-semibold text-cyan-800 uppercase tracking-wider mb-1">
-              02 · {t('cockpit.pillar.privacy')}
+              02 · {t('idp.pillar.privacy')}
             </div>
             <p class="text-xs text-gray-600 mt-2 leading-relaxed font-sans">
-              {t('cockpit.pillar.privacyDesc')}
+              {t('idp.pillar.privacyDesc')}
             </p>
           </div>
 
           <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
             <div class="text-xs font-mono font-semibold text-cyan-800 uppercase tracking-wider mb-1">
-              03 · {t('cockpit.pillar.memory')}
+              03 · {t('idp.pillar.memory')}
             </div>
             <p class="text-xs text-gray-600 mt-2 leading-relaxed font-sans">
-              {t('cockpit.pillar.memoryDesc')}
+              {t('idp.pillar.memoryDesc')}
             </p>
           </div>
         </div>
@@ -89,8 +89,8 @@ const t = useTranslations(lang);
     <Section padding="py-10">
         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-4">
           <div>
-            <SectionHeading number="02" label={t('cockpit.diagrams.heading')} />
-            <p class="text-xs text-gray-500 mt-1">{t('cockpit.diagrams.sub')}</p>
+            <SectionHeading number="02" label={t('platform.diagrams.heading')} />
+            <p class="text-xs text-gray-500 mt-1">{t('platform.diagrams.sub')}</p>
           </div>
         </div>
 
@@ -101,54 +101,54 @@ const t = useTranslations(lang);
             data-diagram-tab="topology"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-900 text-white shadow-sm cursor-pointer"
           >
-            {t('cockpit.d.01HybridInfrastructureTopology')}
+            {t('idp.d.01HybridInfrastructureTopology')}
           </button>
           <button
             type="button"
             data-diagram-tab="gitops"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
           >
-            {t('cockpit.d.02GitopsDeliveryPipeline')}
+            {t('idp.d.02GitopsDeliveryPipeline')}
           </button>
           <button
             type="button"
             data-diagram-tab="security"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
           >
-            {t('cockpit.d.03ZeroTrustIngress')}
+            {t('idp.d.03ZeroTrustIngress')}
           </button>
           <button
             type="button"
             data-diagram-tab="ai-mcp"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
           >
-            {t('cockpit.d.04EdgeAiMulti')}
+            {t('idp.d.04EdgeAiMulti')}
           </button>
         </div>
 
         <!-- Architecture Subsystem Color Legend -->
         <div class="flex flex-wrap items-center gap-2 p-3 mb-5 bg-gray-50 border border-gray-200 rounded-lg text-[11px] font-mono text-gray-700">
-          <span class="font-bold text-gray-900 uppercase text-[10px] tracking-wider mr-1">{t('cockpit.d.architectureLegend')}</span>
+          <span class="font-bold text-gray-900 uppercase text-[10px] tracking-wider mr-1">{t('idp.d.architectureLegend')}</span>
           <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-amber-500"></span> {t('cockpit.d.edgeGateway')}
+            <span class="h-2 w-2 rounded-full bg-amber-500"></span> {t('idp.d.edgeGateway')}
           </span>
           <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-rose-500"></span> {t('cockpit.d.zeroTrustAuth')}
+            <span class="h-2 w-2 rounded-full bg-rose-500"></span> {t('idp.d.zeroTrustAuth')}
           </span>
           <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-blue-500"></span> {t('cockpit.d.customApps')}
+            <span class="h-2 w-2 rounded-full bg-blue-500"></span> {t('idp.d.customApps')}
           </span>
           <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-purple-50 text-purple-800 border border-purple-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-purple-500"></span> {t('cockpit.d.observability')}
+            <span class="h-2 w-2 rounded-full bg-purple-500"></span> {t('idp.d.observability')}
           </span>
           <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-emerald-500"></span> {t('cockpit.d.coreGitops')}
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span> {t('idp.d.coreGitops')}
           </span>
           <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-teal-500"></span> {t('cockpit.d.dataS3')}
+            <span class="h-2 w-2 rounded-full bg-teal-500"></span> {t('idp.d.dataS3')}
           </span>
           <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-yellow-50 text-yellow-800 border border-yellow-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-yellow-500"></span> {t('cockpit.d.aiGpuEdge')}
+            <span class="h-2 w-2 rounded-full bg-yellow-500"></span> {t('idp.d.aiGpuEdge')}
           </span>
         </div>
 
@@ -156,11 +156,11 @@ const t = useTranslations(lang);
         <div data-diagram-content="topology" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100">
             <div>
-              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('cockpit.d.topToBottomInfrastructure')}</span>
-              <h3 class="text-lg font-bold text-gray-900">{t('cockpit.d.hybridCloudBareMetal')}</h3>
+              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('idp.d.topToBottomInfrastructure')}</span>
+              <h3 class="text-lg font-bold text-gray-900">{t('idp.d.hybridCloudBareMetal')}</h3>
             </div>
             <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">
-              {t('cockpit.d.8ActiveNodesWireguard')}
+              {t('idp.d.8ActiveNodesWireguard')}
             </span>
           </div>
 
@@ -169,23 +169,23 @@ const t = useTranslations(lang);
             <!-- External Clients & Actors -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               <div class="bg-slate-100/80 border border-slate-300 rounded-lg p-2.5 text-center shadow-2xs">
-                <span class="font-bold text-slate-800 block text-xs">{t('cockpit.d.publicUsers')}</span>
-                <span class="text-[10px] text-slate-500">{t('cockpit.d.httpsWebBrowsers')}</span>
+                <span class="font-bold text-slate-800 block text-xs">{t('idp.d.publicUsers')}</span>
+                <span class="text-[10px] text-slate-500">{t('idp.d.httpsWebBrowsers')}</span>
               </div>
               <div class="bg-slate-100/80 border border-slate-300 rounded-lg p-2.5 text-center shadow-2xs">
-                <span class="font-bold text-slate-800 block text-xs">{t('cockpit.d.autonomousAiFleet')}</span>
+                <span class="font-bold text-slate-800 block text-xs">{t('idp.d.autonomousAiFleet')}</span>
                 <span class="text-[10px] text-slate-500">FastMCP / Bearer API</span>
               </div>
               <div class="bg-slate-100/80 border border-slate-300 rounded-lg p-2.5 text-center shadow-2xs">
-                <span class="font-bold text-slate-800 block text-xs">{t('cockpit.d.gitWebhookDispatch')}</span>
-                <span class="text-[10px] text-slate-500">{t('cockpit.d.githubActionsDigest')}</span>
+                <span class="font-bold text-slate-800 block text-xs">{t('idp.d.gitWebhookDispatch')}</span>
+                <span class="text-[10px] text-slate-500">{t('idp.d.githubActionsDigest')}</span>
               </div>
             </div>
 
             <!-- Directional Connector Arrow -->
             <div class="flex items-center justify-center gap-2 py-0.5 text-slate-400">
               <span class="text-xs font-bold text-cyan-700">↓</span>
-              <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('cockpit.d.publicTlsTrafficAnycast')}</span>
+              <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('idp.d.publicTlsTrafficAnycast')}</span>
               <span class="text-xs font-bold text-cyan-700">↓</span>
             </div>
 
@@ -194,22 +194,22 @@ const t = useTranslations(lang);
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-2">
                   <span class="h-2 w-2 rounded-full bg-amber-500"></span>
-                  <span class="font-bold text-amber-900 uppercase tracking-wide">{t('cockpit.d.layer1PublicEdge')}</span>
+                  <span class="font-bold text-amber-900 uppercase tracking-wide">{t('idp.d.layer1PublicEdge')}</span>
                 </div>
-                <span class="text-[11px] text-amber-700 font-semibold">{t('cockpit.d.cloudflareWafGlobalAnycast')}</span>
+                <span class="text-[11px] text-amber-700 font-semibold">{t('idp.d.cloudflareWafGlobalAnycast')}</span>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
                 <div class="bg-white p-2 rounded border border-amber-100">
                   <span class="font-semibold text-gray-900 block">*.kubelab.live</span>
-                  <span class="text-[10px] text-gray-500">{t('cockpit.d.automatedEdgeTls1')}</span>
+                  <span class="text-[10px] text-gray-500">{t('idp.d.automatedEdgeTls1')}</span>
                 </div>
                 <div class="bg-white p-2 rounded border border-amber-100">
                   <span class="font-semibold text-gray-900 block">mlorente.dev</span>
-                  <span class="text-[10px] text-gray-500">{t('cockpit.d.globalCdnStaticAssets')}</span>
+                  <span class="text-[10px] text-gray-500">{t('idp.d.globalCdnStaticAssets')}</span>
                 </div>
                 <div class="bg-white p-2 rounded border border-amber-100">
-                  <span class="font-semibold text-gray-900 block">{t('cockpit.d.ddosHeuristics')}</span>
-                  <span class="text-[10px] text-gray-500">{t('cockpit.d.l3L4VolumetricShield')}</span>
+                  <span class="font-semibold text-gray-900 block">{t('idp.d.ddosHeuristics')}</span>
+                  <span class="text-[10px] text-gray-500">{t('idp.d.l3L4VolumetricShield')}</span>
                 </div>
               </div>
             </div>
@@ -217,7 +217,7 @@ const t = useTranslations(lang);
             <!-- Directional Connector Arrow -->
             <div class="flex items-center justify-center gap-2 py-0.5 text-slate-400">
               <span class="text-xs font-bold text-cyan-700">↓</span>
-              <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('cockpit.d.https443DirectRouting')}</span>
+              <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('idp.d.https443DirectRouting')}</span>
               <span class="text-xs font-bold text-cyan-700">↓</span>
             </div>
 
@@ -230,49 +230,49 @@ const t = useTranslations(lang);
                     <span class="h-2 w-2 rounded-full bg-blue-500"></span>
                     <span class="font-bold text-slate-900">Hetzner Cloud VPS</span>
                   </div>
-                  <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-semibold">{t('cockpit.d.germanyAlwaysOnProd')}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-semibold">{t('idp.d.germanyAlwaysOnProd')}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 text-[11px]">
                   <div class="bg-white p-2 rounded border border-amber-200 flex items-start gap-2">
                     <ServiceIcon slug="traefik" class="w-4 h-4 shrink-0 mt-0.5" />
                     <div>
-                      <span class="text-amber-900 font-bold block">{t('cockpit.d.traefikIngressRouter')}</span>
-                      <span class="text-[10px] text-gray-500">{t('cockpit.d.autoTlsRateLimiting')}</span>
+                      <span class="text-amber-900 font-bold block">{t('idp.d.traefikIngressRouter')}</span>
+                      <span class="text-[10px] text-gray-500">{t('idp.d.autoTlsRateLimiting')}</span>
                     </div>
                   </div>
                   <div class="bg-white p-2 rounded border border-rose-200 flex items-start gap-2">
                     <ServiceIcon slug="authelia" class="w-4 h-4 shrink-0 mt-0.5" />
                     <div>
-                      <span class="text-rose-900 font-bold block">{t('cockpit.d.authelia2faGateway')}</span>
+                      <span class="text-rose-900 font-bold block">{t('idp.d.authelia2faGateway')}</span>
                       <span class="text-[10px] text-gray-500">Forward Auth · TOTP</span>
                     </div>
                   </div>
                   <div class="bg-white p-2 rounded border border-blue-200 flex items-start gap-2">
                     <ServiceIcon slug="kubelab-api" class="w-4 h-4 shrink-0 mt-0.5" />
                     <div>
-                      <span class="text-blue-900 font-bold block">{t('cockpit.d.k3sCoreAppsPods')}</span>
+                      <span class="text-blue-900 font-bold block">{t('idp.d.k3sCoreAppsPods')}</span>
                       <span class="text-[10px] text-gray-500">API (Go) · Web (Astro)</span>
                     </div>
                   </div>
                   <div class="bg-white p-2 rounded border border-purple-200 flex items-start gap-2">
                     <ServiceIcon slug="grafana" class="w-4 h-4 shrink-0 mt-0.5" />
                     <div>
-                      <span class="text-purple-900 font-bold block">{t('cockpit.d.observabilityLogs')}</span>
+                      <span class="text-purple-900 font-bold block">{t('idp.d.observabilityLogs')}</span>
                       <span class="text-[10px] text-gray-500">Grafana · Loki · Vector</span>
                     </div>
                   </div>
                   <div class="bg-white p-2 rounded border border-emerald-200 flex items-start gap-2">
                     <ServiceIcon slug="headscale" class="w-4 h-4 shrink-0 mt-0.5" />
                     <div>
-                      <span class="text-emerald-900 font-bold block">{t('cockpit.d.headscaleMeshCoord')}</span>
-                      <span class="text-[10px] text-gray-500">{t('cockpit.d.wireguardMeshCoordinator')}</span>
+                      <span class="text-emerald-900 font-bold block">{t('idp.d.headscaleMeshCoord')}</span>
+                      <span class="text-[10px] text-gray-500">{t('idp.d.wireguardMeshCoordinator')}</span>
                     </div>
                   </div>
                   <div class="bg-white p-2 rounded border border-amber-200 flex items-start gap-2">
                     <ServiceIcon slug="crowdsec" class="w-4 h-4 shrink-0 mt-0.5" />
                     <div>
-                      <span class="text-amber-900 font-bold block">{t('cockpit.d.crowdsecDefense')}</span>
-                      <span class="text-[10px] text-gray-500">{t('cockpit.d.behavioralIps')}</span>
+                      <span class="text-amber-900 font-bold block">{t('idp.d.crowdsecDefense')}</span>
+                      <span class="text-[10px] text-gray-500">{t('idp.d.behavioralIps')}</span>
                     </div>
                   </div>
                 </div>
@@ -285,17 +285,17 @@ const t = useTranslations(lang);
                     <ServiceIcon slug="argocd" class="w-4 h-4 shrink-0" />
                     <span class="font-bold text-purple-900 block text-xs">Google Cloud (gcp1)</span>
                   </div>
-                  <span class="text-[10px] text-purple-800 font-semibold block">{t('cockpit.d.argoCdGitopsHub')}</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('cockpit.d.independentMultiClusterController')}</p>
+                  <span class="text-[10px] text-purple-800 font-semibold block">{t('idp.d.argoCdGitopsHub')}</span>
+                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.independentMultiClusterController')}</p>
                 </div>
 
                 <div class="bg-amber-50/60 border border-amber-200 rounded-lg p-3 shadow-xs">
                   <div class="flex items-center gap-2 mb-1">
                     <ServiceIcon slug="uptime-kuma" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-amber-900 block text-xs">{t('cockpit.d.rpi3SbcMonitor')}</span>
+                    <span class="font-bold text-amber-900 block text-xs">{t('idp.d.rpi3SbcMonitor')}</span>
                   </div>
-                  <span class="text-[10px] text-amber-800 font-semibold block">{t('cockpit.d.uptimeKumaHealthHub')}</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('cockpit.d.autonomousSyntheticHttpIcmp')}</p>
+                  <span class="text-[10px] text-amber-800 font-semibold block">{t('idp.d.uptimeKumaHealthHub')}</span>
+                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.autonomousSyntheticHttpIcmp')}</p>
                 </div>
               </div>
             </div>
@@ -303,7 +303,7 @@ const t = useTranslations(lang);
             <!-- Directional Connector Arrow -->
             <div class="flex items-center justify-center gap-2 py-0.5 text-slate-400">
               <span class="text-xs font-bold text-cyan-700">↓</span>
-              <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('cockpit.d.crossWanEncryptedDirect')}</span>
+              <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('idp.d.crossWanEncryptedDirect')}</span>
               <span class="text-xs font-bold text-cyan-700">↓</span>
             </div>
 
@@ -311,15 +311,15 @@ const t = useTranslations(lang);
             <div class="bg-slate-900 text-slate-100 rounded-lg p-3.5 flex items-center justify-between text-xs shadow-md">
               <div class="flex items-center gap-2">
                 <span class="h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span class="font-bold text-cyan-300 uppercase tracking-wider">{t('cockpit.d.wireguardEncryptedTailscaleMesh')}</span>
+                <span class="font-bold text-cyan-300 uppercase tracking-wider">{t('idp.d.wireguardEncryptedTailscaleMesh')}</span>
               </div>
-              <span class="text-slate-400 text-[11px]">{t('cockpit.d.meshBackboneNote')}</span>
+              <span class="text-slate-400 text-[11px]">{t('idp.d.meshBackboneNote')}</span>
             </div>
 
             <!-- Directional Connector Arrow -->
             <div class="flex items-center justify-center gap-2 py-0.5 text-slate-400">
               <span class="text-xs font-bold text-emerald-700">↓</span>
-              <span class="text-[10px] font-mono text-emerald-700 uppercase tracking-wider">{t('cockpit.d.internalRoutingToDedicated')}</span>
+              <span class="text-[10px] font-mono text-emerald-700 uppercase tracking-wider">{t('idp.d.internalRoutingToDedicated')}</span>
               <span class="text-xs font-bold text-emerald-700">↓</span>
             </div>
 
@@ -328,15 +328,15 @@ const t = useTranslations(lang);
               <div class="flex items-center justify-between mb-3 pb-2 border-b border-emerald-200">
                 <div class="flex items-center gap-2">
                   <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                  <span class="font-bold text-emerald-900">{t('cockpit.d.homelabBareMetalCluster')}</span>
+                  <span class="font-bold text-emerald-900">{t('idp.d.homelabBareMetalCluster')}</span>
                 </div>
-                <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">{t('cockpit.d.onPremisesDedicated')}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">{t('idp.d.onPremisesDedicated')}</span>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-[11px]">
                 <div class="bg-white p-3 rounded-lg border border-amber-200 shadow-2xs">
                   <div class="flex items-center gap-1.5 mb-1">
                     <ServiceIcon slug="coredns" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-amber-900 block">{t('cockpit.d.rpi4Gateway')}</span>
+                    <span class="font-bold text-amber-900 block">{t('idp.d.rpi4Gateway')}</span>
                   </div>
                   <p class="text-[10px] text-gray-500 mt-1">Pi-hole + CoreDNS Split DNS</p>
                 </div>
@@ -346,7 +346,7 @@ const t = useTranslations(lang);
                     <span class="font-bold text-emerald-900 block">ace1 (Staging)</span>
                   </div>
                   <span class="text-[10px] text-emerald-700 block">Intel N95 · 11.5GB</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('cockpit.d.k3sStagingGiteaForge')}</p>
+                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.k3sStagingGiteaForge')}</p>
                 </div>
                 <div class="bg-white p-3 rounded-lg border border-emerald-200 shadow-2xs">
                   <div class="flex items-center gap-1.5 mb-1">
@@ -354,7 +354,7 @@ const t = useTranslations(lang);
                     <span class="font-bold text-emerald-900 block">ace2 (Dev)</span>
                   </div>
                   <span class="text-[10px] text-emerald-700 block">Intel N95 · 11.5GB</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('cockpit.d.distributedStagingWorkloads')}</p>
+                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.distributedStagingWorkloads')}</p>
                 </div>
                 <div class="bg-white p-3 rounded-lg border border-yellow-300 shadow-2xs">
                   <div class="flex items-center gap-1.5 mb-1">
@@ -370,7 +370,7 @@ const t = useTranslations(lang);
                     <span class="font-bold text-teal-900 block">Beelink N100</span>
                   </div>
                   <span class="text-[10px] text-teal-700 block">Intel N95 · 7.5GB</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('cockpit.d.ciRunnerMinioS3')}</p>
+                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.ciRunnerMinioS3')}</p>
                 </div>
               </div>
             </div>
@@ -379,36 +379,36 @@ const t = useTranslations(lang);
           <!-- Conversational Engineering Q&A Accordion -->
           <div class="mt-6 pt-5 border-t border-gray-100 space-y-2.5">
             <h4 class="text-xs font-bold text-gray-800 uppercase tracking-wider font-mono">
-              {t('cockpit.d.behindTheArchitectureDesign')}
+              {t('idp.d.behindTheArchitectureDesign')}
             </h4>
 
             <details class="group bg-gray-50 border border-gray-200 rounded-lg p-3.5 text-xs">
               <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between select-none">
-                <span>{t('cockpit.d.whyRunAPhysical')}</span>
+                <span>{t('idp.d.whyRunAPhysical')}</span>
                 <span class="text-gray-400 group-open:rotate-180 transition-transform font-mono">▼</span>
               </summary>
               <div class="mt-2.5 pt-2.5 border-t border-gray-200/60 text-gray-700 space-y-2 leading-relaxed font-sans">
-                <p>{t('cockpit.d.runningHighRamClusters')} <strong>{t('cockpit.d.zeroCloudComputeOr')}</strong>.</p>
+                <p>{t('idp.d.runningHighRamClusters')} <strong>{t('idp.d.zeroCloudComputeOr')}</strong>.</p>
               </div>
             </details>
 
             <details class="group bg-gray-50 border border-gray-200 rounded-lg p-3.5 text-xs">
               <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between select-none">
-                <span>{t('cockpit.d.howDoMachinesCommunicate')}</span>
+                <span>{t('idp.d.howDoMachinesCommunicate')}</span>
                 <span class="text-gray-400 group-open:rotate-180 transition-transform font-mono">▼</span>
               </summary>
               <div class="mt-2.5 pt-2.5 border-t border-gray-200/60 text-gray-700 space-y-2 leading-relaxed font-sans">
-                <p>{t('cockpit.d.thereAreZeroPort')} {t('cockpit.d.subnetTheyTalkTo')}</p>
+                <p>{t('idp.d.thereAreZeroPort')} {t('idp.d.subnetTheyTalkTo')}</p>
               </div>
             </details>
 
             <details class="group bg-gray-50 border border-gray-200 rounded-lg p-3.5 text-xs">
               <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between select-none">
-                <span>{t('cockpit.d.whyLightweightK3sInstead')}</span>
+                <span>{t('idp.d.whyLightweightK3sInstead')}</span>
                 <span class="text-gray-400 group-open:rotate-180 transition-transform font-mono">▼</span>
               </summary>
               <div class="mt-2.5 pt-2.5 border-t border-gray-200/60 text-gray-700 space-y-2 leading-relaxed font-sans">
-                <p>{t('cockpit.d.standardKubernetesNeedsOver')}</p>
+                <p>{t('idp.d.standardKubernetesNeedsOver')}</p>
               </div>
             </details>
           </div>
@@ -418,11 +418,11 @@ const t = useTranslations(lang);
         <div data-diagram-content="gitops" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6 hidden">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100">
             <div>
-              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('cockpit.d.continuousDeliveryBlueprint')}</span>
-              <h3 class="text-lg font-bold text-gray-900">{t('cockpit.d.buildOncePromoteBy')}</h3>
+              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('idp.d.continuousDeliveryBlueprint')}</span>
+              <h3 class="text-lg font-bold text-gray-900">{t('idp.d.buildOncePromoteBy')}</h3>
             </div>
             <span class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
-              {t('cockpit.d.zeroDowntimeRollouts')}
+              {t('idp.d.zeroDowntimeRollouts')}
             </span>
           </div>
 
@@ -433,47 +433,47 @@ const t = useTranslations(lang);
                 <span class="text-cyan-800 font-bold">01. Conventional Commit</span>
                 <span class="text-slate-400 text-sm font-bold">➔</span>
               </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('cockpit.d.featureBranchPrReviewed')}</p>
+              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.featureBranchPrReviewed')}</p>
             </div>
 
             <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 relative shadow-xs">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-cyan-800 font-bold">{t('cockpit.d.02NativeMultiArch')}</span>
+                <span class="text-cyan-800 font-bold">{t('idp.d.02NativeMultiArch')}</span>
                 <span class="text-slate-400 text-sm font-bold">➔</span>
               </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('cockpit.d.dockerBuildxCompilesNatively')}</p>
+              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.dockerBuildxCompilesNatively')}</p>
             </div>
 
             <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 relative shadow-xs">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-cyan-800 font-bold">{t('cockpit.d.03ImmutableDigestPush')}</span>
+                <span class="text-cyan-800 font-bold">{t('idp.d.03ImmutableDigestPush')}</span>
                 <span class="text-slate-400 text-sm font-bold">➔</span>
               </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('cockpit.d.pushesUnique')} <code>sha-&lt;short&gt;</code> {t('cockpit.d.containerTagToDocker')}</p>
+              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.pushesUnique')} <code>sha-&lt;short&gt;</code> {t('idp.d.containerTagToDocker')}</p>
             </div>
 
             <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 relative shadow-xs">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-cyan-800 font-bold">{t('cockpit.d.04SignedWebhookDispatch')}</span>
+                <span class="text-cyan-800 font-bold">{t('idp.d.04SignedWebhookDispatch')}</span>
                 <span class="text-slate-400 text-sm font-bold">➔</span>
               </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('cockpit.d.fires')} <code>repository_dispatch</code> {t('cockpit.d.eventToTheGitops')}</p>
+              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.fires')} <code>repository_dispatch</code> {t('idp.d.eventToTheGitops')}</p>
             </div>
 
             <div class="bg-emerald-50/60 border border-emerald-200 rounded-lg p-4 relative shadow-xs">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-emerald-900 font-bold">{t('cockpit.d.05ArgoCdStaging')}</span>
+                <span class="text-emerald-900 font-bold">{t('idp.d.05ArgoCdStaging')}</span>
                 <span class="text-emerald-500 text-sm font-bold">➔</span>
               </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('cockpit.d.k3sReconcilesNewManifest')}</p>
+              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.k3sReconcilesNewManifest')}</p>
             </div>
 
             <div class="bg-purple-50/60 border border-purple-200 rounded-lg p-4 relative shadow-xs">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-purple-900 font-bold">{t('cockpit.d.06ProductionPromotion')}</span>
+                <span class="text-purple-900 font-bold">{t('idp.d.06ProductionPromotion')}</span>
                 <span class="text-purple-500 text-sm font-bold">✓</span>
               </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('cockpit.d.promotesVerifiedSha256Digest')}</p>
+              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.promotesVerifiedSha256Digest')}</p>
             </div>
           </div>
         </div>
@@ -482,8 +482,8 @@ const t = useTranslations(lang);
         <div data-diagram-content="security" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6 hidden">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100">
             <div>
-              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('cockpit.d.perimeterDefenseIngressPath')}</span>
-              <h3 class="text-lg font-bold text-gray-900">{t('cockpit.d.zeroTrustRequestVerification')}</h3>
+              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('idp.d.perimeterDefenseIngressPath')}</span>
+              <h3 class="text-lg font-bold text-gray-900">{t('idp.d.zeroTrustRequestVerification')}</h3>
             </div>
             <span class="text-xs font-mono px-2.5 py-1 rounded bg-purple-50 text-purple-800 border border-purple-200">
               Authelia 2FA + CrowdSec
@@ -497,7 +497,7 @@ const t = useTranslations(lang);
                 <span class="h-6 w-6 rounded-full bg-cyan-800 text-white flex items-center justify-center font-bold text-[11px]">1</span>
                 <div>
                   <strong class="text-gray-900">Cloudflare DNS:</strong>
-                  <span class="text-gray-600 text-[11px] ml-1 font-sans">{t('cockpit.d.terminatesTlsFiltersL3')}</span>
+                  <span class="text-gray-600 text-[11px] ml-1 font-sans">{t('idp.d.terminatesTlsFiltersL3')}</span>
                 </div>
               </div>
               <span class="text-cyan-700 font-bold">↓</span>
@@ -507,8 +507,8 @@ const t = useTranslations(lang);
               <div class="flex items-center gap-3">
                 <span class="h-6 w-6 rounded-full bg-cyan-800 text-white flex items-center justify-center font-bold text-[11px]">2</span>
                 <div>
-                  <strong class="text-gray-900">{t('cockpit.d.traefikL7ReverseProxy')}</strong>
-                  <span class="text-gray-600 text-[11px] ml-1 font-sans">{t('cockpit.d.enforcesTokenBucketRate')}</span>
+                  <strong class="text-gray-900">{t('idp.d.traefikL7ReverseProxy')}</strong>
+                  <span class="text-gray-600 text-[11px] ml-1 font-sans">{t('idp.d.enforcesTokenBucketRate')}</span>
                 </div>
               </div>
               <span class="text-cyan-700 font-bold">↓</span>
@@ -518,8 +518,8 @@ const t = useTranslations(lang);
               <div class="flex items-center gap-3">
                 <span class="h-6 w-6 rounded-full bg-amber-700 text-white flex items-center justify-center font-bold text-[11px]">3</span>
                 <div>
-                  <strong class="text-amber-900">{t('cockpit.d.crowdsecBehavioralIps')}</strong>
-                  <span class="text-amber-800 text-[11px] ml-1 font-sans">{t('cockpit.d.parsesAccessLogsIn')}</span>
+                  <strong class="text-amber-900">{t('idp.d.crowdsecBehavioralIps')}</strong>
+                  <span class="text-amber-800 text-[11px] ml-1 font-sans">{t('idp.d.parsesAccessLogsIn')}</span>
                 </div>
               </div>
               <span class="text-amber-700 font-bold">↓</span>
@@ -529,8 +529,8 @@ const t = useTranslations(lang);
               <div class="flex items-center gap-3">
                 <span class="h-6 w-6 rounded-full bg-purple-700 text-white flex items-center justify-center font-bold text-[11px]">4</span>
                 <div>
-                  <strong class="text-purple-900">{t('cockpit.d.authelia2faGateway2')}</strong>
-                  <span class="text-purple-800 text-[11px] ml-1 font-sans">{t('cockpit.d.requiresTotp2faBefore')}</span>
+                  <strong class="text-purple-900">{t('idp.d.authelia2faGateway2')}</strong>
+                  <span class="text-purple-800 text-[11px] ml-1 font-sans">{t('idp.d.requiresTotp2faBefore')}</span>
                 </div>
               </div>
               <span class="text-purple-700 font-bold">↓</span>
@@ -540,8 +540,8 @@ const t = useTranslations(lang);
               <div class="flex items-center gap-3">
                 <span class="h-6 w-6 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-[11px]">5</span>
                 <div>
-                  <strong class="text-emerald-900">{t('cockpit.d.wireguardEncryptedDelivery')}</strong>
-                  <span class="text-emerald-800 text-[11px] ml-1 font-sans">{t('cockpit.d.deliversClearedPacketsDirectly')}</span>
+                  <strong class="text-emerald-900">{t('idp.d.wireguardEncryptedDelivery')}</strong>
+                  <span class="text-emerald-800 text-[11px] ml-1 font-sans">{t('idp.d.deliversClearedPacketsDirectly')}</span>
                 </div>
               </div>
               <span class="text-emerald-700 font-bold">✓</span>
@@ -553,21 +553,21 @@ const t = useTranslations(lang);
         <div data-diagram-content="ai-mcp" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6 hidden">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100">
             <div>
-              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('cockpit.d.aiPlatformContextPlane')}</span>
-              <h3 class="text-lg font-bold text-gray-900">{t('cockpit.d.hardwareCudaEdgeInference')}</h3>
+              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('idp.d.aiPlatformContextPlane')}</span>
+              <h3 class="text-lg font-bold text-gray-900">{t('idp.d.hardwareCudaEdgeInference')}</h3>
             </div>
             <span class="text-xs font-mono px-2.5 py-1 rounded bg-cyan-50 text-cyan-800 border border-cyan-200">
-              {t('cockpit.d.6782ContextReduction')}
+              {t('idp.d.6782ContextReduction')}
             </span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
             <div class="bg-purple-50/40 border border-purple-200 rounded-xl p-5 shadow-xs">
               <div class="flex items-center justify-between mb-2">
-                <span class="font-bold text-purple-900 text-sm">{t('cockpit.d.1PhysicalEdgeGpu')}</span>
+                <span class="font-bold text-purple-900 text-sm">{t('idp.d.1PhysicalEdgeGpu')}</span>
                 <span class="text-purple-600 font-bold">On-device</span>
               </div>
-              <p class="text-xs text-gray-600 font-sans mb-3">{t('cockpit.d.runsLocalLanguageModels')}</p>
+              <p class="text-xs text-gray-600 font-sans mb-3">{t('idp.d.runsLocalLanguageModels')}</p>
               <div class="space-y-2 text-[11px]">
                 <div class="bg-white p-2.5 rounded border border-purple-100 flex items-start gap-2">
                   <ServiceIcon slug="pollex" class="w-4 h-4 shrink-0 mt-0.5" />
@@ -581,16 +581,16 @@ const t = useTranslations(lang);
 
             <div class="bg-cyan-50/40 border border-cyan-200 rounded-xl p-5 shadow-xs">
               <div class="flex items-center justify-between mb-2">
-                <span class="font-bold text-cyan-900 text-sm">{t('cockpit.d.2HiveMcpAst')}</span>
+                <span class="font-bold text-cyan-900 text-sm">{t('idp.d.2HiveMcpAst')}</span>
                 <span class="text-cyan-600 font-bold">FastMCP ⚡</span>
               </div>
-              <p class="text-xs text-gray-600 font-sans mb-3">{t('cockpit.d.deterministicContextServerProviding')}</p>
+              <p class="text-xs text-gray-600 font-sans mb-3">{t('idp.d.deterministicContextServerProviding')}</p>
               <div class="space-y-2 text-[11px]">
                 <div class="bg-white p-2.5 rounded border border-cyan-100 flex items-start gap-2">
                   <ServiceIcon slug="hive" class="w-4 h-4 shrink-0 mt-0.5" />
                   <div>
-                    <span class="text-cyan-900 font-semibold block">{t('cockpit.d.treeSitterAstSqlite')}</span>
-                    <span class="text-[10px] text-gray-500">{t('cockpit.d.subMillisecondRetrievalZero')}</span>
+                    <span class="text-cyan-900 font-semibold block">{t('idp.d.treeSitterAstSqlite')}</span>
+                    <span class="text-[10px] text-gray-500">{t('idp.d.subMillisecondRetrievalZero')}</span>
                   </div>
                 </div>
               </div>
@@ -602,10 +602,10 @@ const t = useTranslations(lang);
     <!-- SECTION 3: Services Catalog (3 Tabs: All / Common / Prod / Staging) -->
     <Section padding="py-10">
         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
-          <SectionHeading number="03" label={t('cockpit.services.heading')} />
-          <span class="text-xs font-mono text-gray-500">{t('cockpit.services.count').replace('{n}', String(cockpit.services.length)).replace('{total}', String(cockpit.cluster.totalServices))}</span>
+          <SectionHeading number="03" label={t('platform.services.heading')} />
+          <span class="text-xs font-mono text-gray-500">{t('platform.services.count').replace('{n}', String(platform.services.length)).replace('{total}', String(platform.cluster.totalServices))}</span>
         </div>
-        <p class="text-xs text-gray-500 mb-5">{t('cockpit.services.sub')}</p>
+        <p class="text-xs text-gray-500 mb-5">{t('platform.services.sub')}</p>
 
         <!-- Services Filter Tabs -->
         <div class="flex flex-wrap items-center gap-1.5 mb-4 text-xs font-mono" data-service-tabs>
@@ -614,28 +614,28 @@ const t = useTranslations(lang);
             data-service-filter="all"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-900 text-white shadow-sm cursor-pointer"
           >
-            All Services ({cockpit.services.length})
+            All Services ({platform.services.length})
           </button>
           <button
             type="button"
             data-service-filter="common"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
           >
-            Common & Core ({cockpit.services.filter(s => s.env === 'common').length})
+            Common & Core ({platform.services.filter(s => s.env === 'common').length})
           </button>
           <button
             type="button"
             data-service-filter="prod"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
           >
-            Production ({cockpit.services.filter(s => s.env === 'prod').length})
+            Production ({platform.services.filter(s => s.env === 'prod').length})
           </button>
           <button
             type="button"
             data-service-filter="staging"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
           >
-            Staging ({cockpit.services.filter(s => s.env === 'staging').length})
+            Staging ({platform.services.filter(s => s.env === 'staging').length})
           </button>
         </div>
 
@@ -645,14 +645,14 @@ const t = useTranslations(lang);
             <table class="w-full text-left border-collapse text-xs font-mono">
               <thead>
                 <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 text-[11px] uppercase tracking-wider">
-                  <th class="py-3 px-4 font-semibold">{t('cockpit.d.service')}</th>
-                  <th class="py-3 px-4 font-semibold">{t('cockpit.d.category')}</th>
-                  <th class="py-3 px-4 font-semibold hidden sm:table-cell">{t('cockpit.d.node')}</th>
-                  <th class="py-3 px-4 font-semibold text-right">{t('cockpit.d.endpointUrlAccessBoundary')}</th>
+                  <th class="py-3 px-4 font-semibold">{t('idp.d.service')}</th>
+                  <th class="py-3 px-4 font-semibold">{t('idp.d.category')}</th>
+                  <th class="py-3 px-4 font-semibold hidden sm:table-cell">{t('idp.d.node')}</th>
+                  <th class="py-3 px-4 font-semibold text-right">{t('idp.d.endpointUrlAccessBoundary')}</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100" data-service-rows>
-                {cockpit.services.map((svc) => (
+                {platform.services.map((svc) => (
                   <tr data-service-row={svc.env} class="hover:bg-gray-50/80 transition-colors">
                     <!-- Name, Icon & Status -->
                     <td class="py-3 px-4">
@@ -695,11 +695,11 @@ const t = useTranslations(lang);
                       <div class="flex items-center justify-end gap-2">
                         {svc.isPublic ? (
                           <span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-semibold">
-                            {t('cockpit.d.public')}
+                            {t('idp.d.public')}
                           </span>
                         ) : (
                           <span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-semibold">
-                            {t('cockpit.d.2faMesh')}
+                            {t('idp.d.2faMesh')}
                           </span>
                         )}
                         {svc.url ? (
@@ -713,7 +713,7 @@ const t = useTranslations(lang);
                             <span class="text-cyan-600">↗</span>
                           </a>
                         ) : (
-                          <span class="font-mono text-xs text-gray-400">{t('cockpit.services.notPublished')}</span>
+                          <span class="font-mono text-xs text-gray-400">{t('platform.services.notPublished')}</span>
                         )}
                       </div>
                     </td>
@@ -728,10 +728,10 @@ const t = useTranslations(lang);
     <!-- SECTION 4: Hybrid Hardware Topology (Crisp Compact Tabular View) -->
     <Section padding="py-10">
         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
-          <SectionHeading number="04" label={t('cockpit.topology.heading')} />
-          <span class="text-xs font-mono text-gray-500">{t('cockpit.d.8PhysicalCloudNodes')}</span>
+          <SectionHeading number="04" label={t('idp.topology.heading')} />
+          <span class="text-xs font-mono text-gray-500">{t('idp.d.8PhysicalCloudNodes')}</span>
         </div>
-        <p class="text-xs text-gray-500 mb-5">{t('cockpit.topology.sub')}</p>
+        <p class="text-xs text-gray-500 mb-5">{t('idp.topology.sub')}</p>
 
         <!-- Nodes Filter Tabs -->
         <div class="flex flex-wrap items-center gap-1.5 mb-4 text-xs font-mono" data-node-tabs>
@@ -740,21 +740,21 @@ const t = useTranslations(lang);
             data-node-filter="all"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-900 text-white shadow-sm cursor-pointer"
           >
-            All Nodes ({cockpit.nodes.length})
+            All Nodes ({platform.nodes.length})
           </button>
           <button
             type="button"
             data-node-filter="cloud"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
           >
-            Cloud Always-On ({cockpit.nodes.filter(n => n.tier === 'cloud').length})
+            Cloud Always-On ({platform.nodes.filter(n => n.tier === 'cloud').length})
           </button>
           <button
             type="button"
             data-node-filter="homelab"
             class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
           >
-            Homelab Bare-Metal ({cockpit.nodes.filter(n => n.tier === 'homelab').length})
+            Homelab Bare-Metal ({platform.nodes.filter(n => n.tier === 'homelab').length})
           </button>
         </div>
 
@@ -764,16 +764,16 @@ const t = useTranslations(lang);
             <table class="w-full text-left border-collapse text-xs font-mono">
               <thead>
                 <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 text-[11px] uppercase tracking-wider">
-                  <th class="py-2.5 px-3.5 font-semibold">{t('cockpit.d.node')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold">{t('cockpit.d.primaryRole')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold">{t('cockpit.d.environment')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold hidden sm:table-cell">{t('cockpit.d.computeCpu')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold hidden md:table-cell">{t('cockpit.d.ramNvme')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold text-right">{t('cockpit.d.location')}</th>
+                  <th class="py-2.5 px-3.5 font-semibold">{t('idp.d.node')}</th>
+                  <th class="py-2.5 px-3.5 font-semibold">{t('idp.d.primaryRole')}</th>
+                  <th class="py-2.5 px-3.5 font-semibold">{t('idp.d.environment')}</th>
+                  <th class="py-2.5 px-3.5 font-semibold hidden sm:table-cell">{t('idp.d.computeCpu')}</th>
+                  <th class="py-2.5 px-3.5 font-semibold hidden md:table-cell">{t('idp.d.ramNvme')}</th>
+                  <th class="py-2.5 px-3.5 font-semibold text-right">{t('idp.d.location')}</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100" data-node-rows>
-                {cockpit.nodes.map((node) => (
+                {platform.nodes.map((node) => (
                   <tr data-node-row={node.tier} class="hover:bg-gray-50/80 transition-colors">
                     <!-- Node ID & Name -->
                     <td class="py-2.5 px-3.5 whitespace-nowrap">
@@ -827,57 +827,57 @@ const t = useTranslations(lang);
     <!-- SECTION 5: Service Level Objectives (SLOs) & Reliability -->
     <Section padding="py-10">
         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
-          <SectionHeading number="05" label={t('cockpit.slos.heading')} />
-          <span class="text-xs font-mono text-emerald-700 font-semibold">{t('cockpit.d.90DaySlaTarget')}</span>
+          <SectionHeading number="05" label={t('idp.slos.heading')} />
+          <span class="text-xs font-mono text-emerald-700 font-semibold">{t('idp.d.90DaySlaTarget')}</span>
         </div>
-        <p class="text-xs text-gray-500 mb-6">{t('cockpit.slos.sub')}</p>
+        <p class="text-xs text-gray-500 mb-6">{t('idp.slos.sub')}</p>
 
         <!-- 90-day availability, as recorded by Uptime Kuma at build time -->
         <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-              <span class="font-bold text-gray-900 text-sm font-mono">{t('cockpit.d.90DayPlatformAvailability')}</span>
+              <span class="font-bold text-gray-900 text-sm font-mono">{t('idp.d.90DayPlatformAvailability')}</span>
             </div>
-            <span class="font-mono font-bold text-emerald-700 text-sm">{cockpit.cluster.uptime}</span>
+            <span class="font-mono font-bold text-emerald-700 text-sm">{platform.cluster.uptime}</span>
           </div>
-          <p class="text-[11px] font-mono text-gray-500">{t('cockpit.snapshot')}</p>
+          <p class="text-[11px] font-mono text-gray-500">{t('idp.snapshot')}</p>
         </div>
 
         <!-- Grid of SLI vs SLO Targets -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono text-xs mt-4">
           <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-            <span class="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">{t('cockpit.d.availabilitySlo')}</span>
+            <span class="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">{t('idp.d.availabilitySlo')}</span>
             <div class="flex items-baseline justify-between">
-              <span class="text-xl font-bold text-gray-900">{cockpit.cluster.uptime}</span>
-              <span class="text-[10px] text-gray-500">{t('cockpit.d.target995')}</span>
+              <span class="text-xl font-bold text-gray-900">{platform.cluster.uptime}</span>
+              <span class="text-[10px] text-gray-500">{t('idp.d.target995')}</span>
             </div>
             <span class="text-[10px] text-emerald-700 font-semibold block mt-1">● NOMINAL (Uptime Kuma)</span>
           </div>
 
           <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-            <span class="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">{t('cockpit.d.edgeIngressP95')}</span>
+            <span class="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">{t('idp.d.edgeIngressP95')}</span>
             <div class="flex items-baseline justify-between">
               <span class="text-xl font-bold text-gray-900">~42ms</span>
-              <span class="text-[10px] text-gray-500">{t('cockpit.d.targetLt100ms')}</span>
+              <span class="text-[10px] text-gray-500">{t('idp.d.targetLt100ms')}</span>
             </div>
             <span class="text-[10px] text-emerald-700 font-semibold block mt-1">● TRAEFIK + CLOUDFLARE</span>
           </div>
 
           <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-            <span class="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">{t('cockpit.d.gitopsDriftLoop')}</span>
+            <span class="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">{t('idp.d.gitopsDriftLoop')}</span>
             <div class="flex items-baseline justify-between">
-              <span class="text-xl font-bold text-gray-900">{cockpit.metrics.gitopsSyncLoop}</span>
-              <span class="text-[10px] text-gray-500">{t('cockpit.d.targetLt60s')}</span>
+              <span class="text-xl font-bold text-gray-900">{platform.metrics.gitopsSyncLoop}</span>
+              <span class="text-[10px] text-gray-500">{t('idp.d.targetLt60s')}</span>
             </div>
             <span class="text-[10px] text-emerald-700 font-semibold block mt-1">● ARGO CD RECONCILER</span>
           </div>
 
           <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-            <span class="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">{t('cockpit.d.cudaEdgeTtft')}</span>
+            <span class="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">{t('idp.d.cudaEdgeTtft')}</span>
             <div class="flex items-baseline justify-between">
-              <span class="text-xl font-bold text-gray-900">{cockpit.metrics.inferenceLatency}</span>
-              <span class="text-[10px] text-gray-500">{t('cockpit.d.targetLt50s')}</span>
+              <span class="text-xl font-bold text-gray-900">{platform.metrics.inferenceLatency}</span>
+              <span class="text-[10px] text-gray-500">{t('idp.d.targetLt50s')}</span>
             </div>
             <span class="text-[10px] text-purple-700 font-semibold block mt-1">● JETSON NANO (QWEN 1.5B)</span>
           </div>
@@ -887,22 +887,22 @@ const t = useTranslations(lang);
     <!-- SECTION 6: Client-Side Health Verification -->
     <Section
       padding="py-10"
-      data-cockpit-console
+      data-idp-console
       data-probe-i18n={JSON.stringify({
-        running: t('cockpit.probe.running'),
-        checking: t('cockpit.probe.checking'),
-        probing: t('cockpit.probe.probing'),
-        reachable: t('cockpit.probe.reachable'),
-        unreachable: t('cockpit.probe.unreachable'),
-        result: t('cockpit.probe.result'),
-        summary: t('cockpit.probe.summary'),
-        lastRun: t('cockpit.probe.lastRun'),
+        running: t('idp.probe.running'),
+        checking: t('idp.probe.checking'),
+        probing: t('idp.probe.probing'),
+        reachable: t('idp.probe.reachable'),
+        unreachable: t('idp.probe.unreachable'),
+        result: t('idp.probe.result'),
+        summary: t('idp.probe.summary'),
+        lastRun: t('idp.probe.lastRun'),
       })}
     >
       <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 mb-4">
           <div>
-            <SectionHeading number="06" label={t('cockpit.probe.heading')} />
-            <p class="text-xs text-gray-500 mt-1">{t('cockpit.probe.sub')}</p>
+            <SectionHeading number="06" label={t('idp.probe.heading')} />
+            <p class="text-xs text-gray-500 mt-1">{t('idp.probe.sub')}</p>
           </div>
           <button
             type="button"
@@ -912,26 +912,26 @@ const t = useTranslations(lang);
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <span>{t('cockpit.probe.btn')}</span>
+            <span>{t('idp.probe.btn')}</span>
           </button>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 font-mono text-xs text-slate-300 shadow-md">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-slate-400 text-[11px]">
-            <span>{t('cockpit.d.cockpitProbeRunnerBrowser')}</span>
-            <span data-probe-status>{t('cockpit.d.ready')}</span>
+            <span>{t('idp.d.idpProbeRunnerBrowser')}</span>
+            <span data-probe-status>{t('idp.d.ready')}</span>
           </div>
 
           <div
             data-probe-log
             class="py-3 space-y-1.5 min-h-[120px] max-h-[220px] overflow-y-auto font-mono text-[12px] select-text"
           >
-            <p class="text-slate-500">{t('cockpit.d.readyToVerifyLive')}</p>
+            <p class="text-slate-500">{t('idp.d.readyToVerifyLive')}</p>
           </div>
 
           <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
-            <span data-probe-timestamp>{t('cockpit.probe.timestamp')}: --</span>
-            <span class="text-emerald-400 font-medium">{t('cockpit.d.nonBlockingCorsCheck')}</span>
+            <span data-probe-timestamp>{t('idp.probe.timestamp')}: --</span>
+            <span class="text-emerald-400 font-medium">{t('idp.d.nonBlockingCorsCheck')}</span>
           </div>
         </div>
     </Section>
@@ -941,7 +941,7 @@ const t = useTranslations(lang);
 </BaseLayout>
 
 <script>
-  import { cockpit } from '../data/cockpit';
+  import { platform } from '../data/platform';
 
   interface ProbeResult {
     slug: string;
@@ -1085,7 +1085,7 @@ const t = useTranslations(lang);
   }
 
   async function runAllProbes(): Promise<void> {
-    const root = document.querySelector('[data-cockpit-console]');
+    const root = document.querySelector('[data-idp-console]');
     if (!root) return;
 
     const msg = JSON.parse((root as HTMLElement).dataset.probeI18n || '{}');
@@ -1101,7 +1101,7 @@ const t = useTranslations(lang);
     }
     if (logContainer) logContainer.innerHTML = '';
 
-    const publicServices = cockpit.services.filter((s) => s.isPublic);
+    const publicServices = platform.services.filter((s) => s.isPublic);
     appendLog(root, `[${getTimestamp()}] ${msg.checking.replace('{n}', String(publicServices.length))}`, 'text-cyan-400');
 
     let totalLatency = 0;
