@@ -56,15 +56,15 @@ export const projects: Project[] = [
   {
     en: {
       title: 'KubeLab',
-      metric: '5-node bare-metal K8s',
+      metric: '8 machines, 3 K3s clusters',
       description:
-        'I wanted to understand how platforms actually work — not just click buttons on managed K8s. So I built one from scratch. 5 physical nodes, K3s, VPN mesh, SSO, full observability. Everything IaC, nothing manual.',
+        'I wanted to understand how platforms actually work — not just click buttons on managed K8s. So I built one from scratch. Eight machines, three single-node K3s clusters, VPN mesh, SSO, full observability. Everything IaC, nothing manual.',
     },
     es: {
       title: 'KubeLab',
-      metric: 'K8s bare-metal, 5 nodos',
+      metric: '8 máquinas, 3 clústeres K3s',
       description:
-        'Quería entender cómo funcionan de verdad las plataformas, no solo pulsar botones en un K8s gestionado. Así que construí una desde cero. 5 nodos físicos, K3s, malla VPN, SSO y observabilidad completa. Todo IaC, nada manual.',
+        'Quería entender cómo funcionan de verdad las plataformas, no solo pulsar botones en un K8s gestionado. Así que construí una desde cero. Ocho máquinas, tres clústeres K3s de un nodo, malla VPN, SSO y observabilidad completa. Todo IaC, nada manual.',
     },
     github: 'https://github.com/mlorentedev/kubelab',
     tags: ['Kubernetes', 'Go', 'Python', 'Terraform', 'Ansible'],

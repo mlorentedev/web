@@ -1,17 +1,19 @@
 {
   "cluster": {
-    "name": "KubeLab Hybrid Cloud & Edge IDP",
-    "version": "K3s v1.31",
-    "gitops": "ArgoCD Synced",
-    "uptime": "99.9% (90d)",
+    "name": "KubeLab Hybrid Cloud & Edge Platform",
+    "version": "K3s v1.34.4+k3s1",
+    "gitops": "Argo CD v3.4.1 · 2 applications synced",
+    "uptime": "99.9% (90d, Uptime Kuma)",
     "activeNodes": 8,
-    "totalServices": 31
+    "totalServices": 35,
+    "kubernetesClusters": 3,
+    "kubernetesNodes": 3
   },
   "metrics": {
-    "inferenceLatency": "~3.2s",
+    "inferenceLatency": "not measured",
     "contextReduction": "67–82%",
     "reconciliationTime": "<30s",
-    "edgeArchitecture": "Tailscale Mesh",
+    "edgeArchitecture": "Tailscale mesh (Headscale)",
     "uptimeScore": "99.9%",
     "gitopsSyncLoop": "<30s Drift Loop"
   },
@@ -26,13 +28,15 @@
       "summaryEs": "Ingress público, TLS Let's Encrypt, Core IDP, VPN Headscale y observabilidad",
       "environment": "Production",
       "provider": "Hetzner Cloud",
-      "arch": "x86_64",
-      "cpu": "4 vCPU (AMD EPYC)",
-      "ram": "8 GB ECC",
-      "storage": "80 GB NVMe",
+      "arch": "ARM64",
+      "cpu": "4 vCPU (Ampere Neoverse-N1)",
+      "ram": "7.5 GB",
+      "storage": "75 GB NVMe",
       "os": "Ubuntu 24.04 LTS",
       "location": "Falkenstein (Germany)",
-      "status": "healthy"
+      "status": "healthy",
+      "runtime": "k3s",
+      "runtimeRole": "Production K3s cluster (single node)"
     },
     {
       "id": "gcp1",
@@ -45,12 +49,14 @@
       "environment": "Production",
       "provider": "Google Cloud (europe-west4)",
       "arch": "x86_64",
-      "cpu": "2 vCPU (e2-small)",
+      "cpu": "2 vCPU (AMD EPYC 7B12)",
       "ram": "2 GB",
       "storage": "12 GB pd-balanced",
       "os": "Ubuntu 24.04 LTS",
       "location": "Eemshaven (Netherlands)",
-      "status": "healthy"
+      "status": "healthy",
+      "runtime": "k3s",
+      "runtimeRole": "Argo CD hub K3s cluster (single node)"
     },
     {
       "id": "ace1",
@@ -63,12 +69,14 @@
       "environment": "Staging",
       "provider": "On-Premises Homelab",
       "arch": "x86_64",
-      "cpu": "AMD Ryzen 7 5700U (8c/16t)",
-      "ram": "32 GB DDR4",
-      "storage": "512 GB NVMe",
+      "cpu": "Intel N95 (4c)",
+      "ram": "11.5 GB",
+      "storage": "233 GB NVMe",
       "os": "Ubuntu 24.04 LTS",
       "location": "Homelab (USA)",
-      "status": "healthy"
+      "status": "healthy",
+      "runtime": "k3s",
+      "runtimeRole": "Staging K3s cluster (single node)"
     },
     {
       "id": "ace2",
@@ -81,12 +89,14 @@
       "environment": "Staging",
       "provider": "On-Premises Homelab",
       "arch": "x86_64",
-      "cpu": "AMD Ryzen 7 5700U (8c/16t)",
-      "ram": "32 GB DDR4",
-      "storage": "512 GB NVMe",
+      "cpu": "Intel N95 (4c)",
+      "ram": "11.5 GB",
+      "storage": "233 GB NVMe",
       "os": "Ubuntu 24.04 LTS",
       "location": "Homelab (USA)",
-      "status": "healthy"
+      "status": "healthy",
+      "runtime": "docker",
+      "runtimeRole": "Spare capacity — monitoring agent only, no Kubernetes"
     },
     {
       "id": "jetson",
@@ -99,12 +109,14 @@
       "environment": "Edge AI",
       "provider": "Bare Metal Edge",
       "arch": "ARM64",
-      "cpu": "128 Maxwell CUDA + 4c Cortex-A57",
-      "ram": "4 GB LPDDR4",
-      "storage": "64 GB High-Endurance",
-      "os": "Linux4Tegra (Ubuntu 20.04)",
+      "cpu": "4c Cortex-A57 (128 Maxwell CUDA cores, unused)",
+      "ram": "3.9 GB LPDDR4",
+      "storage": "230 GB",
+      "os": "Linux4Tegra (Ubuntu 18.04)",
       "location": "Edge Hardware (USA)",
-      "status": "healthy"
+      "status": "healthy",
+      "runtime": "systemd",
+      "runtimeRole": "Edge inference host: Ollama, no Kubernetes"
     },
     {
       "id": "beelink",
@@ -117,12 +129,14 @@
       "environment": "Infrastructure",
       "provider": "On-Premises Homelab",
       "arch": "x86_64",
-      "cpu": "Intel N100 (4c/4t up to 3.4GHz)",
-      "ram": "16 GB DDR5",
-      "storage": "500 GB NVMe",
+      "cpu": "Intel N95 (4c)",
+      "ram": "7.5 GB",
+      "storage": "98 GB NVMe",
       "os": "Ubuntu 24.04 LTS",
       "location": "Homelab (USA)",
-      "status": "healthy"
+      "status": "healthy",
+      "runtime": "docker",
+      "runtimeRole": "Docker host: Gitea, MinIO, CI runner, Buildx builders"
     },
     {
       "id": "rpi4",
@@ -136,11 +150,13 @@
       "provider": "Bare Metal SBC",
       "arch": "ARM64",
       "cpu": "Broadcom BCM2711 (4c)",
-      "ram": "8 GB LPDDR4",
-      "storage": "64 GB MicroSD",
-      "os": "Debian Bookworm",
+      "ram": "7.6 GB",
+      "storage": "58 GB MicroSD",
+      "os": "Ubuntu 24.04 LTS",
       "location": "Homelab (USA)",
-      "status": "healthy"
+      "status": "healthy",
+      "runtime": "docker",
+      "runtimeRole": "Docker host: Pi-hole and CoreDNS split DNS"
     },
     {
       "id": "rpi3",
@@ -154,11 +170,33 @@
       "provider": "Bare Metal SBC",
       "arch": "ARM64",
       "cpu": "Broadcom BCM2837 (4c)",
-      "ram": "1 GB LPDDR2",
-      "storage": "32 GB MicroSD",
-      "os": "DietPi OS",
+      "ram": "0.9 GB",
+      "storage": "29 GB MicroSD",
+      "os": "Debian 13 (trixie)",
       "location": "Homelab (USA)",
-      "status": "healthy"
+      "status": "healthy",
+      "runtime": "docker",
+      "runtimeRole": "Docker host: Uptime Kuma out-of-band monitor"
+    },
+    {
+      "id": "aws1",
+      "name": "AWS Standby Hub",
+      "tier": "cloud",
+      "role": "Cold standby for the Argo CD hub",
+      "roleEs": "Standby en frío del hub de Argo CD",
+      "summary": "Held the Argo CD hub until the migration to GCP (ADR-063). Powered down; reprovisionable from provision-aws1.yml.",
+      "summaryEs": "Alojó el hub de Argo CD hasta la migración a GCP (ADR-063). Apagado; reprovisionable desde provision-aws1.yml.",
+      "environment": "Infrastructure",
+      "provider": "AWS (t4g.small)",
+      "arch": "ARM64",
+      "cpu": "2 vCPU (Graviton2)",
+      "ram": "2 GB",
+      "storage": "—",
+      "os": "—",
+      "runtime": "standby",
+      "runtimeRole": "Not running. Rehearsal date not yet recorded.",
+      "status": "standby",
+      "location": "Powered down (was eu-central)"
     }
   ],
   "services": [
@@ -209,8 +247,8 @@
       "categoryEs": "IA e Inferencia",
       "description": "Bare-metal local LLM inference cluster running Mistral and DeepSeek models.",
       "descriptionEs": "Clúster bare-metal de inferencia LLM local corriendo modelos Mistral y DeepSeek.",
-      "node": "beelink",
-      "env": "staging",
+      "node": "jetson",
+      "env": "prod",
       "tech": [
         "Ollama",
         "Go",
@@ -302,7 +340,7 @@
       "description": "Declarative GitOps continuous delivery synchronizing K3s clusters with drift detection.",
       "descriptionEs": "Entrega continua GitOps declarativa sincronizando clústeres K3s con detección de drift.",
       "node": "gcp1",
-      "env": "prod",
+      "env": "common",
       "tech": [
         "ArgoCD",
         "Kubernetes",
@@ -319,8 +357,8 @@
       "categoryEs": "GitOps y Entrega",
       "description": "Lightweight self-hosted Git repository and automated CI mirror for private codebases.",
       "descriptionEs": "Repositorio Git ligero autoalojado y mirror de CI automatizado para código privado.",
-      "node": "ace1",
-      "env": "staging",
+      "node": "beelink",
+      "env": "common",
       "tech": [
         "Gitea",
         "Go",
@@ -337,7 +375,7 @@
       "categoryEs": "Observabilidad",
       "description": "Centralized metrics visualization, cluster resource dashboards and latency graphs.",
       "descriptionEs": "Visualización centralizada de métricas, dashboards de clúster y gráficas de latencia.",
-      "node": "ace1",
+      "node": "vps",
       "env": "prod",
       "tech": [
         "Grafana",
@@ -355,7 +393,7 @@
       "categoryEs": "Observabilidad",
       "description": "Horizontally-scalable log aggregation system indexed by Kubernetes pod labels.",
       "descriptionEs": "Sistema escalable de agregación de logs indexado por etiquetas de pods de K8s.",
-      "node": "ace1",
+      "node": "vps",
       "env": "prod",
       "tech": [
         "Loki",
@@ -391,8 +429,8 @@
       "categoryEs": "Almacenamiento y Datos",
       "description": "High-performance S3-compatible distributed object storage for backups and AI models.",
       "descriptionEs": "Almacenamiento de objetos distribuido compatible con S3 para backups y modelos de IA.",
-      "node": "beelink",
-      "env": "staging",
+      "node": "vps",
+      "env": "prod",
       "tech": [
         "MinIO",
         "Go",
