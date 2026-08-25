@@ -9,6 +9,7 @@ Manu Lorente is a platform engineer with 10+ years of experience across Spain, F
 ## Site Structure
 
 - / — Homepage: projects, latest notes, GitHub activity
+- /cockpit/ — Platform cockpit: hybrid cloud and bare-metal topology, architecture diagrams, service catalog, SLOs, and a client-side reachability probe
 - /notes/ — Technical blog posts about platform engineering, homelab, Kubernetes, networking
 - /tags/[tag]/ — Posts and projects filtered by technology tag
 - /es/ — Spanish version of all pages (includes newsletter)
@@ -19,7 +20,7 @@ Platform engineering, Kubernetes (K3s), Infrastructure as Code, Terraform, Ansib
 
 ## Projects
 
-- KubeLab: 5-node hybrid homelab IDP (K3s, VPN mesh, SSO, full observability)
+- KubeLab: hybrid cloud and bare-metal homelab IDP (K3s, VPN mesh, SSO, full observability)
 - Hive: MCP server for Obsidian vault context (67-82% token reduction)
 - Pollex: Local LLM English polisher on Jetson Nano
 - ts-bridge: Tailscale userspace VPN tunnel (one binary, no admin)

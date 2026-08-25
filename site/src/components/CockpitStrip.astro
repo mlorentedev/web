@@ -1,0 +1,107 @@
+---
+import { cockpit } from '../data/cockpit';
+import type { Lang } from '../i18n/ui';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+
+interface Props {
+  /** Current UI language */
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+const indicators = [
+  {
+    title: t('cockpit.k3s'),
+    sub: `${cockpit.cluster.name} (${cockpit.cluster.version})`,
+    accent: 'emerald',
+  },
+  {
+    title: t('cockpit.edge'),
+    sub: cockpit.metrics.edgeArchitecture,
+    accent: 'emerald',
+  },
+  {
+    title: t('cockpit.hive'),
+    sub: cockpit.metrics.contextReduction,
+    accent: 'emerald',
+  },
+  {
+    title: t('cockpit.uptime'),
+    sub: cockpit.metrics.reconciliationTime,
+    accent: 'emerald',
+  },
+];
+---
+
+<section data-cockpit-strip class="py-12 border-t border-gray-100">
+  <div class="max-w-4xl mx-auto px-4">
+    <h2 class="text-sm font-medium text-gray-500 tracking-widest uppercase mb-6">
+      <span class="text-cyan-700">[ 06 /</span> {t('cockpit.heading')} <span class="text-cyan-700">]</span>
+    </h2>
+
+    <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800/80 rounded-2xl p-6 sm:p-8 text-slate-100 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-16 -top-16 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-16 -bottom-16 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span class="text-xs font-mono tracking-wider text-emerald-400 uppercase font-semibold">
+                {cockpit.cluster.gitops}
+              </span>
+            </div>
+            <h3 class="text-lg font-bold text-white mt-1">
+              {cockpit.cluster.name}
+            </h3>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono bg-slate-800 text-cyan-300 border border-slate-700">
+              {cockpit.cluster.activeNodes} Nodes Active
+            </span>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700">
+              {cockpit.cluster.totalServices} Services
+            </span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6">
+          {indicators.map((ind) => (
+            <div class="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 flex items-start gap-3 transition-colors hover:border-slate-600">
+              <span class="mt-1 h-2 w-2 rounded-full bg-emerald-400 shrink-0"></span>
+              <div>
+                <p class="text-sm font-semibold text-slate-200 leading-snug">
+                  {ind.title}
+                </p>
+                <p class="text-xs text-slate-400 mt-1 font-mono">
+                  {ind.sub}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+          <p class="text-xs text-slate-400 hidden sm:block">
+            {t('cockpit.overview')}
+          </p>
+          <a
+            href={translatePath('/cockpit')}
+            class="inline-flex items-center gap-2 text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors group focus:outline-none focus:ring-2 focus:ring-cyan-400/50 rounded-lg px-2 py-1 -mx-2"
+          >
+            <span>{t('cockpit.cta')}</span>
+            <span class="transition-transform duration-200 group-hover:translate-x-1 font-mono">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
