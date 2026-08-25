@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.11.0](https://github.com/mlorentedev/web/compare/v1.10.1...v1.11.0) (2026-08-25)
+
+
+### Features
+
+* **cockpit:** add live platform telemetry strip and dedicated cockpit page ([#158](https://github.com/mlorentedev/web/issues/158)) ([8179d0a](https://github.com/mlorentedev/web/commit/8179d0abbef5f5b291c0e7fc52eff4b9d2976f45))
+* **notes:** render the mermaid diagrams instead of shipping their source ([#176](https://github.com/mlorentedev/web/issues/176)) ([fcbe8c9](https://github.com/mlorentedev/web/commit/fcbe8c993a1946f9e73f1b8a5f3e3d1ea54641ca))
+
+
+### Bug Fixes
+
+* **ci:** build the static site natively so release promotion stops timing out ([#163](https://github.com/mlorentedev/web/issues/163)) ([6dc1a00](https://github.com/mlorentedev/web/commit/6dc1a0063488cc6945ccccd379a1ccd21f69bb30))
+* **cockpit:** describe what the machines are for, not what they once were ([#179](https://github.com/mlorentedev/web/issues/179)) ([df583db](https://github.com/mlorentedev/web/commit/df583dbf8ff4ea7507353ccfe52dbf7f5e61251a))
+* **cockpit:** publish the platform that exists ([#174](https://github.com/mlorentedev/web/issues/174)) ([45b2d6a](https://github.com/mlorentedev/web/commit/45b2d6ac4e049858af952a4d2f13bfd778b295af))
+* **header:** keep the nav inside a 320px viewport with four items ([#167](https://github.com/mlorentedev/web/issues/167)) ([283e7a0](https://github.com/mlorentedev/web/commit/283e7a0f8664d85662812cf486757065a82aed74))
+* **layout:** stop the page scrolling sideways, and let the header size itself ([#178](https://github.com/mlorentedev/web/issues/178)) ([f0b1e86](https://github.com/mlorentedev/web/commit/f0b1e8650cad79005caf7b36926fc7b391e29825))
+
 ## [1.10.1](https://github.com/mlorentedev/web/compare/v1.10.0...v1.10.1) (2026-08-21)
 
 
