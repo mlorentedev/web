@@ -17,7 +17,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
 ---
 
 <header class="bg-cyan-50 text-gray-700 fixed w-full border-b border-cyan-100 z-50">
-  <nav class="px-4 py-3 flex items-center justify-between">
+  <nav class="px-3 sm:px-4 py-3 flex items-center justify-between">
     <span class="text-xl font-extrabold">
       <a href={translatePath('/')} class="no-underline hover:text-cyan-700 transition-colors duration-200 focus:outline-none focus:text-cyan-700">
         Manu Lorente
@@ -36,7 +36,9 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
       </a>
     </div>
 
-    <div class="flex items-center space-x-4">
+    <!-- Tighter gaps below sm: the fourth nav item pushes the row past a 320px
+         viewport at the desktop spacing. A real mobile menu is WEB-042. -->
+    <div class="flex items-center space-x-2 sm:space-x-4">
       {navItems.map((item) => (
         <a
           href={item.href}
@@ -53,9 +55,13 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
       {otherLangs.map(([l, label]) => (
         <a
           href={switchLangUrl(Astro.url, l as keyof typeof languages)}
+          aria-label={label}
           class="text-xs text-gray-500 hover:text-cyan-700 focus:outline-none focus:text-cyan-700 transition-colors uppercase tracking-wide"
         >
-          {label}
+          {/* The code below sm — the full name does not fit a 320px viewport
+              once the nav carries four items. */}
+          <span class="sm:hidden" aria-hidden="true">{l}</span>
+          <span class="hidden sm:inline">{label}</span>
         </a>
       ))}
     </div>
