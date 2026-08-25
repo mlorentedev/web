@@ -59,7 +59,6 @@ export const ui = {
     'cockpit.probe.sub': 'Interactive latency probe measuring real response time from your browser to public platform endpoints.',
     'cockpit.probe.btn': 'Run Live Ping Probe',
     'cockpit.probe.running': 'Pinging endpoints...',
-    'cockpit.probe.allHealthy': 'All public services operational',
     'cockpit.probe.timestamp': 'Last probe run',
     'cockpit.viewService': 'Open service',
 
@@ -339,7 +338,6 @@ export const ui = {
     'cockpit.probe.sub': 'Probe interactivo de latencia que mide el tiempo real de respuesta desde tu navegador hacia los endpoints de la plataforma.',
     'cockpit.probe.btn': 'Ejecutar Ping en Vivo',
     'cockpit.probe.running': 'Haciendo ping a endpoints...',
-    'cockpit.probe.allHealthy': 'Todos los servicios públicos operativos',
     'cockpit.probe.timestamp': 'Última ejecución',
     'cockpit.viewService': 'Abrir servicio',
 
