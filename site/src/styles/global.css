@@ -55,10 +55,6 @@ html {
   }
 }
 
-. {
-  padding-top: var(--header-offset);
-}
-
 html {
   scroll-padding-top: var(--header-offset);
 }
