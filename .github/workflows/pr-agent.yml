@@ -1,0 +1,90 @@
+---
+name: pr-agent
+
+# Inline PR reviewer backed by NaN cluster inference (TOOL-013 / ADR-032).
+# Eliminates account-wide hourly quota bottlenecks and ensures every PR
+# receives an adversarial automated review.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    if: >
+      (github.event_name == 'pull_request'
+        && github.event.pull_request.draft == false
+        && !startsWith(github.head_ref, 'release-please--'))
+      || (github.event_name == 'issue_comment'
+            && github.event.issue.pull_request
+            && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
+                        github.event.comment.author_association)
+            && startsWith(github.event.comment.body, '/'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PR-Agent
+        uses: The-PR-Agent/pr-agent@f6af7d77554ff8d26adffded077e6461329e92fa  # v0.42.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI__KEY: ${{ secrets.NAN_API_KEY }}
+          OPENAI__API_BASE: https://api.nan.builders/v1
+          CONFIG__MODEL: "openai/mimo-v2.5"
+          CONFIG__FALLBACK_MODELS: '["openai/deepseek-v4-flash"]'
+          CONFIG__CUSTOM_MODEL_MAX_TOKENS: 200000
+          CONFIG__MAX_MODEL_TOKENS: 200000
+          CONFIG__RESPONSE_LANGUAGE: "en-US"
+          CONFIG__PUBLISH_OUTPUT_PROGRESS: false
+          github_action_config.pr_actions: '["opened", "reopened", "ready_for_review"]'
+          github_action_config.handle_push_trigger: "true"
+          github_action_config.push_commands: '["/review"]'
+          github_action_config.push_trigger_ignore_bot_commits: "true"
+          github_action_config.push_trigger_ignore_merge_commits: "true"
+          github_action_config.auto_describe: "false"
+          github_action_config.auto_review: "true"
+          github_action_config.auto_improve: "false"
+
+      - name: Fail if no review was published
+        if: >
+          always() && (github.event_name == 'pull_request'
+            || (github.event_name == 'issue_comment'
+                && contains(github.event.comment.body, '/review')))
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+          BASE_REF: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          marker="## PR Reviewer Guide"
+          if raw_content=$(gh api "repos/${GITHUB_REPOSITORY}/contents/harness/review-attestation.json?ref=${BASE_REF}" \
+            --jq '.content' 2>/dev/null); then
+            if decoded=$(echo "$raw_content" | base64 -d 2>/dev/null); then
+              parsed_marker=$(echo "$decoded" | jq -r \
+                '.reviewers[]? | select(.login == "github-actions") | .review_markers[0]' 2>/dev/null || true)
+              if [ -n "$parsed_marker" ] && [ "$parsed_marker" != "null" ]; then
+                marker="$parsed_marker"
+              fi
+            fi
+          fi
+          found=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            --paginate --jq "[.[] | select(.body | contains(\"${marker}\"))] | length")
+          if [ "$found" -gt 0 ]; then
+            echo "review published (marker: ${marker})"
+            exit 0
+          fi
+          echo "::error::PR-Agent reported success but published no review (no comment carries \"${marker}\")."
+          echo "::error::Most likely cause: NaN concurrency limit reached on cluster."
+          exit 1

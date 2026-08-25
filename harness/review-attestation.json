@@ -1,0 +1,50 @@
+{
+  "$comment": [
+    "Reviewer registry for the review-attestation gate and triage queue on mlorentedev/web.",
+    "",
+    "Matches both coderabbitai (advisory) and github-actions (PR-Agent on NaN inference).",
+    "Release PRs are exempted by signature (.release-please-manifest.json, CHANGELOG.md)."
+  ],
+  "reviewers": [
+    {
+      "login": "coderabbitai",
+      "declined_markers": [
+        "rate limited by coderabbit.ai"
+      ],
+      "why": "ADVISORY: its review still attests, but its DECLINE yields pending rather than refused.",
+      "review_markers": [
+        "No actionable comments were generated in the recent review"
+      ],
+      "advisory": true
+    },
+    {
+      "login": "github-actions",
+      "declined_markers": [],
+      "review_markers": [
+        "## PR Reviewer Guide"
+      ],
+      "why": "PR-Agent posts as github-actions via GITHUB_TOKEN and publishes through the comments API."
+    }
+  ],
+  "escape": {
+    "label": "merged-unreviewed",
+    "section": "## Unreviewed merge rationale",
+    "why": "Proceeding on an unreviewed PR is allowed; proceeding SILENTLY is not."
+  },
+  "exempt": {
+    "signatures": [
+      {
+        "name": "release-please",
+        "files": [
+          ".release-please-manifest.json",
+          "CHANGELOG.md"
+        ],
+        "why": "The release PR restates commits already on master, each reviewed when it merged."
+      }
+    ]
+  },
+  "triage": {
+    "marker": "## Review triage",
+    "why": "The heading under which pr-review-triage records its per-item dispositions."
+  }
+}
