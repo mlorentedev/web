@@ -1,3 +1,8 @@
+import { ACCENT_BARE } from '../theme/tokens.mjs';
+
+/** The GitHub contribution chart, tinted with the brand accent (WEB-068). */
+export const ghchartSrc = `https://ghchart.rshah.org/${ACCENT_BARE}/mlorentedev`;
+
 export const site = {
   // Page title and description are per-locale strings and live in i18n/ui.ts
   // ('meta.title' / 'meta.description'). Keeping an English copy here is what let

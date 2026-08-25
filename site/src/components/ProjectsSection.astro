@@ -2,6 +2,7 @@
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { projects, localize } from '../data/portfolio';
+import { ghchartSrc } from '../data/site';
 import ProjectCard from './ProjectCard.astro';
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
@@ -18,7 +19,7 @@ const t = useTranslations(lang);
   <SectionHeading number="02" label={t('home.projects')} margin="mb-8" />
     <a href="https://github.com/mlorentedev" target="_blank" rel="noopener noreferrer">
       <img
-        src="https://ghchart.rshah.org/0e7490/mlorentedev"
+        src={ghchartSrc}
         alt={t('meta.ghchart.alt')}
         width="663"
         height="104"
