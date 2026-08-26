@@ -9,11 +9,14 @@ tags: [web, lessons, index]
 
 # Lessons
 
-14 lessons, one file each, newest first. Numbers are assigned in the order
+17 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 017 | [A comment can be true of the design and false of the deployment](lesson-017-a-comment-can-be-true-of-the-design-and-fa.md) | 2026-08-26 | `#documentation` `#verification` |
+| 016 | [A test that only ever runs against the fix proves nothing](lesson-016-a-test-that-only-ever-runs-against-the-fix.md) | 2026-08-26 | `#verification` `#testing` |
+| 015 | [A step that was skipped and a step with nothing to do look identical](lesson-015-a-step-that-was-skipped-and-a-step-with-no.md) | 2026-08-26 | `#ci` `#delivery` `#observability` |
 | 014 | [A subagent's finding is a claim to verify, not a result to act on](lesson-014-a-subagent-finding-is-a-claim-to-verify-no.md) | 2026-08-25 | `#verification` `#agents` |
 | 013 | [Removing a theme override reveals the plugin default, it does not remove the property](lesson-013-removing-a-theme-override-reveals-the-plug.md) | 2026-08-24 | `#tailwind` `#css` |
 | 012 | [HTML entities inside a `t()` value render literally](lesson-012-html-entities-inside-a-t-value-render-liter.md) | 2026-08-24 | `#i18n` `#astro` |
