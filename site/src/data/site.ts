@@ -19,7 +19,12 @@ export const site = {
     baseUrl: import.meta.env.PUBLIC_API_URL || '',
   },
   social: {
-    email: 'hey@mlorente.dev',
+    // A first-name address at the domain: better deliverability than a role
+    // mailbox (info@/contact@/hey@ get filtered harder and attract more spam),
+    // and it is the contact published as the data controller in the privacy
+    // policy. hey@ stays live as an alias — it was published for a long time,
+    // so old links and old threads still have to arrive.
+    email: 'manu@mlorente.dev',
     github: 'https://github.com/mlorentedev',
     x: 'https://x.com/mlorentedev',
     xHandle: '@mlorentedev',
