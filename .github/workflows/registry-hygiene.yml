@@ -1,0 +1,74 @@
+---
+name: Registry Hygiene
+# Keeps docker.io/mlorentedev/kubelab-web honest and small.
+#
+# Two independent problems, one registry listing:
+#
+#   audit — assert every published GitHub release has a semver image behind it.
+#           v1.10.1 shipped as a git tag with no artifact and nothing noticed,
+#           because the promote job was *skipped* rather than failed (#172).
+#           This is the check that would have caught it, and the five releases
+#           lost the same way before it.
+#
+#   prune — delete per-commit `sha-*` tags nothing references. Nothing has ever
+#           pruned this repository: 49 tags, ~1 GB, 33 of them per-commit
+#           builds, growing at the merge rate (#166).
+#
+# The prune rule and its reasoning live in scripts/registry_hygiene.py. It never
+# touches semver tags, `latest`, or any `sha-*` a semver tag points at — that
+# last one is the audit trail proving build-once/promote-by-digest.
+on:
+  schedule:
+    # Mondays 04:17 UTC. Off the hour on purpose: scheduled jobs on the hour
+    # queue behind everyone else's cron.
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: List what prune would delete without deleting it
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Every release has an image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Assert release/image parity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # isDraft is required: an unpublished release has no image yet, and
+          # counting drafts would fail this check whenever one is open.
+          gh release list --limit 200 --json tagName,isDraft \
+            | python3 scripts/registry_hygiene.py audit
+
+  prune:
+    name: Prune orphaned sha tags
+    runs-on: ubuntu-latest
+    # Independent of the audit: a missing release image is a reason to look, not
+    # a reason to let the registry keep growing.
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Prune
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          # Never interpolate an input straight into `run:`. This one is a
+          # boolean and GitHub validates it, but the habit is what keeps the
+          # next one — a string — from being an injection.
+          DRY_RUN: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '1' || '' }}
+        # A manual run previews by default; the schedule acts. Deleting a tag is
+        # irreversible, so the human-driven path is the cautious one.
+        run: |
+          python3 scripts/registry_hygiene.py prune --keep-recent 10 ${DRY_RUN:+--dry-run}
