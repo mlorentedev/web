@@ -45,7 +45,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release list --limit 200 --json tagName \
+          # isDraft is required: an unpublished release has no image yet, and
+          # counting drafts would fail this check whenever one is open.
+          gh release list --limit 200 --json tagName,isDraft \
             | python3 scripts/registry_hygiene.py audit
 
   prune:

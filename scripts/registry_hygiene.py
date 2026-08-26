@@ -3,7 +3,7 @@
 
 Two jobs that read the same registry listing:
 
-  audit  — every published GitHub release must have a semver image behind it.
+  audit  — every published GitHub release must have an image behind it.
            A release with no artifact is a version nobody can pull or roll back
            to, and it has happened: v1.10.1 is a git tag with no image (#172).
            Nothing detected it, because the promote step was *skipped* rather
@@ -53,6 +53,11 @@ KNOWN_MISSING_IMAGES = {"1.10.1"}
 
 
 def api(url: str, token: str | None = None, method: str = "GET") -> dict | None:
+    """Call the Docker Hub API and return the decoded body, or None if empty.
+
+    Raises SystemExit on any HTTP error rather than returning a partial result:
+    a prune that silently skipped a failed page would under-report what it kept.
+    """
     req = urllib.request.Request(url, method=method)
     if token:
         req.add_header("Authorization", f"JWT {token}")
@@ -79,6 +84,12 @@ def login() -> str:
 
 
 def list_tags() -> list[dict]:
+    """Every tag in the repository, following pagination to the end.
+
+    The full list is required for correctness, not convenience: the retention
+    rule exempts any `sha-*` sharing a digest with a semver tag, and a truncated
+    listing could miss the semver half of that pair and delete the audit trail.
+    """
     tags, url = [], f"{HUB}/repositories/{REPO}/tags?page_size=100"
     while url:
         page = api(url)
@@ -88,21 +99,42 @@ def list_tags() -> list[dict]:
 
 
 def is_semver(name: str) -> bool:
+    """True for a plain `X.Y.Z` release tag.
+
+    Used only by `prune`, to decide what is a release image and therefore kept
+    forever. Deliberately strict: a prerelease like `1.12.0-rc.1` returns False,
+    which keeps it out of the retention maths — and safely so, because prune only
+    ever considers `sha-*` tags and the explicit DELETE_ALWAYS list, so anything
+    it fails to classify is left alone rather than deleted.
+
+    `audit` does NOT use this. It compares release names against every tag in the
+    registry, so a prerelease or any future tag shape is checked on its own terms
+    instead of being silently dropped from the comparison.
+    """
     parts = name.split(".")
     return len(parts) == 3 and all(p.isdigit() for p in parts)
 
 
 def audit(tags: list[dict]) -> int:
-    """Fail if a GitHub release has no image behind it."""
-    releases = {
-        r["tagName"].lstrip("v") for r in json.load(sys.stdin)
-    } if not sys.stdin.isatty() else set()
-    images = {t["name"] for t in tags if is_semver(t["name"])}
+    """Fail if a published GitHub release has no image behind it.
+
+    Reads `gh release list --json tagName,isDraft` on stdin.
+
+    Drafts are excluded: an unpublished release is not expected to have an image
+    yet, and counting them would fail this check every time one is open. Every
+    other release is compared against *all* registry tags rather than only the
+    `X.Y.Z`-shaped ones, so a prerelease such as `1.12.0-rc.1` is held to the
+    same rule instead of being quietly skipped.
+    """
+    payload = json.load(sys.stdin) if not sys.stdin.isatty() else []
+    releases = {r["tagName"].lstrip("v") for r in payload if not r.get("isDraft")}
+    drafts = sum(1 for r in payload if r.get("isDraft"))
+    images = {t["name"] for t in tags}
 
     missing = sorted(releases - images - KNOWN_MISSING_IMAGES)
     accepted = sorted((releases - images) & KNOWN_MISSING_IMAGES)
 
-    print(f"releases: {len(releases)}  semver images: {len(images)}")
+    print(f"releases: {len(releases)} published ({drafts} draft, ignored)  tags: {len(images)}")
     for tag in accepted:
         print(f"  accepted gap: {tag} (see KNOWN_MISSING_IMAGES)")
     if missing:
@@ -119,6 +151,12 @@ def audit(tags: list[dict]) -> int:
 
 
 def prune(tags: list[dict], keep_recent: int, dry_run: bool) -> int:
+    """Delete `sha-*` tags nothing references, plus anything in DELETE_ALWAYS.
+
+    Never touches semver tags or `latest`. Keeps the `keep_recent` newest
+    `sha-*` for rollback, and every `sha-*` a semver tag points at regardless of
+    age — see the module docstring for why that pointer matters.
+    """
     semver_digests = {t["digest"] for t in tags if is_semver(t["name"])}
     shas = sorted(
         (t for t in tags if t["name"].startswith("sha-")),
@@ -151,6 +189,7 @@ def prune(tags: list[dict], keep_recent: int, dry_run: bool) -> int:
 
 
 def main() -> int:
+    """Parse arguments, fetch the tag listing once, and dispatch to a mode."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("audit", "prune"))
     parser.add_argument("--keep-recent", type=int, default=10)
