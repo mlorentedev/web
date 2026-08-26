@@ -1,10 +1,7 @@
 ---
 import { site } from '../data/site';
 import { features } from '../data/features';
-import { getLocale, useTranslations } from '../i18n/utils';
 
-const lang = getLocale(Astro.currentLocale);
-const t = useTranslations(lang);
 const year = new Date().getFullYear();
 const { email, github, x, youtube } = site.social;
 ---
@@ -40,16 +37,5 @@ const { email, github, x, youtube } = site.social;
   </div>
   <p class="text-xs mt-3">
     &copy; {year} Manu Lorente
-    <span class="mx-1.5 text-gray-400" aria-hidden="true">·</span>
-    {/* Wired by CookieBanner.astro via the data attribute, so the consent logic
-        stays in one file. Inert without JS — but so is the analytics tag it
-        governs, so there is nothing to withdraw in that case. */}
-    <button
-      type="button"
-      data-cookie-manage
-      class="underline hover:text-cyan-600 focus:outline-none focus:text-cyan-600"
-    >
-      {t('cookie.manage')}
-    </button>
   </p>
 </footer>

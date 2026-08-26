@@ -26,11 +26,13 @@ export const site = {
     // Real URL; footer visibility is gated by `features.youtube` (WEB-027), not by this value.
     youtube: 'https://youtube.com/@mlorentedev',
   },
-  analytics: {
-    // GA4 measurement ID (public; ships in client HTML). Empty string disables the tag.
-    // NOTE: GA4 uses cookies — a consent banner is a follow-up, not wired here yet.
-    googleAnalyticsId: 'G-PLL8SP2YFC',
-    // Cloudflare Web Analytics is injected automatically at the edge (proxied site),
-    // NOT in code — do not add the beacon here or it would load twice.
-  },
+  // No analytics ships from this file. GA4 was removed with the consent banner it
+  // required; measurement moves to a self-hosted cookieless engine on the platform,
+  // which needs no consent gate (#189).
+  //
+  // The comment that used to live here claimed Cloudflare Web Analytics was injected
+  // automatically at the edge. That was never true of this host: `dig` resolves
+  // mlorente.dev straight to the origin and responses carry no `cf-ray`, because
+  // `proxied = false` is set deliberately in kubelab's Terraform — Cloudflare is
+  // authoritative DNS only, per ADR-049, which classes proxy-on as a posture change.
 } as const;
