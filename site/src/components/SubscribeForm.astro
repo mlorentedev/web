@@ -1,4 +1,7 @@
 ---
+// The form keeps `novalidate`: the submit handler is the single place that decides
+// whether a request goes out, and it now checks the consent box explicitly. Turning
+// native validation back on would give one form two different error surfaces.
 import { site } from '../data/site';
 
 interface Props {
@@ -9,6 +12,7 @@ interface Props {
   buttonText: string;
   successText?: string;
   errorText?: string;
+  consentText?: string;
 }
 
 const {
@@ -19,6 +23,7 @@ const {
   buttonText,
   successText = '¡Listo! Revisa tu email.',
   errorText = 'Por favor, introduce un email válido.',
+  consentText = 'Necesito que aceptes la política de privacidad para poder escribirte.',
 } = Astro.props;
 ---
 
@@ -31,6 +36,7 @@ const {
     data-utm-source={utmSource}
     data-success-text={successText}
     data-error-text={errorText}
+    data-consent-text={consentText}
     novalidate
   >
     <input
@@ -66,12 +72,26 @@ const {
       const msg = f.querySelector('.subscribe-msg') as HTMLElement;
       const button = f.querySelector('button[type="submit"]') as HTMLButtonElement;
       const email = new FormData(f).get('email') as string;
+      const consentBox = f.querySelector('input[name="privacy_policy"]') as HTMLInputElement | null;
 
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      const fail = (text: string, focus?: HTMLElement | null) => {
         if (msg) {
-          msg.textContent = f.dataset.errorText || 'Invalid email';
+          msg.textContent = text;
           msg.className = 'subscribe-msg text-xs text-center text-red-200';
         }
+        focus?.focus();
+      };
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        fail(f.dataset.errorText || 'Invalid email');
+        return;
+      }
+
+      // `novalidate` on the form disables the checkbox's native `required`, so
+      // without this check the box was decorative: a visitor could subscribe
+      // without ticking it and nothing downstream ever knew.
+      if (!consentBox || !consentBox.checked) {
+        fail(f.dataset.consentText || 'Please accept the privacy policy', consentBox);
         return;
       }
 
@@ -86,6 +106,11 @@ const {
             email,
             tags: [f.dataset.tag],
             utm_source: f.dataset.utmSource,
+            // The API's SubscriptionRequest does not model this yet, so Gin binds
+            // and discards it. Sent regardless: the client half of the contract is
+            // this repo's to hold, and the field has to exist in the request before
+            // the API can be asked to record it (kubelab side, tracked separately).
+            privacy_policy: true,
           }),
         });
 
