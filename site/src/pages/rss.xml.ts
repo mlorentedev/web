@@ -7,6 +7,17 @@ import { useTranslations } from '../i18n/utils';
 
 const t = useTranslations('en');
 
+/**
+ * Builds `/rss.xml` from the published English notes.
+ *
+ * Static endpoint: Astro calls this once at build time and writes the result to
+ * `dist/rss.xml`, so there is no request-time cost and no cache to invalidate.
+ *
+ * @param context - Astro's API context; only `site` is read, resolved from
+ *   `site` in `astro.config.mjs`.
+ * @returns An RSS 2.0 response listing every non-draft English note, newest
+ *   first, with summaries rather than full post content.
+ */
 export async function GET(context: APIContext) {
   // Same predicate as src/pages/notes/index.astro. If the two ever diverge, the
   // feed starts advertising posts the site does not list, which is worse than
