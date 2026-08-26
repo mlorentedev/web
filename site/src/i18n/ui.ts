@@ -286,6 +286,7 @@ export const ui = {
     'cookie.accept': 'Accept',
     'cookie.reject': 'Reject',
     'cookie.policy': 'Privacy policy',
+    'cookie.manage': 'Cookie settings',
   },
   es: {
     // Nav
@@ -565,5 +566,6 @@ export const ui = {
     'cookie.accept': 'Aceptar',
     'cookie.reject': 'Rechazar',
     'cookie.policy': 'Política de privacidad',
+    'cookie.manage': 'Configurar cookies',
   },
 } as const;
