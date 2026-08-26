@@ -38,24 +38,79 @@ const privacyUrl = '/es/legal/privacy';
 
 <script is:inline>
   (function () {
+    var KEY = 'cookie-consent';
     var banner = document.getElementById('cookie-banner');
     if (!banner) return;
-    if (!localStorage.getItem('cookie-consent')) {
-      banner.hidden = false; // only show when the user hasn't decided yet
+
+    // Storage access *throws* where the user blocks all cookies, inside sandboxed
+    // iframes, and in private-mode-class contexts. Reading it unguarded used to be
+    // the third statement here, so a throw aborted the whole IIFE: the banner was
+    // never unhidden and the click handlers were never attached, which made consent
+    // impossible to give in exactly the browsers configured to care about it.
+    //
+    // Guarded, a storage failure degrades to a choice that holds for the page
+    // instead of a dead banner. sessionStorage is not the fallback — it throws in
+    // the same contexts — so the fallback is a variable.
+    var memory = null;
+
+    function read() {
+      try {
+        return localStorage.getItem(KEY);
+      } catch (e) {
+        return memory;
+      }
     }
+
+    function write(value) {
+      memory = value;
+      try {
+        localStorage.setItem(KEY, value);
+      } catch (e) {
+        /* Session-only. The choice still applies here; it just will not survive. */
+      }
+    }
+
+    function show() {
+      banner.hidden = false;
+    }
+
+    function hide() {
+      banner.hidden = true;
+    }
+
+    if (!read()) show(); // undecided visitors only
+
     var accept = document.getElementById('cookie-accept');
-    var reject = document.getElementById('cookie-reject');
     if (accept) {
       accept.addEventListener('click', function () {
-        localStorage.setItem('cookie-consent', 'granted');
-        banner.hidden = true;
+        write('granted');
+        hide();
+        // Ordered after write() but independent of it: persisting the choice can
+        // fail and consent still has to take effect on this page.
         if (window.loadGA) window.loadGA();
       });
     }
+
+    var reject = document.getElementById('cookie-reject');
     if (reject) {
       reject.addEventListener('click', function () {
-        localStorage.setItem('cookie-consent', 'denied');
-        banner.hidden = true;
+        write('denied');
+        hide();
+      });
+    }
+
+    // Withdrawal. GDPR requires taking consent back to be as easy as giving it,
+    // and until now the only route was DevTools. The footer control reopens the
+    // banner whatever the stored choice is, which is why the read() above can no
+    // longer be the only path to showing it.
+    var managers = document.querySelectorAll('[data-cookie-manage]');
+    for (var i = 0; i < managers.length; i++) {
+      managers[i].addEventListener('click', function (e) {
+        e.preventDefault();
+        show();
+        // Move the caret into the banner, or a keyboard visitor triggers it from
+        // the footer and lands nowhere.
+        if (reject) reject.focus();
       });
     }
   })();
