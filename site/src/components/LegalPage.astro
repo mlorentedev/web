@@ -1,0 +1,44 @@
+---
+// Renders a legal page from the `pages` collection for one locale.
+//
+// Both routes are five lines each because of this: #142 records that
+// index.astro and es/index.astro drifted apart while being byte-identical, and
+// a privacy policy is the worst possible place to let two copies disagree.
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  page: string;
+  lang: Lang;
+}
+
+const { page: pageId, lang } = Astro.props;
+
+const [entry] = await getCollection(
+  'pages',
+  ({ data }: CollectionEntry<'pages'>) => data.page === pageId && data.lang === lang,
+);
+
+if (!entry) {
+  throw new Error(`No '${pageId}' page in the 'pages' collection for lang '${lang}'.`);
+}
+
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <Header />
+  <main id="main-content" class="flex-grow">
+    <section class="pt-8 pb-12 md:pt-10 md:pb-14">
+      <div class="max-w-3xl mx-auto px-4">
+        <div class="prose prose-base max-w-none prose-p:text-base prose-p:text-gray-700 prose-headings:font-bold prose-headings:text-gray-800 prose-h1:text-3xl prose-h1:mb-4 prose-a:text-cyan-700 hover:prose-a:text-cyan-800 prose-code:text-gray-800">
+          <Content />
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
