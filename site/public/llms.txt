@@ -9,7 +9,7 @@ Manu Lorente is a platform engineer with 10+ years of experience across Spain, F
 ## Site Structure
 
 - / — Homepage: projects, latest notes, GitHub activity
-- /idp/ — The internal developer platform: hybrid cloud and bare-metal topology, architecture diagrams, service catalog, SLOs, and a client-side reachability probe
+- /lab/ — The internal developer platform (IDP): hybrid cloud and bare-metal topology, architecture diagrams, service catalog, SLOs, and a client-side reachability probe
 - /notes/ — Technical blog posts about platform engineering, homelab, Kubernetes, networking
 - /tags/[tag]/ — Posts and projects filtered by technology tag
 - /es/ — Spanish version of all pages (includes newsletter)
@@ -27,4 +27,4 @@ Platform engineering, Kubernetes (K3s), Infrastructure as Code, Terraform, Ansib
 
 ## Contact
 
-hey@mlorente.dev
+manu@mlorente.dev
