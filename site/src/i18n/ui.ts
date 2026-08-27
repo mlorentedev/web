@@ -10,7 +10,9 @@ export type Lang = keyof typeof languages;
 export const ui = {
   en: {
     // Nav
-    'nav.idp': 'IDP',
+    // "Lab" is the door; "IDP" is what is inside. Keep it 3 characters wide —
+    // the nav row is already at its 320px limit (see Header.astro).
+    'nav.lab': 'Lab',
     'nav.notes': 'Notes',
     'nav.contact': 'Contact',
     'nav.consulting': 'Consulting',
@@ -62,7 +64,7 @@ export const ui = {
     'idp.probe.timestamp': 'Last probe run',
     'idp.viewService': 'Open service',
 
-    // Cockpit page copy (shared by /idp and /es/idp)
+    // IDP page copy (shared by /lab and /es/lab)
     'idp.d.01HybridInfrastructureTopology': '01. Hybrid Infrastructure Topology',
     'idp.d.02GitopsDeliveryPipeline': '02. GitOps Delivery Pipeline',
     'idp.d.02NativeMultiArch': '02. Native Multi-Arch Build',
@@ -285,7 +287,7 @@ export const ui = {
   },
   es: {
     // Nav
-    'nav.idp': 'IDP',
+    'nav.lab': 'Lab',
     'nav.notes': 'Notas',
     'nav.contact': 'Contacto',
     'nav.consulting': 'Consultoría',
@@ -337,7 +339,7 @@ export const ui = {
     'idp.probe.timestamp': 'Última ejecución',
     'idp.viewService': 'Abrir servicio',
 
-    // Cockpit page copy (shared by /idp and /es/idp)
+    // IDP page copy (shared by /lab and /es/lab)
     'idp.d.01HybridInfrastructureTopology': '01. Topología Híbrida de Infraestructura',
     'idp.d.02GitopsDeliveryPipeline': '02. Pipeline de Entrega GitOps',
     'idp.d.02NativeMultiArch': '02. Build Nativo Multi-Arch',
