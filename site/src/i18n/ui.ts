@@ -268,6 +268,14 @@ export const ui = {
     'note.prev': 'Previous',
     'note.next': 'Next',
 
+    // The exit at the end of a note (WEB-090). Says what the notes are; it does
+    // not restate the hero, which is still being decided.
+    'note.closing.eyebrow': 'Who writes this',
+    'note.closing.body':
+      'I am Manu Lorente. These notes come out of a platform I run, break and repair myself — the hardware is in my house and the postmortems are mine. If something here is close to a problem you have, I would rather hear about it than guess.',
+    'note.closing.contact': 'Tell me what you are building',
+    'note.closing.feed': 'Or follow the feed',
+
     // Tags
     'tags.projects': 'Projects',
     'tags.notes': 'Notes',
@@ -542,6 +550,12 @@ export const ui = {
     // Note detail
     'note.prev': 'Anterior',
     'note.next': 'Siguiente',
+
+    'note.closing.eyebrow': 'Quién escribe esto',
+    'note.closing.body':
+      'Soy Manu Lorente. Estas notas salen de una plataforma que opero, rompo y arreglo yo — el hardware está en mi casa y los postmortems son míos. Si algo de aquí se parece a un problema que tengas, prefiero que me lo cuentes a suponerlo.',
+    'note.closing.contact': 'Cuéntame qué estás construyendo',
+    'note.closing.feed': 'O sigue el feed',
 
     // Tags
     'tags.projects': 'Proyectos',
