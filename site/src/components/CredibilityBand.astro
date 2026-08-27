@@ -14,8 +14,13 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-// Counts are derived at build time so the band stays honest as content grows —
-// the "40 services" figure is the only external claim (mirrors the hero copy).
+// Counts are derived at build time so the band stays honest as content grows.
+// Two figures here are NOT derived and are the last unverified claims on the
+// site: "40" services, which the platform manifest puts at 35 (#133 asks what
+// the number counts — the homelab alone, or the cloud nodes too), and the
+// 67–82% context reduction, which has no published method (#175, #238).
+// The hero no longer mirrors either: it dropped its figure rather than defend
+// one. This band still has to, and that is a decision, not an oversight.
 // These are language-agnostic facts (proof of output, not a per-locale content
 // inventory), so the count is NOT filtered by lang — both bands show the same
 // true numbers, only the labels translate. (Notes are EN-only today; a lang

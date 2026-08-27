@@ -20,10 +20,16 @@ export const ui = {
     'nav.skipToContent': 'Skip to content',
 
     // Hero
-    'hero.eyebrow': 'Builder & operator',
-    'hero.title': 'Platform engineering for AI workloads',
-    'hero.subtitle': 'I build, automate, and operate the infrastructure AI agents run on — Kubernetes, on-prem, reproducible. I run a 40-service homelab and document what breaks.',
-    'hero.cta': 'Tell me about your project',
+    // A2 = C: the homelab is the proof, the agent platform is the direction, and
+    // the hero says which is which. The previous copy claimed "the infrastructure
+    // AI agents run on" against a corpus where zero of sixteen notes were about
+    // AI or agents. It also published "40 services" while the platform manifest
+    // said 31 and then 35 (#133) — no figure here now needs defending.
+    'hero.eyebrow': 'Platform engineer · AI infrastructure',
+    'hero.title': 'The infrastructure under the agents, not the prompts on top',
+    'hero.subtitle':
+      'Almost everyone building for AI agents arrives from the application side. I arrive from the metal — Kubernetes on hardware I own, mesh, split DNS, GitOps that reconciles in under thirty seconds. That platform is where my own agents now run, under a harness with hard limits. The homelab below is the proof. The agent platform is what I am building on it.',
+    'hero.cta': 'Tell me what you are building',
 
     // Cockpit (WEB-157 / PORT-03)
     'idp.heading': 'Platform telemetry',
@@ -303,10 +309,11 @@ export const ui = {
     'nav.skipToContent': 'Saltar al contenido',
 
     // Hero
-    'hero.eyebrow': 'Builder & operator',
-    'hero.title': 'Infraestructura para agentes de IA, en producción',
-    'hero.subtitle': 'Construyo, automatizo y opero la infraestructura sobre la que corren los agentes de IA — Kubernetes, on-prem, reproducible. Tengo un homelab de 40 servicios y documento lo que se rompe.',
-    'hero.cta': 'Cuéntame tu proyecto',
+    'hero.eyebrow': 'Ingeniero de plataforma · Infraestructura para IA',
+    'hero.title': 'La infraestructura de debajo de los agentes, no los prompts de encima',
+    'hero.subtitle':
+      'Casi todo el que construye para agentes de IA llega desde el lado de la aplicación. Yo llego desde el metal — Kubernetes sobre hardware que es mío, malla, DNS partido, GitOps que reconcilia en menos de treinta segundos. Ahí es donde corren ahora mis propios agentes, bajo un harness con límites duros. El homelab de abajo es la prueba. La plataforma de agentes es lo que estoy construyendo encima.',
+    'hero.cta': 'Cuéntame qué estás construyendo',
 
     // Cockpit (WEB-157 / PORT-03)
     'idp.heading': 'Telemetría de plataforma',
