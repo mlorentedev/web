@@ -1,0 +1,44 @@
+[
+  {
+    "id": "WEB-080-f1",
+    "behavior": "Built /lab uses only the token colour families (<=7), zero arbitrary text-[Npx] sizes, and >=5 <section> each opened by SectionHeading",
+    "verification": "cd site && node --test tests/lab-audit.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-080-f2",
+    "behavior": "Every Lab diagram has a committed archify IR that validates; a malformed IR fails npm run build; the delivered SVG carries role/aria-* and real <text>; no horizontal scroll at 320/768/1440/2048",
+    "verification": "cd site && node --test tests/lab-diagrams.test.mjs && ! node scripts/diagrams.mjs tests/fixtures/malformed.architecture.json && node tests/lab-containment.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-080-f3",
+    "behavior": "Services and Infra render exactly the entries of platform.json and print generated_at + source commit; every visible string has an es twin; astro check reports 0 errors",
+    "verification": "cd site && node --test tests/lab-data.test.mjs && npx astro check",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-080-f4",
+    "behavior": "AI & Automations carries the four groups with the same entries and links as kubelab infra/k8s/base/services/homepage-templates/services.yaml.j2 @ 6cd9ab0ca594 (fixture-pinned)",
+    "verification": "cd site && node --test tests/lab-ai-migration.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-080-f5",
+    "behavior": "IdpPage.astro is gone; /lab, /es/lab and both landings (IdpStrip from platform.ts) build; 0 axe violations on /lab and /es/lab",
+    "verification": "cd site && test ! -f src/components/IdpPage.astro && npm run build && node tests/lab-axe.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-080-f6",
+    "behavior": "Built /lab (HTML + inline SVG, fonts excluded) stays under the weight budget recorded in verification.md",
+    "verification": "cd site && node --test tests/lab-weight.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  }
+]
