@@ -9,7 +9,7 @@
   {
     "id": "WEB-080-f2",
     "behavior": "Every Lab diagram has a committed archify IR that validates; a malformed IR fails npm run build; the delivered SVG carries role/aria-* and real <text>; no horizontal scroll at 320/768/1440/2048",
-    "verification": "cd site && node --test tests/lab-diagrams.test.mjs && node tests/lab-containment.mjs",
+    "verification": "cd site && node --test tests/lab-diagrams.test.mjs && ! node scripts/diagrams.mjs tests/fixtures/malformed.architecture.json && node tests/lab-containment.mjs",
     "state": "pending",
     "evidence": ""
   },
@@ -22,7 +22,7 @@
   },
   {
     "id": "WEB-080-f4",
-    "behavior": "AI & Automations carries the four groups with the same entries and links as kubelab services.yaml.j2 at the pinned commit",
+    "behavior": "AI & Automations carries the four groups with the same entries and links as kubelab infra/k8s/base/services/homepage-templates/services.yaml.j2 @ 6cd9ab0ca594 (fixture-pinned)",
     "verification": "cd site && node --test tests/lab-ai-migration.test.mjs",
     "state": "pending",
     "evidence": ""

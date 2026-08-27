@@ -9,7 +9,7 @@ created: "2026-08-27"
 >
 > **Inline markers**: `[P]` — no dependency on another unchecked task; `[AC<n>]` — helps satisfy acceptance criterion `<n>` in `proposal.md` (lets `/spec check` map coverage deterministically).
 >
-> **Shape**: seven atomic PRs, each ≤300 LOC of production diff (tests, IR JSON and generated SVG excluded). PR0 is a measurement that decides Risk 2; nothing in PR2+ is authored until it lands. The site has no test runner today: PR1 adds `node --test` (Node 26, zero dependencies) and Playwright is already present through the mermaid build step.
+> **Shape**: seven atomic PRs, each ≤300 LOC of production diff (tests, IR JSON and generated SVG excluded). PR0 is a measurement that decides Risk 2; nothing in PR2+ is authored until it lands. The site has no test runner today: PR1 adds `node --test` (built into Node ≥ 20 — the repo pins **Node 22** in `.nvmrc` and `node:22-bookworm-slim` in the Dockerfile; no CI job selects anything newer) and Playwright is already present through the mermaid build step.
 
 ## Setup
 
@@ -22,7 +22,7 @@ created: "2026-08-27"
 
 ### PR0 — measure one diagram end-to-end (Risk 2, AC2, AC6)
 
-- [ ] [P] [AC2] Write failing test `site/tests/lab-diagrams.test.mjs`: for every `site/src/diagrams/*.architecture.json`, `archify validate --quality showcase --json` exits 0 with 9/9 checks; the extracted SVG exists, carries ≥ 1 `role` and ≥ 10 `aria-*`, and ≥ 8 `<text>`
+- [ ] [P] [AC2] Write failing test `site/tests/lab-diagrams.test.mjs`: for every `site/src/diagrams/*.architecture.json`, `archify validate --quality showcase --json` exits 0 with 9/9 checks; the extracted SVG exists, carries ≥ 1 `role` and ≥ 10 `aria-*`, and ≥ 8 `<text>`; **and a negative case**: `site/tests/fixtures/malformed.architecture.json` run through `scripts/diagrams.mjs` exits non-zero (that is what makes "a malformed IR fails the build" a tested claim)
 - [ ] [AC2] Author `site/src/diagrams/topology.architecture.json` from the proof-of-concept IR on #181 (41 lines, 8 machines), with English identifiers only
 - [ ] [AC2] Write `site/scripts/diagrams.mjs`: `deliver` each IR to a scratch HTML, `extractArchitectureSvg`, write `site/src/diagrams/generated/<name>.svg`; wire it into `npm run build` so a malformed IR fails the build
 - [ ] [AC6] Measure: SVG bytes, `/lab` HTML bytes with the SVG inline vs `<img loading="lazy">`; record the numbers and the committed-vs-generated decision in `verification.md` "Decisions"; fix the AC6 budget from them
@@ -30,10 +30,10 @@ created: "2026-08-27"
 
 ### PR1 — data layer and the test harness (AC3, AC1 scaffolding)
 
-- [ ] [P] [AC3] Write failing test `site/tests/lab-data.test.mjs`: `platform.json` has `generated_at` and `source_commit`; `platform.ts` exposes them typed; every `lab.*` key in `i18n/ui.ts` exists in both `en` and `es`
+- [ ] [P] [AC3] Write failing test `site/tests/lab-data.test.mjs`: `platform.json` has `generated_at` and `source_commit`; `platform.ts` exposes them typed; every `lab.*` key in `i18n/ui.ts` exists in both `en` and `es`; **and every visible data field has its `es` twin** — `descriptionEs`/`categoryEs` in `platform.ts` today, `lab-ai.ts` from PR5 — with the identifier exception of proposal What §5
 - [ ] [AC3] Add `generated_at` + `source_commit` to `platform.json`/`platform.ts` (typed, printed by the page in PR3) and make the i18n twin test pass for the keys that exist today
-- [ ] [AC1] Write failing test `site/tests/lab-audit.test.mjs` over `dist/lab/index.html`: colour families ⊆ {accent, ink, panel, ok, warn, danger, observe, gray, slate, white, black}, zero `text-\[\d+px\]`, ≥ 5 `<section` — red on today's page (10 families, 88 arbitrary sizes, 1 section), which is the point
-- [ ] (housekeeping) Add `"test": "node --test tests/"` and `"test:browser"` to `site/package.json`; add a `test` job to `pr-validation.yml` (Node, no Docker — today the workflow only builds the image)
+- [ ] [AC1] Write failing test `site/tests/lab-audit.test.mjs` over `dist/lab/index.html`: hued families ⊆ {accent, ink, panel, ok, warn, danger, observe} (`white`/`black`/`transparent`/`current` allowed as hue-less neutrals — the **same allowlist as AC1**, exported from one place), zero `text-\[\d+px\]`, ≥ 5 `<section` **each containing a `SectionHeading` eyebrow** — red on today's page (10 families, 88 arbitrary sizes, 1 section), which is the point
+- [ ] (housekeeping) Add `"test": "node --test tests/"` and `"test:browser"` to `site/package.json`; add a `test` job to `pr-validation.yml` that checks out, `setup-node` from `.nvmrc`, runs **`npm run build` then `npm test` in `site/`** — the audit tests read `dist/`, which the existing Docker build never exposes
 
 ### PR2 — second diagram + captions (AC2, AC3)
 
@@ -53,7 +53,7 @@ created: "2026-08-27"
 
 ### PR5 — AI & Automations migration (AC4)
 
-- [ ] [P] [AC4] Write failing test `site/tests/lab-ai-migration.test.mjs`: `site/src/data/lab-ai.ts` carries the four groups (Agents, Protocols, Workflows, Telemetry) with the same entry count and URLs as kubelab `infra/config/templates/services.yaml.j2` at the pinned commit recorded in the file header
+- [ ] [P] [AC4] Write failing test `site/tests/lab-ai-migration.test.mjs`: `site/src/data/lab-ai.ts` carries the four groups (Agents, Protocols, Workflows, Telemetry) with the same entry count and URLs as kubelab `infra/k8s/base/services/homepage-templates/services.yaml.j2` at commit `6cd9ab0ca5948297281b6d53798db97c562ea431` — the file at that commit is committed as the test fixture `site/tests/fixtures/services.yaml.j2` so the comparison never moves
 - [ ] [AC4] Migrate the data (bilingual descriptions; links verified with a HEAD request script, output pasted in `verification.md`) and build `LabAutomations.astro`
 
 ### PR6 — cut over and delete (AC5, AC6)

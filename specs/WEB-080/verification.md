@@ -12,9 +12,12 @@ created: "2026-08-27"
 
 Map every acceptance criterion from `proposal.md` to concrete proof (commit hash, test name, or observed behavior).
 
-- [ ] Criterion 1 -> commit `<hash>` / test `<name>`
-- [ ] Criterion 2 -> commit `<hash>` / test `<name>`
-- [ ] Criterion 3 -> commit `<hash>` / test `<name>`
+- [ ] AC1 design system measured -> commit `<hash>` / `site/tests/lab-audit.test.mjs`
+- [ ] AC2 diagrams from source, no horizontal scroll -> commit `<hash>` / `lab-diagrams.test.mjs` + `lab-containment.mjs` + archify `visual-check` receipts
+- [ ] AC3 data-driven + `es` twins -> commit `<hash>` / `lab-data.test.mjs` + `astro check`
+- [ ] AC4 faithful migration -> commit `<hash>` / `lab-ai-migration.test.mjs` (pinned kubelab commit below) + link HEAD-check output
+- [ ] AC5 no regression, 0 axe violations -> commit `<hash>` / `npm run build` + `lab-axe.mjs`; `IdpPage.astro` absent
+- [ ] AC6 weight budget -> commit `<hash>` / `lab-weight.test.mjs`; budget and PR0 measurements recorded under Decisions
 
 ## Test status
 
