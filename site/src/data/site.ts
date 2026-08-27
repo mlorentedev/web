@@ -7,7 +7,7 @@ export const site = {
   // Page title and description are per-locale strings and live in i18n/ui.ts
   // ('meta.title' / 'meta.description'). Keeping an English copy here is what let
   // the Spanish homepage fall back to an English <title>.
-  description: 'I build and operate the infrastructure AI agents run on — Kubernetes on hardware I own, mesh, GitOps. The homelab is the proof; the agent platform is what I am building on it.',
+  description: 'The infrastructure under the agents, not the prompts on top. Kubernetes on hardware I own — the homelab is the proof, the agent platform is the direction.',
   author: 'Manu Lorente',
   domain: 'mlorente.dev',
   url: 'https://mlorente.dev',

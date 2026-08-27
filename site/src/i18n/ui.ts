@@ -293,8 +293,9 @@ export const ui = {
     '404.cta': 'Go home',
 
     // Meta
-    'meta.title': 'Manu Lorente — Platform engineering for AI workloads',
-    'meta.description': 'Platform engineering for AI workloads. I build and operate agent infrastructure on Kubernetes — on-prem, reproducible.',
+    'meta.title': 'Manu Lorente — Infrastructure for AI agents, from the metal up',
+    'meta.description':
+      'The infrastructure under the agents, not the prompts on top. Kubernetes on hardware I own — mesh, split DNS, GitOps. The homelab is the proof.',
     'meta.ghchart.alt': "Manu's GitHub contribution chart",
 
     // Cookie consent (GDPR — gates GA4; Cloudflare analytics is cookieless)
@@ -575,8 +576,9 @@ export const ui = {
     '404.cta': 'Ir al inicio',
 
     // Meta
-    'meta.title': 'Manu Lorente — Infraestructura para agentes de IA, en producción',
-    'meta.description': 'Infraestructura para agentes de IA, en producción. Construyo, automatizo y opero plataformas en Kubernetes — on-prem y reproducible.',
+    'meta.title': 'Manu Lorente — Infraestructura para agentes de IA, desde el metal',
+    'meta.description':
+      'La infraestructura de debajo de los agentes, no los prompts de encima. Kubernetes sobre hardware que es mío — malla, DNS partido, GitOps. El homelab es la prueba.',
     'meta.ghchart.alt': 'Contribuciones de Manu en GitHub',
 
     // Cookie consent (GDPR — gates GA4; Cloudflare analytics is cookieless)
