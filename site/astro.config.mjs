@@ -39,6 +39,16 @@ export default defineConfig({
           // variant per diagram would double the output for nothing.
           // htmlLabels off emits real <text>, which is selectable, searchable
           // and survives being read by anything that is not a browser.
+          // Without this the <img> ships with no `alt` at all — a WCAG 1.1.1
+          // failure across ten diagrams, where a screen reader announces the
+          // generated filename or nothing (#244).
+          //
+          // A single shared string is a floor, not the fix: every diagram
+          // deserves its own description. It is defensible here only because
+          // each of these diagrams is explained by the prose that surrounds it,
+          // which is where a non-visual reader gets the content. Per-diagram alt
+          // stays open on #244.
+          alt: 'Architecture diagram, described in the surrounding text',
           mermaidConfig: { flowchart: { htmlLabels: false }, theme: 'neutral' },
         },
       ],
