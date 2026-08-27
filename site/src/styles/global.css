@@ -58,3 +58,15 @@ html {
 html {
   scroll-padding-top: var(--header-offset);
 }
+
+/* Build-rendered mermaid diagrams (WEB-096). `rehype-mermaid` emits an <img>
+   carrying the SVG's intrinsic size as explicit width/height attributes, and
+   mermaid lays out for its own content, not for the column it lands in: the ten
+   diagrams across eight notes render between 297px and 3573px wide against a
+   prose column of roughly 700px. Without this they overflow and are clipped.
+   Scoped to /beoe/ so it constrains generated diagrams only, and leaves any
+   deliberately sized image alone. */
+.prose img[src^='/beoe/'] {
+  max-width: 100%;
+  height: auto;
+}
