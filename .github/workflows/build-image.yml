@@ -61,6 +61,16 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v7
+        env:
+          # The action uploads a `.dockerbuild` build record after every build —
+          # `DOCKER_BUILD_RECORD_UPLOAD` defaults to true. Keep it: it carries the
+          # cache and timing telemetry worth having right after a build misbehaves,
+          # which is not hypothetical here (see timeout-minutes above).
+          #
+          # Bound it instead. At the repo's 90-day retention these had piled up to
+          # 211 artefacts, none of them ever downloaded. A week outlives any
+          # investigation that would open one.
+          DOCKER_BUILD_RECORD_RETENTION_DAYS: 7
         with:
           context: .
           file: ./Dockerfile
