@@ -24,3 +24,10 @@ site/dist/
 
 # Deployed governance (compile-harness, ADR-021) — never committed here
 .claude/
+
+# Third-party agent skills installed by `npx skills add` (6.7 MB for archify
+# alone). The payload is regenerable from skills-lock.json, which pins the
+# source and a content hash and IS committed — so the tooling is reproducible
+# without vendoring megabytes of somebody else's renderer into this repo.
+# `.claude/skills/<name>` is a symlink into here, which is why both are ignored.
+.agents/
