@@ -16,24 +16,26 @@ created: "2026-08-27"
 - [x] Branch created from master: `feat/web-080-lab-redesign` (worktree `web-web080-wt`)
 - [x] `proposal.md` is complete and acceptance criteria are testable
 - [x] Risk 1 decided — one IR per diagram, English identifiers inside the SVG, translated prose outside (`proposal.md`, Risks §1)
-- [ ] Risk 2 resolved by PR0 — extraction wrapper works, committed-vs-generated decided, one diagram measured at 320 px and weighed; the weight budget for AC6 is written into `verification.md`
+- [x] Risk 2 resolved by PR0 — extraction wrapper works, **committed** decided (CI verifies, does not render; `#242` stands), one diagram measured at 320 px and weighed; the AC6 budget (150 KB) is written into `verification.md`
 
 ## Implementation
 
-### PR0 — measure one diagram end-to-end (Risk 2, AC2, AC6)
+### PR0 — measure one diagram end-to-end (Risk 2, AC2, AC6) — **DONE**
 
-- [ ] [P] [AC2] Write failing test `site/tests/lab-diagrams.test.mjs`: for every `site/src/diagrams/*.architecture.json`, `archify validate --quality showcase --json` exits 0 with 9/9 checks; the extracted SVG exists, carries ≥ 1 `role` and ≥ 10 `aria-*`, and ≥ 8 `<text>`; **and a negative case**: `site/tests/fixtures/malformed.architecture.json` run through `scripts/diagrams.mjs` exits non-zero (that is what makes "a malformed IR fails the build" a tested claim)
-- [ ] [AC2] Author `site/src/diagrams/topology.architecture.json` from the proof-of-concept IR on #181 (41 lines, 8 machines), with English identifiers only
-- [ ] [AC2] Write `site/scripts/diagrams.mjs`: `deliver` each IR to a scratch HTML, `extractArchitectureSvg`, write `site/src/diagrams/generated/<name>.svg`; wire it into `npm run build` so a malformed IR fails the build
-- [ ] [AC6] Measure: SVG bytes, `/lab` HTML bytes with the SVG inline vs `<img loading="lazy">`; record the numbers and the committed-vs-generated decision in `verification.md` "Decisions"; fix the AC6 budget from them
-- [ ] [AC2] Add `site/tests/lab-containment.mjs` (Playwright): `scrollWidth <= innerWidth` on `/lab` and `/es/lab` at 320, 768, 1440, 2048 — red until PR4, kept out of CI until then (`npm run test:browser`)
+- [x] [P] [AC2] `site/tests/lab-diagrams.test.mjs`: every `site/src/diagrams/*.architecture.json` validates against the vendored schema; the committed SVG exists and carries ≥ 1 `role`, ≥ 10 `aria-*`, ≥ 8 `<text>`, `xmlns` and its stylesheet; **its `ir-sha256` stamp matches the IR**; **and the negative case**: `site/tests/fixtures/malformed.architecture.json` through `scripts/diagrams.mjs verify` exits non-zero. 5/5 green
+- [x] [AC2] `site/src/diagrams/topology.architecture.json`, recovered from the proof-of-concept IR on #181 (8 components, 8 connections), English identifiers only
+- [x] [AC2] `site/scripts/diagrams.mjs`, two modes: `generate` (authoring — `deliver`, `extractArchitectureSvg`, re-theme to the site's tokens, add `xmlns`, stamp) and `verify` (build/CI — schema + stamp, no renderer). `prebuild` wires `verify` into `npm run build`
+- [x] [AC2] Vendor `site/vendor/archify-schemas/` (12 KB) + `ajv`; **`.agents/` stays ignored, `#242` stands**
+- [x] [AC6] Measured: 21,929 B / 4,076 gzip per diagram; inline chosen over `<img>` with the reason; budget fixed at **150 KB** for the built page. All in `verification.md`
+- [x] [AC2] `site/tests/lab-containment.mjs` (Playwright): `scrollWidth <= innerWidth` on `/lab` and `/es/lab` at 320, 768, 1440, 2048, plus a 754 px legibility floor — red until PR4, out of CI until then (`npm run test:browser`)
+- [ ] **[AC1] Open for Manu: the semantic colour mapping** in `diagrams.mjs` (`TODO(manu)`). Structure and text are settled; which token family carries which archify component `type` is a domain call — see the PR note
 
 ### PR1 — data layer and the test harness (AC3, AC1 scaffolding)
 
 - [ ] [P] [AC3] Write failing test `site/tests/lab-data.test.mjs`: `platform.json` has `generated_at` and `source_commit`; `platform.ts` exposes them typed; every `lab.*` key in `i18n/ui.ts` exists in both `en` and `es`; **and every visible data field has its `es` twin** — `descriptionEs`/`categoryEs` in `platform.ts` today, `lab-ai.ts` from PR5 — with the identifier exception of proposal What §5
 - [ ] [AC3] Add `generated_at` + `source_commit` to `platform.json`/`platform.ts` (typed, printed by the page in PR3) and make the i18n twin test pass for the keys that exist today
 - [ ] [AC1] Write failing test `site/tests/lab-audit.test.mjs` over `dist/lab/index.html`: hued families ⊆ {accent, ink, panel, ok, warn, danger, observe} (`white`/`black`/`transparent`/`current` allowed as hue-less neutrals — the **same allowlist as AC1**, exported from one place), zero `text-\[\d+px\]`, ≥ 5 `<section` **each containing a `SectionHeading` eyebrow** — red on today's page (10 families, 88 arbitrary sizes, 1 section), which is the point
-- [ ] (housekeeping) Add `"test": "node --test tests/"` and `"test:browser"` to `site/package.json`; add a `test` job to `pr-validation.yml` that checks out, `setup-node` from `.nvmrc`, runs **`npm run build` then `npm test` in `site/`** — the audit tests read `dist/`, which the existing Docker build never exposes
+- [ ] (housekeeping) `test` / `test:browser` scripts landed in PR0 — note that **`node --test tests/` does not work on Node 26** (it resolves the directory as a module); the script uses the glob `node --test "tests/*.test.mjs"`, which works on 22 and 26. Still owed here: a `test` job in `pr-validation.yml` that checks out, `setup-node` from `.nvmrc`, and runs **`npm run build` then `npm test` in `site/`** — the audit tests read `dist/`, which the existing Docker build never exposes
 
 ### PR2 — second diagram + captions (AC2, AC3)
 

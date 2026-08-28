@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Eight machines, three Kubernetes clusters",
+    "quality_profile": "showcase",
+    "viewBox": [
+      880,
+      640
+    ]
+  },
+  "components": [
+    {
+      "id": "gcp",
+      "type": "cloud",
+      "label": "gcp1",
+      "sublabel": "Argo CD hub",
+      "tag": "K3s, 1 node",
+      "pos": [
+        60,
+        96
+      ],
+      "size": [
+        180,
+        76
+      ]
+    },
+    {
+      "id": "vps",
+      "type": "cloud",
+      "label": "Hetzner VPS",
+      "sublabel": "Traefik \u00b7 API \u00b7 Web \u00b7 Authelia",
+      "tag": "K3s, 1 node",
+      "pos": [
+        340,
+        96
+      ],
+      "size": [
+        200,
+        76
+      ]
+    },
+    {
+      "id": "rpi3",
+      "type": "external",
+      "label": "RPi3",
+      "sublabel": "Uptime Kuma",
+      "tag": "no K8s",
+      "pos": [
+        640,
+        96
+      ],
+      "size": [
+        170,
+        76
+      ]
+    },
+    {
+      "id": "rpi4",
+      "type": "security",
+      "label": "RPi4 gateway",
+      "sublabel": "Pi-hole \u00b7 CoreDNS",
+      "tag": "no K8s",
+      "pos": [
+        340,
+        300
+      ],
+      "size": [
+        200,
+        76
+      ]
+    },
+    {
+      "id": "ace1",
+      "type": "backend",
+      "label": "ace1",
+      "sublabel": "staging workloads",
+      "tag": "K3s, 1 node",
+      "pos": [
+        50,
+        476
+      ],
+      "size": [
+        175,
+        76
+      ]
+    },
+    {
+      "id": "ace2",
+      "type": "backend",
+      "label": "ace2",
+      "sublabel": "agent workspaces",
+      "tag": "no K8s",
+      "pos": [
+        255,
+        476
+      ],
+      "size": [
+        175,
+        76
+      ]
+    },
+    {
+      "id": "bee",
+      "type": "database",
+      "label": "Beelink",
+      "sublabel": "Gitea \u00b7 CI \u00b7 MinIO",
+      "tag": "no K8s",
+      "pos": [
+        460,
+        476
+      ],
+      "size": [
+        175,
+        76
+      ]
+    },
+    {
+      "id": "jet",
+      "type": "external",
+      "label": "Jetson Nano",
+      "sublabel": "local inference",
+      "tag": "no K8s",
+      "pos": [
+        665,
+        476
+      ],
+      "size": [
+        175,
+        76
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Always-on cloud",
+      "wraps": [
+        "gcp",
+        "vps",
+        "rpi3"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Homelab, on demand",
+      "wraps": [
+        "rpi4",
+        "ace1",
+        "ace2",
+        "bee",
+        "jet"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "hub-prod",
+      "from": "gcp",
+      "to": "vps",
+      "label": "reconciles",
+      "variant": "emphasis"
+    },
+    {
+      "id": "hub-staging",
+      "from": "gcp",
+      "to": "ace1",
+      "label": "reconciles",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "mesh-monitor",
+      "from": "vps",
+      "to": "rpi3",
+      "label": "mesh",
+      "variant": "dashed"
+    },
+    {
+      "id": "mesh-home",
+      "from": "vps",
+      "to": "rpi4",
+      "label": "mesh",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "gw-ace1",
+      "from": "rpi4",
+      "to": "ace1",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "gw-ace2",
+      "from": "rpi4",
+      "to": "ace2",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "gw-bee",
+      "from": "rpi4",
+      "to": "bee",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "gw-jet",
+      "from": "rpi4",
+      "to": "jet",
+      "fromSide": "bottom",
+      "toSide": "top"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Runs Kubernetes",
+      "items": [
+        "Three single-node K3s clusters",
+        "They do not federate or share a control plane"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Deliberately does not",
+      "items": [
+        "Resolver, monitor and forge stay outside",
+        "Each has to work while the platform is broken"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Ties it together",
+      "items": [
+        "Encrypted WireGuard mesh, no open inbound ports",
+        "Argo CD reconciles both clusters from Git"
+      ]
+    }
+  ]
+}
