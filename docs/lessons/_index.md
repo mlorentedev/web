@@ -9,11 +9,14 @@ tags: [web, lessons, index]
 
 # Lessons
 
-17 lessons, one file each, newest first. Numbers are assigned in the order
+20 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 020 | [`node --test <dir>` resolves the directory as a module on Node 26](lesson-020-node-test-dir-resolves-the-directory-as.md) | 2026-08-27 | `#testing` `#node` |
+| 019 | [A guard that cries wolf is worse than the hazard it guards, and an untested guard will](lesson-019-a-guard-that-cries-wolf-is-worse-than-th.md) | 2026-08-27 | `#verification` `#testing` `#review` |
+| 018 | [A JSON Schema cannot say that an identifier resolves, only that it looks like one](lesson-018-a-json-schema-cannot-say-that-an-identifi.md) | 2026-08-27 | `#validation` `#json-schema` `#verification` |
 | 017 | [A comment can be true of the design and false of the deployment](lesson-017-a-comment-can-be-true-of-the-design-and-fa.md) | 2026-08-26 | `#documentation` `#verification` |
 | 016 | [A test that only ever runs against the fix proves nothing](lesson-016-a-test-that-only-ever-runs-against-the-fix.md) | 2026-08-26 | `#verification` `#testing` |
 | 015 | [A step that was skipped and a step with nothing to do look identical](lesson-015-a-step-that-was-skipped-and-a-step-with-no.md) | 2026-08-26 | `#ci` `#delivery` `#observability` |
