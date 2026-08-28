@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "A diagram that must never render",
+    "quality_profile": "showcase",
+    "viewBox": [880, 640]
+  },
+  "components": [
+    {
+      "type": "cloud",
+      "label": "no id, so nothing can reference this",
+      "pos": [60, 96, 12],
+      "size": [180, 76]
+    }
+  ],
+  "connections": [
+    {
+      "from": "ghost",
+      "to": "phantom",
+      "label": "endpoints that do not exist"
+    }
+  ]
+}
