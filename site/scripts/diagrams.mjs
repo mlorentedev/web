@@ -127,10 +127,71 @@ function fail(message) {
 }
 
 /** archify's schemas `$ref` each other by bare filename, so both are registered. */
-function architectureValidator() {
+function schemaValidator() {
   const ajv = new Ajv({ allErrors: true, strict: false });
   ajv.addSchema(JSON.parse(readFileSync(join(schemasDir, 'common.schema.json'), 'utf8')), 'common.schema.json');
   return ajv.compile(JSON.parse(readFileSync(join(schemasDir, 'architecture.schema.json'), 'utf8')));
+}
+
+/**
+ * What the schema cannot say.
+ *
+ * `common.schema.json#/$defs/id` constrains an identifier's *shape* — it cannot
+ * say that the identifier resolves, because referential integrity is a relation
+ * between parts of the document rather than a property of one value. So an IR
+ * with a connection to a component that does not exist, or with two components
+ * sharing an id, validates cleanly and then renders a diagram that lies.
+ *
+ * Four places reference a component id: `connections[].from` and `.to`,
+ * `boundaries[].wraps[]`, and `meta.views[].focus[]`.
+ */
+function topologyErrors(ir) {
+  const errors = [];
+  const declared = new Set();
+
+  for (const [index, component] of (ir.components ?? []).entries()) {
+    if (component?.id === undefined) continue; // the schema already reported this
+    if (declared.has(component.id)) {
+      errors.push(`components[${index}].id "${component.id}" is declared more than once`);
+    }
+    declared.add(component.id);
+  }
+
+  const checkRef = (value, where) => {
+    if (value !== undefined && !declared.has(value)) {
+      errors.push(`${where} references "${value}", which is not a component id`);
+    }
+  };
+
+  for (const [index, connection] of (ir.connections ?? []).entries()) {
+    checkRef(connection?.from, `connections[${index}].from`);
+    checkRef(connection?.to, `connections[${index}].to`);
+  }
+  for (const [index, boundary] of (ir.boundaries ?? []).entries()) {
+    for (const [wrapIndex, id] of (boundary?.wraps ?? []).entries()) {
+      checkRef(id, `boundaries[${index}].wraps[${wrapIndex}]`);
+    }
+  }
+  for (const [index, view] of (ir.meta?.views ?? []).entries()) {
+    for (const [focusIndex, id] of (view?.focus ?? []).entries()) {
+      checkRef(id, `meta.views[${index}].focus[${focusIndex}]`);
+    }
+  }
+  return errors;
+}
+
+/** Schema first, then the references the schema cannot check. */
+function architectureValidator() {
+  const validateSchema = schemaValidator();
+  return (ir, label) => {
+    if (!validateSchema(ir)) {
+      fail(`${label} does not validate:\n${JSON.stringify(validateSchema.errors, null, 2)}`);
+    }
+    const errors = topologyErrors(ir);
+    if (errors.length > 0) {
+      fail(`${label} has broken references:\n  ${errors.join('\n  ')}`);
+    }
+  };
 }
 
 const irFileNames = () =>
@@ -138,6 +199,15 @@ const irFileNames = () =>
 
 const sha256 = (buffer) => createHash('sha256').update(buffer).digest('hex');
 const svgPathFor = (irFile) => join(generatedDir, `${irFile.replace('.architecture.json', '')}.svg`);
+
+/** A syntax error in an IR is a diagram problem, not a crash. */
+function parseIr(bytes, label) {
+  try {
+    return JSON.parse(bytes);
+  } catch (error) {
+    fail(`${label} is not valid JSON: ${error.message}`);
+  }
+}
 
 /** Split a stylesheet into top-level rules, tracking depth so at-rules stay whole. */
 function topLevelRules(css) {
@@ -162,6 +232,12 @@ function topLevelRules(css) {
     .map((r) => ({ selector: r.raw.replace(/\/\*[\s\S]*?\*\//g, '').trim(), body: r.body }));
 }
 
+/**
+ * Whitespace-only minification. Safe for what archify emits — colours, lengths
+ * and class selectors — but it would corrupt a `url(data:…)` or a quoted
+ * `content` value, neither of which appears in the rules this pipeline keeps.
+ * If one ever does, stop trimming around `:` rather than papering over it.
+ */
 const minify = (css) =>
   css
     .replace(/\s*\n\s*/g, '')
@@ -206,9 +282,7 @@ async function generate() {
   for (const file of irFileNames()) {
     const irPath = join(diagramsDir, file);
     const irBytes = readFileSync(irPath);
-    if (!validate(JSON.parse(irBytes))) {
-      fail(`${file} does not validate:\n${JSON.stringify(validate.errors, null, 2)}`);
-    }
+    validate(parseIr(irBytes, file), file);
 
     const html = await renderToHtml(irPath);
     const rawSvg = extractArchitectureSvg(html);
@@ -222,21 +296,30 @@ async function generate() {
       .concat(`\n<!-- ir-sha256: ${sha256(irBytes)} -->\n`);
 
     writeFileSync(svgPathFor(file), svg);
-    process.stdout.write(`diagrams: ${file} -> ${svg.length} bytes\n`);
+    process.stdout.write(`diagrams: ${file} -> ${Buffer.byteLength(svg)} bytes\n`);
   }
 }
 
 /** archify's own CLI is the supported path; shelling out keeps us off its internals. */
 async function renderToHtml(irPath) {
   const { execFileSync } = await import('node:child_process');
+  const { mkdtempSync, rmSync } = await import('node:fs');
   const { tmpdir } = await import('node:os');
-  const out = join(tmpdir(), `archify-${sha256(Buffer.from(irPath)).slice(0, 12)}.html`);
-  execFileSync(
-    process.execPath,
-    [join(archifyRoot, 'bin/archify.mjs'), 'deliver', 'architecture', irPath, out, '--quality', 'showcase'],
-    { stdio: 'pipe' },
-  );
-  return readFileSync(out, 'utf8');
+
+  // The artifact is ~700 KB and only its SVG is wanted, so it goes to a
+  // directory that is removed even when archify exits non-zero.
+  const scratch = mkdtempSync(join(tmpdir(), 'archify-'));
+  try {
+    const out = join(scratch, 'artifact.html');
+    execFileSync(
+      process.execPath,
+      [join(archifyRoot, 'bin/archify.mjs'), 'deliver', 'architecture', irPath, out, '--quality', 'showcase'],
+      { stdio: 'pipe' },
+    );
+    return readFileSync(out, 'utf8');
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
 }
 
 function verify(explicitFile) {
@@ -245,13 +328,7 @@ function verify(explicitFile) {
   if (explicitFile) {
     const path = resolve(explicitFile);
     if (!existsSync(path)) fail(`${explicitFile} does not exist`);
-    let ir;
-    try {
-      ir = JSON.parse(readFileSync(path, 'utf8'));
-    } catch (error) {
-      fail(`${explicitFile} is not valid JSON: ${error.message}`);
-    }
-    if (!validate(ir)) fail(`${explicitFile} does not validate:\n${JSON.stringify(validate.errors, null, 2)}`);
+    validate(parseIr(readFileSync(path), explicitFile), explicitFile);
     process.stdout.write(`diagrams: ${explicitFile} validates\n`);
     return;
   }
@@ -261,9 +338,7 @@ function verify(explicitFile) {
 
   for (const file of files) {
     const irBytes = readFileSync(join(diagramsDir, file));
-    if (!validate(JSON.parse(irBytes))) {
-      fail(`${file} does not validate:\n${JSON.stringify(validate.errors, null, 2)}`);
-    }
+    validate(parseIr(irBytes, file), file);
 
     const svgPath = svgPathFor(file);
     if (!existsSync(svgPath)) fail(`${file} has no generated SVG — run \`npm run diagrams\``);

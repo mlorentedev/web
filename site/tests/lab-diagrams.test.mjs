@@ -106,13 +106,39 @@ test('every generated SVG is stamped with the sha256 of the IR it came from', ()
   }
 });
 
-test('a malformed IR fails the pipeline', () => {
-  const fixture = join(here, 'fixtures/malformed.architecture.json');
-  assert.ok(existsSync(fixture), `${fixture} is missing`);
-  assert.throws(
-    () => execFileSync(process.execPath, [join(siteRoot, 'scripts/diagrams.mjs'), 'verify', fixture], {
-      stdio: 'pipe',
-    }),
-    'a malformed IR was accepted — the build guarantee is not real',
-  );
-});
+/**
+ * Two fixtures, because there are two ways for a diagram to be wrong and only
+ * one of them is a schema's business:
+ *
+ *   - `malformed`  — breaks the schema (a component with no `id`, a `pos` of
+ *                    three numbers);
+ *   - `dangling`   — passes the schema and still describes an impossible
+ *                    diagram (two components sharing an id, a connection to a
+ *                    component that does not exist). `$defs/id` constrains an
+ *                    identifier's shape, not whether it resolves, so nothing in
+ *                    JSON Schema can catch this one.
+ */
+for (const [fixture, because] of [
+  ['malformed', 'does not validate'],
+  ['dangling', 'has broken references'],
+]) {
+  test(`a ${fixture} IR fails the pipeline`, () => {
+    const path = join(here, `fixtures/${fixture}.architecture.json`);
+    assert.ok(existsSync(path), `${path} is missing`);
+
+    let error;
+    try {
+      execFileSync(process.execPath, [join(siteRoot, 'scripts/diagrams.mjs'), 'verify', path], {
+        stdio: 'pipe',
+      });
+    } catch (thrown) {
+      error = thrown;
+    }
+    assert.ok(error, `the ${fixture} fixture was accepted — the build guarantee is not real`);
+    assert.match(
+      String(error.stderr),
+      new RegExp(because),
+      `the ${fixture} fixture failed, but not for the reason it exists`,
+    );
+  });
+}

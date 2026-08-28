@@ -143,17 +143,31 @@ which is not the failure mode that happens.
 "a malformed **or stale** IR fails `npm run build`" — a strictly stronger claim
 than the original, and one CI can actually make.
 
-Proven end to end, `npm run build` in `site/`:
+Proven end to end, and **not only locally** — the review asked for confirmation
+in the CI environment, so each case was also run through `docker build` with the
+repository's own Dockerfile (Node 22, `npm ci --include=dev`, `COPY site/ ./`):
 
-| Case | Exit | Message |
-|---|---|---|
-| IR replaced with the malformed fixture | **1** | `does not validate` |
-| IR edited, SVG not regenerated | **1** | `changed since its SVG was generated` |
-| Both in sync | **0** | 79 pages built |
+| Case | `npm run build` | `docker build` | Message |
+|---|---|---|---|
+| IR replaced with the malformed fixture | **1** | **1** | `does not validate` |
+| IR passing the schema with broken references | **1** | — | `has broken references` |
+| IR edited, SVG not regenerated | **1** | **1** | `changed since its SVG was generated` |
+| Both in sync | **0** | **0** (CI, `Build pr-251`) | 79 pages built |
 
-The Docker build runs `npm ci --include=dev` (Dockerfile:62) and `COPY site/ ./`,
-so `ajv` and `vendor/` are both present where `npm run build` runs in CI. The
-guarantee is real there, not only locally.
+### What the schema cannot check, and what was added
+
+Review finding (Major, CodeRabbit): `common.schema.json#/$defs/id` constrains an
+identifier's *shape*, not whether it resolves. Verified — an IR with a connection
+to a nonexistent component, or with two components sharing an id, validated with
+exit 0. Referential integrity is a relation between parts of the document, so no
+JSON Schema can express it.
+
+`topologyErrors()` now runs after schema validation over the four places that
+reference a component id — `connections[].from`/`.to`, `boundaries[].wraps[]`,
+`meta.views[].focus[]` — plus duplicate `components[].id`. Covered by a second
+fixture, `dangling.architecture.json`, which passes the schema and fails on
+references; the tests assert each fixture fails *for its own reason*, so neither
+can pass by accidentally breaking the other way.
 
 ### Provenance caveat
 
