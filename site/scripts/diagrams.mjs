@@ -121,9 +121,13 @@ const themeVariables = {
   '--external-stroke': token.panel[500],
 };
 
+/**
+ * Throws rather than exiting so the pure functions below can be unit-tested.
+ * The entry point at the bottom turns it back into `diagrams: …` on stderr and
+ * exit 1, so the CLI behaves exactly as before.
+ */
 function fail(message) {
-  process.stderr.write(`diagrams: ${message}\n`);
-  process.exit(1);
+  throw new Error(message);
 }
 
 /** archify's schemas `$ref` each other by bare filename, so both are registered. */
@@ -145,7 +149,7 @@ function schemaValidator() {
  * Four places reference a component id: `connections[].from` and `.to`,
  * `boundaries[].wraps[]`, and `meta.views[].focus[]`.
  */
-function topologyErrors(ir) {
+export function topologyErrors(ir) {
   const errors = [];
   const declared = new Set();
 
@@ -243,8 +247,10 @@ function topLevelRules(css) {
  * assumption stops holding, which is the only moment the decision can be made
  * properly — write a real parser, or stop trimming around `:`.
  */
-function minify(css) {
-  const unsafe = css.match(/url\(|content\s*:/);
+export function minify(css) {
+  // The lookbehind keeps `align-content:` and `justify-content:` from tripping
+  // it. A guard that cries wolf teaches people to ignore it.
+  const unsafe = css.match(/url\(|(?<![-\w])content\s*:/);
   if (unsafe) {
     fail(
       `the stylesheet now contains ${unsafe[0].trim()}, which whitespace-only minification would corrupt.\n` +
@@ -373,7 +379,16 @@ function verify(explicitFile) {
   process.stdout.write(`diagrams: ${files.length} diagram(s) validated and in sync\n`);
 }
 
-const [mode, file] = process.argv.slice(2);
-if (mode === 'generate') await generate();
-else if (mode === 'verify') verify(file);
-else fail('usage: diagrams.mjs generate | verify [file]');
+// Only when run as a command; importing this module for its pure functions
+// must not execute anything.
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const [mode, file] = process.argv.slice(2);
+  try {
+    if (mode === 'generate') await generate();
+    else if (mode === 'verify') verify(file);
+    else fail('usage: diagrams.mjs generate | verify [file]');
+  } catch (error) {
+    process.stderr.write(`diagrams: ${error.message}\n`);
+    process.exit(1);
+  }
+}
