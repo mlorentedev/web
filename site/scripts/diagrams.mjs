@@ -234,21 +234,42 @@ function topLevelRules(css) {
 
 /**
  * Whitespace-only minification. Safe for what archify emits — colours, lengths
- * and class selectors — but it would corrupt a `url(data:…)` or a quoted
- * `content` value, neither of which appears in the rules this pipeline keeps.
- * If one ever does, stop trimming around `:` rather than papering over it.
+ * and class selectors — but trimming around `:` and `,` would corrupt a
+ * `url(data:…)` or a quoted `content` value.
+ *
+ * Neither appears in the rules this pipeline keeps, and rather than trust that
+ * to stay true, the guard below refuses to minify anything containing one. A
+ * comment relies on somebody reading it; this fails at the moment the
+ * assumption stops holding, which is the only moment the decision can be made
+ * properly — write a real parser, or stop trimming around `:`.
  */
-const minify = (css) =>
-  css
+function minify(css) {
+  const unsafe = css.match(/url\(|content\s*:/);
+  if (unsafe) {
+    fail(
+      `the stylesheet now contains ${unsafe[0].trim()}, which whitespace-only minification would corrupt.\n` +
+        '  Either narrow the trimming in minify() or use a real CSS parser — do not silently skip it.',
+    );
+  }
+  return css
     .replace(/\s*\n\s*/g, '')
     .replace(/\s{2,}/g, ' ')
     .replace(/\s*([:;{},>])\s*/g, '$1')
     .replace(/;\}/g, '}');
+}
 
-/** Only the rules whose selector targets a class the SVG carries. */
+/**
+ * Only the rules whose selector targets a class the SVG carries.
+ *
+ * Class extraction accepts either quote style. If archify's markup ever changes
+ * in a way this does not follow, `used` comes out empty and the guard below
+ * fails the run — loudly, rather than shipping an unstyled diagram.
+ */
 function stylesheetFor(svg, templateCss) {
   const used = new Set(
-    [...svg.matchAll(/class="([^"]*)"/g)].flatMap((m) => m[1].split(/\s+/)).filter(Boolean),
+    [...svg.matchAll(/class=(?:"([^"]*)"|'([^']*)')/g)]
+      .flatMap((m) => (m[1] ?? m[2]).split(/\s+/))
+      .filter(Boolean),
   );
   const matched = topLevelRules(templateCss).filter((rule) => {
     if (rule.selector.startsWith('@')) return false;
