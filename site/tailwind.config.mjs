@@ -3,31 +3,28 @@ import colors from 'tailwindcss/colors';
 import {
   ACCENT,
   CODE_SURFACE,
+  COLOR_FAMILIES,
   PRE_INK,
   PRE_SURFACE,
   PROSE_BODY,
   PROSE_HEADING,
 } from './src/theme/tokens.mjs';
 
+/**
+ * The seven families, resolved from the names in `tokens.mjs` to the Tailwind
+ * ramps they alias. The mapping lives there so `tests/lab-audit.test.mjs` can
+ * read the same list without importing Tailwind's palette (AC1: one allowlist).
+ */
+const familyColors = Object.fromEntries(
+  Object.entries(COLOR_FAMILIES).map(([family, ramp]) => [family, colors[ramp]]),
+);
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
   theme: {
     extend: {
-      colors: {
-        // Brand. `accent-700` is the ACCENT above; the rest of the ramp comes
-        // with it so hover and border shades have somewhere to live.
-        accent: colors.cyan,
-        // Neutrals. `ink` is the warm scale the site's text and hairlines use;
-        // `panel` is the cool one the dark surfaces use.
-        ink: colors.gray,
-        panel: colors.slate,
-        // Status, as the cockpit's architecture legend already assigns them.
-        ok: colors.emerald,
-        warn: colors.amber,
-        danger: colors.rose,
-        observe: colors.purple,
-      },
+      colors: familyColors,
       fontFamily: {
         sans: ['Roboto', 'system-ui', 'sans-serif'],
       },

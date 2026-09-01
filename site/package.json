@@ -9,6 +9,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "test": "node --test \"tests/*.test.mjs\"",
+    "test:audit": "node --test tests/lab-audit.mjs",
     "test:browser": "node tests/lab-containment.mjs"
   },
   "dependencies": {
