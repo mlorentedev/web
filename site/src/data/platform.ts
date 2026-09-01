@@ -75,6 +75,22 @@ export interface ArchitectureDiagram {
 }
 
 export interface PlatformManifest {
+  /**
+   * When these figures were last reconciled against the real platform, and the
+   * commit that recorded them.
+   *
+   * There is no producer yet (#162) — the manifest is written by hand — so the
+   * page cannot claim the numbers are live. What it can do is print how old
+   * they are and let the reader judge, which is the difference between a
+   * dashboard and a screenshot of one. Both fields are `snake_case` against the
+   * rest of this file's `camelCase` because they are the producer's contract,
+   * not the page's: #162 emits them, and the spec names them.
+   *
+   * `generated_at` is an ISO 8601 timestamp; `source_commit` a full git object
+   * name. Both are asserted by `tests/lab-data.test.mjs`.
+   */
+  generated_at: string;
+  source_commit: string;
   cluster: ClusterInfo;
   metrics: PlatformMetrics;
   nodes: NodeTopology[];
