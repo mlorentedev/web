@@ -234,6 +234,18 @@ export const ui = {
       'Nine machines: three rented from a cloud provider, one of those powered down, and six sitting in my house. Only three of them run Kubernetes, and they run three separate single-node clusters rather than one cluster with three nodes — a shared control plane that can take the whole fleet down with it is not a homelab, it is one failure with extra steps.',
     'lab.infra.count': '{n} machines · {active} powered on · {clusters} independent K3s clusters',
 
+    // Status is prose, not an identifier. `k3s`, `ARM64` and `docker` stay as
+    // they are on both locales because they are names; `healthy` and `standby`
+    // are English adjectives describing a state, and rendering them raw left
+    // the Spanish page saying `standby` in English.
+    'lab.status.healthy': 'healthy',
+    'lab.status.warning': 'degraded',
+    'lab.status.offline': 'offline',
+    'lab.status.standby': 'standby',
+    'lab.status.operational': 'operational',
+    'lab.status.degraded': 'degraded',
+    'lab.status.maintenance': 'maintenance',
+
     'lab.provenance': 'Figures last reconciled against the cluster on',
 
     // Home sections
@@ -547,6 +559,18 @@ export const ui = {
     'lab.infra.intro':
       'Nueve máquinas: tres alquiladas a un proveedor cloud, una de ellas apagada, y seis en mi casa. Solo tres ejecutan Kubernetes, y lo hacen como tres clústeres independientes de un nodo en vez de un clúster de tres nodos: un plano de control compartido que puede llevarse por delante toda la flota no es un homelab, es un único punto de fallo con pasos de más.',
     'lab.infra.count': '{n} máquinas · {active} encendidas · {clusters} clústeres K3s independientes',
+
+    // El estado es prosa, no un identificador. `k3s`, `ARM64` y `docker` se
+    // quedan igual en los dos idiomas porque son nombres; `healthy` y `standby`
+    // son adjetivos ingleses que describen un estado, y renderizarlos crudos
+    // dejaba la página española diciendo `standby` en inglés.
+    'lab.status.healthy': 'operativo',
+    'lab.status.warning': 'degradado',
+    'lab.status.offline': 'caído',
+    'lab.status.standby': 'en reserva',
+    'lab.status.operational': 'operativo',
+    'lab.status.degraded': 'degradado',
+    'lab.status.maintenance': 'en mantenimiento',
 
     'lab.provenance': 'Cifras reconciliadas contra el clúster por última vez el',
 
