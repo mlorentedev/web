@@ -42,8 +42,9 @@ jobs:
     runs-on: ubuntu-latest
     # Without this the job inherits GitHub's 6h ceiling. A build that stalls
     # rather than fails then burns six hours of runner before anyone notices —
-    # which is exactly how five releases went unpublished. A healthy multi-arch
-    # build here finishes in ~2 min.
+    # which is exactly how v1.10.1 was tagged and released with no image ever
+    # pushed (docs/lessons/lesson-011). A healthy multi-arch build here
+    # finishes in ~2 min.
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
