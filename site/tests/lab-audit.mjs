@@ -12,6 +12,10 @@
  * signal, which is the failure lesson-019 is about. It joins the glob in PR6,
  * when `lab.astro` stops composing `IdpPage.astro`.
  *
+ * `lab-sections.test.mjs` is the green counterpart: it applies these same
+ * checks to the sections PR3 onwards actually rebuild, so each criterion is
+ * enforced from the PR that lands it rather than all at once at the end.
+ *
  * Measured on today's page (2026-08-31), which is what it has to be red
  * against: **10 hued families** outside the token layer (amber, blue, cyan,
  * emerald, gray, purple, rose, slate, teal, yellow), **3 arbitrary type sizes**
@@ -28,7 +32,8 @@
  * page *is* is what the browser receives. A component can look disciplined and
  * still emit `text-red-500` through a prop.
  *
- * The allowlist is imported, never restated — see `src/theme/tokens.mjs`.
+ * The parsing and the allowlist are imported, never restated — see
+ * `tests/lib/audit.mjs` and `src/theme/tokens.mjs`.
  */
 
 import assert from 'node:assert/strict';
@@ -37,64 +42,13 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import tailwindColors from 'tailwindcss/colors.js';
+import { HUED_FAMILIES } from '../src/theme/tokens.mjs';
 
-import { HUED_FAMILIES, HUELESS_NEUTRALS } from '../src/theme/tokens.mjs';
+import { arbitraryTypeSizes, classNames, colourEscapes, offTokenFamilies } from './lib/audit.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const siteRoot = join(here, '..');
 const page = join(siteRoot, 'dist/lab/index.html');
-
-/**
- * Tailwind's own palette names — the vocabulary a colour utility can name
- * *instead of* one of our families. Taken from the package rather than typed
- * out, so a Tailwind upgrade that adds a ramp does not quietly create a hole.
- *
- * The renamed ramps are skipped by name and never read: they are deprecation
- * getters that print a warning on access, and five warnings on every run train
- * a reader to ignore the output the tests are trying to give them.
- */
-const deprecatedAliases = new Set(['lightBlue', 'warmGray', 'trueGray', 'coolGray', 'blueGray']);
-const paletteNames = new Set(
-  Object.keys(tailwindColors)
-    .filter((name) => !deprecatedAliases.has(name))
-    .filter((name) => tailwindColors[name] && typeof tailwindColors[name] === 'object'),
-);
-
-const allowed = new Set([...HUED_FAMILIES, ...HUELESS_NEUTRALS]);
-
-/** Every `class` attribute value in the document, variants and all. */
-function classNames(html) {
-  const names = new Set();
-  for (const match of html.matchAll(/\bclass="([^"]*)"/g)) {
-    for (const raw of match[1].split(/\s+/)) {
-      if (raw) names.add(raw);
-    }
-  }
-  return names;
-}
-
-/**
- * `dark:hover:text-red-500` → `text-red-500`. Variants do not change the hue.
- *
- * Splitting on every colon is wrong, and wrong in the direction that matters:
- * Tailwind's type hints put a colon *inside* the brackets, so
- * `bg-[color:rgb(1,2,3)]` would have been cut down to `rgb(1,2,3)]` — no
- * `[`, so the arbitrary-colour guard below never fired on the one syntax whose
- * whole purpose is to name a colour. Only colons outside brackets separate
- * variants.
- */
-function withoutVariants(className) {
-  let depth = 0;
-  let start = 0;
-  for (let i = 0; i < className.length; i += 1) {
-    const char = className[i];
-    if (char === '[') depth += 1;
-    else if (char === ']') depth -= 1;
-    else if (char === ':' && depth === 0) start = i + 1;
-  }
-  return className.slice(start).replace(/^!/, '');
-}
 
 test('the built Lab page exists', () => {
   assert.ok(
@@ -111,21 +65,7 @@ test('the page has classes to audit', () => {
 });
 
 test('every hued colour utility names a token family', () => {
-  const offenders = new Map();
-
-  for (const className of classes) {
-    const utility = withoutVariants(className);
-    // `<prefix>-<colour>` or `<prefix>-<colour>-<shade>`; the colour is the
-    // last segment that is not a shade.
-    const match = utility.match(/^-?[a-z]+(?:-[a-z]+)*?-([a-z]+)(?:-\d{1,3})?(?:\/\d{1,3})?$/);
-    if (!match) continue;
-
-    const family = match[1];
-    if (!paletteNames.has(family) || allowed.has(family)) continue;
-
-    if (!offenders.has(family)) offenders.set(family, new Set());
-    offenders.get(family).add(className);
-  }
+  const offenders = offTokenFamilies(classes);
 
   const report = [...offenders.entries()]
     .sort()
@@ -139,24 +79,6 @@ test('every hued colour utility names a token family', () => {
   );
 });
 
-/**
- * An arbitrary colour value — `bg-[#7c3aed]`, `text-[rgb(124,58,237)]`.
- *
- * The family check above can only see utilities that *name* a palette colour,
- * so a raw hex walks straight past the criterion whose entire point is that the
- * page draws from the token layer. This closes that, and `colourEscapes()` is
- * exported so the fixture test below can prove it fires — an untested guard is
- * the failure lesson-019 is about, and this one was written after the fact
- * precisely because it had not been.
- */
-export function colourEscapes(classNameList) {
-  // Three shapes, and the third is the one that hides: a raw hex, a colour
-  // function, and Tailwind's `color:` type hint — `bg-[color:var(--x)]` names a
-  // colour without containing one, so matching on the value alone misses it.
-  const arbitraryColour = /\[(color:|#[0-9a-fA-F]{3,8}|(rgb|rgba|hsl|hsla|oklch|lab|color)\()/;
-  return [...classNameList].filter((c) => arbitraryColour.test(withoutVariants(c))).sort();
-}
-
 test('no colour is written as a raw value instead of a token', () => {
   const escapes = colourEscapes(classes);
 
@@ -167,25 +89,8 @@ test('no colour is written as a raw value instead of a token', () => {
   );
 });
 
-test('the raw-colour guard actually fires', () => {
-  const shouldCatch = [
-    'bg-[#7c3aed]',
-    'text-[#fff]',
-    'dark:border-[rgb(1,2,3)]',
-    'text-[hsl(20,10%,5%)]',
-    // Tailwind's type hint. The colon is inside the brackets, which is exactly
-    // what the first version of `withoutVariants()` mistook for a variant.
-    'bg-[color:rgb(1,2,3)]',
-    'dark:hover:text-[color:var(--brand)]',
-  ];
-  const shouldPass = ['bg-accent-700', 'text-[10px]', 'w-[754px]', 'grid-cols-[1fr_auto]'];
-
-  assert.deepEqual(colourEscapes(shouldCatch), [...shouldCatch].sort(), 'the guard missed a raw colour');
-  assert.deepEqual(colourEscapes(shouldPass), [], 'the guard flagged a non-colour arbitrary value');
-});
-
 test('type is set from the scale, never in arbitrary pixels', () => {
-  const arbitrary = [...classes].filter((c) => /^-?text-\[\d+(\.\d+)?px\]$/.test(withoutVariants(c))).sort();
+  const arbitrary = arbitraryTypeSizes(classes);
 
   assert.deepEqual(
     arbitrary,
