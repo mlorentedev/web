@@ -33,6 +33,16 @@ jobs:
         working-directory: site
         run: npm ci
 
+      # The build renders the notes' mermaid diagrams through a headless browser
+      # (#176), so it needs one — `npm ci` installs the Playwright package but
+      # never its browsers. The image build has the same requirement and meets
+      # it in the Dockerfile with `install-deps chromium` as root followed by
+      # `playwright install chromium`; `--with-deps` is the runner's equivalent.
+      # Without this the build dies on the first .mdx with a diagram in it.
+      - name: Install Chromium for the diagram renderer
+        working-directory: site
+        run: npx playwright install --with-deps chromium
+
       # `npm run build` must come first and is not redundant with the Docker
       # build above: the audit tests read `dist/`, and the image build produces
       # it inside a layer this job never sees. It also runs `astro check` and
