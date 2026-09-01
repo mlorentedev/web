@@ -26,4 +26,15 @@ jobs:
       - uses: actions/add-to-project@v2.0.0
         with:
           project-url: https://github.com/users/mlorentedev/projects/1
+          # BITACORA_PAT and not GITHUB_TOKEN, and this cannot be "simplified":
+          # the board is a user-level Project v2, outside this repository, and
+          # GITHUB_TOKEN is scoped to the repository that issued it. Projects v2
+          # is also GraphQL-only — there is no REST fallback for a human or an
+          # agent to reach for when this fails.
+          #
+          # It shares a rate limit with every other automation and session on
+          # this account, and on 2026-08-31 that limit ran out: this job failed,
+          # a manual re-run failed identically, and #255/#256 never reached the
+          # board. See #256 — the fix is a GitHub App, because rate limits are
+          # per *user*, not per token, so issuing more PATs would not help.
           github-token: ${{ secrets.BITACORA_PAT }}

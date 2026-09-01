@@ -71,6 +71,28 @@ block of theme variables from the site's tokens instead of copying archify's two
    22.13.1 — the version `.nvmrc` pins — produced **the same bytes**. Committed
    SVGs and CI-regenerated SVGs are therefore interchangeable on content; the
    choice is about where archify has to exist, not about churn.
+5. **And deterministic across an archify version change** (measured 2026-08-31,
+   closing #252). Every measurement in this document was taken against
+   `2.16.0-dev.0`, an *unreleased* build, because `skills-lock.json` pins no ref —
+   and the `skills` CLI has no option to pin one: `skills add <owner>/<repo>`
+   always takes the default branch. Upstream has since tagged `v2.16.0`. Updating
+   to it and re-rendering both diagrams produced **byte-identical output**:
+
+   | | before (`2.16.0-dev.0`) | after (`2.16.0`) |
+   |---|---|---|
+   | `topology.svg` | `051910e8c9732c78…` | `051910e8c9732c78…` |
+   | `flows.svg` | `013b154dbb13be51…` | `013b154dbb13be51…` |
+
+   `git diff` reports no change; the suite stays 22/22. So the numbers above hold
+   and the repository is no longer measured against an unreleased build.
+
+   **What this does not prove** is that a *future* archify release renders the
+   same, and nothing can — the tool cannot pin, and CI deliberately does not
+   render (#242). What protects the site is that the SVG is **committed**: the
+   build consumes bytes in git, never the renderer, and the `ir-sha256` stamp
+   fails the build if the IR and the SVG stop agreeing. A drifting upstream can
+   therefore change what the *next* `npm run diagrams` produces, and cannot change
+   what the site ships without that showing up as a reviewable diff.
 
 ### 320 px: the diagram cannot be scaled down to fit
 

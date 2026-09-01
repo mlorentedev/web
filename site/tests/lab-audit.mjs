@@ -123,6 +123,39 @@ test('every hued colour utility names a token family', () => {
   );
 });
 
+/**
+ * An arbitrary colour value — `bg-[#7c3aed]`, `text-[rgb(124,58,237)]`.
+ *
+ * The family check above can only see utilities that *name* a palette colour,
+ * so a raw hex walks straight past the criterion whose entire point is that the
+ * page draws from the token layer. This closes that, and `colourEscapes()` is
+ * exported so the fixture test below can prove it fires — an untested guard is
+ * the failure lesson-019 is about, and this one was written after the fact
+ * precisely because it had not been.
+ */
+export function colourEscapes(classNameList) {
+  const arbitraryColour = /\[(#[0-9a-fA-F]{3,8}|(rgb|rgba|hsl|hsla|oklch|lab|color)\()/;
+  return [...classNameList].filter((c) => arbitraryColour.test(withoutVariants(c))).sort();
+}
+
+test('no colour is written as a raw value instead of a token', () => {
+  const escapes = colourEscapes(classes);
+
+  assert.deepEqual(
+    escapes,
+    [],
+    `colours written past the token layer — use a family:\n  ${escapes.join('\n  ')}`,
+  );
+});
+
+test('the raw-colour guard actually fires', () => {
+  const shouldCatch = ['bg-[#7c3aed]', 'text-[#fff]', 'dark:border-[rgb(1,2,3)]', 'text-[hsl(20,10%,5%)]'];
+  const shouldPass = ['bg-accent-700', 'text-[10px]', 'w-[754px]', 'grid-cols-[1fr_auto]'];
+
+  assert.deepEqual(colourEscapes(shouldCatch), [...shouldCatch].sort(), 'the guard missed a raw colour');
+  assert.deepEqual(colourEscapes(shouldPass), [], 'the guard flagged a non-colour arbitrary value');
+});
+
 test('type is set from the scale, never in arbitrary pixels', () => {
   const arbitrary = [...classes].filter((c) => /^-?text-\[\d+(\.\d+)?px\]$/.test(withoutVariants(c))).sort();
 

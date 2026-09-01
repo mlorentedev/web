@@ -32,7 +32,11 @@ jobs:
       - name: Move assigned issue to In Progress
         uses: actions/github-script@v9
         with:
-          github-token: ${{ secrets.BITACORA_PAT }}   # needs project + repo scope
+          # Needs project + repo scope, so GITHUB_TOKEN cannot serve: the board
+          # is a user-level Project v2 outside this repository, and Projects v2
+          # has no REST API to fall back on. Shares the account's rate limit —
+          # see #256 and the note in add-to-project.yml.
+          github-token: ${{ secrets.BITACORA_PAT }}
           script: |
             const projectId = 'PVT_kwHOAM7xJs4BZ6GY';
             const statusFieldId = 'PVTSSF_lAHOAM7xJs4BZ6GYzhU1dtI';
