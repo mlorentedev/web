@@ -56,6 +56,18 @@ jobs:
         working-directory: site
         run: npm test
 
+      # WEB-080 AC2, enabled with PR4 — before it there was no generated SVG on
+      # the page, so a pass would have meant the check was looking at nothing.
+      # It loads `/lab` and `/es/lab` in the Chromium installed above at 320,
+      # 768, 1440 and 2048 and asserts the *document* never scrolls sideways
+      # while each diagram scrolls inside its own container: 754 px is the width
+      # at which the smallest text reaches archify's 6 px floor, and below that
+      # the diagram cannot be both visible and legible. It serves `dist/`
+      # itself, so nothing needs to be listening beside it.
+      - name: Containment (320 / 768 / 1440 / 2048, both locales)
+        working-directory: site
+        run: npm run test:browser
+
   validate:
     name: Validate build
     permissions:

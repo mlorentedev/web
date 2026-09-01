@@ -67,7 +67,8 @@
       "size": [
         190,
         76
-      ]
+      ],
+      "tag": "needs a PAT"
     },
     {
       "id": "overlay",
@@ -81,7 +82,8 @@
       "size": [
         220,
         76
-      ]
+      ],
+      "tag": "merged by hand"
     },
     {
       "id": "staging",
@@ -147,7 +149,7 @@
   "boundaries": [
     {
       "kind": "region",
-      "label": "mlorentedev/web — one build per push",
+      "label": "mlorentedev/web \u2014 one build per push",
       "wraps": [
         "push",
         "release",

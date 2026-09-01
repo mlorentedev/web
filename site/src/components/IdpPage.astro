@@ -5,6 +5,7 @@ import Footer from './Footer.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import ServiceIcon from './ServiceIcon.astro';
+import LabDiagram from './LabDiagram.astro';
 import LabServices from './LabServices.astro';
 import LabInfra from './LabInfra.astro';
 import LabProvenance from './LabProvenance.astro';
@@ -88,528 +89,31 @@ const t = useTranslations(lang);
         </div>
     </Section>
 
-    <!-- SECTION 2: Architecture & Operational Blueprints -->
-    <Section padding="py-10">
-        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-4">
-          <div>
-            <SectionHeading number="02" label={t('platform.diagrams.heading')} />
-            <p class="text-xs text-gray-500 mt-1">{t('platform.diagrams.sub')}</p>
-          </div>
-        </div>
 
-        <!-- Diagram Selector Switcher -->
-        <div class="flex flex-wrap gap-1.5 mb-5 text-xs font-mono" data-diagram-nav>
-          <button
-            type="button"
-            data-diagram-tab="topology"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-900 text-white shadow-sm cursor-pointer"
-          >
-            {t('idp.d.01HybridInfrastructureTopology')}
-          </button>
-          <button
-            type="button"
-            data-diagram-tab="gitops"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-          >
-            {t('idp.d.02GitopsDeliveryPipeline')}
-          </button>
-          <button
-            type="button"
-            data-diagram-tab="security"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-          >
-            {t('idp.d.03ZeroTrustIngress')}
-          </button>
-          <button
-            type="button"
-            data-diagram-tab="ai-mcp"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-          >
-            {t('idp.d.04EdgeAiMulti')}
-          </button>
-        </div>
+    <LabServices number="02" />
 
-        <!-- Architecture Subsystem Color Legend -->
-        <div class="flex flex-wrap items-center gap-2 p-3 mb-5 bg-gray-50 border border-gray-200 rounded-lg text-[11px] font-mono text-gray-700">
-          <span class="font-bold text-gray-900 uppercase text-[10px] tracking-wider mr-1">{t('idp.d.architectureLegend')}</span>
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-amber-500"></span> {t('idp.d.edgeGateway')}
-          </span>
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-rose-500"></span> {t('idp.d.zeroTrustAuth')}
-          </span>
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-blue-500"></span> {t('idp.d.customApps')}
-          </span>
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-purple-50 text-purple-800 border border-purple-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-purple-500"></span> {t('idp.d.observability')}
-          </span>
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-emerald-500"></span> {t('idp.d.coreGitops')}
-          </span>
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-teal-500"></span> {t('idp.d.dataS3')}
-          </span>
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-yellow-50 text-yellow-800 border border-yellow-200 font-medium">
-            <span class="h-2 w-2 rounded-full bg-yellow-500"></span> {t('idp.d.aiGpuEdge')}
-          </span>
-        </div>
+    <LabInfra number="03" />
 
-        <!-- DIAGRAM 1: Hybrid Infrastructure Topology -->
-        <div data-diagram-content="topology" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100">
-            <div>
-              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('idp.d.topToBottomInfrastructure')}</span>
-              <h3 class="text-lg font-bold text-gray-900">{t('idp.d.hybridCloudBareMetal')}</h3>
-            </div>
-            <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">
-              {t('idp.d.8ActiveNodesWireguard')}
-            </span>
-          </div>
+    <LabDiagram
+      name="topology"
+      number="04"
+      label={t('lab.diagram.topology.heading')}
+      caption={t('lab.diagram.topology.caption')}
+      legend={t('lab.diagram.topology.legend')}
+    />
 
-          <!-- Visual Topology Architecture Blueprint -->
-          <div class="space-y-3 font-mono text-xs">
-            <!-- External Clients & Actors -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-              <div class="bg-slate-100/80 border border-slate-300 rounded-lg p-2.5 text-center shadow-2xs">
-                <span class="font-bold text-slate-800 block text-xs">{t('idp.d.publicUsers')}</span>
-                <span class="text-[10px] text-slate-500">{t('idp.d.httpsWebBrowsers')}</span>
-              </div>
-              <div class="bg-slate-100/80 border border-slate-300 rounded-lg p-2.5 text-center shadow-2xs">
-                <span class="font-bold text-slate-800 block text-xs">{t('idp.d.autonomousAiFleet')}</span>
-                <span class="text-[10px] text-slate-500">FastMCP / Bearer API</span>
-              </div>
-              <div class="bg-slate-100/80 border border-slate-300 rounded-lg p-2.5 text-center shadow-2xs">
-                <span class="font-bold text-slate-800 block text-xs">{t('idp.d.gitWebhookDispatch')}</span>
-                <span class="text-[10px] text-slate-500">{t('idp.d.githubActionsDigest')}</span>
-              </div>
-            </div>
-
-            <!-- Directional Connector Arrow -->
-            <div class="flex items-center justify-center gap-2 py-0.5 text-slate-400">
-              <span class="text-xs font-bold text-cyan-700">↓</span>
-              <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('idp.d.publicTlsTrafficAnycast')}</span>
-              <span class="text-xs font-bold text-cyan-700">↓</span>
-            </div>
-
-            <!-- Layer 1: Edge Ingress & CDN -->
-            <div class="bg-amber-50/40 border border-amber-200 rounded-lg p-4 shadow-xs">
-              <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                  <span class="h-2 w-2 rounded-full bg-amber-500"></span>
-                  <span class="font-bold text-amber-900 uppercase tracking-wide">{t('idp.d.layer1PublicEdge')}</span>
-                </div>
-                <span class="text-[11px] text-amber-700 font-semibold">{t('idp.d.cloudflareWafGlobalAnycast')}</span>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
-                <div class="bg-white p-2 rounded border border-amber-100">
-                  <span class="font-semibold text-gray-900 block">*.kubelab.live</span>
-                  <span class="text-[10px] text-gray-500">{t('idp.d.automatedEdgeTls1')}</span>
-                </div>
-                <div class="bg-white p-2 rounded border border-amber-100">
-                  <span class="font-semibold text-gray-900 block">mlorente.dev</span>
-                  <span class="text-[10px] text-gray-500">{t('idp.d.globalCdnStaticAssets')}</span>
-                </div>
-                <div class="bg-white p-2 rounded border border-amber-100">
-                  <span class="font-semibold text-gray-900 block">{t('idp.d.ddosHeuristics')}</span>
-                  <span class="text-[10px] text-gray-500">{t('idp.d.l3L4VolumetricShield')}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Directional Connector Arrow -->
-            <div class="flex items-center justify-center gap-2 py-0.5 text-slate-400">
-              <span class="text-xs font-bold text-cyan-700">↓</span>
-              <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('idp.d.https443DirectRouting')}</span>
-              <span class="text-xs font-bold text-cyan-700">↓</span>
-            </div>
-
-            <!-- Layer 2: Always-On Cloud Tier -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <!-- Hetzner VPS Germany -->
-              <div class="md:col-span-2 bg-slate-50 border border-slate-300 rounded-lg p-4 shadow-xs">
-                <div class="flex items-center justify-between mb-2.5 pb-2 border-b border-slate-200">
-                  <div class="flex items-center gap-2">
-                    <span class="h-2 w-2 rounded-full bg-blue-500"></span>
-                    <span class="font-bold text-slate-900">Hetzner Cloud VPS</span>
-                  </div>
-                  <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 font-semibold">{t('idp.d.germanyAlwaysOnProd')}</span>
-                </div>
-                <div class="grid grid-cols-2 gap-2 text-[11px]">
-                  <div class="bg-white p-2 rounded border border-amber-200 flex items-start gap-2">
-                    <ServiceIcon slug="traefik" class="w-4 h-4 shrink-0 mt-0.5" />
-                    <div>
-                      <span class="text-amber-900 font-bold block">{t('idp.d.traefikIngressRouter')}</span>
-                      <span class="text-[10px] text-gray-500">{t('idp.d.autoTlsRateLimiting')}</span>
-                    </div>
-                  </div>
-                  <div class="bg-white p-2 rounded border border-rose-200 flex items-start gap-2">
-                    <ServiceIcon slug="authelia" class="w-4 h-4 shrink-0 mt-0.5" />
-                    <div>
-                      <span class="text-rose-900 font-bold block">{t('idp.d.authelia2faGateway')}</span>
-                      <span class="text-[10px] text-gray-500">Forward Auth · TOTP</span>
-                    </div>
-                  </div>
-                  <div class="bg-white p-2 rounded border border-blue-200 flex items-start gap-2">
-                    <ServiceIcon slug="kubelab-api" class="w-4 h-4 shrink-0 mt-0.5" />
-                    <div>
-                      <span class="text-blue-900 font-bold block">{t('idp.d.k3sCoreAppsPods')}</span>
-                      <span class="text-[10px] text-gray-500">API (Go) · Web (Astro)</span>
-                    </div>
-                  </div>
-                  <div class="bg-white p-2 rounded border border-purple-200 flex items-start gap-2">
-                    <ServiceIcon slug="grafana" class="w-4 h-4 shrink-0 mt-0.5" />
-                    <div>
-                      <span class="text-purple-900 font-bold block">{t('idp.d.observabilityLogs')}</span>
-                      <span class="text-[10px] text-gray-500">Grafana · Loki · Vector</span>
-                    </div>
-                  </div>
-                  <div class="bg-white p-2 rounded border border-emerald-200 flex items-start gap-2">
-                    <ServiceIcon slug="headscale" class="w-4 h-4 shrink-0 mt-0.5" />
-                    <div>
-                      <span class="text-emerald-900 font-bold block">{t('idp.d.headscaleMeshCoord')}</span>
-                      <span class="text-[10px] text-gray-500">{t('idp.d.wireguardMeshCoordinator')}</span>
-                    </div>
-                  </div>
-                  <div class="bg-white p-2 rounded border border-amber-200 flex items-start gap-2">
-                    <ServiceIcon slug="crowdsec" class="w-4 h-4 shrink-0 mt-0.5" />
-                    <div>
-                      <span class="text-amber-900 font-bold block">{t('idp.d.crowdsecDefense')}</span>
-                      <span class="text-[10px] text-gray-500">{t('idp.d.behavioralIps')}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Dedicated Cloud & Monitor Nodes -->
-              <div class="space-y-3">
-                <div class="bg-purple-50/60 border border-purple-200 rounded-lg p-3 shadow-xs">
-                  <div class="flex items-center gap-2 mb-1">
-                    <ServiceIcon slug="argocd" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-purple-900 block text-xs">Google Cloud (gcp1)</span>
-                  </div>
-                  <span class="text-[10px] text-purple-800 font-semibold block">{t('idp.d.argoCdGitopsHub')}</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.independentMultiClusterController')}</p>
-                </div>
-
-                <div class="bg-amber-50/60 border border-amber-200 rounded-lg p-3 shadow-xs">
-                  <div class="flex items-center gap-2 mb-1">
-                    <ServiceIcon slug="uptime-kuma" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-amber-900 block text-xs">{t('idp.d.rpi3SbcMonitor')}</span>
-                  </div>
-                  <span class="text-[10px] text-amber-800 font-semibold block">{t('idp.d.uptimeKumaHealthHub')}</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.autonomousSyntheticHttpIcmp')}</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Directional Connector Arrow -->
-            <div class="flex items-center justify-center gap-2 py-0.5 text-slate-400">
-              <span class="text-xs font-bold text-cyan-700">↓</span>
-              <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{t('idp.d.crossWanEncryptedDirect')}</span>
-              <span class="text-xs font-bold text-cyan-700">↓</span>
-            </div>
-
-            <!-- Central Encrypted Overlay Backbone -->
-            <div class="bg-slate-900 text-slate-100 rounded-lg p-3.5 flex items-center justify-between text-xs shadow-md">
-              <div class="flex items-center gap-2">
-                <span class="h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span class="font-bold text-cyan-300 uppercase tracking-wider">{t('idp.d.wireguardEncryptedTailscaleMesh')}</span>
-              </div>
-              <span class="text-slate-400 text-[11px]">{t('idp.d.meshBackboneNote')}</span>
-            </div>
-
-            <!-- Directional Connector Arrow -->
-            <div class="flex items-center justify-center gap-2 py-0.5 text-slate-400">
-              <span class="text-xs font-bold text-emerald-700">↓</span>
-              <span class="text-[10px] font-mono text-emerald-700 uppercase tracking-wider">{t('idp.d.internalRoutingToDedicated')}</span>
-              <span class="text-xs font-bold text-emerald-700">↓</span>
-            </div>
-
-            <!-- Layer 3: Homelab Bare-Metal Cluster (USA) -->
-            <div class="bg-emerald-50/40 border border-emerald-200 rounded-lg p-4 shadow-xs">
-              <div class="flex items-center justify-between mb-3 pb-2 border-b border-emerald-200">
-                <div class="flex items-center gap-2">
-                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                  <span class="font-bold text-emerald-900">{t('idp.d.homelabBareMetalCluster')}</span>
-                </div>
-                <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">{t('idp.d.onPremisesDedicated')}</span>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-[11px]">
-                <div class="bg-white p-3 rounded-lg border border-amber-200 shadow-2xs">
-                  <div class="flex items-center gap-1.5 mb-1">
-                    <ServiceIcon slug="coredns" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-amber-900 block">{t('idp.d.rpi4Gateway')}</span>
-                  </div>
-                  <p class="text-[10px] text-gray-500 mt-1">Pi-hole + CoreDNS Split DNS</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg border border-emerald-200 shadow-2xs">
-                  <div class="flex items-center gap-1.5 mb-1">
-                    <ServiceIcon slug="gitea" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-emerald-900 block">ace1 (Staging)</span>
-                  </div>
-                  <span class="text-[10px] text-emerald-700 block">Intel N95 · 11.5GB</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.k3sStagingGiteaForge')}</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg border border-emerald-200 shadow-2xs">
-                  <div class="flex items-center gap-1.5 mb-1">
-                    <ServiceIcon slug="kubelab-api" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-emerald-900 block">ace2 (Dev)</span>
-                  </div>
-                  <span class="text-[10px] text-emerald-700 block">Intel N95 · 11.5GB</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.distributedStagingWorkloads')}</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg border border-yellow-300 shadow-2xs">
-                  <div class="flex items-center gap-1.5 mb-1">
-                    <ServiceIcon slug="pollex" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-yellow-900 block">Jetson Nano</span>
-                  </div>
-                  <span class="text-[10px] text-yellow-700 font-semibold block">4c Cortex-A57 · 3.9GB</span>
-                  <p class="text-[10px] text-gray-500 mt-1">Pollex Edge AI (Qwen 2.5 1.5B, CPU)</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg border border-teal-200 shadow-2xs">
-                  <div class="flex items-center gap-1.5 mb-1">
-                    <ServiceIcon slug="minio" class="w-4 h-4 shrink-0" />
-                    <span class="font-bold text-teal-900 block">Beelink N100</span>
-                  </div>
-                  <span class="text-[10px] text-teal-700 block">Intel N95 · 7.5GB</span>
-                  <p class="text-[10px] text-gray-500 mt-1">{t('idp.d.ciRunnerMinioS3')}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Conversational Engineering Q&A Accordion -->
-          <div class="mt-6 pt-5 border-t border-gray-100 space-y-2.5">
-            <h4 class="text-xs font-bold text-gray-800 uppercase tracking-wider font-mono">
-              {t('idp.d.behindTheArchitectureDesign')}
-            </h4>
-
-            <details class="group bg-gray-50 border border-gray-200 rounded-lg p-3.5 text-xs">
-              <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between select-none">
-                <span>{t('idp.d.whyRunAPhysical')}</span>
-                <span class="text-gray-400 group-open:rotate-180 transition-transform font-mono">▼</span>
-              </summary>
-              <div class="mt-2.5 pt-2.5 border-t border-gray-200/60 text-gray-700 space-y-2 leading-relaxed font-sans">
-                <p>{t('idp.d.runningHighRamClusters')} <strong>{t('idp.d.zeroCloudComputeOr')}</strong>.</p>
-              </div>
-            </details>
-
-            <details class="group bg-gray-50 border border-gray-200 rounded-lg p-3.5 text-xs">
-              <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between select-none">
-                <span>{t('idp.d.howDoMachinesCommunicate')}</span>
-                <span class="text-gray-400 group-open:rotate-180 transition-transform font-mono">▼</span>
-              </summary>
-              <div class="mt-2.5 pt-2.5 border-t border-gray-200/60 text-gray-700 space-y-2 leading-relaxed font-sans">
-                <p>{t('idp.d.thereAreZeroPort')} {t('idp.d.subnetTheyTalkTo')}</p>
-              </div>
-            </details>
-
-            <details class="group bg-gray-50 border border-gray-200 rounded-lg p-3.5 text-xs">
-              <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between select-none">
-                <span>{t('idp.d.whyLightweightK3sInstead')}</span>
-                <span class="text-gray-400 group-open:rotate-180 transition-transform font-mono">▼</span>
-              </summary>
-              <div class="mt-2.5 pt-2.5 border-t border-gray-200/60 text-gray-700 space-y-2 leading-relaxed font-sans">
-                <p>{t('idp.d.standardKubernetesNeedsOver')}</p>
-              </div>
-            </details>
-          </div>
-        </div>
-
-        <!-- DIAGRAM 2: GitOps Delivery Pipeline -->
-        <div data-diagram-content="gitops" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6 hidden">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100">
-            <div>
-              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('idp.d.continuousDeliveryBlueprint')}</span>
-              <h3 class="text-lg font-bold text-gray-900">{t('idp.d.buildOncePromoteBy')}</h3>
-            </div>
-            <span class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
-              {t('idp.d.zeroDowntimeRollouts')}
-            </span>
-          </div>
-
-          <!-- Visual Step-by-Step Flow with Arrows -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 font-mono text-xs">
-            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 relative shadow-xs">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-cyan-800 font-bold">01. Conventional Commit</span>
-                <span class="text-slate-400 text-sm font-bold">➔</span>
-              </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.featureBranchPrReviewed')}</p>
-            </div>
-
-            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 relative shadow-xs">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-cyan-800 font-bold">{t('idp.d.02NativeMultiArch')}</span>
-                <span class="text-slate-400 text-sm font-bold">➔</span>
-              </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.dockerBuildxCompilesNatively')}</p>
-            </div>
-
-            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 relative shadow-xs">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-cyan-800 font-bold">{t('idp.d.03ImmutableDigestPush')}</span>
-                <span class="text-slate-400 text-sm font-bold">➔</span>
-              </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.pushesUnique')} <code>sha-&lt;short&gt;</code> {t('idp.d.containerTagToDocker')}</p>
-            </div>
-
-            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 relative shadow-xs">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-cyan-800 font-bold">{t('idp.d.04SignedWebhookDispatch')}</span>
-                <span class="text-slate-400 text-sm font-bold">➔</span>
-              </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.fires')} <code>repository_dispatch</code> {t('idp.d.eventToTheGitops')}</p>
-            </div>
-
-            <div class="bg-emerald-50/60 border border-emerald-200 rounded-lg p-4 relative shadow-xs">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-emerald-900 font-bold">{t('idp.d.05ArgoCdStaging')}</span>
-                <span class="text-emerald-500 text-sm font-bold">➔</span>
-              </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.k3sReconcilesNewManifest')}</p>
-            </div>
-
-            <div class="bg-purple-50/60 border border-purple-200 rounded-lg p-4 relative shadow-xs">
-              <div class="flex items-center justify-between mb-1.5">
-                <span class="text-purple-900 font-bold">{t('idp.d.06ProductionPromotion')}</span>
-                <span class="text-purple-500 text-sm font-bold">✓</span>
-              </div>
-              <p class="text-[11px] text-gray-600 font-sans">{t('idp.d.promotesVerifiedSha256Digest')}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- DIAGRAM 3: Zero-Trust Ingress & Security Path -->
-        <div data-diagram-content="security" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6 hidden">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100">
-            <div>
-              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('idp.d.perimeterDefenseIngressPath')}</span>
-              <h3 class="text-lg font-bold text-gray-900">{t('idp.d.zeroTrustRequestVerification')}</h3>
-            </div>
-            <span class="text-xs font-mono px-2.5 py-1 rounded bg-purple-50 text-purple-800 border border-purple-200">
-              Authelia 2FA + CrowdSec
-            </span>
-          </div>
-
-          <!-- Vertical Pipeline with Visual Connection Arrows -->
-          <div class="space-y-2 font-mono text-xs">
-            <div class="p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <span class="h-6 w-6 rounded-full bg-cyan-800 text-white flex items-center justify-center font-bold text-[11px]">1</span>
-                <div>
-                  <strong class="text-gray-900">Cloudflare DNS:</strong>
-                  <span class="text-gray-600 text-[11px] ml-1 font-sans">{t('idp.d.terminatesTlsFiltersL3')}</span>
-                </div>
-              </div>
-              <span class="text-cyan-700 font-bold">↓</span>
-            </div>
-
-            <div class="p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <span class="h-6 w-6 rounded-full bg-cyan-800 text-white flex items-center justify-center font-bold text-[11px]">2</span>
-                <div>
-                  <strong class="text-gray-900">{t('idp.d.traefikL7ReverseProxy')}</strong>
-                  <span class="text-gray-600 text-[11px] ml-1 font-sans">{t('idp.d.enforcesTokenBucketRate')}</span>
-                </div>
-              </div>
-              <span class="text-cyan-700 font-bold">↓</span>
-            </div>
-
-            <div class="p-3 bg-amber-50/70 border border-amber-200 rounded-lg flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <span class="h-6 w-6 rounded-full bg-amber-700 text-white flex items-center justify-center font-bold text-[11px]">3</span>
-                <div>
-                  <strong class="text-amber-900">{t('idp.d.crowdsecBehavioralIps')}</strong>
-                  <span class="text-amber-800 text-[11px] ml-1 font-sans">{t('idp.d.parsesAccessLogsIn')}</span>
-                </div>
-              </div>
-              <span class="text-amber-700 font-bold">↓</span>
-            </div>
-
-            <div class="p-3 bg-purple-50/70 border border-purple-200 rounded-lg flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <span class="h-6 w-6 rounded-full bg-purple-700 text-white flex items-center justify-center font-bold text-[11px]">4</span>
-                <div>
-                  <strong class="text-purple-900">{t('idp.d.authelia2faGateway2')}</strong>
-                  <span class="text-purple-800 text-[11px] ml-1 font-sans">{t('idp.d.requiresTotp2faBefore')}</span>
-                </div>
-              </div>
-              <span class="text-purple-700 font-bold">↓</span>
-            </div>
-
-            <div class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-lg flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <span class="h-6 w-6 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-[11px]">5</span>
-                <div>
-                  <strong class="text-emerald-900">{t('idp.d.wireguardEncryptedDelivery')}</strong>
-                  <span class="text-emerald-800 text-[11px] ml-1 font-sans">{t('idp.d.deliversClearedPacketsDirectly')}</span>
-                </div>
-              </div>
-              <span class="text-emerald-700 font-bold">✓</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- DIAGRAM 4: Edge AI & Multi-Agent Context Plane -->
-        <div data-diagram-content="ai-mcp" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6 hidden">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100">
-            <div>
-              <span class="text-[10px] font-mono uppercase text-cyan-800 font-semibold tracking-wider">{t('idp.d.aiPlatformContextPlane')}</span>
-              <h3 class="text-lg font-bold text-gray-900">{t('idp.d.hardwareCudaEdgeInference')}</h3>
-            </div>
-            <span class="text-xs font-mono px-2.5 py-1 rounded bg-cyan-50 text-cyan-800 border border-cyan-200">
-              {t('idp.d.6782ContextReduction')}
-            </span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-            <div class="bg-purple-50/40 border border-purple-200 rounded-xl p-5 shadow-xs">
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-bold text-purple-900 text-sm">{t('idp.d.1PhysicalEdgeGpu')}</span>
-                <span class="text-purple-600 font-bold">On-device</span>
-              </div>
-              <p class="text-xs text-gray-600 font-sans mb-3">{t('idp.d.runsLocalLanguageModels')}</p>
-              <div class="space-y-2 text-[11px]">
-                <div class="bg-white p-2.5 rounded border border-purple-100 flex items-start gap-2">
-                  <ServiceIcon slug="pollex" class="w-4 h-4 shrink-0 mt-0.5" />
-                  <div>
-                    <span class="text-purple-900 font-semibold block">NVIDIA Jetson Nano</span>
-                    <span class="text-[10px] text-gray-500">Qwen 2.5 1.5B via Ollama · CPU inference</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-cyan-50/40 border border-cyan-200 rounded-xl p-5 shadow-xs">
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-bold text-cyan-900 text-sm">{t('idp.d.2HiveMcpAst')}</span>
-                <span class="text-cyan-600 font-bold">FastMCP ⚡</span>
-              </div>
-              <p class="text-xs text-gray-600 font-sans mb-3">{t('idp.d.deterministicContextServerProviding')}</p>
-              <div class="space-y-2 text-[11px]">
-                <div class="bg-white p-2.5 rounded border border-cyan-100 flex items-start gap-2">
-                  <ServiceIcon slug="hive" class="w-4 h-4 shrink-0 mt-0.5" />
-                  <div>
-                    <span class="text-cyan-900 font-semibold block">{t('idp.d.treeSitterAstSqlite')}</span>
-                    <span class="text-[10px] text-gray-500">{t('idp.d.subMillisecondRetrievalZero')}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-    </Section>
-
-    <LabServices number="03" />
-
-    <LabInfra number="04" />
+    <LabDiagram
+      name="flows"
+      number="05"
+      label={t('lab.diagram.flows.heading')}
+      caption={t('lab.diagram.flows.caption')}
+      legend={t('lab.diagram.flows.legend')}
+    />
 
     <!-- SECTION 5: Service Level Objectives (SLOs) & Reliability -->
     <Section padding="py-10">
         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
-          <SectionHeading number="05" label={t('idp.slos.heading')} />
+          <SectionHeading number="06" label={t('idp.slos.heading')} />
           <span class="text-xs font-mono text-emerald-700 font-semibold">{t('idp.d.90DaySlaTarget')}</span>
         </div>
         <p class="text-xs text-gray-500 mb-6">{t('idp.slos.sub')}</p>
@@ -683,7 +187,7 @@ const t = useTranslations(lang);
     >
       <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 mb-4">
           <div>
-            <SectionHeading number="06" label={t('idp.probe.heading')} />
+            <SectionHeading number="07" label={t('idp.probe.heading')} />
             <p class="text-xs text-gray-500 mt-1">{t('idp.probe.sub')}</p>
           </div>
           <button
@@ -733,32 +237,6 @@ const t = useTranslations(lang);
     status: number | string;
     latencyMs: number;
     ok: boolean;
-  }
-
-  // --- DIAGRAM TAB SWITCHER ---
-  function initDiagramTabs(): void {
-    const navButtons = document.querySelectorAll<HTMLButtonElement>('[data-diagram-tab]');
-    const contentPanes = document.querySelectorAll<HTMLElement>('[data-diagram-content]');
-
-    navButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const target = btn.getAttribute('data-diagram-tab');
-        if (!target) return;
-
-        navButtons.forEach((b) => {
-          b.className = 'px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer';
-        });
-        btn.className = 'px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-900 text-white shadow-sm cursor-pointer';
-
-        contentPanes.forEach((pane) => {
-          if (pane.getAttribute('data-diagram-content') === target) {
-            pane.classList.remove('hidden');
-          } else {
-            pane.classList.add('hidden');
-          }
-        });
-      });
-    });
   }
 
   // --- HEALTH PROBE RUNNER ---
@@ -870,7 +348,6 @@ const t = useTranslations(lang);
   }
 
   // --- INITIALIZATION ---
-  initDiagramTabs();
 
   const probeBtn = document.querySelector('[data-action="run-probe"]');
   probeBtn?.addEventListener('click', runAllProbes);

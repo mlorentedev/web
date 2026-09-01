@@ -1,0 +1,198 @@
+---
+/**
+ * A generated architecture diagram, embedded inline (WEB-080, AC2).
+ *
+ * One component for both diagrams rather than the `LabTopology.astro` /
+ * `LabFlows.astro` pair `tasks.md` budgeted: they differ only by which file
+ * they read and which strings they use, and two files that must stay identical
+ * are the drift `Section`/`SectionHeading` were extracted to stop.
+ *
+ * ## Inline, not `<img>`
+ *
+ * Decided in PR0 and the reason is #244: the text inside an external `.svg` is
+ * invisible to search and to anything that reads the page rather than looking
+ * at it. Inlining costs bytes — 47.6 KB for both, against AC6's 150 KB page
+ * budget — and buys real `<text>`, `role` and `aria`.
+ *
+ * ## The ids have to be rewritten, and this is the PR that found out
+ *
+ * archify namespaces nothing. Every generated SVG uses `id="0"`, `id="1"`,
+ * `id="arrowhead"`, `id="archify-diagram-title"` and one id per component. PR0
+ * measured a single diagram and never saw it; put two on one page and the
+ * document has duplicate ids throughout, `url(#arrowhead)` in the second
+ * diagram resolves into the first, and both `aria-labelledby` targets point at
+ * the first diagram's title — so a screen reader announces the topology
+ * diagram's name for the delivery one. Visually it happens to look fine, which
+ * is what makes it the kind of defect that ships.
+ *
+ * So every `id`, every `url(#…)`, every `href="#…"` and every id-list
+ * attribute is prefixed with the diagram's name at build time.
+ *
+ * ## `lang="en"` stays on both locales
+ *
+ * Not an oversight. Risk §1: one IR serves both locales, so what is inside the
+ * SVG is identifiers — machine names, protocols, environments — and those are
+ * English on the Spanish page too. Marking the subtree `en` is what tells a
+ * screen reader to pronounce `Traefik` and `sha-abc1234` as English rather than
+ * attempting them in Spanish. The prose that a reader has to *understand* lives
+ * outside the SVG, in the caption and legend, and is translated.
+ */
+import flowsSvg from '../diagrams/generated/flows.svg?raw';
+import topologySvg from '../diagrams/generated/topology.svg?raw';
+
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  /** Diagram name: the IR is `<name>.architecture.json`, the SVG `<name>.svg`. */
+  name: 'topology' | 'flows';
+  /** Section number in the page's sequence, e.g. "05". */
+  number: string;
+  /** Section heading. */
+  label: string;
+  /** One sentence under the heading. */
+  caption: string;
+  /** What the drawing does not say for itself. */
+  legend: string;
+}
+
+const { name, number, label, caption, legend } = Astro.props;
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+
+/**
+ * Imported with Vite's `?raw`, not read from disk.
+ *
+ * `readFileSync(new URL(…, import.meta.url))` works in `dev` and fails the
+ * build: `import.meta.url` resolves to the *bundled* chunk, so it went looking
+ * for `dist/diagrams/generated/topology.svg`. `?raw` is resolved at bundle
+ * time, which also means the bundler knows the SVG is a dependency — editing
+ * one invalidates the cache instead of serving a stale diagram.
+ *
+ * Both are imported because the component is parameterised; the one not used
+ * is tree-shaken out of the client bundle, and neither reaches it anyway since
+ * this is all build-time.
+ */
+const SVGS: Record<Props['name'], string> = {
+  topology: topologySvg,
+  flows: flowsSvg,
+};
+
+/**
+ * Prefix every id and every reference to one, so two diagrams can share a page.
+ *
+ * Order matters: rewrite the *references* first, while the original ids are
+ * still what they point at, then the definitions. Doing it the other way round
+ * leaves `url(#arrowhead)` pointing at an id that no longer exists.
+ */
+function namespaceIds(svg: string, prefix: string): string {
+  return svg
+    .replace(/url\(#([^)]+)\)/g, (_, id) => `url(#${prefix}-${id})`)
+    .replace(/\b(href|xlink:href)="#([^"]+)"/g, (_, attr, id) => `${attr}="#${prefix}-${id}"`)
+    .replace(
+      /\b(aria-labelledby|aria-describedby|aria-controls)="([^"]+)"/g,
+      (_, attr, list) => `${attr}="${list.split(/\s+/).map((id: string) => `${prefix}-${id}`).join(' ')}"`,
+    )
+    .replace(/\bid="([^"]+)"/g, (_, id) => `id="${prefix}-${id}"`);
+}
+
+/**
+ * Refuse to render a diagram that still carries an id this function did not
+ * claim, and one whose references it did not follow.
+ *
+ * Raised in review on this PR, and correct: the rewrite above knows four
+ * syntaxes — `url(#…)`, `href`/`xlink:href`, the three id-list aria attributes,
+ * and `id` itself. archify emits only those today (verified: 9 `url(#`, 1
+ * `aria-labelledby`, no id selectors in its stylesheet), but if it ever emits
+ * a fifth the rewrite would half-apply and the page would go back to duplicate
+ * ids and an `aria-labelledby` pointing into the wrong diagram — silently,
+ * because it still looks right.
+ *
+ * So the assumption enforces itself, the way `minify()` in `diagrams.mjs`
+ * refuses a stylesheet it cannot safely handle rather than quietly mangling it.
+ * A build failure at the moment the assumption breaks is the only moment the
+ * decision can be made properly.
+ */
+function assertFullyNamespaced(svg: string, prefix: string): string {
+  const stray = [...svg.matchAll(/\bid="([^"]+)"/g)]
+    .map((m) => m[1])
+    .filter((id) => !id.startsWith(`${prefix}-`));
+  if (stray.length > 0) {
+    throw new Error(
+      `LabDiagram: ${stray.length} id(s) in ${prefix}.svg were not namespaced — ` +
+        `${stray.slice(0, 5).join(', ')}. The generator emitted a syntax namespaceIds() does not know.`,
+    );
+  }
+
+  // Every reference must resolve to an id that exists in this diagram.
+  //
+  // The first version of this check asked whether references *started with the
+  // prefix* — which is true by construction after the rewrite, so it asserted
+  // nothing. Resolution is the property that actually matters: if the generator
+  // emits a reference syntax `namespaceIds` does not rewrite, the ids around it
+  // still get prefixed and that reference is left pointing at a name no element
+  // has any more. That is the silent half of the failure.
+  const declared = new Set([...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  const referenced = [...svg.matchAll(/(?:url\(#|(?:xlink:)?href=")#?([A-Za-z0-9_:.-]+)/g)].map((m) => m[1]);
+  const unresolved = [...new Set(referenced.filter((id) => !declared.has(id)))];
+
+  if (unresolved.length > 0) {
+    throw new Error(
+      `LabDiagram: ${unresolved.length} reference(s) in ${prefix}.svg resolve to nothing — ` +
+        `${unresolved.slice(0, 5).join(', ')}. The generator emitted a reference syntax namespaceIds() does not rewrite.`,
+    );
+  }
+
+  return svg;
+}
+
+const svg = assertFullyNamespaced(namespaceIds(SVGS[name].trim(), name), name);
+---
+
+<Section padding="py-10" data-lab-section={name}>
+  <SectionHeading number={number} label={label} margin="mb-3" />
+
+  <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-6">{caption}</p>
+
+  <figure class="mb-4">
+    {/*
+      The diagram scrolls here; the page never does. At 320 px it cannot be
+      scaled down and stay legible — PR0 measured 7 px text projecting to
+      2.55 px against archify's own 6 px floor — so it keeps a 754 px floor
+      and this container takes the overflow. That is what AC2 asserts and what
+      `lab-containment.mjs` checks in a real browser at four widths.
+    */}
+    <div class="lab-diagram overflow-x-auto border border-ink-100 rounded-md bg-white p-3">
+      <Fragment set:html={svg} />
+    </div>
+
+    <figcaption class="text-xs text-ink-500 leading-relaxed mt-3 max-w-3xl">
+      {legend}
+    </figcaption>
+  </figure>
+
+  <p class="text-xs font-mono text-ink-400">
+    {t('lab.diagram.source').replace('{file}', `src/diagrams/${name}.architecture.json`)}
+  </p>
+</Section>
+
+<style>
+  /*
+   * The 754px floor belongs to the SVG, not to its container.
+   *
+   * It was `min-w-[754px]` on a padded wrapper first, and `lab-containment`
+   * caught it immediately: `p-3` takes 24px off the content box, so the diagram
+   * rendered at 730px — under the floor, at 320px and 768px, on both locales.
+   * A number that has to be kept in sync with a padding utility is a number
+   * that will drift, so the constraint sits on the element it is about.
+   *
+   * `:global` because the SVG arrives through `set:html` and Astro's scoping
+   * cannot reach markup it did not compile.
+   */
+  .lab-diagram :global(svg) {
+    min-width: 754px;
+    height: auto;
+  }
+</style>

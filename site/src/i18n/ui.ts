@@ -211,8 +211,10 @@ export const ui = {
     // one IR serves both locales, so node labels stay as identifiers — machine
     // names, protocols, environments — and every sentence a reader has to
     // understand is translated out here (proposal, Risk §1).
+    'lab.diagram.topology.heading': 'Where everything runs',
+    'lab.diagram.flows.heading': 'How a change reaches production',
     'lab.diagram.topology.caption':
-      'Eight machines across a cloud provider and a homelab, three of them running single-node K3s clusters that do not share a control plane.',
+      'Eight of the nine machines — the ninth is powered down, so it is listed above and not drawn here. Three run single-node K3s clusters that do not share a control plane.',
     'lab.diagram.topology.legend':
       'The resolver, the monitor and the forge sit deliberately outside Kubernetes: each has to keep working while the platform is broken. A WireGuard mesh ties the fleet together with no inbound ports open.',
     'lab.diagram.flows.caption':
@@ -246,6 +248,7 @@ export const ui = {
     'lab.status.degraded': 'degraded',
     'lab.status.maintenance': 'maintenance',
 
+    'lab.diagram.source': 'Rendered at build from {file}',
     'lab.provenance': 'Figures last reconciled against the cluster on',
 
     // Home sections
@@ -537,8 +540,10 @@ export const ui = {
     // único IR sirve a los dos idiomas, así que las etiquetas de los nodos se
     // quedan como identificadores — nombres de máquina, protocolos, entornos —
     // y todo lo que hay que entender se traduce aquí (propuesta, Riesgo §1).
+    'lab.diagram.topology.heading': 'Dónde corre cada cosa',
+    'lab.diagram.flows.heading': 'Cómo llega un cambio a producción',
     'lab.diagram.topology.caption':
-      'Ocho máquinas repartidas entre un proveedor cloud y un homelab; tres de ellas ejecutan clústeres K3s de un solo nodo que no comparten plano de control.',
+      'Ocho de las nueve máquinas: la novena está apagada, así que aparece en la lista de arriba pero no en el dibujo. Tres ejecutan clústeres K3s de un solo nodo que no comparten plano de control.',
     'lab.diagram.topology.legend':
       'El resolutor, el monitor y la forja se quedan fuera de Kubernetes a propósito: cada uno tiene que seguir funcionando mientras la plataforma está rota. Una malla WireGuard une la flota sin abrir ningún puerto de entrada.',
     'lab.diagram.flows.caption':
@@ -572,6 +577,7 @@ export const ui = {
     'lab.status.degraded': 'degradado',
     'lab.status.maintenance': 'en mantenimiento',
 
+    'lab.diagram.source': 'Generado en el build desde {file}',
     'lab.provenance': 'Cifras reconciliadas contra el clúster por última vez el',
 
     // Home sections

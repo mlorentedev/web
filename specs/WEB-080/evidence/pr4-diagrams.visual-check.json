@@ -1,0 +1,49 @@
+{
+  "pr": 4,
+  "spec": "WEB-080",
+  "taken": "2026-09-01",
+  "what": "Topology and Flows mounted on /lab and /es/lab with their generated SVGs inline.",
+  "containment": [
+    "npm notice run node tests/lab-containment.mjs",
+    "\u2713 /lab @ 320px \u2014 document contained, 2 diagram(s), 2 scrolling internally",
+    "\u2713 /lab @ 768px \u2014 document contained, 2 diagram(s), 2 scrolling internally",
+    "\u2713 /lab @ 1440px \u2014 document contained, 2 diagram(s), 0 scrolling internally",
+    "\u2713 /lab @ 2048px \u2014 document contained, 2 diagram(s), 0 scrolling internally",
+    "\u2713 /es/lab @ 320px \u2014 document contained, 2 diagram(s), 2 scrolling internally",
+    "\u2713 /es/lab @ 768px \u2014 document contained, 2 diagram(s), 2 scrolling internally",
+    "\u2713 /es/lab @ 1440px \u2014 document contained, 2 diagram(s), 0 scrolling internally",
+    "\u2713 /es/lab @ 2048px \u2014 document contained, 2 diagram(s), 0 scrolling internally",
+    "",
+    "All widths contained."
+  ],
+  "ac6": {
+    "budget_bytes": 150000,
+    "built_page_bytes": {
+      "lab/index.html": 94630,
+      "es/lab/index.html": 95100
+    },
+    "headroom_bytes": {
+      "lab/index.html": 55370,
+      "es/lab/index.html": 54900
+    },
+    "inline_svg_bytes": {
+      "topology": 21340,
+      "flows": 26261
+    },
+    "note": "Re-measured after deciding to keep the `tag` line. PR6 still removes IdpPage.astro."
+  },
+  "duplicate_ids_on_page": 0,
+  "findings": [
+    "archify namespaces no ids; two inlined SVGs gave the document duplicate ids and both aria-labelledby targets resolved to the first diagram. Fixed by prefixing every id and reference at build time.",
+    "readFileSync(new URL(..., import.meta.url)) resolves to the bundled chunk and fails the build; Vite ?raw instead.",
+    "min-w-[754px] on a padded wrapper rendered the diagram at 730px, under the legibility floor, at 320 and 768 on both locales.",
+    "lab-containment required an external server and reported 8 connection refusals as 8 containment failures; it now serves dist/ itself.",
+    "lab-containment counted scrolling <figure> elements rather than the scroller, printing 0 at 320px where it must be 2. Now counted correctly and asserted.",
+    "The topology caption said 'Eight machines' while the Infra section two screens above says nine. The ninth is powered down and not drawn; the caption now says so."
+  ],
+  "screenshots": [
+    "pr4-en-1440.png",
+    "pr4-en-320.png",
+    "pr4-es-320.png"
+  ]
+}
