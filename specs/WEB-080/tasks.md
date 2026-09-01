@@ -54,6 +54,7 @@ created: "2026-08-27"
 
 - [ ] [AC2] `LabTopology.astro` / `LabFlows.astro` embed the generated SVGs the way PR0 decided, with the PR2 captions; `lab-containment` green at all four widths — now enabled in CI
 - [ ] [AC1] EN+ES prose for both sections; `lab-audit` still green
+- [ ] **[AC2] Decide what happens to the `tag` line.** Found in PR2: every component's `tag` is present as `<text>` in the extracted SVG (`Conventional Commits`, `sha-abc1234`, `no rebuild`, `K3s, 1 node`, `no K8s`…) and **does not render in archify's viewer**, on both diagrams. So no `visual-check` receipt has ever shown it, and embedding the SVG may put a third line on every node that nobody has reviewed. Look at the page before writing the prose: either the tags earn their place, or they come out of the IRs. Whichever way, re-measure against AC6 — the text is already in the bytes either way
 
 ### PR5 — AI & Automations migration (AC4)
 
@@ -66,6 +67,7 @@ created: "2026-08-27"
 - [ ] [AC5] Write `site/tests/lab-axe.mjs` (Playwright + axe-core, dev dependency): 0 violations on `/lab` and `/es/lab`; fix what it finds
 - [ ] [AC6] Write failing test `site/tests/lab-weight.test.mjs` against the budget from PR0; make it pass
 - [ ] [AC5] Screenshots at 320 and 1440 (light) of `/lab` and `/es/lab` under `specs/WEB-080/evidence/`; `verification.md` filled
+- [ ] **[AC1] Close the arbitrary-colour hole before `lab-audit` joins the glob.** It matches utilities that *name a Tailwind palette colour*, so `text-red-500` is caught and **`bg-[#7c3aed]` is not** — an arbitrary hex sails through the check whose whole point is that the page uses the token layer. Left open deliberately in PR1: hardening a test CI does not yet run would have reopened a review window for nothing. It stops being deliberate the moment the file is renamed to `lab-audit.test.mjs`. Add the arbitrary-value case (`\[#[0-9a-f]{3,8}\]`, `\[rgb\(`, `\[hsl\(`) and give it a fixture that fails without it — the guard has to be tested like any other (lesson-019)
 
 ## Closing
 
