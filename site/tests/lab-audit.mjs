@@ -74,10 +74,26 @@ function classNames(html) {
   return names;
 }
 
-/** `dark:hover:text-red-500` → `text-red-500`. Variants do not change the hue. */
+/**
+ * `dark:hover:text-red-500` → `text-red-500`. Variants do not change the hue.
+ *
+ * Splitting on every colon is wrong, and wrong in the direction that matters:
+ * Tailwind's type hints put a colon *inside* the brackets, so
+ * `bg-[color:rgb(1,2,3)]` would have been cut down to `rgb(1,2,3)]` — no
+ * `[`, so the arbitrary-colour guard below never fired on the one syntax whose
+ * whole purpose is to name a colour. Only colons outside brackets separate
+ * variants.
+ */
 function withoutVariants(className) {
-  const parts = className.split(':');
-  return parts[parts.length - 1].replace(/^!/, '');
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < className.length; i += 1) {
+    const char = className[i];
+    if (char === '[') depth += 1;
+    else if (char === ']') depth -= 1;
+    else if (char === ':' && depth === 0) start = i + 1;
+  }
+  return className.slice(start).replace(/^!/, '');
 }
 
 test('the built Lab page exists', () => {
@@ -121,6 +137,51 @@ test('every hued colour utility names a token family', () => {
     [],
     `hued utilities outside the token families (${HUED_FAMILIES.join(', ')}):\n${report}`,
   );
+});
+
+/**
+ * An arbitrary colour value — `bg-[#7c3aed]`, `text-[rgb(124,58,237)]`.
+ *
+ * The family check above can only see utilities that *name* a palette colour,
+ * so a raw hex walks straight past the criterion whose entire point is that the
+ * page draws from the token layer. This closes that, and `colourEscapes()` is
+ * exported so the fixture test below can prove it fires — an untested guard is
+ * the failure lesson-019 is about, and this one was written after the fact
+ * precisely because it had not been.
+ */
+export function colourEscapes(classNameList) {
+  // Three shapes, and the third is the one that hides: a raw hex, a colour
+  // function, and Tailwind's `color:` type hint — `bg-[color:var(--x)]` names a
+  // colour without containing one, so matching on the value alone misses it.
+  const arbitraryColour = /\[(color:|#[0-9a-fA-F]{3,8}|(rgb|rgba|hsl|hsla|oklch|lab|color)\()/;
+  return [...classNameList].filter((c) => arbitraryColour.test(withoutVariants(c))).sort();
+}
+
+test('no colour is written as a raw value instead of a token', () => {
+  const escapes = colourEscapes(classes);
+
+  assert.deepEqual(
+    escapes,
+    [],
+    `colours written past the token layer — use a family:\n  ${escapes.join('\n  ')}`,
+  );
+});
+
+test('the raw-colour guard actually fires', () => {
+  const shouldCatch = [
+    'bg-[#7c3aed]',
+    'text-[#fff]',
+    'dark:border-[rgb(1,2,3)]',
+    'text-[hsl(20,10%,5%)]',
+    // Tailwind's type hint. The colon is inside the brackets, which is exactly
+    // what the first version of `withoutVariants()` mistook for a variant.
+    'bg-[color:rgb(1,2,3)]',
+    'dark:hover:text-[color:var(--brand)]',
+  ];
+  const shouldPass = ['bg-accent-700', 'text-[10px]', 'w-[754px]', 'grid-cols-[1fr_auto]'];
+
+  assert.deepEqual(colourEscapes(shouldCatch), [...shouldCatch].sort(), 'the guard missed a raw colour');
+  assert.deepEqual(colourEscapes(shouldPass), [], 'the guard flagged a non-colour arbitrary value');
 });
 
 test('type is set from the scale, never in arbitrary pixels', () => {

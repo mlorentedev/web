@@ -80,9 +80,9 @@ function tint(hex, alpha) {
  * onto `panel` and the prose inks the rest of the site already uses, and the one
  * emphasis colour is the brand accent.
  *
- * The semantic block below is NOT settled — see the note in the PR. archify
- * colours a component by its `type`, and the site's remaining families carry
- * status meaning (`warn`, `danger`) rather than category meaning.
+ * The semantic block below was settled on 2026-08-31: archify colours a
+ * component by its `type`, which is a category axis, so no category may claim
+ * `warn` or `danger` — those stay reserved for status. See the block itself.
  */
 const themeVariables = {
   // Structure.
@@ -103,22 +103,47 @@ const themeVariables = {
   '--arrow-emphasis': ACCENT,
 
   // ---------------------------------------------------------------------------
-  // TODO(manu): the semantic mapping. See the PR note before changing.
+  // Component types. archify's `type` is a **category** axis — what a thing is —
+  // while `warn` and `danger` are the palette's **status** families. Mapping one
+  // onto the other made healthy things look broken: topology's `RPi4 gateway` is
+  // the DNS resolver working correctly and rendered rose, and every cloud host
+  // rendered amber. Decided 2026-08-31: warn and danger are reserved for actual
+  // status and no category may claim them.
+  //
+  // That leaves five families for seven types, so two pairs share a family at
+  // different shades. Both pairings are deliberate and mean something:
+  //
+  //   frontend + messagebus  → accent. Both carry traffic in from outside.
+  //   cloud    + external    → panel.  Both are "not our Kubernetes".
+  //
+  // A shade collision between things that belong together reads as a
+  // relationship; between unrelated things it reads as a mistake, which is what
+  // `messagebus` sharing `observe` with `database` was.
+  //
+  // `security` then takes `ink` alone, at 800 rather than 700 — the first
+  // attempt put it on gray-700 beside `cloud` on slate-600 and the two rendered
+  // as the same grey, legend swatches included. Weight separates them now,
+  // near-black against blue-grey, because hue is spent.
+  //
+  // The honest residual: cloud, security and external are three neutrals on one
+  // axis, and only their icons make them unmistakable. That is the price of
+  // keeping warn and danger for status, taken deliberately. Spending `observe`
+  // or `ok` on one of them is the lever if it ever proves too subtle.
   // ---------------------------------------------------------------------------
   '--frontend-fill': tint(token.accent[400], 0.15),
   '--frontend-stroke': token.accent[700],
+  '--messagebus-fill': tint(token.accent[300], 0.16),
+  '--messagebus-stroke': token.accent[500],
   '--backend-fill': tint(token.ok[400], 0.18),
   '--backend-stroke': token.ok[600],
   '--database-fill': tint(token.observe[400], 0.2),
   '--database-stroke': token.observe[600],
-  '--cloud-fill': tint(token.warn[400], 0.18),
-  '--cloud-stroke': token.warn[600],
-  '--security-fill': tint(token.danger[400], 0.15),
-  '--security-stroke': token.danger[600],
-  '--messagebus-fill': tint(token.observe[300], 0.15),
-  '--messagebus-stroke': token.observe[500],
-  '--external-fill': tint(token.panel[400], 0.18),
+  '--cloud-fill': tint(token.panel[600], 0.16),
+  '--cloud-stroke': token.panel[600],
+  '--external-fill': tint(token.panel[400], 0.24),
   '--external-stroke': token.panel[500],
+  '--security-fill': tint(token.ink[700], 0.16),
+  '--security-stroke': token.ink[800],
 };
 
 /**

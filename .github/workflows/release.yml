@@ -38,6 +38,19 @@ jobs:
       - uses: googleapis/release-please-action@v5
         id: release
         with:
+          # RELEASE_PLEASE_PAT, because a pull request opened with GITHUB_TOKEN
+          # does not get its checks on its own: GitHub suppresses workflow runs
+          # from events the token itself caused, and where it does raise a
+          # `pull_request` run it can hold it in an approval-required state. A
+          # release PR nobody approves is a release PR with no signal.
+          #
+          # The cost is that it spends the account's shared rate limit. On
+          # 2026-08-31 this job failed on two consecutive merges with
+          # "API rate limit already exceeded", drained by agent sessions in
+          # other repositories, and the release PR silently stopped tracking
+          # master while every other job in this workflow went green — the same
+          # invisible shape as #172. Recovered with
+          # `POST /actions/runs/{id}/rerun-failed-jobs`. See #256.
           token: ${{ secrets.RELEASE_PLEASE_PAT || secrets.GITHUB_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
