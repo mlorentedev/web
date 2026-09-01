@@ -24,4 +24,4 @@ const { number, label, href, margin } = Astro.props;
 const bracket = number ? `[ ${number} /` : '[';
 ---
 
-<h2 class:list={['text-sm font-medium text-gray-500 tracking-widest uppercase', margin]}><span class="text-cyan-700">{bracket}</span> {href ? <a href={href} class="hover:text-cyan-700 transition-colors">{label}</a> : label} <span class="text-cyan-700">]</span></h2>
+<h2 class:list={['text-sm font-medium text-ink-500 tracking-widest uppercase', margin]}><span class="text-accent-700">{bracket}</span> {href ? <a href={href} class="hover:text-accent-700 transition-colors">{label}</a> : label} <span class="text-accent-700">]</span></h2>

@@ -16,10 +16,10 @@ const currentPath = Astro.url.pathname;
 const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
 ---
 
-<header class="bg-cyan-50 text-gray-700 sticky top-0 w-full border-b border-cyan-100 z-50">
+<header class="bg-accent-50 text-ink-700 sticky top-0 w-full border-b border-accent-100 z-50">
   <nav class="px-3 sm:px-4 py-3 flex items-center justify-between">
     <span class="text-xl font-extrabold">
-      <a href={translatePath('/')} class="no-underline hover:text-cyan-700 transition-colors duration-200 focus:outline-none focus:text-cyan-700">
+      <a href={translatePath('/')} class="no-underline hover:text-accent-700 transition-colors duration-200 focus:outline-none focus:text-accent-700">
         Manu Lorente
       </a>
     </span>
@@ -43,9 +43,9 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
         <a
           href={item.href}
           class:list={[
-            'hover:text-cyan-700 focus:outline-none focus:text-cyan-700 transition-colors duration-200 text-sm',
+            'hover:text-accent-700 focus:outline-none focus:text-accent-700 transition-colors duration-200 text-sm',
             currentPath === item.href || currentPath.startsWith(item.href + '/')
-              ? 'text-cyan-700 font-bold no-underline'
+              ? 'text-accent-700 font-bold no-underline'
               : '',
           ]}
         >
@@ -56,7 +56,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
         <a
           href={switchLangUrl(Astro.url, l as keyof typeof languages)}
           aria-label={label}
-          class="text-xs text-gray-500 hover:text-cyan-700 focus:outline-none focus:text-cyan-700 transition-colors uppercase tracking-wide"
+          class="text-xs text-ink-500 hover:text-accent-700 focus:outline-none focus:text-accent-700 transition-colors uppercase tracking-wide"
         >
           {/* The code below sm — the full name does not fit a 320px viewport
               once the nav carries four items. */}
