@@ -103,6 +103,36 @@ widths in the `<figure style="overflow-x:auto">` shape:
 2048px  scrollWidth=2048  innerWidth=2048  overflow=no   svg=754x548
 ```
 
+## PR2 — the `visual-check` receipts say `fail`, and it is not AC2's failure
+
+Committed as evidence: `evidence/pr2-flows.visual-check.json` and
+`evidence/pr2-topology.visual-check.json`. **Both report
+`containment: fail`, and both are fine.** Read past the top-level verdict:
+
+| | topology | flows |
+|---|---|---|
+| `overflowX` at 1440 / 1600 / 1920 / 2048 | `false` | `false` |
+| `overflowY` | `true` | `true` |
+| `readabilityOk` | `true` | `true` |
+| smallest projected node text | 9 px | 9 px (floor is 6) |
+
+The failing condition is `overflowY` — **archify's own standalone viewer page is
+taller than the window** (1214 px of viewer chrome, legend and dock inside a
+900 px window). It is a property of the viewer, not of either diagram, and the
+two diagrams behave identically, so it is not a regression introduced by the
+second one.
+
+AC2 asserts the *page* does not scroll **horizontally**, and every viewport
+reports `overflowX: false`. The site never ships archify's viewer: it inlines the
+extracted SVG into its own `<figure>`, and that shape is what
+`site/tests/lab-containment.mjs` measures at 320, 768, 1440 and 2048. **The
+receipt is evidence about the renderer; `lab-containment.mjs` is the evidence
+about the page**, and only the second one is what AC2 is written against.
+
+Recorded here rather than left for a reviewer to trip over, because a committed
+artefact that says `fail` and is not a failure is exactly the thing that gets
+believed later without being read.
+
 Computed style confirmed the injected CSS applies (`.c-cloud` fill resolves to
 `rgba(251, 191, 36, 0.18)`).
 
