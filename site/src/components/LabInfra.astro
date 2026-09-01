@@ -1,0 +1,99 @@
+---
+/**
+ * The Lab's Infra section (WEB-080, AC1 + AC3).
+ *
+ * Every machine in `platform.nodes`, each as three lines: what it is, what it
+ * does, and the specification line that answers "why does that run there".
+ *
+ * ## What is left out, and why the count is nine
+ *
+ * A node carries twelve publishable fields and they do not fit at 320 px, so
+ * `summary`, `os`, `storage` and `provider` come out and the spec line keeps
+ * the five that decide placement: runtime, architecture, CPU, memory, location.
+ * Decided with Manu on 2026-09-01.
+ *
+ * The ninth node is on standby — powered down, `os` is a dash — and it is
+ * rendered rather than filtered, dimmed and labelled. That is the difference
+ * between `platform.nodes.length` (9) and `cluster.activeNodes` (8), and it is
+ * information: a fleet that retires a node is more credible than one that never
+ * had to. A page rendering `activeNodes` rows would hide it, which is why
+ * `lab-sections.test.mjs` counts against `nodes.length` and says so.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { platform, type NodeTopology } from '../data/platform';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  /** Section number in the page's sequence, e.g. "04". */
+  number: string;
+}
+
+const { number } = Astro.props;
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const isEs = lang === 'es';
+
+/**
+ * `standby` takes `ink` rather than a status family: a machine deliberately
+ * powered down is not a fault, and painting it `warn` would say it is. The
+ * status families keep their meaning by not being spent on this.
+ */
+const STATUS_DOT: Record<NodeTopology['status'], string> = {
+  healthy: 'bg-ok-500',
+  warning: 'bg-warn-500',
+  offline: 'bg-danger-500',
+  standby: 'bg-ink-300',
+};
+
+/** The five fields that answer "why does this workload live here". */
+function specLine(node: NodeTopology): string {
+  return [node.runtime, node.arch, node.cpu, node.ram, node.location]
+    .filter((part) => part && part !== '—')
+    .join(' · ');
+}
+
+const activeCount = platform.nodes.filter((n) => n.status !== 'standby').length;
+---
+
+<Section padding="py-10" data-lab-section="infra">
+  <SectionHeading number={number} label={t('lab.infra.heading')} margin="mb-3" />
+
+  <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-2">
+    {t('lab.infra.intro')}
+  </p>
+  <p class="text-xs font-mono text-ink-500 mb-8">
+    {t('lab.infra.count')
+      .replace('{n}', String(platform.nodes.length))
+      .replace('{active}', String(activeCount))
+      .replace('{clusters}', String(platform.cluster.kubernetesClusters))}
+  </p>
+
+  <ul class="border-t border-ink-100">
+    {platform.nodes.map((node) => (
+      <li
+        data-node-row={node.tier ?? 'unknown'}
+        data-node-status={node.status}
+        class:list={[
+          'border-b border-ink-100 py-3',
+          node.status === 'standby' && 'opacity-60',
+        ]}
+      >
+        <div class="flex items-baseline justify-between gap-3">
+          <span class="font-semibold text-ink-900 text-sm">{node.name}</span>
+          <span class="flex items-center gap-1.5 shrink-0 font-mono text-xs text-ink-500">
+            <span class:list={['h-1.5 w-1.5 rounded-full shrink-0', STATUS_DOT[node.status]]}></span>
+            {node.status}
+          </span>
+        </div>
+
+        <p class="text-sm text-ink-600 leading-snug mt-0.5">
+          {isEs ? node.roleEs : node.role}
+        </p>
+
+        <p class="font-mono text-xs text-ink-500 mt-1">{specLine(node)}</p>
+      </li>
+    ))}
+  </ul>
+</Section>

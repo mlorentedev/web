@@ -5,6 +5,9 @@ import Footer from './Footer.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import ServiceIcon from './ServiceIcon.astro';
+import LabServices from './LabServices.astro';
+import LabInfra from './LabInfra.astro';
+import LabProvenance from './LabProvenance.astro';
 import { platform } from '../data/platform';
 import { getLocale, useTranslations } from '../i18n/utils';
 
@@ -599,230 +602,9 @@ const t = useTranslations(lang);
         </div>
     </Section>
 
-    <!-- SECTION 3: Services Catalog (3 Tabs: All / Common / Prod / Staging) -->
-    <Section padding="py-10">
-        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
-          <SectionHeading number="03" label={t('platform.services.heading')} />
-          <span class="text-xs font-mono text-gray-500">{t('platform.services.count').replace('{n}', String(platform.services.length)).replace('{total}', String(platform.cluster.totalServices))}</span>
-        </div>
-        <p class="text-xs text-gray-500 mb-5">{t('platform.services.sub')}</p>
+    <LabServices number="03" />
 
-        <!-- Services Filter Tabs -->
-        <div class="flex flex-wrap items-center gap-1.5 mb-4 text-xs font-mono" data-service-tabs>
-          <button
-            type="button"
-            data-service-filter="all"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-900 text-white shadow-sm cursor-pointer"
-          >
-            All Services ({platform.services.length})
-          </button>
-          <button
-            type="button"
-            data-service-filter="common"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-          >
-            Common & Core ({platform.services.filter(s => s.env === 'common').length})
-          </button>
-          <button
-            type="button"
-            data-service-filter="prod"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-          >
-            Production ({platform.services.filter(s => s.env === 'prod').length})
-          </button>
-          <button
-            type="button"
-            data-service-filter="staging"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-          >
-            Staging ({platform.services.filter(s => s.env === 'staging').length})
-          </button>
-        </div>
-
-        <!-- Minimalist Services Table -->
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs font-mono">
-              <thead>
-                <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 text-[11px] uppercase tracking-wider">
-                  <th class="py-3 px-4 font-semibold">{t('idp.d.service')}</th>
-                  <th class="py-3 px-4 font-semibold">{t('idp.d.category')}</th>
-                  <th class="py-3 px-4 font-semibold hidden sm:table-cell">{t('idp.d.node')}</th>
-                  <th class="py-3 px-4 font-semibold text-right">{t('idp.d.endpointUrlAccessBoundary')}</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100" data-service-rows>
-                {platform.services.map((svc) => (
-                  <tr data-service-row={svc.env} class="hover:bg-gray-50/80 transition-colors">
-                    <!-- Name, Icon & Status -->
-                    <td class="py-3 px-4">
-                      <div class="flex items-center gap-2.5">
-                        <ServiceIcon slug={svc.slug} class="w-5 h-5 shrink-0" />
-                        <div>
-                          <div class="flex items-center gap-1.5">
-                            <span class="font-bold text-gray-900 text-sm block font-sans">{svc.name}</span>
-                            <span class:list={[
-                              'h-1.5 w-1.5 rounded-full shrink-0',
-                              svc.isPublic ? 'bg-emerald-500' : 'bg-slate-400'
-                            ]}></span>
-                          </div>
-                          <span class="text-gray-500 text-[11px] font-sans block">{svc.description}</span>
-                        </div>
-                      </div>
-                    </td>
-
-                    <!-- Category -->
-                    <td class="py-3 px-4 whitespace-nowrap">
-                      <span class:list={[
-                        'px-2 py-0.5 rounded text-[10px] font-semibold border',
-                        svc.category === 'AI & Inference' && 'bg-purple-50 text-purple-700 border-purple-200',
-                        svc.category === 'GitOps & Delivery' && 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                        svc.category === 'Observability' && 'bg-blue-50 text-blue-700 border-blue-200',
-                        svc.category === 'Core Gateway' && 'bg-cyan-50 text-cyan-700 border-cyan-200',
-                        svc.category === 'Storage & Data' && 'bg-amber-50 text-amber-700 border-amber-200',
-                      ]}>
-                        {svc.category}
-                      </span>
-                    </td>
-
-                    <!-- Node -->
-                    <td class="py-3 px-4 text-gray-700 hidden sm:table-cell whitespace-nowrap">
-                      <span class="px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-[11px]">{svc.node}</span>
-                    </td>
-
-                    <!-- Clickable Endpoint -->
-                    <td class="py-3 px-4 text-right whitespace-nowrap">
-                      <div class="flex items-center justify-end gap-2">
-                        {svc.isPublic ? (
-                          <span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-semibold">
-                            {t('idp.d.public')}
-                          </span>
-                        ) : (
-                          <span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-semibold">
-                            {t('idp.d.2faMesh')}
-                          </span>
-                        )}
-                        {svc.url ? (
-                          <a
-                            href={svc.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="inline-flex items-center gap-1 font-mono text-xs font-semibold text-cyan-700 hover:text-cyan-900 transition-colors"
-                          >
-                            <span>{svc.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
-                            <span class="text-cyan-600">↗</span>
-                          </a>
-                        ) : (
-                          <span class="font-mono text-xs text-gray-400">{t('platform.services.notPublished')}</span>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-    </Section>
-
-    <!-- SECTION 4: Hybrid Hardware Topology (Crisp Compact Tabular View) -->
-    <Section padding="py-10">
-        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
-          <SectionHeading number="04" label={t('idp.topology.heading')} />
-          <span class="text-xs font-mono text-gray-500">{t('idp.d.8PhysicalCloudNodes')}</span>
-        </div>
-        <p class="text-xs text-gray-500 mb-5">{t('idp.topology.sub')}</p>
-
-        <!-- Nodes Filter Tabs -->
-        <div class="flex flex-wrap items-center gap-1.5 mb-4 text-xs font-mono" data-node-tabs>
-          <button
-            type="button"
-            data-node-filter="all"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-900 text-white shadow-sm cursor-pointer"
-          >
-            All Nodes ({platform.nodes.length})
-          </button>
-          <button
-            type="button"
-            data-node-filter="cloud"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-          >
-            Cloud Always-On ({platform.nodes.filter(n => n.tier === 'cloud').length})
-          </button>
-          <button
-            type="button"
-            data-node-filter="homelab"
-            class="px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-          >
-            Homelab Bare-Metal ({platform.nodes.filter(n => n.tier === 'homelab').length})
-          </button>
-        </div>
-
-        <!-- Sleek Compact Hardware Table -->
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs font-mono">
-              <thead>
-                <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 text-[11px] uppercase tracking-wider">
-                  <th class="py-2.5 px-3.5 font-semibold">{t('idp.d.node')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold">{t('idp.d.primaryRole')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold">{t('idp.d.environment')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold hidden sm:table-cell">{t('idp.d.computeCpu')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold hidden md:table-cell">{t('idp.d.ramNvme')}</th>
-                  <th class="py-2.5 px-3.5 font-semibold text-right">{t('idp.d.location')}</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100" data-node-rows>
-                {platform.nodes.map((node) => (
-                  <tr data-node-row={node.tier} class="hover:bg-gray-50/80 transition-colors">
-                    <!-- Node ID & Name -->
-                    <td class="py-2.5 px-3.5 whitespace-nowrap">
-                      <div class="flex items-center gap-2">
-                        <span class="h-2 w-2 rounded-full bg-emerald-500 shrink-0"></span>
-                        <span class="font-bold text-gray-900">{node.id}</span>
-                        <span class="text-gray-400 font-sans text-[11px]">({node.name.replace(' Cluster', '').replace(' Node', '')})</span>
-                      </div>
-                    </td>
-
-                    <!-- Role -->
-                    <td class="py-2.5 px-3.5 text-gray-700 whitespace-nowrap font-sans text-xs">
-                      {node.role}
-                    </td>
-
-                    <!-- Environment -->
-                    <td class="py-2.5 px-3.5 whitespace-nowrap">
-                      <span class:list={[
-                        'text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded font-semibold border',
-                        node.environment === 'Production' && 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                        node.environment === 'Staging' && 'bg-cyan-50 text-cyan-700 border-cyan-200',
-                        node.environment === 'Edge AI' && 'bg-purple-50 text-purple-700 border-purple-200',
-                        node.environment === 'Infrastructure' && 'bg-blue-50 text-blue-700 border-blue-200',
-                      ]}>
-                        {node.environment}
-                      </span>
-                    </td>
-
-                    <!-- Compute -->
-                    <td class="py-2.5 px-3.5 text-gray-700 hidden sm:table-cell whitespace-nowrap">
-                      {node.cpu}
-                    </td>
-
-                    <!-- RAM & NVMe -->
-                    <td class="py-2.5 px-3.5 text-gray-600 hidden md:table-cell whitespace-nowrap">
-                      <span>{node.ram}</span> · <span class="text-gray-400">{node.storage}</span>
-                    </td>
-
-                    <!-- Location -->
-                    <td class="py-2.5 px-3.5 text-right text-gray-600 whitespace-nowrap">
-                      {node.location.replace('Falkenstein (', '').replace('Eemshaven (', '').replace('Edge Hardware (', '').replace(')', '')}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-    </Section>
+    <LabInfra number="04" />
 
     <!-- SECTION 5: Service Level Objectives (SLOs) & Reliability -->
     <Section padding="py-10">
@@ -935,6 +717,8 @@ const t = useTranslations(lang);
           </div>
         </div>
     </Section>
+
+    <LabProvenance />
   </main>
 
   <Footer />
@@ -971,60 +755,6 @@ const t = useTranslations(lang);
             pane.classList.remove('hidden');
           } else {
             pane.classList.add('hidden');
-          }
-        });
-      });
-    });
-  }
-
-  // --- SERVICES TABLE FILTER TABS ---
-  function initServiceTabs(): void {
-    const filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-service-filter]');
-    const rows = document.querySelectorAll<HTMLTableRowElement>('[data-service-row]');
-
-    filterButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const filter = btn.getAttribute('data-service-filter');
-        if (!filter) return;
-
-        filterButtons.forEach((b) => {
-          b.className = 'px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer';
-        });
-        btn.className = 'px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-900 text-white shadow-sm cursor-pointer';
-
-        rows.forEach((row) => {
-          const rowEnv = row.getAttribute('data-service-row');
-          if (filter === 'all' || rowEnv === filter) {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
-          }
-        });
-      });
-    });
-  }
-
-  // --- NODES TABLE FILTER TABS ---
-  function initNodeTabs(): void {
-    const filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-node-filter]');
-    const rows = document.querySelectorAll<HTMLTableRowElement>('[data-node-row]');
-
-    filterButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const filter = btn.getAttribute('data-node-filter');
-        if (!filter) return;
-
-        filterButtons.forEach((b) => {
-          b.className = 'px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer';
-        });
-        btn.className = 'px-3 py-1.5 rounded-lg font-medium transition-all bg-gray-900 text-white shadow-sm cursor-pointer';
-
-        rows.forEach((row) => {
-          const rowTier = row.getAttribute('data-node-row');
-          if (filter === 'all' || rowTier === filter) {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
           }
         });
       });
@@ -1141,8 +871,6 @@ const t = useTranslations(lang);
 
   // --- INITIALIZATION ---
   initDiagramTabs();
-  initServiceTabs();
-  initNodeTabs();
 
   const probeBtn = document.querySelector('[data-action="run-probe"]');
   probeBtn?.addEventListener('click', runAllProbes);

@@ -220,6 +220,22 @@ export const ui = {
     'lab.diagram.flows.legend':
       'Promotion re-tags a digest rather than rebuilding, so what production serves is what staging validated. Argo CD reconciles both clusters from Git — nothing is pushed to them.',
 
+    // Lab sections (WEB-080). The register is the FAQ's — what is actually
+    // true and why it was done that way — not infrastructure marketing.
+    'lab.services.heading': 'Services, and who can reach them',
+    'lab.services.intro':
+      'Three of these answer to anyone. The rest answer only from inside the WireGuard mesh, behind Authelia — there are zero port-forwarding rules on my residential USA network, so for most of this there is no address to expose in the first place.',
+    'lab.services.count': '{n} documented here · {total} running across the three clusters',
+    'lab.services.access.public': 'Public',
+    'lab.services.access.mesh': 'Mesh only',
+
+    'lab.infra.heading': 'The machines underneath',
+    'lab.infra.intro':
+      'Nine machines: three rented from a cloud provider, one of those powered down, and six sitting in my house. Only three of them run Kubernetes, and they run three separate single-node clusters rather than one cluster with three nodes — a shared control plane that can take the whole fleet down with it is not a homelab, it is one failure with extra steps.',
+    'lab.infra.count': '{n} machines · {active} powered on · {clusters} independent K3s clusters',
+
+    'lab.provenance': 'Figures last reconciled against the cluster on',
+
     // Home sections
     'home.stack': 'What I work with',
     'home.projects': 'What I build',
@@ -517,6 +533,22 @@ export const ui = {
       'Un push a master produce una única imagen multiarquitectura. Staging la ejecuta sin intervención; producción ejecuta esos mismos bytes solo cuando se mergea una pull request de release.',
     'lab.diagram.flows.legend':
       'La promoción reetiqueta un digest en lugar de reconstruir, así que lo que sirve producción es lo que validó staging. Argo CD reconcilia ambos clústeres desde Git: no se despliega nada contra ellos.',
+
+    // Secciones del Lab (WEB-080). El registro es el de las FAQ — lo que es
+    // verdad y por qué se hizo así — no marketing de infraestructura.
+    'lab.services.heading': 'Servicios, y quién puede llegar a ellos',
+    'lab.services.intro':
+      'Tres de estos responden a cualquiera. El resto solo responden desde dentro de la malla WireGuard, tras Authelia: no hay una sola regla de port-forwarding en mi red residencial de Estados Unidos, así que para la mayoría no hay ni dirección que exponer.',
+    'lab.services.count': '{n} documentados aquí · {total} corriendo entre los tres clústeres',
+    'lab.services.access.public': 'Público',
+    'lab.services.access.mesh': 'Solo malla',
+
+    'lab.infra.heading': 'Las máquinas de debajo',
+    'lab.infra.intro':
+      'Nueve máquinas: tres alquiladas a un proveedor cloud, una de ellas apagada, y seis en mi casa. Solo tres ejecutan Kubernetes, y lo hacen como tres clústeres independientes de un nodo en vez de un clúster de tres nodos: un plano de control compartido que puede llevarse por delante toda la flota no es un homelab, es un único punto de fallo con pasos de más.',
+    'lab.infra.count': '{n} máquinas · {active} encendidas · {clusters} clústeres K3s independientes',
+
+    'lab.provenance': 'Cifras reconciliadas contra el clúster por última vez el',
 
     // Home sections
     'home.stack': 'Con qué trabajo',
