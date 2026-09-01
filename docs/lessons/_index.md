@@ -9,11 +9,14 @@ tags: [web, lessons, index]
 
 # Lessons
 
-20 lessons, one file each, newest first. Numbers are assigned in the order
+23 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 023 | [Measure the page before writing the spec's "failing" test](lesson-023-the-specs-failing-test-was-already-green.md) | 2026-08-31 | `#sdd` `#testing` `#verification` |
+| 022 | [A number that is only printed is never questioned — and an assertion that cannot fail is worse](lesson-022-a-number-that-is-only-printed-is-never.md) | 2026-08-31 | `#verification` `#testing` |
+| 021 | [An SVG generator that namespaces no ids is fine until you embed two of its outputs](lesson-021-an-svg-generator-that-namespaces-no-ids.md) | 2026-08-31 | `#svg` `#accessibility` `#astro` |
 | 020 | [`node --test <dir>` resolves the directory as a module on Node 26](lesson-020-node-test-dir-resolves-the-directory-as.md) | 2026-08-27 | `#testing` `#node` |
 | 019 | [A guard that cries wolf is worse than the hazard it guards, and an untested guard will](lesson-019-a-guard-that-cries-wolf-is-worse-than-th.md) | 2026-08-27 | `#verification` `#testing` `#review` |
 | 018 | [A JSON Schema cannot say that an identifier resolves, only that it looks like one](lesson-018-a-json-schema-cannot-say-that-an-identifi.md) | 2026-08-27 | `#validation` `#json-schema` `#verification` |
