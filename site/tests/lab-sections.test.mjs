@@ -57,8 +57,11 @@ const siteRoot = join(here, '..');
 const require = createRequire(import.meta.url);
 const platform = require('../src/data/platform.json');
 
-/** Sections rebuilt so far. PR4 adds topology and flows; PR5 automations. */
-const REBUILT = ['services', 'infra'];
+/** Sections rebuilt so far. PR5 adds automations. */
+const REBUILT = ['services', 'infra', 'topology', 'flows'];
+
+/** The two that embed a generated diagram, and the IR each comes from. */
+const DIAGRAMS = ['topology', 'flows'];
 
 const pages = [
   { locale: 'en', path: join(siteRoot, 'dist/lab/index.html') },
@@ -238,6 +241,114 @@ for (const { locale, html } of built) {
       .map((n) => `${n.id}.${roleField}`);
 
     assert.deepEqual(missingNodes, [], `node copy missing from the ${locale} page`);
+  });
+
+  // ------------------------------------------------------------- diagrams
+
+  test(`[${locale}] each diagram section embeds its generated SVG inline`, () => {
+    for (const name of DIAGRAMS) {
+      const body = labSection(html, name);
+      assert.ok(body, `no <section data-lab-section="${name}">`);
+
+      const svgs = [...body.matchAll(/<svg\b/g)];
+      assert.equal(
+        svgs.length,
+        1,
+        `${name}: expected exactly 1 inline <svg>, found ${svgs.length}`,
+      );
+
+      // Inline, not <img>. PR0 chose it and #244 is the reason: the text in an
+      // external .svg is invisible to search and to a reader who cannot see it.
+      assert.ok(
+        !/<img\b[^>]*\.svg/.test(body),
+        `${name}: the diagram is referenced as an <img>, not embedded`,
+      );
+    }
+  });
+
+  test(`[${locale}] the embedded SVG is the committed one, byte for byte`, () => {
+    // The build verifies the IR against the SVG's `ir-sha256` stamp. This
+    // verifies the third link in that chain — that the page ships what the
+    // pipeline produced, rather than a copy that drifted.
+    for (const name of DIAGRAMS) {
+      const committed = readFileSync(join(siteRoot, `src/diagrams/generated/${name}.svg`), 'utf8').trim();
+      const body = labSection(html, name);
+      // The stamp is an HTML comment appended by `diagrams.mjs generate`, and
+      // it reaches the page because nothing strips comments today. If that ever
+      // changes this fails loudly, which is the point — a provenance marker
+      // nobody notices disappearing is not one.
+      const stamp = committed.match(/<!--\s*ir-sha256:\s*([0-9a-f]{64})\s*-->/);
+
+      assert.ok(stamp, `${name}.svg carries no ir-sha256 stamp`);
+      assert.ok(
+        body.includes(stamp[1]),
+        `${name}: the page's SVG does not carry the committed stamp ${stamp[1].slice(0, 12)}…`,
+      );
+    }
+  });
+
+  test(`[${locale}] every diagram has an accessible name and real text`, () => {
+    // #244: an <img> with no alt announced a generated filename. An inline SVG
+    // has the same failure mode unless it is given a name, and the whole point
+    // of leaving mermaid was that the labels arrive as <text> a reader can
+    // reach.
+    for (const name of DIAGRAMS) {
+      const body = labSection(html, name);
+      const svg = body.match(/<svg\b[^>]*>/);
+      assert.ok(svg, `${name}: no <svg>`);
+
+      const named = /\brole="img"/.test(svg[0]) && /\baria-label="[^"]+"/.test(svg[0]);
+      const titled = /<title\b[^>]*>[^<]+<\/title>/.test(body);
+      assert.ok(
+        named || titled,
+        `${name}: the SVG has neither role="img" + aria-label nor a <title> — a screen reader announces nothing`,
+      );
+
+      const texts = [...body.matchAll(/<text\b/g)];
+      assert.ok(texts.length >= 8, `${name}: only ${texts.length} <text> elements, expected at least 8`);
+    }
+  });
+
+  test(`[${locale}] each diagram carries its caption and legend, in this locale`, () => {
+    // Risk §1: one IR serves both locales, so the identifiers stay inside the
+    // SVG and every sentence lives outside it. If the prose were missing, the
+    // diagram would be the only thing saying anything — in English, on both.
+    for (const name of DIAGRAMS) {
+      const body = labSection(html, name);
+      const text = decodeEntities(body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' '));
+
+      assert.ok(
+        /<figcaption\b/.test(body),
+        `${name}: the diagram has no <figcaption>`,
+      );
+      // Long enough to be a sentence rather than a label, and not the English
+      // copy sitting on the Spanish page — that is what the twin test in
+      // lab-data covers key by key; this checks it actually reached the page.
+      const prose = text.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]/g, ' ').trim();
+      assert.ok(
+        prose.split(/\s+/).length >= 30,
+        `${name}: less than 30 words of prose around the diagram — the caption or legend did not render`,
+      );
+    }
+  });
+
+  test(`[${locale}] a diagram scrolls inside its own figure, and only there`, () => {
+    // PR0 measured that at 320 px the diagram cannot be scaled and stay legible
+    // (7 px text projects to 2.55 px against archify's 6 px floor), so it keeps
+    // a 754 px floor and scrolls inside its <figure>. The page never does —
+    // that is the AC2 claim, and lab-containment.mjs checks it in a browser.
+    // This checks the markup that makes it possible.
+    for (const name of DIAGRAMS) {
+      const body = labSection(html, name);
+      const figure = body.match(/<figure\b[^>]*>/);
+      assert.ok(figure, `${name}: the diagram is not wrapped in a <figure>`);
+
+      const scroller = body.match(/<div\b[^>]*\boverflow-x-auto\b[^>]*>/);
+      assert.ok(
+        scroller,
+        `${name}: nothing in the section can scroll horizontally — at 320 px the diagram would either overflow the page or be illegible`,
+      );
+    }
   });
 
   // --------------------------------------------------------- the token layer

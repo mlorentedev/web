@@ -42,7 +42,7 @@
     },
     {
       "id": "rpi3",
-      "type": "external",
+      "type": "backend",
       "label": "RPi3",
       "sublabel": "Uptime Kuma",
       "tag": "no K8s",
@@ -57,7 +57,7 @@
     },
     {
       "id": "rpi4",
-      "type": "security",
+      "type": "messagebus",
       "label": "RPi4 gateway",
       "sublabel": "Pi-hole \u00b7 CoreDNS",
       "tag": "no K8s",
@@ -117,7 +117,7 @@
     },
     {
       "id": "jet",
-      "type": "external",
+      "type": "backend",
       "label": "Jetson Nano",
       "sublabel": "local inference",
       "tag": "no K8s",
