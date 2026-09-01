@@ -100,7 +100,7 @@
     },
     {
       "id": "retag",
-      "type": "security",
+      "type": "database",
       "label": "Re-tag the digest",
       "sublabel": "X.Y.Z and latest",
       "tag": "no rebuild",
