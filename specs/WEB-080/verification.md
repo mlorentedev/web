@@ -71,8 +71,8 @@ block of theme variables from the site's tokens instead of copying archify's two
    22.13.1 — the version `.nvmrc` pins — produced **the same bytes**. Committed
    SVGs and CI-regenerated SVGs are therefore interchangeable on content; the
    choice is about where archify has to exist, not about churn.
-5. **And deterministic across an archify version change** (measured 2026-08-31,
-   closing #252). Every measurement in this document was taken against
+5. **Rendering is deterministic across an archify version change too** (measured
+   2026-08-31, closing #252). Every measurement in this document was taken against
    `2.16.0-dev.0`, an *unreleased* build, because `skills-lock.json` pins no ref —
    and the `skills` CLI has no option to pin one: `skills add <owner>/<repo>`
    always takes the default branch. Upstream has since tagged `v2.16.0`. Updating

@@ -39,8 +39,10 @@ jobs:
         id: release
         with:
           # RELEASE_PLEASE_PAT, because a pull request opened with GITHUB_TOKEN
-          # does not trigger `pull_request` workflows — the release PR would
-          # never get its own checks.
+          # does not get its checks on its own: GitHub suppresses workflow runs
+          # from events the token itself caused, and where it does raise a
+          # `pull_request` run it can hold it in an approval-required state. A
+          # release PR nobody approves is a release PR with no signal.
           #
           # The cost is that it spends the account's shared rate limit. On
           # 2026-08-31 this job failed on two consecutive merges with

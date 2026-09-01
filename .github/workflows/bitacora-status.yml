@@ -33,9 +33,10 @@ jobs:
         uses: actions/github-script@v9
         with:
           # Needs project + repo scope, so GITHUB_TOKEN cannot serve: the board
-          # is a user-level Project v2 outside this repository, and Projects v2
-          # has no REST API to fall back on. Shares the account's rate limit —
-          # see #256 and the note in add-to-project.yml.
+          # is a user-level Project v2 outside this repository, and this script
+          # updates an item's Status field, which is GraphQL-only. Draws on the
+          # account's shared rate limit — see #256 and the note in
+          # add-to-project.yml.
           github-token: ${{ secrets.BITACORA_PAT }}
           script: |
             const projectId = 'PVT_kwHOAM7xJs4BZ6GY';
