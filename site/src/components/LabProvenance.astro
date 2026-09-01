@@ -1,0 +1,45 @@
+---
+/**
+ * When the platform figures were last reconciled, and against what.
+ *
+ * The Lab's claim is "measured, not typed". The honest version of that claim
+ * says how old the measurement is, because a manifest with no date is a claim
+ * that cannot go stale and therefore cannot be checked — which is the same
+ * thing as not being measured at all.
+ *
+ * PR1 put `generated_at` and `source_commit` into `platform.json` and typed
+ * them; this is the first thing that shows them. Both the machine-readable
+ * attributes and the rendered text are asserted by `lab-sections.test.mjs`: an
+ * attribute nobody renders is metadata, not a disclosure.
+ *
+ * The values are recovered rather than invented — `df583db` is the last commit
+ * that changed the data; the rename after it did not. A producer that fills
+ * them from the live cluster is #162, deliberately out of this spec.
+ */
+import { platform } from '../data/platform';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const shortCommit = platform.source_commit.slice(0, 7);
+const generatedOn = platform.generated_at.slice(0, 10);
+const commitUrl = `https://github.com/mlorentedev/web/commit/${platform.source_commit}`;
+---
+
+<p
+  data-lab-provenance
+  data-generated-at={platform.generated_at}
+  data-source-commit={platform.source_commit}
+  class="max-w-4xl mx-auto px-4 text-xs font-mono text-ink-500 pb-10"
+>
+  {t('lab.provenance')}
+  <time datetime={platform.generated_at}>{generatedOn}</time>
+  {' · '}
+  <a
+    href={commitUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="text-accent-700 hover:text-accent-900 transition-colors"
+  >{shortCommit}</a>
+</p>

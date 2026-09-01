@@ -46,9 +46,18 @@ created: "2026-08-27"
 
 ### PR3 — Services and Infra sections (AC1, AC3)
 
-- [ ] [AC3] Write failing test: the built `/lab` lists exactly `platform.json.services.length` service rows and `nodes.length` node rows, and prints `generated_at` + `source_commit`
-- [ ] [AC1] [AC3] Build `LabServices.astro` and `LabInfra.astro` on `Section`/`SectionHeading` + tokens, rendering from `platform.ts`; access boundaries per service explicit; EN+ES prose in the FAQ register (writing task, budgeted here)
-- [ ] [AC1] `lab-audit` green for the families and sizes these two sections emit
+- [x] [AC3] Write failing test — `site/tests/lab-sections.test.mjs`, **in the `npm test` glob**, over both locales. 18 red / 3 green. It is in CI where `lab-audit.mjs` is not, because it judges only the sections actually rebuilt (`data-lab-section="<name>"`, `REBUILT` grows per PR), so it goes green with its own PR instead of staying red until PR6
+  - **The counts this spec budgeted as the driver were already green.** Measured 2026-09-01 on the old page: `data-service-row` appears **14** times and `data-node-row` **9** — exactly `services.length` and `nodes.length`. Same mistake as "the page has 1 section" in PR1, kept for the same reason: it guards the rebuild against regression, but nobody should read it passing as evidence PR3 did anything
+  - **What was genuinely red**: nothing printed `generated_at` or `source_commit` anywhere (0 occurrences), no machine-readable access boundary, the token-layer audit, and zero JS
+  - **`nodes.length` (9), never `cluster.activeNodes` (8).** They differ legitimately — one node is `standby` — so a page rendering `activeNodes` rows would hide it and the test would bless it. Asserted with that reason in the failure message
+  - Also split the pure parsing into `tests/lib/audit.mjs`, imported by both suites. `lab-audit.mjs` calls `test()` at the top level, so importing a helper from it would have **re-registered its red assertions inside the importing suite** and turned CI red from an `import`. The fixture tests for the guards moved to `audit-helpers.test.mjs`, which is a net gain: they now run in CI, where `test:audit` never did
+- [x] [AC1] [AC3] Build `LabServices.astro` and `LabInfra.astro` on `Section`/`SectionHeading` + tokens, rendering from `platform.ts`; access boundaries per service explicit; EN+ES prose in the FAQ register (writing task, budgeted here). Plus `LabProvenance.astro` — the first thing to render PR1's `generated_at`/`source_commit`
+  - **Static, no tabs.** `proposal.md` Out of scope rules it: "This spec delivers layer 0: **static at build, zero JS**." The old section carried four filter tabs over 14 rows and one of them (Staging) matched nothing — `env` only ever holds `common` or `prod`. Grouping by category at build time says the same thing without a script; `initServiceTabs`/`initNodeTabs` deleted with the markup they drove
+  - **Access is not status.** `public` takes `accent` (a link you can follow) and `mesh` takes the neutral `panel`; `ok`/`warn`/`danger` stay reserved for real status, per the #251 mapping. A private service is not a degraded one
+  - **Infra density decided with Manu (2026-09-01)**: name, role, and one spec line of `runtime · arch · cpu · ram · location`. `summary`, `os`, `storage` and `provider` come out — twelve fields do not fit at 320 px. The standby node renders dimmed and labelled rather than filtered, which is what makes `activeNodes` (8) ≠ `nodes.length` (9) legible instead of looking like an error
+  - **Found by looking at the render, not by a test**: every mesh row carried `Mesh only` *and* `No public address` — the same sentence twice, on eleven of fourteen rows. The badge is the whole statement; the second span and its i18n key are gone
+- [x] [AC1] `lab-audit` green for the families and sizes these two sections emit — enforced by `lab-sections.test.mjs` scoped to `data-lab-section`, 21/21 on both locales. Whole-page `lab-audit` is still red by design (PR6), but measurably less so: **677 off-token utilities → 336**
+- [x] [AC2 pre-check] Page does not scroll sideways at 320 px or 1440 px with the new sections mounted (`document.documentElement.scrollWidth > innerWidth` false at both). The full four-width containment check stays PR4's
 
 ### PR4 — Topology and Flows sections (AC1, AC2)
 

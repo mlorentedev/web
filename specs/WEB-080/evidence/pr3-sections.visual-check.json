@@ -1,0 +1,106 @@
+{
+  "pr": 3,
+  "spec": "WEB-080",
+  "commit": "21bfdee4181b55bb88bb1be19d5f7cc1793262c3",
+  "taken": "2026-09-01",
+  "what": "Services and Infra mounted on /lab and /es/lab, measured in a headless Chromium against the built dist/ over four widths and both locales.",
+  "expected_from_manifest": {
+    "services": 14,
+    "nodes": 9,
+    "note": "nodes is 9, not cluster.activeNodes (8) \u2014 one node is on standby and renders dimmed rather than filtered."
+  },
+  "measurements": [
+    {
+      "locale": "en",
+      "width": 320,
+      "scrollWidth": 320,
+      "innerWidth": 320,
+      "services": 14,
+      "nodes": 9,
+      "scripts": 0,
+      "pageScrollsSideways": false
+    },
+    {
+      "locale": "en",
+      "width": 768,
+      "scrollWidth": 768,
+      "innerWidth": 768,
+      "services": 14,
+      "nodes": 9,
+      "scripts": 0,
+      "pageScrollsSideways": false
+    },
+    {
+      "locale": "en",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "services": 14,
+      "nodes": 9,
+      "scripts": 0,
+      "pageScrollsSideways": false
+    },
+    {
+      "locale": "en",
+      "width": 2048,
+      "scrollWidth": 2048,
+      "innerWidth": 2048,
+      "services": 14,
+      "nodes": 9,
+      "scripts": 0,
+      "pageScrollsSideways": false
+    },
+    {
+      "locale": "es",
+      "width": 320,
+      "scrollWidth": 320,
+      "innerWidth": 320,
+      "services": 14,
+      "nodes": 9,
+      "scripts": 0,
+      "pageScrollsSideways": false
+    },
+    {
+      "locale": "es",
+      "width": 768,
+      "scrollWidth": 768,
+      "innerWidth": 768,
+      "services": 14,
+      "nodes": 9,
+      "scripts": 0,
+      "pageScrollsSideways": false
+    },
+    {
+      "locale": "es",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "services": 14,
+      "nodes": 9,
+      "scripts": 0,
+      "pageScrollsSideways": false
+    },
+    {
+      "locale": "es",
+      "width": 2048,
+      "scrollWidth": 2048,
+      "innerWidth": 2048,
+      "services": 14,
+      "nodes": 9,
+      "scripts": 0,
+      "pageScrollsSideways": false
+    }
+  ],
+  "conclusions": {
+    "page_scrolls_sideways": "false at every width on both locales (320, 768, 1440, 2048)",
+    "rows_match_manifest": "14 services and 9 nodes in every one of the eight runs",
+    "client_scripts_in_rebuilt_sections": "0 \u2014 proposal.md requires layer 0, static at build, zero JS",
+    "screenshots": [
+      "pr3-en-320.png",
+      "pr3-en-1440.png",
+      "pr3-es-320.png",
+      "pr3-es-1440.png"
+    ]
+  },
+  "not_claimed": "This is not the AC2 containment check. That one is lab-containment.mjs over the diagram figures and belongs to PR4; the diagrams are not on the page yet. This measures only that mounting these two sections did not make the page scroll."
+}

@@ -231,6 +231,55 @@ so a future mismatch is diagnosable. The committed SVG does not depend on this �
 it is committed — but re-rendering on a newer archify may change its bytes, in
 which case the numbers here are re-measured before the AC6 budget is trusted.
 
+## PR3 — Services and Infra, measured on both locales
+
+Receipt: `evidence/pr3-sections.visual-check.json`; screenshots
+`evidence/pr3-{en,es}-{320,1440}.png`.
+
+Headless Chromium against the built `dist/`, four widths × two locales:
+
+| | 320 | 768 | 1440 | 2048 |
+|---|---|---|---|---|
+| `/lab` scrolls sideways | no | no | no | no |
+| `/es/lab` scrolls sideways | no | no | no | no |
+| service rows | 14 | 14 | 14 | 14 |
+| node rows | 9 | 9 | 9 | 9 |
+| `<script>` inside a rebuilt section | 0 | 0 | 0 | 0 |
+
+**This is not the AC2 containment check.** That one is `lab-containment.mjs` over
+the diagram figures, and it belongs to PR4 — the diagrams are not on the page
+yet. This measures only that mounting these two sections did not make the page
+scroll, and it is recorded because Spanish runs about 20% longer than English
+and the 320 px column is where that would show first.
+
+### Nine rows, not eight
+
+`platform.nodes.length` is 9 and `cluster.activeNodes` is 8. They
+disagree legitimately: one machine is on `standby`, powered down. The section
+renders it dimmed and labelled rather than filtering it out, so the difference
+reads as a retired node rather than as a counting error, and
+`lab-sections.test.mjs` asserts against `nodes.length` with that reason in its
+failure message.
+
+### The spec's failing test was already passing
+
+`tasks.md` budgeted PR3's red test as the row counts. Measured on the old page
+before writing it: `data-service-row` already appeared **14** times and
+`data-node-row` **9** — green before a line was written, the same way "the page
+has 1 section" was wrong in PR1 (it had seven). Both are kept as regression
+guards and recorded as guards.
+
+What was genuinely red, and is what PR3 actually delivered: the provenance
+(`generated_at` and `source_commit` appeared **0** times anywhere in the built
+page), the machine-readable access boundary, the token-layer audit scoped to
+these sections, and zero client JavaScript.
+
+### AC1 progress, whole page
+
+Still red until PR6 deletes `IdpPage.astro`, by design — but the number moved:
+**677 off-token utilities → 336** on `dist/lab/index.html`. The ten families are
+unchanged because the remaining five sections still use them.
+
 ## Decisions made during implementation
 
 Brief log of non-obvious trade-offs or course corrections taken during the work. Routine choices belong in commit messages, not here.

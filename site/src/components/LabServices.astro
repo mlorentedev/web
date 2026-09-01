@@ -1,0 +1,145 @@
+---
+/**
+ * The Lab's Services section (WEB-080, AC1 + AC3).
+ *
+ * Renders every entry of `platform.services` — no hand-written rows — and makes
+ * each one's access boundary explicit, which is What §2's actual requirement:
+ * a catalogue that lists a service without saying who can reach it is a list of
+ * names.
+ *
+ * ## Static, and that is a requirement rather than a preference
+ *
+ * `proposal.md` Out of scope: "This spec delivers layer 0: **static at build,
+ * zero JS**." The section this replaces had four client-side filter tabs over
+ * fourteen rows, and one of them — Staging — matched nothing at all, because
+ * `env` only ever holds `common` or `prod`. Grouping by category at build time
+ * says the same thing without shipping a script.
+ *
+ * ## Colour
+ *
+ * The access boundary is deliberately **not** painted in `ok`/`warn`/`danger`.
+ * Those are reserved for real status, by the mapping decided on #251: a private
+ * service is not a degraded one, it is simply not addressed to the reader.
+ * `public` takes `accent` because it is a link you can follow; `mesh` takes the
+ * neutral `panel`. Status keeps the status families.
+ */
+import ServiceIcon from './ServiceIcon.astro';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { platform, type PlatformService } from '../data/platform';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  /** Section number in the page's sequence, e.g. "03". */
+  number: string;
+}
+
+const { number } = Astro.props;
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const isEs = lang === 'es';
+
+/**
+ * Category order is fixed here rather than taken from the data's insertion
+ * order, so adding a service cannot silently reorder the page.
+ */
+const CATEGORY_ORDER: PlatformService['category'][] = [
+  'Core Gateway',
+  'AI & Inference',
+  'GitOps & Delivery',
+  'Observability',
+  'Storage & Data',
+];
+
+const grouped = CATEGORY_ORDER.map((category) => ({
+  category,
+  label: isEs
+    ? platform.services.find((s) => s.category === category)?.categoryEs ?? category
+    : category,
+  services: platform.services.filter((s) => s.category === category),
+})).filter((group) => group.services.length > 0);
+
+/** Real status, in the status families. Access lives elsewhere, on purpose. */
+const STATUS_DOT: Record<PlatformService['status'], string> = {
+  operational: 'bg-ok-500',
+  degraded: 'bg-warn-500',
+  maintenance: 'bg-observe-500',
+};
+---
+
+<Section padding="py-10" data-lab-section="services">
+  <SectionHeading number={number} label={t('lab.services.heading')} margin="mb-3" />
+
+  <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-2">
+    {t('lab.services.intro')}
+  </p>
+  <p class="text-xs font-mono text-ink-500 mb-8">
+    {t('lab.services.count')
+      .replace('{n}', String(platform.services.length))
+      .replace('{total}', String(platform.cluster.totalServices))}
+  </p>
+
+  <div class="space-y-8">
+    {grouped.map((group) => (
+      <div>
+        <h3 class="text-xs font-semibold text-ink-500 tracking-widest uppercase mb-3">
+          {group.label}
+        </h3>
+
+        <ul class="border-t border-ink-100">
+          {group.services.map((svc) => (
+            <li
+              data-service-row={svc.env}
+              data-access={svc.isPublic ? 'public' : 'mesh'}
+              class="border-b border-ink-100 py-3 flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:gap-4"
+            >
+              <div class="flex items-center gap-2 sm:w-52 sm:shrink-0">
+                <ServiceIcon slug={svc.slug} class="w-4 h-4 shrink-0" />
+                <span class="font-semibold text-ink-900 text-sm">{svc.name}</span>
+                <span
+                  class:list={['h-1.5 w-1.5 rounded-full shrink-0', STATUS_DOT[svc.status]]}
+                  title={svc.status}
+                ></span>
+              </div>
+
+              <p class="text-sm text-ink-600 leading-snug flex-grow">
+                {isEs ? svc.descriptionEs : svc.description}
+              </p>
+
+              <div class="flex items-center gap-2 shrink-0 sm:justify-end">
+                {svc.isPublic ? (
+                  <span class="px-1.5 py-0.5 rounded text-xs font-semibold bg-accent-50 text-accent-800 border border-accent-200">
+                    {t('lab.services.access.public')}
+                  </span>
+                ) : (
+                  <span class="px-1.5 py-0.5 rounded text-xs font-semibold bg-panel-100 text-panel-700 border border-panel-200">
+                    {t('lab.services.access.mesh')}
+                  </span>
+                )}
+
+                {/*
+                  Nothing renders for a mesh-only service. The old page put
+                  "Not published" beside the badge on all eleven of them, which
+                  is the same sentence twice: `Mesh only` already says there is
+                  no address, and the repetition is what made a fourteen-row
+                  list feel like a wall.
+                */}
+                {svc.url && (
+                  <a
+                    href={svc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="font-mono text-xs font-semibold text-accent-700 hover:text-accent-900 transition-colors"
+                  >
+                    {svc.url.replace(/^https?:\/\//, '').replace(/\/$/, '')} &#8599;
+                  </a>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</Section>
