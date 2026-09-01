@@ -28,7 +28,7 @@ created: "2026-08-27"
 - [x] [AC2] Vendor `site/vendor/archify-schemas/` (12 KB) + `ajv`; **`.agents/` stays ignored, `#242` stands**
 - [x] [AC6] Measured: 21,929 B / 4,076 gzip per diagram; inline chosen over `<img>` with the reason; budget fixed at **150 KB** for the built page. All in `verification.md`
 - [x] [AC2] `site/tests/lab-containment.mjs` (Playwright): `scrollWidth <= innerWidth` on `/lab` and `/es/lab` at 320, 768, 1440, 2048, plus a 754 px legibility floor — red until PR4, out of CI until then (`npm run test:browser`)
-- [ ] **[AC1] Open for Manu: the semantic colour mapping** in `diagrams.mjs` (`TODO(manu)`). Structure and text are settled; which token family carries which archify component `type` is a domain call — see the PR note
+- [x] **[AC1] Semantic colour mapping decided** (2026-08-31, Manu): **no category may claim `warn` or `danger`** — those stay reserved for real status. `cloud` left amber and `security` left rose, which had been rendering the healthy DNS gateway as broken and every cloud host as a warning. Five families for seven types, so two pairs share one at different shades, both pairings meaning something: `frontend`+`messagebus` on `accent` (both carry traffic in), `cloud`+`external` on `panel` (both are "not our Kubernetes"). `messagebus` left `observe`, where it had been colliding with `database` for no reason. **Residual, stated rather than hidden:** cloud, security and external are three neutrals and only their icons make them unmistakable; spending `observe` or `ok` on one is the lever if it proves too subtle. Verified by rendering the extracted SVG under the site's own tokens — archify's viewer uses archify's palette and cannot show this
 
 ### PR1 — data layer and the test harness (AC3, AC1 scaffolding)
 
