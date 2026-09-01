@@ -66,6 +66,13 @@ const STATUS_DOT: Record<PlatformService['status'], string> = {
   degraded: 'bg-warn-500',
   maintenance: 'bg-observe-500',
 };
+
+/** Translated, for the same reason as in `LabInfra.astro`: status is prose. */
+const STATUS_LABEL: Record<PlatformService['status'], string> = {
+  operational: t('lab.status.operational'),
+  degraded: t('lab.status.degraded'),
+  maintenance: t('lab.status.maintenance'),
+};
 ---
 
 <Section padding="py-10" data-lab-section="services">
@@ -91,6 +98,7 @@ const STATUS_DOT: Record<PlatformService['status'], string> = {
           {group.services.map((svc) => (
             <li
               data-service-row={svc.env}
+              data-service-slug={svc.slug}
               data-access={svc.isPublic ? 'public' : 'mesh'}
               class="border-b border-ink-100 py-3 flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:gap-4"
             >
@@ -99,7 +107,7 @@ const STATUS_DOT: Record<PlatformService['status'], string> = {
                 <span class="font-semibold text-ink-900 text-sm">{svc.name}</span>
                 <span
                   class:list={['h-1.5 w-1.5 rounded-full shrink-0', STATUS_DOT[svc.status]]}
-                  title={svc.status}
+                  title={STATUS_LABEL[svc.status]}
                 ></span>
               </div>
 

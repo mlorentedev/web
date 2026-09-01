@@ -169,27 +169,42 @@ for (const { locale, html } of built) {
 
   // --------------------------------------------------------- access boundaries
 
-  test(`[${locale}] every service states its access boundary`, () => {
+  /**
+   * Access is asserted **per service**, keyed by slug, not as a tally.
+   *
+   * Counting `data-access` values and comparing the totals to the manifest was
+   * the first version, and it cannot see the failure that matters: swap the
+   * boundary of two services and the totals are unchanged. On a section whose
+   * entire purpose is to say who can reach what, a test that passes while the
+   * page names the wrong service public is worse than no test. Raised in review
+   * on this PR, and correct.
+   */
+  test(`[${locale}] every service states its own access boundary, not a matching total`, () => {
     const body = labSection(html, 'services');
     assert.ok(body, 'no services section');
 
-    const declared = [...body.matchAll(/\bdata-access="([^"]*)"/g)].map((m) => m[1]);
-    assert.equal(
-      declared.length,
-      platform.services.length,
-      'a service row with no `data-access` — What §2 requires the boundary explicit per service',
-    );
-
-    const counts = declared.reduce((acc, v) => acc.set(v, (acc.get(v) || 0) + 1), new Map());
-    const expectedPublic = platform.services.filter((s) => s.isPublic).length;
+    const rows = [...body.matchAll(/<[^>]*\bdata-service-slug="([^"]*)"[^>]*>/g)].map((m) => ({
+      slug: m[1],
+      access: [...m[0].matchAll(/\bdata-access="([^"]*)"/g)].map((a) => a[1]),
+    }));
 
     assert.deepEqual(
-      [...counts.keys()].sort(),
-      ['mesh', 'public'],
-      'access is a closed vocabulary: `public` (reachable from the internet) or `mesh` (behind the VPN)',
+      rows.map((r) => r.slug).sort(),
+      platform.services.map((s) => s.slug).sort(),
+      'the rows on the page are not one-to-one with the manifest, by slug',
     );
-    assert.equal(counts.get('public'), expectedPublic, 'the public count disagrees with `isPublic` in the manifest');
-    assert.equal(counts.get('mesh'), platform.services.length - expectedPublic);
+
+    const wrong = rows
+      .map(({ slug, access }) => {
+        const service = platform.services.find((s) => s.slug === slug);
+        const expected = service.isPublic ? 'public' : 'mesh';
+        if (access.length !== 1) return `${slug}: ${access.length} data-access attributes, expected exactly 1`;
+        if (access[0] !== expected) return `${slug}: says "${access[0]}", manifest says "${expected}"`;
+        return null;
+      })
+      .filter(Boolean);
+
+    assert.deepEqual(wrong, [], 'a service names an access boundary its manifest entry does not support');
   });
 
   test(`[${locale}] a service is marked public exactly when it has a URL to reach`, () => {
@@ -281,6 +296,42 @@ for (const { locale, html } of built) {
 
       const hooks = [...body.matchAll(/\bdata-(?:[a-z-]*-)?(?:filter|tabs?)\b/g)].map((m) => m[0]);
       assert.deepEqual(hooks, [], `${name}: client-side filter or tab hooks left in a static section`);
+
+      // A `<script>` is not the only way JavaScript reaches the page. A
+      // `client:*` directive makes Astro wrap the component in `<astro-island>`
+      // and load its runtime from outside the section, which the check above
+      // would not see. Nothing in the Lab path uses one today; this is the
+      // guard against the day someone reaches for `client:visible`.
+      assert.deepEqual(
+        [...body.matchAll(/<astro-island\b/g)].map(() => '<astro-island>'),
+        [],
+        `${name}: a hydrated Astro island in a section the spec requires to be static`,
+      );
     }
+  });
+
+  test(`[${locale}] status is rendered as words this locale uses`, () => {
+    // `k3s`, `ARM64` and `docker` stay identical on both locales because they
+    // are names. `healthy` and `standby` are English adjectives, and rendering
+    // the enum straight from the data left the Spanish page saying `standby`.
+    // Raised in review on this PR.
+    if (locale !== 'es') return;
+
+    const body = REBUILT.map((n) => labSection(html, n) || '').join(' ');
+    const text = decodeEntities(body.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' '));
+
+    const rawEnums = [
+      ...new Set([
+        ...platform.nodes.map((n) => n.status),
+        ...platform.services.map((s) => s.status),
+      ]),
+    ];
+    const untranslated = rawEnums.filter((value) => new RegExp(`\\b${value}\\b`).test(text));
+
+    assert.deepEqual(
+      untranslated,
+      [],
+      'raw English status values rendered as visible text on the Spanish page',
+    );
   });
 }

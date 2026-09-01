@@ -47,10 +47,34 @@ const STATUS_DOT: Record<NodeTopology['status'], string> = {
   standby: 'bg-ink-300',
 };
 
-/** The five fields that answer "why does this workload live here". */
+/**
+ * Status is prose and gets translated; `k3s`, `ARM64` and `docker` on the spec
+ * line are names and do not. Written out rather than looked up with a computed
+ * key, because `t()` is typed against the key union and a template expression
+ * carrying a TypeScript generic is parsed as JSX by Astro.
+ */
+const STATUS_LABEL: Record<NodeTopology['status'], string> = {
+  healthy: t('lab.status.healthy'),
+  warning: t('lab.status.warning'),
+  offline: t('lab.status.offline'),
+  standby: t('lab.status.standby'),
+};
+
+/**
+ * The five fields that answer "why does this workload live here".
+ *
+ * `runtime` is a name — `k3s`, `docker`, `systemd` — and stays untranslated on
+ * both locales for the same reason `ARM64` does. The exception is `standby`,
+ * which is not a runtime at all: it is the powered-down machine's status
+ * wearing the field, already stated by the badge on the same row, and the only
+ * English word that was reaching the Spanish page as prose. Dropped for the
+ * same reason `—` is — a placeholder is not a value.
+ */
+const NON_VALUES = new Set(['—', 'standby']);
+
 function specLine(node: NodeTopology): string {
   return [node.runtime, node.arch, node.cpu, node.ram, node.location]
-    .filter((part) => part && part !== '—')
+    .filter((part) => part && !NON_VALUES.has(part))
     .join(' · ');
 }
 
@@ -84,7 +108,7 @@ const activeCount = platform.nodes.filter((n) => n.status !== 'standby').length;
           <span class="font-semibold text-ink-900 text-sm">{node.name}</span>
           <span class="flex items-center gap-1.5 shrink-0 font-mono text-xs text-ink-500">
             <span class:list={['h-1.5 w-1.5 rounded-full shrink-0', STATUS_DOT[node.status]]}></span>
-            {node.status}
+            {STATUS_LABEL[node.status]}
           </span>
         </div>
 
