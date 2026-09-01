@@ -98,7 +98,57 @@ function namespaceIds(svg: string, prefix: string): string {
     .replace(/\bid="([^"]+)"/g, (_, id) => `id="${prefix}-${id}"`);
 }
 
-const svg = namespaceIds(SVGS[name].trim(), name);
+/**
+ * Refuse to render a diagram that still carries an id this function did not
+ * claim, and one whose references it did not follow.
+ *
+ * Raised in review on this PR, and correct: the rewrite above knows four
+ * syntaxes — `url(#…)`, `href`/`xlink:href`, the three id-list aria attributes,
+ * and `id` itself. archify emits only those today (verified: 9 `url(#`, 1
+ * `aria-labelledby`, no id selectors in its stylesheet), but if it ever emits
+ * a fifth the rewrite would half-apply and the page would go back to duplicate
+ * ids and an `aria-labelledby` pointing into the wrong diagram — silently,
+ * because it still looks right.
+ *
+ * So the assumption enforces itself, the way `minify()` in `diagrams.mjs`
+ * refuses a stylesheet it cannot safely handle rather than quietly mangling it.
+ * A build failure at the moment the assumption breaks is the only moment the
+ * decision can be made properly.
+ */
+function assertFullyNamespaced(svg: string, prefix: string): string {
+  const stray = [...svg.matchAll(/\bid="([^"]+)"/g)]
+    .map((m) => m[1])
+    .filter((id) => !id.startsWith(`${prefix}-`));
+  if (stray.length > 0) {
+    throw new Error(
+      `LabDiagram: ${stray.length} id(s) in ${prefix}.svg were not namespaced — ` +
+        `${stray.slice(0, 5).join(', ')}. The generator emitted a syntax namespaceIds() does not know.`,
+    );
+  }
+
+  // Every reference must resolve to an id that exists in this diagram.
+  //
+  // The first version of this check asked whether references *started with the
+  // prefix* — which is true by construction after the rewrite, so it asserted
+  // nothing. Resolution is the property that actually matters: if the generator
+  // emits a reference syntax `namespaceIds` does not rewrite, the ids around it
+  // still get prefixed and that reference is left pointing at a name no element
+  // has any more. That is the silent half of the failure.
+  const declared = new Set([...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]));
+  const referenced = [...svg.matchAll(/(?:url\(#|(?:xlink:)?href=")#?([A-Za-z0-9_:.-]+)/g)].map((m) => m[1]);
+  const unresolved = [...new Set(referenced.filter((id) => !declared.has(id)))];
+
+  if (unresolved.length > 0) {
+    throw new Error(
+      `LabDiagram: ${unresolved.length} reference(s) in ${prefix}.svg resolve to nothing — ` +
+        `${unresolved.slice(0, 5).join(', ')}. The generator emitted a reference syntax namespaceIds() does not rewrite.`,
+    );
+  }
+
+  return svg;
+}
+
+const svg = assertFullyNamespaced(namespaceIds(SVGS[name].trim(), name), name);
 ---
 
 <Section padding="py-10" data-lab-section={name}>

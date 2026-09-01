@@ -287,6 +287,24 @@ for (const { locale, html } of built) {
     }
   });
 
+  test(`[${locale}] the page has no duplicate ids`, () => {
+    // The whole document, not just the diagram sections: the failure this
+    // guards is two inlined SVGs sharing archify's un-namespaced ids — `id="0"`,
+    // `id="arrowhead"`, `id="archify-diagram-title"` — which makes
+    // `url(#arrowhead)` in the second diagram resolve into the first and both
+    // `aria-labelledby` targets point at the first diagram's title.
+    //
+    // This was verified by hand when the namespacing was written and not put in
+    // the suite, which review on this PR caught. A guard nothing runs is the
+    // lesson-019 failure, and this one had already happened once.
+    const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+    const seen = new Map();
+    for (const id of ids) seen.set(id, (seen.get(id) || 0) + 1);
+    const duplicates = [...seen.entries()].filter(([, n]) => n > 1).map(([id, n]) => `${id} ×${n}`);
+
+    assert.deepEqual(duplicates, [], `duplicate ids on the built page:\n  ${duplicates.join('\n  ')}`);
+  });
+
   test(`[${locale}] every diagram has an accessible name and real text`, () => {
     // #244: an <img> with no alt announced a generated filename. An inline SVG
     // has the same failure mode unless it is given a name, and the whole point
