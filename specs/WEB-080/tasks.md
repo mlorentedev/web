@@ -41,8 +41,8 @@ created: "2026-08-27"
 
 ### PR2 — second diagram + captions (AC2, AC3)
 
-- [ ] [AC2] Author `site/src/diagrams/flows.architecture.json` (GitOps → ingress → DNS) through the PR0 pipeline; `visual-check` receipt committed as evidence
-- [ ] [AC3] `<figcaption>` and legend strings for both diagrams in `ui.ts`, EN and ES; twin test green
+- [x] [AC2] Author `site/src/diagrams/flows.architecture.json` through the PR0 pipeline; receipts committed under `evidence/pr2-*.visual-check.json`. **Scoped to the delivery path this repo can prove** — `release.yml` and ADR-055, one push → one multi-arch image → `repository_dispatch` → staging overlay → Argo CD, and the release re-tagging that same digest for prod. archify's linter rejected the first layout for an edge crossing three unrelated nodes; the grid was reorganised so the semver path runs straight down the right-hand column. 26,419 B / 4,608 gzip. **Both receipts read `containment: fail` and neither is one** — the failing condition is `overflowY` of archify's own viewer page, `overflowX` is false at every width and readability is 9 px against a 6 px floor; `verification.md` explains it
+- [x] [AC3] `<figcaption>` and legend strings for both diagrams in `ui.ts`, EN and ES — the **first four `lab.*` keys**, which is the namespace the rest of the page moves to in PR6. Twin test green (22/22). The prose that Risk §1 keeps out of the SVG lives here: verified that the extracted SVG carries only node labels, tags and one- or two-word edge labels — archify's `cards` stay in the viewer HTML and never reach it, so the two longest edge labels were shortened to match topology's register (`dispatch`, `same digest`)
 
 ### PR3 — Services and Infra sections (AC1, AC3)
 

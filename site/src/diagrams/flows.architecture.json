@@ -1,0 +1,263 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "One push, one image, two environments",
+    "quality_profile": "showcase",
+    "viewBox": [
+      880,
+      640
+    ]
+  },
+  "components": [
+    {
+      "id": "push",
+      "type": "frontend",
+      "label": "Push to master",
+      "sublabel": "mlorentedev/web",
+      "tag": "Conventional Commits",
+      "pos": [
+        60,
+        96
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "release",
+      "type": "backend",
+      "label": "release.yml",
+      "sublabel": "one multi-arch build",
+      "tag": "sha-abc1234",
+      "pos": [
+        330,
+        96
+      ],
+      "size": [
+        220,
+        76
+      ]
+    },
+    {
+      "id": "registry",
+      "type": "database",
+      "label": "Docker Hub",
+      "sublabel": "kubelab-web",
+      "tag": "one digest",
+      "pos": [
+        630,
+        96
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "dispatch",
+      "type": "messagebus",
+      "label": "repository_dispatch",
+      "sublabel": "web-image-published",
+      "pos": [
+        60,
+        300
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "overlay",
+      "type": "backend",
+      "label": "Staging overlay PR",
+      "sublabel": "make promote",
+      "pos": [
+        330,
+        300
+      ],
+      "size": [
+        220,
+        76
+      ]
+    },
+    {
+      "id": "staging",
+      "type": "backend",
+      "label": "staging",
+      "sublabel": "ace1",
+      "tag": "VPN-only DNS",
+      "pos": [
+        60,
+        476
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "retag",
+      "type": "security",
+      "label": "Re-tag the digest",
+      "sublabel": "X.Y.Z and latest",
+      "tag": "no rebuild",
+      "pos": [
+        630,
+        300
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "argo",
+      "type": "cloud",
+      "label": "Argo CD",
+      "sublabel": "reconciles from Git",
+      "tag": "gcp1 hub",
+      "pos": [
+        330,
+        476
+      ],
+      "size": [
+        220,
+        76
+      ]
+    },
+    {
+      "id": "prod",
+      "type": "backend",
+      "label": "production",
+      "sublabel": "Hetzner VPS",
+      "tag": "Traefik, Cloudflare",
+      "pos": [
+        630,
+        476
+      ],
+      "size": [
+        190,
+        76
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "mlorentedev/web — one build per push",
+      "wraps": [
+        "push",
+        "release",
+        "registry"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Reconciled from Git, never pushed to",
+      "wraps": [
+        "staging",
+        "argo",
+        "prod"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "push-release",
+      "from": "push",
+      "to": "release",
+      "label": "on merge"
+    },
+    {
+      "id": "release-registry",
+      "from": "release",
+      "to": "registry",
+      "label": "builds once",
+      "variant": "emphasis"
+    },
+    {
+      "id": "release-dispatch",
+      "from": "release",
+      "to": "dispatch",
+      "label": "dispatch",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "dispatch-overlay",
+      "from": "dispatch",
+      "to": "overlay",
+      "label": "opens a PR"
+    },
+    {
+      "id": "registry-retag",
+      "from": "registry",
+      "to": "retag",
+      "label": "same digest",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "overlay-argo",
+      "from": "overlay",
+      "to": "argo",
+      "label": "when merged",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "retag-argo",
+      "from": "retag",
+      "to": "argo",
+      "label": "prod overlay",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "argo-staging",
+      "from": "argo",
+      "to": "staging",
+      "label": "syncs",
+      "variant": "emphasis"
+    },
+    {
+      "id": "argo-prod",
+      "from": "argo",
+      "to": "prod",
+      "label": "syncs",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Built once",
+      "items": [
+        "One multi-arch image per push to master",
+        "Both environments run those exact bytes"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Staging is continuous",
+      "items": [
+        "Every push reaches ace1 unattended",
+        "Its address resolves only over the mesh"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Production is not",
+      "items": [
+        "It waits for a release pull request to merge",
+        "Promotion re-tags a digest, it never rebuilds"
+      ]
+    }
+  ]
+}

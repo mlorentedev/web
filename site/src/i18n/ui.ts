@@ -207,6 +207,19 @@ export const ui = {
     'idp.probe.summary': '{n}/{m} reachable · avg {ms}ms from your browser',
     'idp.probe.lastRun': 'Last run',
 
+    // Lab diagrams (WEB-080). The prose lives here rather than inside the SVG:
+    // one IR serves both locales, so node labels stay as identifiers — machine
+    // names, protocols, environments — and every sentence a reader has to
+    // understand is translated out here (proposal, Risk §1).
+    'lab.diagram.topology.caption':
+      'Eight machines across a cloud provider and a homelab, three of them running single-node K3s clusters that do not share a control plane.',
+    'lab.diagram.topology.legend':
+      'The resolver, the monitor and the forge sit deliberately outside Kubernetes: each has to keep working while the platform is broken. A WireGuard mesh ties the fleet together with no inbound ports open.',
+    'lab.diagram.flows.caption':
+      'One push to master produces one multi-arch image. Staging runs it unattended; production runs the same bytes only once a release pull request merges.',
+    'lab.diagram.flows.legend':
+      'Promotion re-tags a digest rather than rebuilding, so what production serves is what staging validated. Argo CD reconciles both clusters from Git — nothing is pushed to them.',
+
     // Home sections
     'home.stack': 'What I work with',
     'home.projects': 'What I build',
@@ -491,6 +504,19 @@ export const ui = {
     'idp.probe.result': 'RESULTADO',
     'idp.probe.summary': '{n}/{m} alcanzables · media {ms}ms desde tu navegador',
     'idp.probe.lastRun': 'Última ejecución',
+
+    // Diagramas del Lab (WEB-080). La prosa vive aquí y no dentro del SVG: un
+    // único IR sirve a los dos idiomas, así que las etiquetas de los nodos se
+    // quedan como identificadores — nombres de máquina, protocolos, entornos —
+    // y todo lo que hay que entender se traduce aquí (propuesta, Riesgo §1).
+    'lab.diagram.topology.caption':
+      'Ocho máquinas repartidas entre un proveedor cloud y un homelab; tres de ellas ejecutan clústeres K3s de un solo nodo que no comparten plano de control.',
+    'lab.diagram.topology.legend':
+      'El resolutor, el monitor y la forja se quedan fuera de Kubernetes a propósito: cada uno tiene que seguir funcionando mientras la plataforma está rota. Una malla WireGuard une la flota sin abrir ningún puerto de entrada.',
+    'lab.diagram.flows.caption':
+      'Un push a master produce una única imagen multiarquitectura. Staging la ejecuta sin intervención; producción ejecuta esos mismos bytes solo cuando se mergea una pull request de release.',
+    'lab.diagram.flows.legend':
+      'La promoción reetiqueta un digest en lugar de reconstruir, así que lo que sirve producción es lo que validó staging. Argo CD reconcilia ambos clústeres desde Git: no se despliega nada contra ellos.',
 
     // Home sections
     'home.stack': 'Con qué trabajo',
