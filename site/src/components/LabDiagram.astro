@@ -190,16 +190,29 @@ function stripViewerAffordances(svg: string): string {
 }
 
 /**
- * Refuse to render a diagram that can still be tabbed into.
+ * Refuse to render a diagram the strip above did not fully disarm.
  *
- * Same discipline as `assertFullyNamespaced`: the strip above knows the three
- * attributes archify emits today. If a future version makes a node focusable
- * some other way — an `<a href>`, `contenteditable` — the page would go back to
- * phantom tab stops inside a `role="img"` silently, because it still looks
- * right. A build failure at that moment is the only moment the decision can be
- * made properly.
+ * Same discipline as `assertFullyNamespaced`: the strip knows the attributes
+ * archify emits *today*. If a future version makes a node focusable some other
+ * way — an `<a href>`, `contenteditable` — the page goes back to phantom tab
+ * stops inside a `role="img"` silently, because it still looks right. A build
+ * failure at that moment is the only moment the decision can be made properly.
+ *
+ * The second check was raised in review on this PR and is correct: the label
+ * strip matches `aria-label="Focus …"`, so a future archify that says
+ * `"Select …"` or `"Open …"` would leave the label behind on a `<g>` with no
+ * role to permit it. That failure is *quieter* than the first, because
+ * `lab-axe.mjs` would not catch it either — axe reports `aria-prohibited-attr`
+ * as `incomplete`, and this check only fails on violations. So it is asserted
+ * here, where it is cheap and exact: after the strip, the only `aria-label` a
+ * diagram may carry is on the root `<svg>`, and today it carries none at all —
+ * the name comes from `aria-labelledby` → `<title>`.
+ *
+ * The reviewer's own suggestion, a blanket `aria-label="[^"]*"`, is the thing
+ * to avoid: it would silently eat a name that archify one day puts on the root
+ * for good reason. Assert the assumption, do not widen the rewrite.
  */
-function assertNothingFocusable(svg: string, prefix: string): string {
+function assertViewerAffordancesGone(svg: string, prefix: string): string {
   const focusable = [
     ...svg.matchAll(/<(?:a|button|input|select|textarea)[\s>]|\btabindex=|\bcontenteditable=/g),
   ].map((m) => m[0]);
@@ -212,10 +225,27 @@ function assertNothingFocusable(svg: string, prefix: string): string {
     );
   }
 
+  // `aria-label=` and not `aria-label`: `aria-labelledby=` must not match, and
+  // it is the attribute that gives the diagram its name.
+  const strayLabels = [...svg.matchAll(/\baria-label="([^"]*)"/g)]
+    .filter((m) => m.index !== undefined && m.index > svg.indexOf('>'))
+    .map((m) => m[1]);
+
+  if (strayLabels.length > 0) {
+    throw new Error(
+      `LabDiagram: ${strayLabels.length} aria-label(s) survive on descendants of ${prefix}.svg — ` +
+        `${[...new Set(strayLabels)].slice(0, 3).map((l) => `"${l}"`).join(', ')}. ` +
+        `stripViewerAffordances() only removes labels beginning "Focus ", so archify has changed ` +
+        `its wording. They name elements with no role that permits a name, inside a role="img" ` +
+        `that never announces them (axe: aria-prohibited-attr, which is reported as incomplete ` +
+        `rather than a violation, so lab-axe.mjs would not have caught this).`,
+    );
+  }
+
   return svg;
 }
 
-const svg = assertNothingFocusable(
+const svg = assertViewerAffordancesGone(
   assertFullyNamespaced(namespaceIds(stripViewerAffordances(SVGS[name].trim()), name), name),
   name,
 );
