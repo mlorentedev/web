@@ -1,0 +1,77 @@
+---
+/**
+ * The Lab — the single public platform surface (WEB-080, AC5).
+ *
+ * Replaces `IdpPage.astro`, which was 1,150 lines of hand-written markup when
+ * this spec opened and 357 when it was deleted. Nothing is hand-written here:
+ * every section is a component, and every component renders from `platform.json`
+ * or `lab-ai.json` through the token layer.
+ *
+ * The numbering is the page's spine — `SectionHeading` prints `[ NN / label ]`
+ * and the order below is the only place it is decided.
+ *
+ * One section is not static: `LabProbe` carries the reachability console that
+ * ADR-056 §4.3 decided. AC5's original "zero JS" wording was never true of this
+ * page and is amended in `proposal.md` rather than defended; what the tests
+ * enforce instead is that there is exactly **one** script and it is that one.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import LabHero from './LabHero.astro';
+import LabStory from './LabStory.astro';
+import LabServices from './LabServices.astro';
+import LabInfra from './LabInfra.astro';
+import LabDiagram from './LabDiagram.astro';
+import LabAutomations from './LabAutomations.astro';
+import LabSlos from './LabSlos.astro';
+import LabProbe from './LabProbe.astro';
+import LabProvenance from './LabProvenance.astro';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t('lab.hero.title')} — Manu Lorente`}
+  description={t('lab.hero.description')}
+>
+  <Header />
+
+  <main id="main-content" class="flex-grow pb-16">
+    <LabHero />
+
+    <LabStory number="01" />
+
+    <LabServices number="02" />
+
+    <LabInfra number="03" />
+
+    <LabDiagram
+      name="topology"
+      number="04"
+      label={t('lab.diagram.topology.heading')}
+      caption={t('lab.diagram.topology.caption')}
+      legend={t('lab.diagram.topology.legend')}
+    />
+
+    <LabDiagram
+      name="flows"
+      number="05"
+      label={t('lab.diagram.flows.heading')}
+      caption={t('lab.diagram.flows.caption')}
+      legend={t('lab.diagram.flows.legend')}
+    />
+
+    <LabAutomations number="06" />
+
+    <LabSlos number="07" />
+
+    <LabProbe number="08" />
+
+    <LabProvenance />
+  </main>
+
+  <Footer />
+</BaseLayout>

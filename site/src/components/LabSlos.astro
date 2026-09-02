@@ -1,0 +1,93 @@
+---
+/**
+ * The Lab's service-level objectives (WEB-080, AC1).
+ *
+ * ## One card is gone, and that is the point of the section
+ *
+ * The old grid had four cards. The second, "Edge Ingress p95", read **`~42ms`**
+ * — a literal in the markup, present nowhere else in the repository: not in
+ * `platform.json`, not in a spec, not in a measurement. Grepping it returns one
+ * hit, the markup itself. On a page whose claim is "measured, not typed", beside
+ * a provenance line naming the commit the figures came from, an invented number
+ * is the single most expensive thing that could be on it. It is not carried
+ * through the rebuild, and what it would take to have one honestly — an ingress
+ * percentile needs a producer — is #162's territory.
+ *
+ * `inferenceLatency` renders as **"not measured"** and that is deliberate: it is
+ * what the manifest says. A card that admits it has no number is worth more here
+ * than one that quietly invents one, which is exactly the contrast the removed
+ * card makes.
+ *
+ * ## The source labels stay English on both locales
+ *
+ * `Uptime Kuma`, `Argo CD Reconciler`, `Jetson Nano (Qwen 1.5B)` — product and
+ * machine names, the same identifier exception Risk §1 grants the diagrams.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { platform } from '../data/platform';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  /** Section number in the page's sequence, e.g. "07". */
+  number: string;
+}
+
+const { number } = Astro.props;
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const INDICATORS = [
+  {
+    label: t('lab.slos.availability'),
+    value: platform.cluster.uptime,
+    target: t('lab.slos.target995'),
+    source: 'Uptime Kuma',
+  },
+  {
+    label: t('lab.slos.driftLoop'),
+    value: platform.metrics.gitopsSyncLoop,
+    target: t('lab.slos.target60s'),
+    source: 'Argo CD Reconciler',
+  },
+  {
+    label: t('lab.slos.edgeInference'),
+    value: platform.metrics.inferenceLatency,
+    target: t('lab.slos.target50s'),
+    source: 'Jetson Nano (Qwen 1.5B)',
+  },
+];
+---
+
+<Section padding="py-10" data-lab-section="slos">
+  <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
+    <SectionHeading number={number} label={t('lab.slos.heading')} />
+    <span class="text-xs font-mono text-ok-700 font-semibold">{t('lab.slos.slaTarget')}</span>
+  </div>
+  <p class="text-xs text-ink-500 mb-6">{t('lab.slos.sub')}</p>
+
+  <div class="bg-white border border-ink-100 rounded-xl p-5 space-y-2">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="h-2.5 w-2.5 rounded-full bg-ok-500"></span>
+        <span class="font-bold text-ink-900 text-sm font-mono">{t('lab.slos.platformAvailability')}</span>
+      </div>
+      <span class="font-mono font-bold text-ok-700 text-sm">{platform.cluster.uptime}</span>
+    </div>
+    <p class="text-xs font-mono text-ink-500">{t('lab.slos.snapshot')}</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs mt-4">
+    {INDICATORS.map((sli) => (
+      <div class="bg-white border border-ink-100 rounded-xl p-4">
+        <span class="text-xs text-ink-500 uppercase tracking-wider block mb-1">{sli.label}</span>
+        <div class="flex items-baseline justify-between gap-2">
+          <span class="text-xl font-bold text-ink-900">{sli.value}</span>
+          <span class="text-xs text-ink-500 shrink-0">{sli.target}</span>
+        </div>
+        <span class="text-xs text-ink-500 block mt-1">{sli.source}</span>
+      </div>
+    ))}
+  </div>
+</Section>

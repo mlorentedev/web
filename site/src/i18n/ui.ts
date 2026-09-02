@@ -224,6 +224,58 @@ export const ui = {
 
     // Lab sections (WEB-080). The register is the FAQ's — what is actually
     // true and why it was done that way — not infrastructure marketing.
+    //
+    // The hero and story strings are carried over from `idp.*` **verbatim**:
+    // `context.md` records the hero wording as blocked on #182, whose three
+    // positioning options were produced and then lost. Restructuring the markup
+    // does not need that answer; rewriting the sentences does.
+    'lab.hero.eyebrow': 'Infrastructure & AI agent platform',
+    'lab.hero.title': 'KubeLab Platform & Engineering Cockpit',
+    'lab.hero.description':
+      'The 24/7 hybrid cloud and bare-metal infrastructure platform powering my autonomous AI agents, edge inference, and GitOps workflows.',
+
+    'lab.story.heading': 'The Engineering Foundry Behind Every Product',
+    'lab.story.p1':
+      'KubeLab is the operating foundation behind every project, open-source tool, and product showcased across this portfolio (including Pollex, Hive MCP, KubeLab Platform API, and this Astro website). It spans eight machines across Hetzner Cloud (Germany), Google Cloud and a bare-metal homelab in the USA, running three single-node K3s clusters.',
+    'lab.story.p2':
+      'Nothing shown here is an isolated mockup or tutorial demo: every workload is built, tested in staging, secured behind Zero-Trust authentication, and operated 24/7 through immutable GitOps pipelines and deterministic multi-agent context systems.',
+    'lab.pillar.gitops': 'Reproducible GitOps',
+    'lab.pillar.gitopsDesc': '100% IaC with Ansible, Terraform, and K3s. Argo CD reconciles drift in <30s.',
+    'lab.pillar.privacy': 'Edge AI & Privacy',
+    'lab.pillar.privacyDesc': 'Local LLM inference on a Jetson Nano. The prompt never leaves the house.',
+    'lab.pillar.memory': 'Deterministic Memory',
+    'lab.pillar.memoryDesc': 'Hive MCP AST RAG serving AI agents with 67–82% prompt context reduction.',
+
+    'lab.slos.heading': 'Service Level Objectives (SLOs) & Reliability',
+    'lab.slos.sub':
+      '90-day synthetic telemetry, latency bounds, and automated GitOps recovery targets monitored via Uptime Kuma.',
+    'lab.slos.slaTarget': '90-Day SLA Target: 99.5%',
+    'lab.slos.platformAvailability': '90-Day Platform Availability (Uptime Kuma)',
+    'lab.slos.snapshot': 'Build-time snapshot from Uptime Kuma — not a live feed.',
+    'lab.slos.availability': 'Availability SLO',
+    'lab.slos.driftLoop': 'GitOps Drift Loop',
+    'lab.slos.edgeInference': 'Edge inference',
+    'lab.slos.target995': 'Target ≥ 99.5%',
+    'lab.slos.target60s': 'Target < 60s',
+    'lab.slos.target50s': 'Target < 5.0s',
+
+    // The reachability console (ADR-056 §4.3). It reads the API's own health
+    // report rather than pinging it, so the strings describe a read.
+    'lab.probe.heading': 'Check it yourself',
+    'lab.probe.sub': 'Runs in your browser, against the live API.',
+    'lab.probe.intro':
+      'Every figure above was measured on the date at the foot of this page. This one is not: your browser asks the platform API directly and prints what it answers — its own view of each subsystem, and its own clock beside yours.',
+    'lab.probe.btn': 'Run again',
+    'lab.probe.ready': 'ready',
+    'lab.probe.running': 'asking…',
+    'lab.probe.asking': 'asking',
+    'lab.probe.failed': 'no answer',
+    'lab.probe.healthy': 'healthy',
+    'lab.probe.degraded': 'degraded',
+    'lab.probe.serverClock': 'server · you',
+    'lab.probe.roundTrip': 'round trip',
+    'lab.probe.summary': '{n}/{m} healthy',
+
     'lab.services.heading': 'Services, and who can reach them',
     'lab.services.intro':
       'Three of these answer to anyone. The rest answer only from inside the WireGuard mesh, behind Authelia — there are zero port-forwarding rules on my residential USA network, so for most of this there is no address to expose in the first place.',
@@ -564,6 +616,58 @@ export const ui = {
 
     // Secciones del Lab (WEB-080). El registro es el de las FAQ — lo que es
     // verdad y por qué se hizo así — no marketing de infraestructura.
+    //
+    // El hero y la historia se traen de `idp.*` **literales**: la redacción está
+    // bloqueada por #182, cuyas tres opciones de posicionamiento se produjeron y
+    // se perdieron. Reestructurar el markup no necesita esa respuesta; reescribir
+    // las frases sí.
+    'lab.hero.eyebrow': 'Infraestructura y plataforma de agentes de IA',
+    'lab.hero.title': 'Plataforma KubeLab y Cockpit de Ingeniería',
+    'lab.hero.description':
+      'La plataforma híbrida en la nube y bare-metal que opera 24/7 mis agentes de IA autónomos, inferencia edge y flujos GitOps.',
+
+    'lab.story.heading': 'La Fábrica de Ingeniería Detrás de Cada Producto',
+    'lab.story.p1':
+      'KubeLab es la base operativa sobre la que he construido, probado y desplegado cada proyecto, herramienta open-source y producto de mi portfolio (incluyendo Pollex, Hive MCP Server, la API de KubeLab y esta misma web en Astro). Abarca ocho máquinas entre Hetzner Cloud (Alemania), Google Cloud y un homelab bare-metal en EE.UU., con tres clústeres K3s de un nodo cada uno.',
+    'lab.story.p2':
+      'Nada de lo que muestro es una demo aislada de tutorial: cada carga de trabajo se compila en local, se valida en staging, se protege con autenticación Zero-Trust y se opera 24/7 mediante pipelines GitOps inmutables y sistemas de contexto multi-agente deterministas.',
+    'lab.pillar.gitops': 'GitOps Reproducible',
+    'lab.pillar.gitopsDesc': '100% IaC con Ansible, Terraform y K3s. Argo CD reconcilia el estado en <30s.',
+    'lab.pillar.privacy': 'Edge AI y Privacidad',
+    'lab.pillar.privacyDesc': 'Inferencia LLM local en una Jetson Nano. El prompt no sale de casa.',
+    'lab.pillar.memory': 'Memoria Determinista',
+    'lab.pillar.memoryDesc': 'RAG AST en Hive MCP que abastece a los agentes con un ahorro de contexto del 67% al 82%.',
+
+    'lab.slos.heading': 'Objetivos de Nivel de Servicio (SLOs) y Confiabilidad',
+    'lab.slos.sub':
+      'Telemetría sintética a 90 días, cotas de latencia y recuperación automática GitOps monitorizados con Uptime Kuma.',
+    'lab.slos.slaTarget': 'Objetivo SLA a 90 días: 99.5%',
+    'lab.slos.platformAvailability': 'Disponibilidad de Plataforma a 90 Días (Uptime Kuma)',
+    'lab.slos.snapshot': 'Snapshot tomado en el build desde Uptime Kuma — no es un feed en vivo.',
+    'lab.slos.availability': 'SLO de Disponibilidad',
+    'lab.slos.driftLoop': 'Bucle de Sync GitOps',
+    'lab.slos.edgeInference': 'Inferencia edge',
+    'lab.slos.target995': 'Objetivo ≥ 99.5%',
+    'lab.slos.target60s': 'Objetivo < 60s',
+    'lab.slos.target50s': 'Objetivo < 5.0s',
+
+    // La consola de alcanzabilidad (ADR-056 §4.3). Lee el informe de salud de la
+    // propia API en vez de hacerle ping, así que las cadenas describen una lectura.
+    'lab.probe.heading': 'Compruébalo tú mismo',
+    'lab.probe.sub': 'Corre en tu navegador, contra la API en vivo.',
+    'lab.probe.intro':
+      'Todas las cifras de arriba se midieron en la fecha que aparece al pie de esta página. Esta no: tu navegador le pregunta directamente a la API de la plataforma e imprime lo que responde — su propia visión de cada subsistema, y su reloj junto al tuyo.',
+    'lab.probe.btn': 'Repetir',
+    'lab.probe.ready': 'listo',
+    'lab.probe.running': 'preguntando…',
+    'lab.probe.asking': 'preguntando',
+    'lab.probe.failed': 'sin respuesta',
+    'lab.probe.healthy': 'sano',
+    'lab.probe.degraded': 'degradado',
+    'lab.probe.serverClock': 'servidor · tú',
+    'lab.probe.roundTrip': 'ida y vuelta',
+    'lab.probe.summary': '{n}/{m} sanos',
+
     'lab.services.heading': 'Servicios, y quién puede llegar a ellos',
     'lab.services.intro':
       'Tres de estos responden a cualquiera. El resto solo responden desde dentro de la malla WireGuard, tras Authelia: no hay una sola regla de port-forwarding en mi red residencial de Estados Unidos, así que para la mayoría no hay ni dirección que exponer.',

@@ -390,6 +390,108 @@ Fixed in scope: `IdpPage.astro` still imported `ServiceIcon` after PR3 moved the
 service rows into `LabServices.astro`, which `astro check` had been reporting as
 `ts(6133)` since. One line, removed.
 
+## PR6 — the cut-over, and the console that was measuring the wrong thing
+
+`npm test` **89/89** (`lab-audit` now inside the glob), `npm run build` 0 errors
+0 warnings, `npm run test:browser` green at 320/768/1440/2048 on both locales.
+`IdpPage.astro` deleted — 357 lines, from 1,150 when the spec opened.
+
+### AC1 is green, whole page
+
+| | master `a069642` | PR6 |
+|---|---|---|
+| off-token families | 5 (cyan, emerald, gray, purple, slate) | **0** |
+| distinct off-token utilities | 21 | **0** |
+| arbitrary type sizes | 3 (`text-[10px]`, `[11px]`, `[12px]`) | **0** |
+| page weight | 92.4 KB | 103.0 KB (`/es/lab` 103.6 KB) |
+| external JS | 7,961 B | **0** — the one script inlines |
+
+`tests/lab-audit.mjs` is renamed `lab-audit.test.mjs` and joins `npm test`, which
+PR1 said would happen "the moment `lab.astro` stops composing `IdpPage.astro`".
+
+### The console was proving that GitHub's CDN is up
+
+Measured 2026-09-01, before touching it. Its three targets:
+
+```
+mlorentedev.github.io/pollex/   → server: GitHub.com   (GitHub Pages, edge iad)
+mlorentedev.github.io/hive/     → server: GitHub.com   (GitHub Pages, edge iad)
+api.kubelab.live                → HTTP 404, server: cloudflare
+```
+
+Pollex and Hive are **libraries**, published as documentation on GitHub Pages —
+Manu's correction, and the DNS confirms it. `platform.json` attributed them to
+node `jetson` and node `vps`. So the page said "verify my homelab", checked
+GitHub's CDN, and reported success. The third target was the API's **root**,
+which 404s; `mode: 'no-cors'` returns an opaque response, so the console could
+not tell 404 from 200 and called that reachable too.
+
+It also **fired all three 800 ms after load, unprompted** — every visitor's IP
+reaching GitHub without being asked, on a site that had just removed GA4 for
+privacy (`#105`–`#108`).
+
+### What it reads now, and why that is a different claim
+
+ADR-056 §4.3 says reading real status "would require CORS headers on the kubelab
+side and is out of scope here". **That clause is stale.** Measured:
+
+```
+$ curl -sS -D- https://api.kubelab.live/health
+HTTP/2 200
+access-control-allow-origin: *
+{"service":"cubelab-api","status":"healthy","checks":[
+  {"component":"cache","status":"healthy","message":"Redis connection successful"},
+  {"component":"database","status":"healthy",...},
+  {"component":"email","status":"healthy",...},
+  {"component":"external_services","status":"healthy",...}],
+ "timestamp":"2026-09-02T02:13:01Z"}
+```
+
+So the console does a plain `fetch` and renders what the API said: four
+subsystems with their own statuses, and **the server's clock beside the
+visitor's**. That last pair is the payload `no-cors` could never deliver and the
+one thing a cached response cannot fake — hence `cache: 'no-store'`.
+
+Verified in a real browser, both locales, both widths:
+
+```
+en/320:  status="4/4 healthy" componentes=4 reloj="server · you: 08:40:31 PM · 08:40:31 PM" errores=0
+en/1440: status="4/4 healthy" componentes=4 reloj="server · you: 08:40:35 PM · 08:40:35 PM" errores=0
+es/320:  status="4/4 sanos"   componentes=4 reloj="servidor · tú: 08:40:39 PM · 08:40:39 PM" errores=0
+es/1440: status="4/4 sanos"   componentes=4 reloj="servidor · tú: 08:40:42 PM · 08:40:42 PM" errores=0
+```
+
+Round trip 278 ms. `evidence/pr6-probe-{en,es}-{320,1440}.png`.
+
+**Targets come from the manifest now.** Until this PR all three "public" services
+carried a `healthEndpoint` equal to their own root — which is not a health
+endpoint, and made the field useless for selecting anything. It is set only where
+one genuinely exists, so `services.filter(s => s.healthEndpoint)` yields exactly
+the API and the console cannot drift from the data the way a hard-coded list did.
+The auto-run stays, and is now defensible: the one request goes to Manu's own API,
+not to a third party, and it means a reader who never clicks still sees a live
+result.
+
+### The SLO grid lost a card, and that is the section working
+
+The old grid's second card, "Edge Ingress p95", read **`~42ms`**. Grepping the
+repository returns **one** hit: the markup itself. Not in `platform.json`, not in
+a spec, not in a measurement. On a page whose claim is "measured, not typed",
+directly above a provenance line naming the commit the figures came from, an
+invented number is the most expensive thing that could be on it. It is not
+carried through. An honest ingress percentile needs a producer — `#162`.
+
+`inferenceLatency` renders as **"not measured"**, which is what the manifest
+says, and is kept: a card admitting it has no number is worth more here than one
+quietly inventing one.
+
+### Copy untouched, on purpose
+
+`context.md` records the hero wording as blocked on `#182` — the referentes audit
+produced three positioning options and its output was never persisted. The hero
+and story strings move from `idp.*` to `lab.*` **verbatim**. Restructuring markup
+does not need that answer; rewriting sentences does.
+
 ## Decisions made during implementation
 
 Brief log of non-obvious trade-offs or course corrections taken during the work. Routine choices belong in commit messages, not here.

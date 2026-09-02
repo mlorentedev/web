@@ -2,9 +2,9 @@
   {
     "id": "WEB-080-f1",
     "behavior": "Built /lab uses only the token colour families (<=7), zero arbitrary text-[Npx] sizes, and >=5 <section> each opened by SectionHeading",
-    "verification": "cd site && node --test tests/lab-audit.test.mjs",
-    "state": "pending",
-    "evidence": ""
+    "verification": "cd site && npm run build && node --test tests/lab-audit.test.mjs",
+    "state": "verified",
+    "evidence": "PR6: 6/6 green whole-page - 5 off-token families and 3 arbitrary type sizes both to 0 after IdpPage.astro was deleted"
   },
   {
     "id": "WEB-080-f2",
@@ -29,10 +29,10 @@
   },
   {
     "id": "WEB-080-f5",
-    "behavior": "IdpPage.astro is gone; /lab, /es/lab and both landings (IdpStrip from platform.ts) build; 0 axe violations on /lab and /es/lab",
-    "verification": "cd site && test ! -f src/components/IdpPage.astro && npm run build && node tests/lab-axe.mjs",
-    "state": "pending",
-    "evidence": ""
+    "behavior": "IdpPage.astro deleted; /lab and /es/lab build; IdpStrip.astro reads from platform.ts; the page ships exactly one script (the ADR-056 reachability console) and no hydrated island",
+    "verification": "cd site && npm run build && node --test tests/lab-sections.test.mjs && npx astro check",
+    "state": "partial",
+    "evidence": "PR6: 89/89, build 0 errors 0 warnings, external JS 7961 B -> 0. axe pass still owed (PR7)."
   },
   {
     "id": "WEB-080-f6",

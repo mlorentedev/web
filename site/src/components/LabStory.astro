@@ -1,0 +1,57 @@
+---
+/**
+ * The Lab's prose and the three architectural pillars (WEB-080, AC1).
+ *
+ * The page's only prose. `proposal.md` describes the Lab as five sections and
+ * does not list this one, which would have made deleting it defensible on a
+ * literal reading — but a catalogue with no voice is exactly the "tables without
+ * a register" failure Risk §4 warns about, and Manu chose to keep it
+ * (2026-09-01). Moved through the token layer, wording untouched, for the same
+ * reason as the hero: the copy is blocked on #182, the structure is not.
+ *
+ * The pillars are three cards with an ordinal, a name and a sentence — the same
+ * shape the eyebrow gives every section, so they are numbered `01`–`03` inside
+ * section `01` rather than pretending to be sections of their own.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  /** Section number in the page's sequence, e.g. "01". */
+  number: string;
+}
+
+const { number } = Astro.props;
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const PILLARS = [
+  { n: '01', name: t('lab.pillar.gitops'), desc: t('lab.pillar.gitopsDesc') },
+  { n: '02', name: t('lab.pillar.privacy'), desc: t('lab.pillar.privacyDesc') },
+  { n: '03', name: t('lab.pillar.memory'), desc: t('lab.pillar.memoryDesc') },
+];
+---
+
+<Section padding="py-10" data-lab-section="story">
+  <SectionHeading number={number} label={t('lab.story.heading')} margin="mb-6" />
+
+  <div class="space-y-4 text-base text-ink-700 leading-relaxed max-w-3xl">
+    <p>{t('lab.story.p1')}</p>
+    <p>{t('lab.story.p2')}</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+    {PILLARS.map((pillar) => (
+      <div class="bg-white border border-ink-100 rounded-xl p-5">
+        <div class="text-xs font-mono font-semibold text-accent-800 uppercase tracking-wider mb-1">
+          {pillar.n} · {pillar.name}
+        </div>
+        <p class="text-xs text-ink-600 mt-2 leading-relaxed font-sans">
+          {pillar.desc}
+        </p>
+      </div>
+    ))}
+  </div>
+</Section>

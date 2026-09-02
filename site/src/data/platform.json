@@ -210,7 +210,6 @@
       "description": "On-device LLM text polish running local Qwen 1.5B with zero cloud telemetry.",
       "descriptionEs": "Corrección de texto LLM en edge con Qwen 1.5B local sin telemetría en la nube.",
       "url": "https://mlorentedev.github.io/pollex/",
-      "healthEndpoint": "https://mlorentedev.github.io/pollex/",
       "node": "jetson",
       "env": "prod",
       "tech": [
@@ -230,7 +229,6 @@
       "description": "Deterministic AST chunker and MCP memory layer for multi-agent workflows.",
       "descriptionEs": "Fragmentador AST determinista y capa de memoria MCP para flujos multi-agente.",
       "url": "https://mlorentedev.github.io/hive/",
-      "healthEndpoint": "https://mlorentedev.github.io/hive/",
       "node": "vps",
       "env": "prod",
       "tech": [
@@ -268,7 +266,7 @@
       "description": "High-throughput Go API, Token-Bucket rate limiting and platform telemetry.",
       "descriptionEs": "API en Go de alto rendimiento, rate limiting por token bucket y telemetría de plataforma.",
       "url": "https://api.kubelab.live",
-      "healthEndpoint": "https://api.kubelab.live",
+      "healthEndpoint": "https://api.kubelab.live/health",
       "node": "vps",
       "env": "prod",
       "tech": [
