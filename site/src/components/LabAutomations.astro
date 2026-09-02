@@ -1,0 +1,137 @@
+---
+/**
+ * The Lab's AI & Automations section (WEB-080, AC4).
+ *
+ * Renders `lab-ai.json`, migrated from kubelab's homepage template and pinned to
+ * the commit named in the manifest's `source`. No hand-written rows: the section
+ * test compares the slugs on the page one-to-one against the data.
+ *
+ * ## Why most rows carry no link
+ *
+ * The template this content comes from feeds a homepage that lives behind the
+ * mesh, where every link in it is correct. This page is public, where six of the
+ * thirteen are not: four `*.kubelab.live` hosts sit behind Authelia (Argo CD
+ * answers nothing at all from a public path), and two point at a private
+ * repository. `platform.ts` already draws that boundary for services — "Public
+ * services only — internal endpoints are not shipped to the client" — and PR3
+ * rendered it the same way. A link a reader cannot follow is worse than no link,
+ * and the badge is the whole statement.
+ *
+ * `sourceHref` stays in the data for every entry, linked or not, so the
+ * migration remains checkable against its source. It is an audit field, not
+ * copy, which is why nothing renders it. `urlNote` is the same: it records why
+ * one link departs from its source (the ADR behind it was renamed), and it is
+ * deliberately not rendered — it is a maintainer's note in one language, and
+ * every string this page shows has an `es` twin.
+ *
+ * ## Colour
+ *
+ * Access is not status, per the #251 mapping: `public` takes `accent` because it
+ * is a link you can follow, and `mesh` and `private` both take the neutral
+ * `panel`. They differ in what they say, not in how alarming they look — neither
+ * is a degraded thing, both are simply not addressed to the reader.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { labAi, type LabAiEntry } from '../data/lab-ai';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  /** Section number in the page's sequence, e.g. "06". */
+  number: string;
+}
+
+const { number } = Astro.props;
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const isEs = lang === 'es';
+
+const total = labAi.groups.reduce((n, group) => n + group.entries.length, 0);
+const reachable = labAi.groups.reduce(
+  (n, group) => n + group.entries.filter((e) => e.access === 'public').length,
+  0,
+);
+
+const ACCESS_LABEL: Record<LabAiEntry['access'], string> = {
+  public: t('lab.access.public'),
+  mesh: t('lab.access.mesh'),
+  private: t('lab.access.private'),
+};
+
+/** `accent` for a followable link, neutral `panel` for both boundaries. */
+const ACCESS_BADGE: Record<LabAiEntry['access'], string> = {
+  public: 'bg-accent-50 text-accent-800 border-accent-200',
+  mesh: 'bg-panel-100 text-panel-700 border-panel-200',
+  private: 'bg-panel-100 text-panel-700 border-panel-200',
+};
+---
+
+<Section padding="py-10" data-lab-section="automations">
+  <SectionHeading number={number} label={t('lab.automations.heading')} margin="mb-3" />
+
+  <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-2">
+    {t('lab.automations.intro')}
+  </p>
+  <p class="text-xs font-mono text-ink-500 mb-8">
+    {t('lab.automations.count')
+      .replace('{n}', String(total))
+      .replace('{reachable}', String(reachable))}
+  </p>
+
+  <div class="space-y-8">
+    {labAi.groups.map((group) => (
+      <div>
+        <h3 class="text-xs font-semibold text-ink-500 tracking-widest uppercase mb-3">
+          {isEs ? group.nameEs : group.name}
+        </h3>
+
+        <ul class="border-t border-ink-100">
+          {group.entries.map((entry) => (
+            <li
+              data-automation-slug={entry.slug}
+              data-access={entry.access}
+              class="border-b border-ink-100 py-3 flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:gap-4"
+            >
+              <span class="font-semibold text-ink-900 text-sm sm:w-52 sm:shrink-0">
+                {entry.name}
+              </span>
+
+              <p class="text-sm text-ink-600 leading-snug flex-grow">
+                {isEs ? entry.descriptionEs : entry.description}
+              </p>
+
+              <div class="flex items-center gap-2 shrink-0 sm:justify-end">
+                <span
+                  class:list={[
+                    'px-1.5 py-0.5 rounded text-xs font-semibold border',
+                    ACCESS_BADGE[entry.access],
+                  ]}
+                >
+                  {ACCESS_LABEL[entry.access]}
+                </span>
+
+                {entry.url && (
+                  <a
+                    href={entry.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="font-mono text-xs font-semibold text-accent-700 hover:text-accent-900 transition-colors"
+                  >
+                    {t('lab.automations.link')} &#8599;
+                  </a>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <p class="text-xs font-mono text-ink-500 mt-6">
+    {t('lab.automations.source')
+      .replace('{repo}', labAi.source.repo)
+      .replace('{commit}', labAi.source.commit.slice(0, 7))}
+  </p>
+</Section>
