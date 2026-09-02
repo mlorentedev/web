@@ -9,11 +9,16 @@ tags: [web, lessons, index]
 
 # Lessons
 
-23 lessons, one file each, newest first. Numbers are assigned in the order
+28 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 028 | [An accessibility rule can pass by accident, so fixing a neighbouring one makes it fail](lesson-028-an-accessibility-rule-can-pass-by-accid.md) | 2026-09-01 | `#accessibility` `#testing` `#verification` |
+| 027 | [A record that something was done is not evidence that it was done](lesson-027-a-record-that-something-was-done-is-not.md) | 2026-09-01 | `#verification` `#sdd` |
+| 026 | [An acceptance criterion has an audience](lesson-026-an-acceptance-criterion-has-an-audience.md) | 2026-09-01 | `#sdd` `#spec` |
+| 025 | [`curl -IL` reports 200 for every host behind a login](lesson-025-curl-il-reports-200-for-every-gated-host.md) | 2026-09-01 | `#verification` `#networking` |
+| 024 | [A generated artefact carries its generator's interaction model](lesson-024-a-generated-artefact-carries-its-generat.md) | 2026-09-01 | `#svg` `#accessibility` `#astro` |
 | 023 | [Measure the page before writing the spec's "failing" test](lesson-023-the-specs-failing-test-was-already-green.md) | 2026-08-31 | `#sdd` `#testing` `#verification` |
 | 022 | [A number that is only printed is never questioned — and an assertion that cannot fail is worse](lesson-022-a-number-that-is-only-printed-is-never.md) | 2026-08-31 | `#verification` `#testing` |
 | 021 | [An SVG generator that namespaces no ids is fine until you embed two of its outputs](lesson-021-an-svg-generator-that-namespaces-no-ids.md) | 2026-08-31 | `#svg` `#accessibility` `#astro` |
