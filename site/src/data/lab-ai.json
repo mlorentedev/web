@@ -1,0 +1,148 @@
+{
+  "source": {
+    "repo": "mlorentedev/kubelab",
+    "path": "infra/k8s/base/services/homepage-templates/services.yaml.j2",
+    "commit": "6cd9ab0ca5948297281b6d53798db97c562ea431",
+    "baseDomain": "kubelab.live"
+  },
+  "groups": [
+    {
+      "id": "agents",
+      "name": "Agents",
+      "nameEs": "Agentes",
+      "entries": [
+        {
+          "slug": "curator-agent",
+          "name": "Curator Agent",
+          "description": "Neural Hive · Memory & ADR Synthesis",
+          "descriptionEs": "Neural Hive · síntesis de memoria y ADR",
+          "sourceHref": "https://github.com/mlorentedev/knowledge",
+          "access": "private"
+        },
+        {
+          "slug": "sre-triage-agent",
+          "name": "SRE Triage Agent",
+          "description": "Reactive LogQL & Anomaly Classifier",
+          "descriptionEs": "Clasificador reactivo de anomalías sobre LogQL",
+          "sourceHref": "https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-064-agentic-observability-and-auto-triage.md",
+          "access": "public",
+          "url": "https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-064-agentic-observability-and-auto-triage.md"
+        },
+        {
+          "slug": "gitops-delivery-agent",
+          "name": "GitOps Delivery Agent",
+          "description": "Automated Release Attestation & Promotion",
+          "descriptionEs": "Atestación y promoción de releases automatizadas",
+          "sourceHref": "https://argo.kubelab.live",
+          "access": "mesh"
+        }
+      ]
+    },
+    {
+      "id": "protocols",
+      "name": "Protocols",
+      "nameEs": "Protocolos",
+      "entries": [
+        {
+          "slug": "spec-driven-dev",
+          "name": "Spec-Driven Dev",
+          "description": "Formal RFCs, Threat Models & Archive Gates",
+          "descriptionEs": "RFC formales, modelos de amenaza y puertas de archivado",
+          "sourceHref": "https://github.com/mlorentedev/knowledge/blob/master/00_meta/patterns/pattern-spec-driven-development.md",
+          "access": "private"
+        },
+        {
+          "slug": "deterministic-gates",
+          "name": "Deterministic Gates",
+          "description": "dotf pr triage-queue & 100% Mutation Kill",
+          "descriptionEs": "dotf pr triage-queue y 100 % de mutantes muertos",
+          "sourceHref": "https://github.com/mlorentedev/kubelab/pulls",
+          "access": "public",
+          "url": "https://github.com/mlorentedev/kubelab/pulls"
+        },
+        {
+          "slug": "zero-debt-doctrine",
+          "name": "Zero-Debt Doctrine",
+          "description": "In-Flight Lessons & Real-Time ADR Recording",
+          "descriptionEs": "Lecciones en vuelo y ADR registrados en tiempo real",
+          "sourceHref": "https://github.com/mlorentedev/kubelab/tree/master/docs/lessons",
+          "access": "public",
+          "url": "https://github.com/mlorentedev/kubelab/tree/master/docs/lessons"
+        },
+        {
+          "slug": "zero-plaintext-secrets",
+          "name": "Zero Plaintext Secrets",
+          "description": "Age / SOPS Cryption & In-Memory Injection",
+          "descriptionEs": "Cifrado Age/SOPS e inyección en memoria",
+          "sourceHref": "https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-038-sops-age-encryption-for-secrets.md",
+          "access": "public",
+          "url": "https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-038-secret-delivery-paths.md",
+          "urlNote": "The source link 404s: ADR-038 was renamed `adr-038-secret-delivery-paths.md`. Corrected here and filed as debt against kubelab's homepage template, which still carries the stale path."
+        }
+      ]
+    },
+    {
+      "id": "workflows",
+      "name": "Workflows",
+      "nameEs": "Flujos de trabajo",
+      "entries": [
+        {
+          "slug": "sre-incident-auto-triage",
+          "name": "SRE Incident Auto-Triage",
+          "description": "Alertmanager Webhook -> Log Slicing -> Slack",
+          "descriptionEs": "Webhook de Alertmanager → corte de logs → Slack",
+          "sourceHref": "https://n8n.kubelab.live",
+          "access": "mesh"
+        },
+        {
+          "slug": "secret-expiry-r2-backup",
+          "name": "Secret Expiry & R2 Backup",
+          "description": "Proactive Backup & Credential Rotator",
+          "descriptionEs": "Copia proactiva y rotación de credenciales",
+          "sourceHref": "https://status.kubelab.live",
+          "access": "mesh"
+        },
+        {
+          "slug": "spoke-reconciliation",
+          "name": "Spoke Reconciliation",
+          "description": "K8s Spoke Topology Drift Healing",
+          "descriptionEs": "Corrección de deriva en la topología de spokes K8s",
+          "sourceHref": "https://argo.kubelab.live",
+          "access": "mesh"
+        }
+      ]
+    },
+    {
+      "id": "telemetry",
+      "name": "Telemetry",
+      "nameEs": "Telemetría",
+      "entries": [
+        {
+          "slug": "loki-telemetry-api",
+          "name": "Loki Telemetry API",
+          "description": "LogQL Cluster Telemetry & Tracebacks",
+          "descriptionEs": "Telemetría del clúster y trazas con LogQL",
+          "sourceHref": "https://grafana.kubelab.live/explore",
+          "access": "mesh"
+        },
+        {
+          "slug": "health-slo-monitor",
+          "name": "Health & SLO Monitor",
+          "description": "Live Multi-Burn-Rate SLO Engine",
+          "descriptionEs": "Motor de SLO multi-burn-rate en vivo",
+          "sourceHref": "https://status.kubelab.live",
+          "access": "mesh"
+        },
+        {
+          "slug": "codebase-activity",
+          "name": "Codebase Activity",
+          "description": "L0 Infrastructure Codebase",
+          "descriptionEs": "Código de la infraestructura L0",
+          "sourceHref": "https://github.com/mlorentedev/kubelab",
+          "access": "public",
+          "url": "https://github.com/mlorentedev/kubelab"
+        }
+      ]
+    }
+  ]
+}

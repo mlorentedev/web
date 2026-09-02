@@ -22,10 +22,10 @@
   },
   {
     "id": "WEB-080-f4",
-    "behavior": "AI & Automations carries the four groups with the same entries and links as kubelab infra/k8s/base/services/homepage-templates/services.yaml.j2 @ 6cd9ab0ca594 (fixture-pinned)",
-    "verification": "cd site && node --test tests/lab-ai-migration.test.mjs",
-    "state": "pending",
-    "evidence": ""
+    "behavior": "AI & Automations carries the four groups with the same entries as kubelab infra/k8s/base/services/homepage-templates/services.yaml.j2 @ 6cd9ab0ca594 (fixture-pinned), every entry pinning that file's link verbatim as sourceHref; a url is rendered only where a public reader can follow it, and any url departing from its sourceHref carries a note",
+    "verification": "cd site && npm run build && node --test tests/lab-ai-migration.test.mjs tests/lab-sections.test.mjs",
+    "state": "verified",
+    "evidence": "PR5: 9/9 on lab-ai-migration, 79/79 on npm test, build 0 errors; link reachability table in verification.md § PR5"
   },
   {
     "id": "WEB-080-f5",

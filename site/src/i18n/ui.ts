@@ -228,8 +228,12 @@ export const ui = {
     'lab.services.intro':
       'Three of these answer to anyone. The rest answer only from inside the WireGuard mesh, behind Authelia — there are zero port-forwarding rules on my residential USA network, so for most of this there is no address to expose in the first place.',
     'lab.services.count': '{n} documented here · {total} running across the three clusters',
-    'lab.services.access.public': 'Public',
-    'lab.services.access.mesh': 'Mesh only',
+
+    // One name per concept: Services and AI & Automations both state an access
+    // boundary, so the strings live above either section rather than twice.
+    'lab.access.public': 'Public',
+    'lab.access.mesh': 'Mesh only',
+    'lab.access.private': 'Private repo',
 
     'lab.infra.heading': 'The machines underneath',
     'lab.infra.intro':
@@ -247,6 +251,13 @@ export const ui = {
     'lab.status.operational': 'operational',
     'lab.status.degraded': 'degraded',
     'lab.status.maintenance': 'maintenance',
+
+    'lab.automations.heading': 'The agents and the automations',
+    'lab.automations.intro':
+      'The part of the platform that operates itself: agents that read the logs and file the triage, the protocols they are held to, the n8n workflows that fire without me, and where the telemetry lands. Most of it has no public address — it runs inside the mesh, so what you get here is the inventory and the boundary, not a dashboard link.',
+    'lab.automations.count': '{n} entries · {reachable} you can open from here',
+    'lab.automations.link': 'open',
+    'lab.automations.source': 'Migrated from {repo} · {commit}',
 
     'lab.diagram.source': 'Rendered at build from {file}',
     'lab.provenance': 'Figures last reconciled against the cluster on',
@@ -557,8 +568,13 @@ export const ui = {
     'lab.services.intro':
       'Tres de estos responden a cualquiera. El resto solo responden desde dentro de la malla WireGuard, tras Authelia: no hay una sola regla de port-forwarding en mi red residencial de Estados Unidos, así que para la mayoría no hay ni dirección que exponer.',
     'lab.services.count': '{n} documentados aquí · {total} corriendo entre los tres clústeres',
-    'lab.services.access.public': 'Público',
-    'lab.services.access.mesh': 'Solo malla',
+
+    // Un solo nombre por concepto: Servicios e IA y automatizaciones declaran
+    // ambos un límite de acceso, así que las cadenas viven por encima de las dos
+    // secciones en vez de estar duplicadas.
+    'lab.access.public': 'Público',
+    'lab.access.mesh': 'Solo malla',
+    'lab.access.private': 'Repo privado',
 
     'lab.infra.heading': 'Las máquinas de debajo',
     'lab.infra.intro':
@@ -576,6 +592,13 @@ export const ui = {
     'lab.status.operational': 'operativo',
     'lab.status.degraded': 'degradado',
     'lab.status.maintenance': 'en mantenimiento',
+
+    'lab.automations.heading': 'Los agentes y las automatizaciones',
+    'lab.automations.intro':
+      'La parte de la plataforma que se opera sola: agentes que leen los logs y hacen el triaje, los protocolos a los que están sujetos, los flujos de n8n que se disparan sin mí, y dónde acaba la telemetría. Casi nada de esto tiene dirección pública — corre dentro de la malla —, así que lo que hay aquí es el inventario y el límite, no un enlace a un panel.',
+    'lab.automations.count': '{n} entradas · {reachable} que puedes abrir desde aquí',
+    'lab.automations.link': 'abrir',
+    'lab.automations.source': 'Migrado de {repo} · {commit}',
 
     'lab.diagram.source': 'Generado en el build desde {file}',
     'lab.provenance': 'Cifras reconciliadas contra el clúster por última vez el',

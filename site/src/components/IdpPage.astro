@@ -4,11 +4,11 @@ import Header from './Header.astro';
 import Footer from './Footer.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
-import ServiceIcon from './ServiceIcon.astro';
 import LabDiagram from './LabDiagram.astro';
 import LabServices from './LabServices.astro';
 import LabInfra from './LabInfra.astro';
 import LabProvenance from './LabProvenance.astro';
+import LabAutomations from './LabAutomations.astro';
 import { platform } from '../data/platform';
 import { getLocale, useTranslations } from '../i18n/utils';
 
@@ -110,10 +110,12 @@ const t = useTranslations(lang);
       legend={t('lab.diagram.flows.legend')}
     />
 
+    <LabAutomations number="06" />
+
     <!-- SECTION 5: Service Level Objectives (SLOs) & Reliability -->
     <Section padding="py-10">
         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
-          <SectionHeading number="06" label={t('idp.slos.heading')} />
+          <SectionHeading number="07" label={t('idp.slos.heading')} />
           <span class="text-xs font-mono text-emerald-700 font-semibold">{t('idp.d.90DaySlaTarget')}</span>
         </div>
         <p class="text-xs text-gray-500 mb-6">{t('idp.slos.sub')}</p>
@@ -187,7 +189,7 @@ const t = useTranslations(lang);
     >
       <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 mb-4">
           <div>
-            <SectionHeading number="07" label={t('idp.probe.heading')} />
+            <SectionHeading number="08" label={t('idp.probe.heading')} />
             <p class="text-xs text-gray-500 mt-1">{t('idp.probe.sub')}</p>
           </div>
           <button

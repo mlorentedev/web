@@ -280,6 +280,97 @@ Still red until PR6 deletes `IdpPage.astro`, by design — but the number moved:
 **677 off-token utilities → 336** on `dist/lab/index.html`. The ten families are
 unchanged because the remaining five sections still use them.
 
+## PR5 — the migration is faithful to its source, and honest about its links
+
+`npm test` **79/79**, `npm run build` 0 errors, `npm run test:browser` green at
+320/768/1440/2048 on both locales.
+
+### AC4 as written could not be met, and the measurement is why
+
+The criterion said the section carries "the same entries **and links**" as the
+kubelab template. Every link was checked from a public path before a line of the
+section was written. Seven of the thirteen are fine. The rest are not:
+
+```
+HOP1  FINAL PUBLIC-DNS       URL
+404   404   140.82.112.3     https://github.com/mlorentedev/knowledge
+200   200   140.82.112.4     https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-064-agentic-observability-and-auto-triage.md
+000   000   162.55.57.175    https://argo.kubelab.live
+404   404   140.82.114.4     https://github.com/mlorentedev/knowledge/blob/master/00_meta/patterns/pattern-spec-driven-development.md
+200   200   140.82.112.3     https://github.com/mlorentedev/kubelab/pulls
+200   200   140.82.112.3     https://github.com/mlorentedev/kubelab/tree/master/docs/lessons
+404   404   140.82.114.4     https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-038-sops-age-encryption-for-secrets.md
+200   200   140.82.112.3     https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-038-secret-delivery-paths.md
+302   200   162.55.57.175    https://n8n.kubelab.live  -> https://auth.kubelab.live/?rd=...
+302   200   162.55.57.175    https://status.kubelab.live  -> https://status.kubelab.live/dashboard
+302   200   162.55.57.175    https://grafana.kubelab.live/explore  -> https://auth.kubelab.live/?rd=...
+200   200   140.82.112.3     https://github.com/mlorentedev/kubelab
+```
+
+So: **two private** (`mlorentedev/knowledge` is a private repo — a 404 for every
+visitor), **one stale** (ADR-038 was renamed `adr-038-secret-delivery-paths.md`;
+it 404s for everyone, the maintainer included), and **four mesh**. AC4 is amended
+in `proposal.md` rather than quietly reinterpreted: faithfulness lives in
+`sourceHref`, pinned and machine-checked entry by entry, and reachability became
+its own assertion.
+
+### Three ways this measurement could have lied
+
+- **`-L` reports 200 for everything Authelia gates.** The first version of the
+  check followed redirects and returned 200 for `n8n` and `grafana` — a login
+  page is a perfectly good 200, it is just not the thing linked. Hence `HOP1`,
+  without `-L`: the first hop is what says whether a reader arrives where the
+  link claims. `FINAL` was never going to be anything but green.
+- **This machine is a tailnet node** (`100.64.0.1`, `msi`), so "it works from
+  here" proves nothing. DNS was resolved through `@1.1.1.1` rather than MagicDNS
+  — the `PUBLIC-DNS` column — and every `*.kubelab.live` name answers
+  `162.55.57.175`, a public VPS, so the route really is the public internet.
+  `argo.kubelab.live` has that public A record and still answers nothing at 25 s,
+  which is why it is recorded as unreachable rather than as merely gated.
+- **`status.kubelab.live` returning 200 is not a public status page.** That 200
+  is Uptime Kuma's admin SPA at `/dashboard`. The public surface would be
+  `/status/<slug>`, and the fixture names the slug:
+  `curl -s https://status.kubelab.live/api/status-page/kubelab` returns
+  `{"status":"fail","msg":"Status Page Not Found"}` (404). No public status page
+  exists, so the two entries pointing there are `mesh` like the rest.
+
+### Reading the fixture without a YAML parser
+
+`services.yaml.j2` is a Jinja template: `href` values interpolate
+`{{ global.base_domain }}` (`kubelab.live`, from `infra/config/values/common.yaml`
+at the same commit) and the `Nodes` group is a `{% for %}` loop. It is read
+line-wise instead — the file is frozen at `6cd9ab0c`, verified on extraction by
+`sha256` against the blob, so there is nothing for a line-based reader to go
+stale against, and no YAML or Jinja dependency enters a frontend repo to read
+80 lines.
+
+### AC1 and AC6, whole page
+
+| | master `a069642` | PR5 |
+|---|---|---|
+| off-token families | 5 (cyan, emerald, gray, purple, slate) | 5, unchanged |
+| distinct off-token utilities | 21 | 21, unchanged |
+| occurrences on `dist/lab/index.html` | 60 | 60, unchanged |
+| page weight | 92.4 KB | 102.3 KB (`/es/lab` 102.9 KB) |
+
+The new section is entirely inside the token layer: it adds a section without
+adding an off-token utility. What remains is all in the `IdpPage.astro` markup
+PR6 deletes. (Counted with `offTokenFamilies` over `dist/`; the 677 → 336 figures
+in § PR3 used a different method and are **not** comparable to these.)
+
+Weight is **102.3 KB against the 150 KB budget**, +9.9 KB for the section.
+
+### Debt found and filed
+
+kubelab's `services.yaml.j2` on `master` still carries
+`adr-038-sops-age-encryption-for-secrets.md`, so its homepage has the same dead
+link. Root cause: the ADR was renamed and the template was not updated. Filed
+against kubelab rather than fixed here — it is that repo's file.
+
+Fixed in scope: `IdpPage.astro` still imported `ServiceIcon` after PR3 moved the
+service rows into `LabServices.astro`, which `astro check` had been reporting as
+`ts(6133)` since. One line, removed.
+
 ## Decisions made during implementation
 
 Brief log of non-obvious trade-offs or course corrections taken during the work. Routine choices belong in commit messages, not here.
@@ -293,6 +384,19 @@ Brief log of non-obvious trade-offs or course corrections taken during the work.
   move the #138 font problem.
 - **Diagrams scroll inside their own container at a 754 px floor** rather than
   scaling to the viewport — see the 320 px measurement above.
+- **A link is rendered only where a reader can follow it** (PR5). Six of the
+  thirteen migrated entries render as a name, a description and a boundary badge
+  with no anchor at all. The alternative — link everything, as AC4 literally
+  asked — puts six dead ends on a public page, and a `mesh` badge beside a link
+  that bounces to a login is a worse lie than no link. `sourceHref` keeps the
+  migration auditable either way.
+- **`lab.services.access.*` promoted to `lab.access.*`** (PR5). Two sections now
+  state an access boundary, so the strings are named once rather than twice.
+  `private` is new; `public` and `mesh` moved, and `LabServices.astro` reads the
+  moved keys. Same one-name-per-concept reason as `#261`.
+- **The `urlNote` field is data, not copy.** It records why one link departs from
+  its source, and nothing renders it: it is a maintainer's note in one language,
+  and every string this page shows has an `es` twin.
 
 ## Promotion candidates
 
