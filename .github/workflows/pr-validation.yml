@@ -90,3 +90,72 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  # One context with a stable name, so branch protection can require it.
+  #
+  # `#275` measured that `master` required *nothing*: a pull request was
+  # mechanically mergeable with every check red. Attaching the checks directly
+  # only half works, because `validate` reports as `Validate build / Build
+  # pr-<N>` — the PR number is in the context string, so a required context
+  # naming one PR never matches any other and gates nothing at all. That is the
+  # same shape as the guards this repo spent WEB-080 removing: a rule that
+  # cannot fire.
+  #
+  # So the required context is this job, whose name never changes. Adding a job
+  # above means adding it to `needs` here and nothing else — not the step below,
+  # which derives what it checks from `needs` itself, and not the protection
+  # settings, which keep naming this one context.
+  #
+  # That "and nothing else" is the second version of this job. The first listed
+  # the results a second time inside the step, so a job added to `needs` but not
+  # to that list was *counted as a dependency and never checked* — the gate would
+  # wait for it, then pass green whatever it did. A gate whose coverage silently
+  # lags its own dependency list is worse than no gate, because it is believed.
+  gate:
+    name: PR gate
+    # `always()` is what makes this a gate rather than a formality: without it
+    # the job is skipped when a dependency fails, and a skipped required check
+    # does not block a merge — it reports neutral. The job has to *run* and fail.
+    if: always()
+    needs: [test, validate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Each result is compared against `success` explicitly rather than trusted
+      # to `needs`, because `needs` treats a **skipped** dependency as satisfied.
+      # A job skipped by a path filter, a cancelled run, or one that never
+      # started for want of a runner would otherwise all read as a pass — which
+      # is exactly how a green square comes to mean nothing.
+      #
+      # `toJSON(needs)` is what keeps the list in one place: Actions serialises
+      # the whole context — `{"test":{"result":"success",…},…}` — so every job in
+      # `needs` is checked by construction and none can be added without being.
+      # It goes through `env` rather than straight into the script, the standard
+      # precaution against a context interpolated into a shell.
+      - name: Require every job in `needs` to have succeeded
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          set -euo pipefail
+
+          # A gate with no dependencies passes green having verified nothing, so
+          # it asserts it has something to check before checking it. This is the
+          # `lesson-019` shape: a test that cannot fail is not a test.
+          total=$(printf '%s' "$NEEDS_JSON" | jq 'length')
+          if [ "$total" -eq 0 ]; then
+            echo "::error::the gate has no dependencies — it would pass without checking anything"
+            exit 1
+          fi
+
+          printf '%s' "$NEEDS_JSON" | jq -r 'to_entries[] | "  \(.key): \(.value.result)"'
+
+          failed=$(printf '%s' "$NEEDS_JSON" |
+            jq -r 'to_entries[] | select(.value.result != "success") | "\(.key) (\(.value.result))"')
+          if [ -n "$failed" ]; then
+            printf '%s\n' "$failed" | while IFS= read -r job; do
+              echo "::error::$job did not succeed"
+            done
+            exit 1
+          fi
+
+          echo "All $total required job(s) succeeded."
