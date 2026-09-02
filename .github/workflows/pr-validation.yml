@@ -68,6 +68,15 @@ jobs:
         working-directory: site
         run: npm run test:browser
 
+      # WEB-080 AC5, enabled with PR7. axe-core over both locales in the same
+      # Chromium. It fulfils the reachability console's `/health` request from a
+      # fixture and audits the page twice — once healthy, once degraded — so the
+      # verdict covers both of the console's colour paths and never depends on
+      # whether the live API answers a GitHub runner.
+      - name: Accessibility (axe, both locales)
+        working-directory: site
+        run: npm run test:a11y
+
   validate:
     name: Validate build
     permissions:

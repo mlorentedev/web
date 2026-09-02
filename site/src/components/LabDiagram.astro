@@ -148,7 +148,77 @@ function assertFullyNamespaced(svg: string, prefix: string): string {
   return svg;
 }
 
-const svg = assertFullyNamespaced(namespaceIds(SVGS[name].trim(), name), name);
+/**
+ * Take archify's viewer affordances back out.
+ *
+ * archify emits every component `<g>` as `tabindex="0" role="button"
+ * aria-pressed="false" aria-label="Focus <node>, …"` — a real control in
+ * archify's own viewer, which ships the script that focuses a node and toggles
+ * `aria-pressed`. This page does not ship that script, and AC5 says it never
+ * will: exactly one script, and it is the console.
+ *
+ * So on the built page those seventeen `<g>`s were buttons that press nothing.
+ * Worse, they sit inside `role="img"`, which prunes its whole subtree from the
+ * accessibility tree — the labels were never announced, while `tabindex` kept
+ * every one of them in the tab order. A keyboard user tabbed through seventeen
+ * stops that said nothing and did nothing, between the caption and the next
+ * section. axe names it `nested-interactive`, and it is right.
+ *
+ * Found by PR7's axe pass. Nothing before it could have seen this: it is
+ * invisible on screen, and the markup reads as *more* accessible, not less.
+ *
+ * Done here rather than in `scripts/diagrams.mjs generate` because the SVGs are
+ * committed and CI only verifies their `ir-sha256` stamp: fixing it in the
+ * generator would need archify present to re-render, and would make the file on
+ * disk differ from what archify produces. The page is what has the constraint,
+ * so the page is where it is applied — the same call the id namespacing made.
+ */
+function stripViewerAffordances(svg: string): string {
+  return svg
+    .replace(/\s+tabindex="[^"]*"/g, '')
+    .replace(/\s+role="button"/g, '')
+    .replace(/\s+aria-pressed="[^"]*"/g, '')
+    // And the label with them. Keeping it — rewriting `aria-label="Focus gcp1,
+    // …"` down to `aria-label="gcp1, …"` — was the first attempt, and axe
+    // answered with 17 `aria-prohibited-attr`: with `role="button"` gone the
+    // bare `<g>` has no role that permits a name. It was never announced
+    // either, because `role="img"` marks its whole subtree presentational, so
+    // the label was inert markup that read as per-node accessibility the page
+    // does not have. The diagram is named by `aria-labelledby` → `<title>`,
+    // which is what `lab-sections.test.mjs` asserts and what is left standing.
+    .replace(/\s+aria-label="Focus [^"]*"/g, '');
+}
+
+/**
+ * Refuse to render a diagram that can still be tabbed into.
+ *
+ * Same discipline as `assertFullyNamespaced`: the strip above knows the three
+ * attributes archify emits today. If a future version makes a node focusable
+ * some other way — an `<a href>`, `contenteditable` — the page would go back to
+ * phantom tab stops inside a `role="img"` silently, because it still looks
+ * right. A build failure at that moment is the only moment the decision can be
+ * made properly.
+ */
+function assertNothingFocusable(svg: string, prefix: string): string {
+  const focusable = [
+    ...svg.matchAll(/<(?:a|button|input|select|textarea)[\s>]|\btabindex=|\bcontenteditable=/g),
+  ].map((m) => m[0]);
+
+  if (focusable.length > 0) {
+    throw new Error(
+      `LabDiagram: ${focusable.length} focusable descendant(s) remain in ${prefix}.svg — ` +
+        `${[...new Set(focusable)].join(', ')}. They sit inside role="img", which hides them from ` +
+        `screen readers while leaving them in the tab order (axe: nested-interactive).`,
+    );
+  }
+
+  return svg;
+}
+
+const svg = assertNothingFocusable(
+  assertFullyNamespaced(namespaceIds(stripViewerAffordances(SVGS[name].trim()), name), name),
+  name,
+);
 ---
 
 <Section padding="py-10" data-lab-section={name}>
@@ -173,7 +243,13 @@ const svg = assertFullyNamespaced(namespaceIds(SVGS[name].trim(), name), name);
     </figcaption>
   </figure>
 
-  <p class="text-xs font-mono text-ink-400">
+  {/*
+    `ink-500`, not `ink-400`: at 12px, `ink-400` (#9ca3af) is 2.53:1 on white
+    and axe fails it. `ink-500` (#6b7280) measures 4.83:1 and is the shade the
+    page's other small meta lines already use, so this reads no louder than it
+    did — it is just legible. Measured in PR7.
+  */}
+  <p class="text-xs font-mono text-ink-500">
     {t('lab.diagram.source').replace('{file}', `src/diagrams/${name}.architecture.json`)}
   </p>
 </Section>
