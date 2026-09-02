@@ -1,6 +1,6 @@
 # ADR-056: Decoupled Live Platform Cockpit Architecture & Telemetry Contract
 
-- **Status:** Accepted
+- **Status:** Accepted — **§4.2/§4.3 amended 2026-09-01** (the `no-cors` premise expired; see the amendment in Decision §4)
 - **Date:** 2026-08-23
 - **Deciders:** Manu Lorente
 - **Extends / refines:** ADR-053 (platform/product repo split), ADR-054 (same-origin API base)
@@ -136,6 +136,42 @@ keeps the manifest from drifting back.
    is unreadable from the browser. The probe measures **reachability and round-trip latency from the
    visitor's browser** and says exactly that. Reading real status codes would require CORS headers on
    the kubelab side and is out of scope here.
+
+> **Amended 2026-09-01 (WEB-080 PR6/PR7). Points 2 and 3 above no longer describe
+> what ships, and the reason they are struck rather than rewritten is that the
+> decision was right and its premise expired.**
+>
+> **The premise is false: `api.kubelab.live/health` serves
+> `access-control-allow-origin: *`.** Verified by response header, so the browser
+> can read the body. "Reading real status codes would require CORS headers on the
+> kubelab side" was true when this was written and had quietly stopped being true;
+> nobody re-checked, because the clause reads like a permanent constraint rather
+> than a dated observation.
+>
+> **What §4.2 actually shipped, measured 2026-09-01, was worse than the ADR
+> allowed for.** Three targets, of which two were `mlorentedev.github.io` pages
+> for **Pollex and Hive — libraries, not running services** — reported
+> `REACHABLE`, with the page attributing them to a Jetson Nano and a Hetzner VPS.
+> The third was the API's **root, which returns 404**, indistinguishable from a
+> 200 behind an opaque response. So the section was demonstrating that GitHub's
+> CDN is up and presenting it as evidence of a homelab. That is not a limitation
+> of `no-cors`; it is what `no-cors` made impossible to notice.
+>
+> **Now:** a plain `fetch` (default mode, `cache: 'no-store'`) against a single
+> target selected from the manifest — `services.filter(s => s.healthEndpoint)`,
+> which is one service, because that field is now set only where a real health
+> endpoint exists. The console renders the API's own report of four subsystems,
+> **plus the server's clock beside the visitor's** and the round trip. The clock
+> pair is the payload `no-cors` could never deliver and the thing a cached
+> response cannot fake, which is why the request is `no-store`.
+>
+> §4.3's *principle* is unchanged and is the reason this section survived at all:
+> the probe still says exactly what it measured and no more. What changed is that
+> it can now measure something worth saying.
+>
+> Evidence: `specs/WEB-080/verification.md` § PR6 and § PR7;
+> `site/src/components/LabProbe.astro`; `site/tests/lab-axe.mjs`, which stubs this
+> endpoint so CI never depends on whether the VPS is answering.
 
 ---
 
