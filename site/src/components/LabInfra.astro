@@ -78,6 +78,25 @@ function specLine(node: NodeTopology): string {
     .join(' · ');
 }
 
+/**
+ * The standby row is set apart by its ground, not by `opacity-60`.
+ *
+ * PR3 decided the powered-down machine renders dimmed and labelled rather than
+ * filtered out — that is what makes `activeNodes` (8) ≠ `nodes.length` (9) read
+ * as deliberate instead of as an error. The decision stands; the mechanism was
+ * wrong. `opacity-60` composited `ink-500` down to #a6aab3 — 2.32:1 on white,
+ * against the 4.5:1 floor — and `ink-600` to 2.87:1, so the one row that exists
+ * to be *read*, because it explains a discrepancy, was the least readable thing
+ * in the section. Opacity was never available here: `ink-500` measures 4.83:1
+ * at full strength, so any value under ~0.97 fails.
+ *
+ * A tinted ground says "set apart" without touching the text, and it stops
+ * dimming the two things that were never the point — the machine's name and its
+ * status dot. `ink-500` on `ink-50` measures 4.63:1, which passes and which
+ * `lab-axe.mjs` now holds. Measured in PR7.
+ */
+const STANDBY_ROW = 'bg-ink-50 px-3 -mx-3';
+
 const activeCount = platform.nodes.filter((n) => n.status !== 'standby').length;
 ---
 
@@ -99,10 +118,7 @@ const activeCount = platform.nodes.filter((n) => n.status !== 'standby').length;
       <li
         data-node-row={node.tier ?? 'unknown'}
         data-node-status={node.status}
-        class:list={[
-          'border-b border-ink-100 py-3',
-          node.status === 'standby' && 'opacity-60',
-        ]}
+        class:list={['border-b border-ink-100 py-3', node.status === 'standby' && STANDBY_ROW]}
       >
         <div class="flex items-baseline justify-between gap-3">
           <span class="font-semibold text-ink-900 text-sm">{node.name}</span>

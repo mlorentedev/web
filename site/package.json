@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "test": "node --test \"tests/*.test.mjs\"",
     "test:audit": "node --test tests/lab-audit.test.mjs",
-    "test:browser": "node tests/lab-containment.mjs"
+    "test:browser": "node tests/lab-containment.mjs",
+    "test:a11y": "node tests/lab-axe.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
@@ -25,6 +26,7 @@
     "@beoe/rehype-mermaid": "^0.4.2",
     "@tailwindcss/typography": "^0.5.20",
     "ajv": "^8.20.0",
+    "axe-core": "^4.13.0",
     "playwright": "^1.62.1",
     "typescript": "^5.8.2"
   },

@@ -312,6 +312,7 @@ export const ui = {
     'lab.automations.source': 'Migrated from {repo} · {commit}',
 
     'lab.diagram.source': 'Rendered at build from {file}',
+    'lab.diagram.scroll': 'Scrollable diagram: {label}',
     'lab.provenance': 'Figures last reconciled against the cluster on',
 
     // Home sections
@@ -705,6 +706,7 @@ export const ui = {
     'lab.automations.source': 'Migrado de {repo} · {commit}',
 
     'lab.diagram.source': 'Generado en el build desde {file}',
+    'lab.diagram.scroll': 'Diagrama desplazable: {label}',
     'lab.provenance': 'Cifras reconciliadas contra el clúster por última vez el',
 
     // Home sections

@@ -4,41 +4,41 @@
     "behavior": "Built /lab uses only the token colour families (<=7), zero arbitrary text-[Npx] sizes, and >=5 <section> each opened by SectionHeading",
     "verification": "cd site && npm run build && node --test tests/lab-audit.test.mjs",
     "state": "verified",
-    "evidence": "PR6: 6/6 green whole-page - 5 off-token families and 3 arbitrary type sizes both to 0 after IdpPage.astro was deleted"
+    "evidence": "PR6: 6/6 green whole-page - 5 off-token families and 3 arbitrary type sizes both to 0 after IdpPage.astro was deleted. Re-run in PR7 (2026-09-01) after the axe fixes: 6/6, still 0 - bg-ink-50 and the underline are token and non-colour utilities."
   },
   {
     "id": "WEB-080-f2",
     "behavior": "Every Lab diagram has a committed archify IR that validates; a malformed IR fails npm run build; the delivered SVG carries role/aria-* and real <text>; no horizontal scroll at 320/768/1440/2048",
-    "verification": "cd site && node --test tests/lab-diagrams.test.mjs && ! node scripts/diagrams.mjs tests/fixtures/malformed.architecture.json && node tests/lab-containment.mjs",
-    "state": "pending",
-    "evidence": ""
+    "verification": "cd site && node --test tests/lab-diagrams.test.mjs && node scripts/diagrams.mjs verify src/diagrams/topology.architecture.json && ! node scripts/diagrams.mjs verify tests/fixtures/malformed.architecture.json && node tests/lab-containment.mjs",
+    "state": "verified",
+    "evidence": "PR7 2026-09-01: lab-diagrams 6/6; verify on a good IR exits 0 and on the malformed fixture exits 1 ('does not validate'); containment 8/8 at 320/768/1440/2048 on both locales. The negative half was vacuous until PR7 - the command omitted the `verify` subcommand, so it exited 1 on the usage error without ever reading the file, and a nonexistent path scored identically. The positive case was added beside it so the pair discriminates."
   },
   {
     "id": "WEB-080-f3",
     "behavior": "Services and Infra render exactly the entries of platform.json and print generated_at + source commit; every visible string has an es twin; astro check reports 0 errors",
     "verification": "cd site && node --test tests/lab-data.test.mjs && npx astro check",
-    "state": "pending",
-    "evidence": ""
+    "state": "verified",
+    "evidence": "PR7 2026-09-01: lab-data 10/10; astro check 0 errors, 0 warnings, 0 hints over 59 files."
   },
   {
     "id": "WEB-080-f4",
     "behavior": "AI & Automations carries the four groups with the same entries as kubelab infra/k8s/base/services/homepage-templates/services.yaml.j2 @ 6cd9ab0ca594 (fixture-pinned), every entry pinning that file's link verbatim as sourceHref; a url is rendered only where a public reader can follow it, and any url departing from its sourceHref carries a note",
     "verification": "cd site && npm run build && node --test tests/lab-ai-migration.test.mjs tests/lab-sections.test.mjs",
     "state": "verified",
-    "evidence": "PR5: 9/9 on lab-ai-migration, 79/79 on npm test, build 0 errors; link reachability table in verification.md § PR5"
+    "evidence": "PR5: 9/9 on lab-ai-migration, 79/79 on npm test, build 0 errors; link reachability table in verification.md § PR5. Re-run in PR7: 54/54 across both files."
   },
   {
     "id": "WEB-080-f5",
-    "behavior": "IdpPage.astro deleted; /lab and /es/lab build; IdpStrip.astro reads from platform.ts; the page ships exactly one script (the ADR-056 reachability console) and no hydrated island",
-    "verification": "cd site && npm run build && node --test tests/lab-sections.test.mjs && npx astro check",
-    "state": "partial",
-    "evidence": "PR6: 89/89, build 0 errors 0 warnings, external JS 7961 B -> 0. axe pass still owed (PR7)."
+    "behavior": "IdpPage.astro deleted; /lab and /es/lab build; IdpStrip.astro reads from platform.ts; the page ships exactly one script (the ADR-056 reachability console) and no hydrated island; 0 axe violations on both locales",
+    "verification": "cd site && npm run build && node --test tests/lab-sections.test.mjs && npx astro check && npm run test:a11y",
+    "state": "verified",
+    "evidence": "PR6: 89/89, build 0 errors 0 warnings, external JS 7961 B -> 0, 1 <script> and 0 astro-island on the built page. PR7 closes the axe half: 4 findings measured red - 3 violations / 8 nodes at 1440 (nested-interactive, color-contrast x5, link-in-text-block) and scrollable-region-focusable x2 at 320 only, which the first version of the check would have missed because it audited one width. All four fixed; now 0 violations on both locales at 320 and 1440 in both console states, 43 rules passed at 1440 and 44 at 320. The check is non-vacuous - reverting the link underline in dist/ alone returns exit 1, on the mutated locale only."
   },
   {
     "id": "WEB-080-f6",
     "behavior": "Built /lab (HTML + inline SVG, fonts excluded) stays under the weight budget recorded in verification.md",
-    "verification": "cd site && node --test tests/lab-weight.test.mjs",
-    "state": "pending",
-    "evidence": ""
+    "verification": "cd site && npm run build && node --test tests/lab-weight.test.mjs",
+    "state": "verified",
+    "evidence": "PR7 2026-09-01: 5/5. dist/lab/index.html 103,927 B and dist/es/lab/index.html 104,490 B against a 150,000 B budget - 69%, 46 KB of headroom. The budget takes the stricter of the two readings of '150 KB' in verification.md (150,000, not 153,600), which is the only one that cannot make the guard weaker than the sentence it enforces."
   }
 ]

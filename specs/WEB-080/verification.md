@@ -12,18 +12,19 @@ created: "2026-08-27"
 
 Map every acceptance criterion from `proposal.md` to concrete proof (commit hash, test name, or observed behavior).
 
-- [ ] AC1 design system measured -> commit `<hash>` / `site/tests/lab-audit.test.mjs`
-- [ ] AC2 diagrams from source, no horizontal scroll -> commit `<hash>` / `lab-diagrams.test.mjs` + `lab-containment.mjs` + archify `visual-check` receipts
-- [ ] AC3 data-driven + `es` twins -> commit `<hash>` / `lab-data.test.mjs` + `astro check`
-- [ ] AC4 faithful migration -> commit `<hash>` / `lab-ai-migration.test.mjs` (pinned kubelab commit below) + link HEAD-check output
-- [ ] AC5 no regression, 0 axe violations -> commit `<hash>` / `npm run build` + `lab-axe.mjs`; `IdpPage.astro` absent
-- [ ] AC6 weight budget -> commit `<hash>` / `lab-weight.test.mjs`; budget and PR0 measurements recorded under Decisions
+- [x] AC1 design system measured -> `238bc41` (audit written) → `dded86b` (green whole-page) / `site/tests/lab-audit.test.mjs` — **6/6**, 5 off-token families and 3 arbitrary type sizes both to 0
+- [x] AC2 diagrams from source, no horizontal scroll -> `4b36950` (pipeline) → `cd4ae24` (on the page) / `lab-diagrams.test.mjs` **6/6** + `lab-containment.mjs` **8/8** at 320/768/1440/2048 on both locales + the `visual-check` receipts under `evidence/pr2-*`
+- [x] AC3 data-driven + `es` twins -> `238bc41` (manifest provenance) → `752db33` / `3932c49` (rows) / `lab-data.test.mjs` **10/10** + `astro check` **0 errors, 0 warnings, 0 hints** over 59 files
+- [x] AC4 faithful migration -> `975e569` / `lab-ai-migration.test.mjs` **9/9** against the pinned fixture (kubelab `6cd9ab0ca594`) + the first-hop HEAD table in § PR5. **Amended** — see `proposal.md` AC4
+- [x] AC5 no regression, 0 axe violations -> `dded86b` + `1366e2d` (cut-over, XSS fix) → `ca9faef` (axe) / `npm run build` 0 errors + `lab-axe.mjs` **0 violations on both locales, at 320 and 1440, in both console states** (43 rules at 1440, 44 at 320); `IdpPage.astro` absent; 1 `<script>`, 0 `astro-island`. **Amended** — see `proposal.md` AC5
+- [x] AC6 weight budget -> `ca9faef` / `lab-weight.test.mjs` **5/5** — 103,927 B (en) and 104,490 B (es) against **150,000 B**, 69%; budget and PR0 measurements under "AC6 budget, fixed from these numbers"
 
 ## Test status
 
-- Test suite: `<command> -> <output / coverage %>`
-- Manual smoke test: what was exercised, what was observed
-- No regressions in existing test suite: yes / no (if no, document)
+- **Test suite**: `cd site && npm test` → **94 tests, 94 pass, 0 fail** across 8 files. The two browser checks are separate because they need Chromium: `npm run test:browser` → 8/8 contained, `npm run test:a11y` → 0 violations on 8 runs (2 locales × 2 widths × 2 console states). `npm run build` → `astro check` **0 errors, 0 warnings, 0 hints** over 59 files, build clean.
+- **Manual smoke test**: the reachability console driven in a real browser against the live `api.kubelab.live/health`, both locales — `4/4 healthy` / `4/4 sanos`, four component rows, the server's clock beside the visitor's, 278 ms round trip, **0 console errors** (§ PR6). Full-page screenshots at 320 and 1440 on both locales under `evidence/pr6-*`.
+- **No regressions in the existing suite**: yes. It grew 62 → 79 → 89 → 94 across PR4–PR7 with no test removed and none disabled. `lab-audit` joined the `npm test` glob in PR6 and `lab-weight` in PR7, both as PR1 said they would; `lab-containment` and `lab-axe` are the browser pair, both wired into `pr-validation.yml`.
+- **Non-vacuity, checked rather than assumed**: `lab-axe.mjs` returns exit 1 when the provenance link's underline is reverted in `dist/` alone, and only on the locale mutated; `scripts/diagrams.mjs verify` exits 1 on the malformed fixture and 0 on a real IR. Both in § PR7 — the second because the recorded command was vacuous until PR7 measured it.
 
 ## PR0 — the measurement that resolves Risk 2
 
@@ -169,6 +170,15 @@ uncompressed**, fonts excluded. Derivation: two diagrams at 21,929 B = 43,858 B,
 leaving ~106 KB for five sections of markup and prose — roughly 3.8× the entire
 current diagram block, against a page that is losing 449 lines of hand-written
 HTML. Asserted by `site/tests/lab-weight.test.mjs` over `dist/lab/index.html`.
+
+**The unit, settled in PR7: 150 KB means 150,000 bytes.** This document was not
+self-consistent about it and nobody noticed until a test had to name a number.
+The page figures recorded through PR4–PR6 — 94.6, 102.3, 103.0 — are byte counts
+divided by **1024**, while the "leaving ~106 KB" in the derivation above is
+decimal. The two readings differ by 3,600 bytes. `lab-weight.test.mjs` takes the
+**stricter** one, 150,000, because it is the only choice that cannot leave the
+guard weaker than the sentence it enforces; nothing turns on it either way, with
+46 KB of headroom. Page weights are quoted in bytes from here on.
 
 ### Risk 2 resolved: CI verifies, it does not render
 
@@ -519,13 +529,170 @@ Brief log of non-obvious trade-offs or course corrections taken during the work.
   its source, and nothing renders it: it is a maintainer's note in one language,
   and every string this page shows has an `es` twin.
 
+## PR7 — the two checks the spec asked for, and what the first of them found
+
+Measured 2026-09-01. Commits `ca9faef` and `12fdbba`.
+
+### axe was red, and none of the three findings were cosmetic
+
+Run before writing the test, per lesson-023 — this spec has twice budgeted a red
+driver that was already green. This time it was genuinely red: **3 violations,
+8 nodes, identical on `/lab` and `/es/lab` and identical in both console states.**
+
+| rule | impact | nodes | what it actually was |
+| --- | --- | --- | --- |
+| `nested-interactive` | serious | 2 | 17 phantom buttons inside the diagrams |
+| `color-contrast` | serious | 5 | `opacity-60` on the standby row (×3), `ink-400` at 12 px (×2) |
+| `link-in-text-block` | serious | 1 | the provenance commit hash, told apart by colour alone |
+
+**`nested-interactive` is the one worth reading twice.** archify emits every
+component `<g>` as `tabindex="0" role="button" aria-pressed="false"
+aria-label="Focus <node>, …"`. In archify's own viewer that is a real control:
+it ships the script that focuses a node and toggles `aria-pressed`. This page
+ships **exactly one script and it is the console** — AC5 as amended — so on the
+built page those 17 `<g>`s were buttons that press nothing. And they sit inside
+`role="img"`, whose subtree is *presentational*: their labels were never
+announced, while `tabindex` kept every one of them in the tab order. A keyboard
+user tabbed through seventeen stops that said nothing and did nothing, between
+the caption and the next section. **37 focus stops on the page, 20 of them real.**
+
+It is exactly the defect class PR4 hit with the duplicate ids: invisible on
+screen, and the markup reads as *more* accessible, not less. Nothing before an
+axe pass could have found it.
+
+Stripped in `LabDiagram.astro`, beside the id namespacing and with the same
+self-enforcing shape — `assertNothingFocusable` refuses to render a diagram that
+can still be tabbed into, so a future archify that makes a node focusable some
+other way fails the build instead of quietly restoring this. Done at render
+rather than in `scripts/diagrams.mjs generate` because the SVGs are committed and
+CI only verifies their `ir-sha256`: fixing it in the generator would need archify
+present to re-render and would make the file on disk differ from what archify
+produces. The page carries the constraint, so the page applies it.
+
+The `aria-label`s go with them rather than being reworded. Rewriting
+`"Focus gcp1, Argo CD hub"` down to `"gcp1, Argo CD hub"` was the first attempt,
+and axe answered with **17 `aria-prohibited-attr`**: with `role="button"` gone, a
+bare `<g>` has no role that permits a name. It was inert either way — pruned by
+`role="img"` — so what it really was is markup that reads as per-node
+accessibility the page does not have. The diagram is named by `aria-labelledby` →
+`<title>`, which is what `lab-sections.test.mjs` asserts and what is left standing.
+Page-level `aria-*` inside the two SVGs: 25/28 → **9/10**, all of it load-bearing.
+
+**Both contrast findings were mechanisms, not decisions.** `opacity-60` on the
+standby infra row composited `ink-500` to #a6aab3 (**2.32:1**) and `ink-600` to
+#9399a1 (**2.87:1**), against a 4.5:1 floor — so the one row that exists to be
+*read*, because it explains why `activeNodes` is 8 and `nodes.length` is 9, was
+the least readable thing in the section. Opacity was never available there:
+`ink-500` measures **4.83:1** at full strength, so any value under ~0.97 fails.
+PR3's decision holds — the machine is still shown and still labelled — and the
+row is now set apart by a tinted ground (`ink-500` on `ink-50` = **4.63:1**),
+which also stops dimming the two things that were never the point, the machine's
+name and its status dot. The diagram source line moved `ink-400` (**2.53:1** at
+12 px) to `ink-500`. `link-in-text-block` was the provenance hash: `accent-700`
+is 4.9:1 on white and perfectly readable, but **1.1:1 against the `ink-500` prose
+it sits in**, with no underline — so on the one line that offers to prove the
+page's central claim, nothing told a reader who cannot separate teal from grey
+that the hash was a link. Underlined.
+
+**And the fourth finding is the other half of the first.** Below the 754 px
+legibility floor the diagram scrolls inside its container (PR4's design, and what
+`lab-containment` asserts). A scroll container that no keyboard can reach is a
+diagram whose right-hand half does not exist for anyone not using a mouse — and
+the rule **passed before the strip, by accident**, because the 17 fake buttons
+counted as "focusable content". So the page went from *reachable only by tabbing
+through seventeen controls that announce nothing* to *not reachable at all*, and
+neither state was ever right. The container is now one real stop: `tabindex="0"`,
+`role="group"` (not `region`, which would add a landmark per diagram) and a name
+that says what it is and which diagram it belongs to, with a token focus ring.
+**37 focus stops → 22, and the two that remain scroll something.**
+
+After: **0 violations on both locales, at both widths, in both console states** —
+43 rules passed at 1440 and 44 at 320, the extra one being the scrollable-region
+rule that only applies where something scrolls.
+
+### The one thing axe could not decide, left visible
+
+79 `color-contrast` results come back `incomplete`: the `<text>` nodes inside the
+diagrams, where the background is SVG geometry rather than a CSS colour and axe
+cannot compute a ratio. That is a limit of automated checking — not a pass, not a
+failure. The check **prints the count on every run instead of filtering it out**,
+because a check that hides what it could not decide is making a claim it did not
+earn. The diagram palette is covered instead by the token audit (AC1) and by
+PR4's rendered screenshots.
+
+### Two things that make the pass mean something
+
+Both answer the failure this spec has already hit twice — a command exiting 0
+having measured the wrong thing (§ PR6, the screenshots).
+
+1. **It proves the run happened.** A 404 and an axe bundle that never injected
+   both yield `violations: []`, indistinguishable from a clean page. So the HTTP
+   status is asserted and `passes` must be non-empty: a page axe never looked at
+   cannot have passed 43 rules. The axe bundle is resolved from the test file
+   rather than the working directory, for the same reason `serve.mjs` resolves
+   `dist/` that way — a check that only works when invoked from `site/` will one
+   day be invoked from elsewhere and report a clean page it never audited.
+2. **It pins the console's response.** The console fetches
+   `api.kubelab.live/health` on load and paints `ok-400` rows on success,
+   `warn-400` on failure — different colours, so a contrast verdict computed
+   against the live API would depend on whether Manu's VPS is up, which CI has no
+   business asking. The route is fulfilled from a fixture and each locale is
+   audited **twice, healthy and degraded**, so both colour paths are covered.
+
+Verified non-vacuous rather than assumed: reverting the link underline **in
+`dist/` alone** returns exit 1, and only on the locale mutated.
+
+```
+✗ /lab @ 1440px [healthy] — 1 violation(s):
+    SERIOUS link-in-text-block: Links must be distinguishable without relying on color (1 node(s))
+✗ /lab @ 1440px [degraded] — 1 violation(s): …
+✓ /es/lab @ 1440px [healthy] — 0 violations, 43 rules passed, 79 result(s) axe could not decide
+✓ /es/lab @ 1440px [degraded] — 0 violations, 43 rules passed, 79 result(s) axe could not decide
+exit=1
+```
+
+### AC6: green on arrival, and that is the point
+
+`lab-weight.test.mjs` passed the moment it was written — 103,927 B (en) and
+104,490 B (es) against 150,000 B, **69%, 46 KB of headroom**. It is written
+anyway because AC6 asks for the tension with `#138` to be visible in CI rather
+than discovered later, and because the next person to inline a diagram should
+find out from a failing test rather than from a Lighthouse run. The unit
+ambiguity it forced is settled above.
+
+The page got *lighter* in this PR despite gaining a fix: 105,472 B → 103,927 B.
+The strip removed 1,901 bytes of `tabindex`, `role="button"`, `aria-pressed` and
+dead labels; the focusable scroll container added 356 back.
+
+### A verification command that was asserting nothing
+
+`features.json` recorded AC2's negative case as
+`! node scripts/diagrams.mjs tests/fixtures/malformed.architecture.json`. It
+exits 1 — but on a **usage error**, because the `verify` subcommand is missing,
+so the file is never opened. Measured: a path that does not exist scores
+identically, and so would a perfectly valid IR. The `!` then turned that into a
+pass. Corrected to `… verify tests/fixtures/malformed.architecture.json`, which
+exits 1 with `does not validate`, and the positive case
+(`verify src/diagrams/topology.architecture.json` → exit 0) added beside it so
+the pair discriminates in both directions. This is what the Closing checklist's
+"non-vacuous verification command" is for; it only surfaced because PR7 ran every
+command in the file verbatim instead of trusting it.
+
+### Housekeeping
+
+`serveDist()` moved from `lab-containment.mjs` to `tests/lib/serve.mjs` when
+`lab-axe.mjs` became the second browser check to need it — the same split PR3
+made for `tests/lib/audit.mjs`, and for the same reason. `test:a11y` wired into
+`pr-validation.yml` beside `test:browser`; the Chromium install the job already
+does for the diagram renderer covers both.
+
 ## Promotion candidates
 
 Before archiving, flag what (if anything) should be promoted to the vault. If all three are "no", archive in repo is the only persistence.
 
-- [ ] Lesson for the repo's `docs/lessons/`? <yes / no - one line of what>
-- [ ] ADR-worthy decision for the repo's `docs/adr/adr-XXX.md`? <yes / no - one line of what>
-- [ ] New pattern candidate for `00_meta/patterns/`? Only if this recurs in >1 project. <yes / no - one line>
+- [x] Lesson for the repo's `docs/lessons/`? **Yes — its own PR, following `#265`.** Five, in the order they cost time: (1) *a generated artefact carries its generator's interaction model* — archify's per-node buttons are correct in archify's viewer and are 17 dead tab stops on a page with no script, and this is the same defect class as PR4's un-namespaced ids, so the consumer of a generated artefact owns what it does in the consumer's context; (2) *a link check with `curl -IL` reports 200 for every Authelia-gated host*, because a login page is a perfectly good 200 — check the first hop, and pin DNS when the checking machine is a tailnet node; (3) *a handoff's "already committed" must be verified before building on it* — PR5's fixture was not there; (4) *an acceptance criterion written for content that lives behind the mesh cannot be met verbatim on a public page* — audience is part of a spec; (5) *a recorded verification command can assert nothing and still exit the right way* — AC2's negative case exited 1 on a usage error for five PRs.
+- [ ] ADR-worthy decision for the repo's `docs/adr/adr-XXX.md`? **No new ADR here — one amendment owed elsewhere.** kubelab's ADR-056 §4.3 says reading real status "would require CORS headers on the kubelab side and is out of scope"; `api.kubelab.live/health` has served `access-control-allow-origin: *` for some time and the console now reads it, so that clause is stale. It is a kubelab file, so it is a kubelab change (§ PR6).
+- [ ] New pattern candidate for `00_meta/patterns/`? **Flagged, not claimed.** "A generated artefact carries its generator's assumptions into every consumer" now has two instances *inside this one spec* (ids, affordances) but only one project. It becomes a pattern the first time it recurs somewhere that is not the Lab; until then the repo lesson is the right home. Curator's call, not this spec's.
 
 ## Archive checklist
 

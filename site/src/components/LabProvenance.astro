@@ -36,10 +36,19 @@ const commitUrl = `https://github.com/mlorentedev/web/commit/${platform.source_c
   {t('lab.provenance')}
   <time datetime={platform.generated_at}>{generatedOn}</time>
   {' · '}
+  {/*
+    Underlined, because colour alone does not carry it. `accent-700` (#0e7490)
+    is 4.9:1 on white and perfectly readable, but against the `ink-500` prose it
+    sits in it is 1.1:1 — WCAG asks for 3:1 between a link and its surrounding
+    text, or a cue that is not colour. Someone who cannot separate teal from
+    grey had nothing telling them the hash was clickable, and this is the one
+    line on the page that offers to prove its central claim. axe:
+    `link-in-text-block`, found in PR7.
+  */}
   <a
     href={commitUrl}
     target="_blank"
     rel="noopener noreferrer"
-    class="text-accent-700 hover:text-accent-900 transition-colors"
+    class="text-accent-700 hover:text-accent-900 underline underline-offset-2 transition-colors"
   >{shortCommit}</a>
 </p>
