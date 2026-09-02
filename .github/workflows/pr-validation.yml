@@ -90,3 +90,51 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  # One context with a stable name, so branch protection can require it.
+  #
+  # `#275` measured that `master` required *nothing*: a pull request was
+  # mechanically mergeable with every check red. Attaching the checks directly
+  # only half works, because `validate` reports as `Validate build / Build
+  # pr-<N>` — the PR number is in the context string, so a required context
+  # naming one PR never matches any other and gates nothing at all. That is the
+  # same shape as the guards this repo spent WEB-080 removing: a rule that
+  # cannot fire.
+  #
+  # So the required context is this job, whose name never changes. Adding a job
+  # above means adding it to `needs` here; nothing else has to be touched in the
+  # protection settings, and forgetting to is visible in this file rather than in
+  # an API response nobody reads.
+  gate:
+    name: PR gate
+    # `always()` is what makes this a gate rather than a formality: without it
+    # the job is skipped when a dependency fails, and a skipped required check
+    # does not block a merge — it reports neutral. The job has to *run* and fail.
+    if: always()
+    needs: [test, validate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Each result is compared against `success` explicitly rather than trusted
+      # to `needs`, because `needs` treats a **skipped** dependency as satisfied.
+      # A job skipped by a path filter, a cancelled run, or one that never
+      # started for want of a runner would otherwise all read as a pass — which
+      # is exactly how a green square comes to mean nothing.
+      - name: Require every validation job to have succeeded
+        env:
+          TEST_RESULT: ${{ needs.test.result }}
+          VALIDATE_RESULT: ${{ needs.validate.result }}
+        run: |
+          echo "Test:           $TEST_RESULT"
+          echo "Validate build: $VALIDATE_RESULT"
+          failed=0
+          for pair in "Test:$TEST_RESULT" "Validate build:$VALIDATE_RESULT"; do
+            name="${pair%%:*}"
+            result="${pair##*:}"
+            if [ "$result" != "success" ]; then
+              echo "::error::$name did not succeed (result: $result)"
+              failed=1
+            fi
+          done
+          [ "$failed" -eq 0 ] || exit 1
+          echo "All validation jobs succeeded."
