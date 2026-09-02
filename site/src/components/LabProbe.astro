@@ -175,12 +175,25 @@ const targets = platform.services
 
       if (listEl) {
         for (const check of checks) {
-          const li = document.createElement('li');
           const ok = check.status === 'healthy';
+          const li = document.createElement('li');
           li.className = 'flex items-center justify-between gap-3';
-          li.innerHTML =
-            `<span class="text-panel-300">${check.component}</span>` +
-            `<span class="${ok ? 'text-ok-400' : 'text-warn-400'}">${ok ? msg.healthy : msg.degraded}</span>`;
+
+          // `textContent`, never `innerHTML`. `check.component` crosses the
+          // network, and "the API is mine" is not a sanitiser: a spoofed or
+          // compromised response would put its markup straight into the DOM of
+          // every visitor, in a section whose whole point is that the visitor
+          // trusts what their own browser fetched. Raised in review on this PR,
+          // and correct.
+          const name = document.createElement('span');
+          name.className = 'text-panel-300';
+          name.textContent = check.component;
+
+          const verdict = document.createElement('span');
+          verdict.className = ok ? 'text-ok-400' : 'text-warn-400';
+          verdict.textContent = ok ? msg.healthy : msg.degraded;
+
+          li.append(name, verdict);
           listEl.appendChild(li);
         }
       }
