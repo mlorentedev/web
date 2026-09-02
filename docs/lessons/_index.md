@@ -9,11 +9,14 @@ tags: [web, lessons, index]
 
 # Lessons
 
-28 lessons, one file each, newest first. Numbers are assigned in the order
+31 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 031 | [Two numbering sequences in one namespace, and nothing tells you which one you are in](lesson-031-two-numbering-sequences-in-one-namespac.md) | 2026-09-02 | `#documentation` `#adr` `#knowledge-base` |
+| 030 | [GitHub's answer about a merge is not ground truth, and neither is `git`'s ancestry](lesson-030-github-s-answer-about-a-merge-is-not-gro.md) | 2026-09-02 | `#git` `#github` `#verification` |
+| 029 | [A gate that restates its `needs` list checks less than it waits for](lesson-029-a-gate-that-restates-its-needs-list-check.md) | 2026-09-02 | `#ci` `#github-actions` `#verification` |
 | 028 | [An accessibility rule can pass by accident, so fixing a neighbouring one makes it fail](lesson-028-an-accessibility-rule-can-pass-by-accid.md) | 2026-09-01 | `#accessibility` `#testing` `#verification` |
 | 027 | [A record that something was done is not evidence that it was done](lesson-027-a-record-that-something-was-done-is-not.md) | 2026-09-01 | `#verification` `#sdd` |
 | 026 | [An acceptance criterion has an audience](lesson-026-an-acceptance-criterion-has-an-audience.md) | 2026-09-01 | `#sdd` `#spec` |

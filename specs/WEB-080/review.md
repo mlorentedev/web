@@ -4,6 +4,12 @@ verdict: "PASS-WITH-GAPS"
 reviewed_sha: "410699dda5c4cf0599a20f3916acdb387b43c17b"
 reviewer: "claude-sonnet-5"
 date: "2026-09-02"
+# The implementer was claude-opus-5, so this review is same-family and cannot
+# sign the archive. Machine-readable because the prose block at the end of this
+# file is the only other thing standing between `/spec archive` and a verdict
+# that used to say "advisable" — and prose is not a gate. See #277.
+reviewer_independence: "family-shortfall"
+archive_blocked_by: "#277"
 ---
 
 # Adversarial review — WEB-080
@@ -76,4 +82,43 @@ This was the question the review was asked to answer hardest, and the answer is 
 
 ## Verdict
 
-**PASS WITH GAPS.** Archive is advisable. Findings 1 and 3 were fixed on receipt; finding 2 is ticketed. The reviewer-independence shortfall declared at the top of this file is ticketed separately and is the one item a reader should weigh for themselves.
+**PASS WITH GAPS.** Findings 1 and 3 were fixed on receipt; finding 2 is ticketed. The reviewer-independence shortfall declared at the top of this file is ticketed separately and is the one item a reader should weigh for themselves.
+
+---
+
+## ⛔ Archive deferred — 2026-09-02
+
+**Do not run `/spec archive WEB-080` on the strength of the verdict above.** The
+original text read "Archive is advisable"; that sentence has been struck, because
+it was the only thing in the spec folder that could authorise the archive, and it
+was written by a reviewer that this repo's doctrine would have refused.
+
+**The reason is the shortfall declared at the top of this file, not a new
+finding.** This review ran on `claude-sonnet-5` against a `claude-opus-5`
+implementation — the same model family. The doctrine requires an adversarial
+review never to run on an Anthropic model, and it is normally the reviewer pool
+that enforces it. **web has no `harness/reviewer-pool.json`, so nothing declined
+the signature**, and nothing will decline the archive either. That absence is the
+whole reason this block has to exist as prose: there is no mechanism here, so the
+file is the mechanism.
+
+It matters more than a process technicality. kubelab's registry exists because
+**BUG-074 was reviewed twice by `claude-opus-5` before anyone noticed** — the
+incident the rule was written to prevent. Archiving here would be the third.
+
+**Sequence before this spec archives:**
+
+1. `#277` — add `harness/reviewer-pool.json` in kubelab's format, so the wrong
+   family is refused mechanically rather than by someone remembering.
+2. Re-run the adversarial review on a non-Anthropic model, **taking this file as
+   input** so the re-run confirms or refutes rather than starting cold.
+3. Then archive, on the re-run's verdict.
+
+**This review is not discarded and should not be re-done from scratch.** It found
+a real path traversal (finding 1, CWE-22, reproduced with a 200 and the file
+contents) that nothing else had caught, re-executed every recorded command, and
+probed the PR7 guard in both directions. Its coverage section stands as evidence
+in its own right. What it cannot do is sign the archive.
+
+Recorded on `#279` and in `#277`. Everything WEB-080 built is on `master` and
+live; only the archive is held.
