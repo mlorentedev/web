@@ -16,12 +16,12 @@ Map every acceptance criterion from `proposal.md` to concrete proof (commit hash
 - [x] AC2 diagrams from source, no horizontal scroll -> `4b36950` (pipeline) → `cd4ae24` (on the page) / `lab-diagrams.test.mjs` **6/6** + `lab-containment.mjs` **8/8** at 320/768/1440/2048 on both locales + the `visual-check` receipts under `evidence/pr2-*`
 - [x] AC3 data-driven + `es` twins -> `238bc41` (manifest provenance) → `752db33` / `3932c49` (rows) / `lab-data.test.mjs` **10/10** + `astro check` **0 errors, 0 warnings, 0 hints** over 59 files
 - [x] AC4 faithful migration -> `975e569` / `lab-ai-migration.test.mjs` **9/9** against the pinned fixture (kubelab `6cd9ab0ca594`) + the first-hop HEAD table in § PR5. **Amended** — see `proposal.md` AC4
-- [x] AC5 no regression, 0 axe violations -> `dded86b` + `1366e2d` (cut-over, XSS fix) → `c140b88` (axe) / `npm run build` 0 errors + `lab-axe.mjs` **0 violations, 42 rules passed, on both locales in both console states**; `IdpPage.astro` absent; 1 `<script>`, 0 `astro-island`. **Amended** — see `proposal.md` AC5
-- [x] AC6 weight budget -> `c140b88` / `lab-weight.test.mjs` **5/5** — 103,571 B (en) and 104,125 B (es) against **150,000 B**, 69%; budget and PR0 measurements under "AC6 budget, fixed from these numbers"
+- [x] AC5 no regression, 0 axe violations -> `dded86b` + `1366e2d` (cut-over, XSS fix) → `ca9faef` (axe) / `npm run build` 0 errors + `lab-axe.mjs` **0 violations on both locales, at 320 and 1440, in both console states** (43 rules at 1440, 44 at 320); `IdpPage.astro` absent; 1 `<script>`, 0 `astro-island`. **Amended** — see `proposal.md` AC5
+- [x] AC6 weight budget -> `ca9faef` / `lab-weight.test.mjs` **5/5** — 103,927 B (en) and 104,490 B (es) against **150,000 B**, 69%; budget and PR0 measurements under "AC6 budget, fixed from these numbers"
 
 ## Test status
 
-- **Test suite**: `cd site && npm test` → **94 tests, 94 pass, 0 fail** across 8 files. The two browser checks are separate because they need Chromium: `npm run test:browser` → 8/8 contained, `npm run test:a11y` → 0 violations on 4 runs. `npm run build` → `astro check` **0 errors, 0 warnings, 0 hints** over 59 files, build clean.
+- **Test suite**: `cd site && npm test` → **94 tests, 94 pass, 0 fail** across 8 files. The two browser checks are separate because they need Chromium: `npm run test:browser` → 8/8 contained, `npm run test:a11y` → 0 violations on 8 runs (2 locales × 2 widths × 2 console states). `npm run build` → `astro check` **0 errors, 0 warnings, 0 hints** over 59 files, build clean.
 - **Manual smoke test**: the reachability console driven in a real browser against the live `api.kubelab.live/health`, both locales — `4/4 healthy` / `4/4 sanos`, four component rows, the server's clock beside the visitor's, 278 ms round trip, **0 console errors** (§ PR6). Full-page screenshots at 320 and 1440 on both locales under `evidence/pr6-*`.
 - **No regressions in the existing suite**: yes. It grew 62 → 79 → 89 → 94 across PR4–PR7 with no test removed and none disabled. `lab-audit` joined the `npm test` glob in PR6 and `lab-weight` in PR7, both as PR1 said they would; `lab-containment` and `lab-axe` are the browser pair, both wired into `pr-validation.yml`.
 - **Non-vacuity, checked rather than assumed**: `lab-axe.mjs` returns exit 1 when the provenance link's underline is reverted in `dist/` alone, and only on the locale mutated; `scripts/diagrams.mjs verify` exits 1 on the malformed fixture and 0 on a real IR. Both in § PR7 — the second because the recorded command was vacuous until PR7 measured it.
@@ -531,7 +531,7 @@ Brief log of non-obvious trade-offs or course corrections taken during the work.
 
 ## PR7 — the two checks the spec asked for, and what the first of them found
 
-Measured 2026-09-01. Commit `c140b88`.
+Measured 2026-09-01. Commits `ca9faef` and `12fdbba`.
 
 ### axe was red, and none of the three findings were cosmetic
 
@@ -594,7 +594,21 @@ it sits in**, with no underline — so on the one line that offers to prove the
 page's central claim, nothing told a reader who cannot separate teal from grey
 that the hash was a link. Underlined.
 
-After: **0 violations, 42 rules passed, on both locales in both console states.**
+**And the fourth finding is the other half of the first.** Below the 754 px
+legibility floor the diagram scrolls inside its container (PR4's design, and what
+`lab-containment` asserts). A scroll container that no keyboard can reach is a
+diagram whose right-hand half does not exist for anyone not using a mouse — and
+the rule **passed before the strip, by accident**, because the 17 fake buttons
+counted as "focusable content". So the page went from *reachable only by tabbing
+through seventeen controls that announce nothing* to *not reachable at all*, and
+neither state was ever right. The container is now one real stop: `tabindex="0"`,
+`role="group"` (not `region`, which would add a landmark per diagram) and a name
+that says what it is and which diagram it belongs to, with a token focus ring.
+**37 focus stops → 22, and the two that remain scroll something.**
+
+After: **0 violations on both locales, at both widths, in both console states** —
+43 rules passed at 1440 and 44 at 320, the extra one being the scrollable-region
+rule that only applies where something scrolls.
 
 ### The one thing axe could not decide, left visible
 
@@ -614,7 +628,10 @@ having measured the wrong thing (§ PR6, the screenshots).
 1. **It proves the run happened.** A 404 and an axe bundle that never injected
    both yield `violations: []`, indistinguishable from a clean page. So the HTTP
    status is asserted and `passes` must be non-empty: a page axe never looked at
-   cannot have passed 42 rules.
+   cannot have passed 43 rules. The axe bundle is resolved from the test file
+   rather than the working directory, for the same reason `serve.mjs` resolves
+   `dist/` that way — a check that only works when invoked from `site/` will one
+   day be invoked from elsewhere and report a clean page it never audited.
 2. **It pins the console's response.** The console fetches
    `api.kubelab.live/health` on load and paints `ok-400` rows on success,
    `warn-400` on failure — different colours, so a contrast verdict computed
@@ -626,26 +643,26 @@ Verified non-vacuous rather than assumed: reverting the link underline **in
 `dist/` alone** returns exit 1, and only on the locale mutated.
 
 ```
-✗ /lab [healthy] — 1 violation(s):
+✗ /lab @ 1440px [healthy] — 1 violation(s):
     SERIOUS link-in-text-block: Links must be distinguishable without relying on color (1 node(s))
-✗ /lab [degraded] — 1 violation(s): …
-✓ /es/lab [healthy] — 0 violations, 42 rules passed, 79 result(s) axe could not decide
-✓ /es/lab [degraded] — 0 violations, 42 rules passed, 79 result(s) axe could not decide
+✗ /lab @ 1440px [degraded] — 1 violation(s): …
+✓ /es/lab @ 1440px [healthy] — 0 violations, 43 rules passed, 79 result(s) axe could not decide
+✓ /es/lab @ 1440px [degraded] — 0 violations, 43 rules passed, 79 result(s) axe could not decide
 exit=1
 ```
 
 ### AC6: green on arrival, and that is the point
 
-`lab-weight.test.mjs` passed the moment it was written — 103,571 B (en) and
-104,125 B (es) against 150,000 B, **69%, 46 KB of headroom**. It is written
+`lab-weight.test.mjs` passed the moment it was written — 103,927 B (en) and
+104,490 B (es) against 150,000 B, **69%, 46 KB of headroom**. It is written
 anyway because AC6 asks for the tension with `#138` to be visible in CI rather
 than discovered later, and because the next person to inline a diagram should
 find out from a failing test rather than from a Lighthouse run. The unit
 ambiguity it forced is settled above.
 
-The page got *lighter* in this PR: 105,472 B → 103,571 B, the 1,901 bytes of
-`tabindex`, `role="button"`, `aria-pressed` and dead labels that the strip
-removed.
+The page got *lighter* in this PR despite gaining a fix: 105,472 B → 103,927 B.
+The strip removed 1,901 bytes of `tabindex`, `role="button"`, `aria-pressed` and
+dead labels; the focusable scroll container added 356 back.
 
 ### A verification command that was asserting nothing
 

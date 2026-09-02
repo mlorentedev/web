@@ -234,7 +234,30 @@ const svg = assertNothingFocusable(
       and this container takes the overflow. That is what AC2 asserts and what
       `lab-containment.mjs` checks in a real browser at four widths.
     */}
-    <div class="lab-diagram overflow-x-auto border border-ink-100 rounded-md bg-white p-3">
+    {/*
+      Focusable, named, and a group — because it scrolls.
+
+      This is the other half of stripping archify's phantom buttons, and PR7
+      only found it by auditing at 320 px as well as 1440. Below the 754 px
+      floor this container is the thing that scrolls, and a scroll container
+      that no keyboard can reach is a diagram whose right-hand half does not
+      exist for anyone not using a mouse. axe: `scrollable-region-focusable`.
+
+      What makes it worth writing down is that the rule **passed before the
+      strip, by accident**: the 17 `tabindex="0"` `<g>`s counted as "focusable
+      content", so a keyboard user could reach the scroller only by tabbing
+      through seventeen controls that announced nothing and did nothing. One
+      real stop replaces all seventeen. `role="group"` rather than `region` so
+      it does not add a landmark per diagram, with a name that says what it is
+      and which diagram it belongs to.
+    */}
+    <div
+      class="lab-diagram overflow-x-auto border border-ink-100 rounded-md bg-white p-3
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
+      tabindex="0"
+      role="group"
+      aria-label={t('lab.diagram.scroll').replace('{label}', label)}
+    >
       <Fragment set:html={svg} />
     </div>
 

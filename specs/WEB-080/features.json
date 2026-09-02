@@ -32,13 +32,13 @@
     "behavior": "IdpPage.astro deleted; /lab and /es/lab build; IdpStrip.astro reads from platform.ts; the page ships exactly one script (the ADR-056 reachability console) and no hydrated island; 0 axe violations on both locales",
     "verification": "cd site && npm run build && node --test tests/lab-sections.test.mjs && npx astro check && npm run test:a11y",
     "state": "verified",
-    "evidence": "PR6: 89/89, build 0 errors 0 warnings, external JS 7961 B -> 0, 1 <script> and 0 astro-island on the built page. PR7 closes the axe half: 3 violations / 8 nodes measured red (nested-interactive, color-contrast x5, link-in-text-block), all three fixed, now 0 violations and 42 rules passed on /lab and /es/lab in both console states. The check is non-vacuous - reverting the link underline in dist/ alone returns exit 1, on the mutated locale only."
+    "evidence": "PR6: 89/89, build 0 errors 0 warnings, external JS 7961 B -> 0, 1 <script> and 0 astro-island on the built page. PR7 closes the axe half: 4 findings measured red - 3 violations / 8 nodes at 1440 (nested-interactive, color-contrast x5, link-in-text-block) and scrollable-region-focusable x2 at 320 only, which the first version of the check would have missed because it audited one width. All four fixed; now 0 violations on both locales at 320 and 1440 in both console states, 43 rules passed at 1440 and 44 at 320. The check is non-vacuous - reverting the link underline in dist/ alone returns exit 1, on the mutated locale only."
   },
   {
     "id": "WEB-080-f6",
     "behavior": "Built /lab (HTML + inline SVG, fonts excluded) stays under the weight budget recorded in verification.md",
     "verification": "cd site && npm run build && node --test tests/lab-weight.test.mjs",
     "state": "verified",
-    "evidence": "PR7 2026-09-01: 5/5. dist/lab/index.html 103,571 B and dist/es/lab/index.html 104,125 B against a 150,000 B budget - 69%, 46 KB of headroom. The budget takes the stricter of the two readings of '150 KB' in verification.md (150,000, not 153,600), which is the only one that cannot make the guard weaker than the sentence it enforces."
+    "evidence": "PR7 2026-09-01: 5/5. dist/lab/index.html 103,927 B and dist/es/lab/index.html 104,490 B against a 150,000 B budget - 69%, 46 KB of headroom. The budget takes the stricter of the two readings of '150 KB' in verification.md (150,000, not 153,600), which is the only one that cannot make the guard weaker than the sentence it enforces."
   }
 ]
