@@ -1,0 +1,48 @@
+---
+/**
+ * The Lab's opening (WEB-080, AC1 · AC5).
+ *
+ * Moved out of `IdpPage.astro` unchanged in wording and put through the token
+ * layer. **The copy is deliberately not touched here.** `context.md` records the
+ * hero wording as blocked on #182 — the referentes audit produced three
+ * positioning options and its output was never persisted, so the options that
+ * were supposed to decide this sentence are gone. Restructuring the markup does
+ * not need that answer; rewriting the sentence does. Structure now, words when
+ * #182 is re-run.
+ *
+ * The only substantive change is the live badge: `animate-pulse` on a dot that
+ * reports a build-time value was animation standing in for liveness. The figure
+ * comes from a manifest with a date on it, and the page prints that date at the
+ * bottom; a pulsing dot suggests otherwise.
+ */
+import SectionHeading from './SectionHeading.astro';
+import { platform } from '../data/platform';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+---
+
+<section class="max-w-4xl mx-auto px-4 pt-10 pb-8" data-lab-section="hero">
+  <SectionHeading number="00" label={t('lab.hero.eyebrow')} margin="mb-3" />
+
+  <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3">
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-ink-900 tracking-tight">
+      {t('lab.hero.title')}
+    </h1>
+
+    <div class="flex items-center gap-2 shrink-0 text-xs font-mono">
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ok-50 text-ok-700 border border-ok-200">
+        <span class="h-1.5 w-1.5 rounded-full bg-ok-500"></span>
+        {platform.cluster.gitops}
+      </span>
+      <span class="px-2.5 py-0.5 rounded-full bg-panel-100 text-panel-700 border border-panel-200">
+        {platform.cluster.version}
+      </span>
+    </div>
+  </div>
+
+  <p class="text-lg text-ink-600 mt-4 leading-relaxed max-w-3xl">
+    {t('lab.hero.description')}
+  </p>
+</section>

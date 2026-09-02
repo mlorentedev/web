@@ -1,0 +1,231 @@
+---
+/**
+ * The Lab's reachability console (WEB-080, AC5 as amended · ADR-056 §4.3).
+ *
+ * ## Why this survived the rebuild
+ *
+ * `proposal.md` Out of scope files "live probes / client-side telemetry" under
+ * ADR-056 layers 2–3 and sends them to #40 / #120. Neither issue is about this:
+ * #40 is the interactive-CV / RAG epic and #120 merges two metric bands on the
+ * home page. The console was mis-filed, and an ADR outranks a spec's scoping
+ * note. ADR-056 §4.3 decided it deliberately, and the reason is the Lab's whole
+ * premise: every number above this section was measured on a date printed at the
+ * bottom of the page. This is the one thing a reader can make happen now.
+ *
+ * ## What changed, and why it now proves something
+ *
+ * Measured 2026-09-01, the old console probed three targets — and two of them
+ * were `mlorentedev.github.io` docs sites for Pollex and Hive, which are
+ * **libraries, not running services**. It reported them `REACHABLE` and the page
+ * attributed them to a Jetson Nano and a Hetzner VPS. It was proving that
+ * GitHub's CDN is up and presenting it as proof of a homelab. The third target
+ * was `api.kubelab.live` — the **root**, which returns 404 — and because
+ * `mode: 'no-cors'` yields an opaque response, the console could not tell 404
+ * from 200 and called it reachable too.
+ *
+ * ADR-056 §4.3 says reading real status "would require CORS headers on the
+ * kubelab side and is out of scope here". **That clause is stale**:
+ * `api.kubelab.live/health` has served `access-control-allow-origin: *` for some
+ * time, so the browser can read the body. It returns the API's own view of four
+ * subsystems plus a server timestamp. That is a real read, not a ping.
+ *
+ * ## Targets come from the manifest, and the manifest now means it
+ *
+ * `platform.services.filter(s => s.healthEndpoint)`. Until this PR all three
+ * "public" services carried a `healthEndpoint` equal to their own root, which is
+ * not a health endpoint and made the field useless for selecting anything. It is
+ * now set only where one genuinely exists — one service — so the console cannot
+ * drift from the data the way a hard-coded list did.
+ *
+ * ## The auto-run is now defensible
+ *
+ * The old console fired its three requests 800 ms after load, unprompted, on a
+ * site that had just removed GA4 for privacy: every visitor's IP reached GitHub
+ * without being asked. With the third-party targets gone, the one request goes
+ * to Manu's own API, so running it on load costs the visitor nothing they did
+ * not already accept by loading the page — and it means the section shows a live
+ * result to a reader who will never press a button.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { platform } from '../data/platform';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  /** Section number in the page's sequence, e.g. "08". */
+  number: string;
+}
+
+const { number } = Astro.props;
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+
+/**
+ * Only services with a real health endpoint. Serialised into the markup rather
+ * than imported by the script, so the island carries no build-time data of its
+ * own and the page and the probe can never disagree about what is being checked.
+ */
+const targets = platform.services
+  .flatMap((s) =>
+    s.healthEndpoint ? [{ slug: s.slug, name: s.name, url: s.healthEndpoint }] : [],
+  );
+---
+
+<Section padding="py-10" data-lab-section="probe">
+  <div
+    data-lab-probe
+    data-probe-targets={JSON.stringify(targets)}
+    data-probe-i18n={JSON.stringify({
+      running: t('lab.probe.running'),
+      asking: t('lab.probe.asking'),
+      failed: t('lab.probe.failed'),
+      healthy: t('lab.probe.healthy'),
+      degraded: t('lab.probe.degraded'),
+      serverClock: t('lab.probe.serverClock'),
+      roundTrip: t('lab.probe.roundTrip'),
+      summary: t('lab.probe.summary'),
+    })}
+  >
+    <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 mb-3">
+      <div>
+        <SectionHeading number={number} label={t('lab.probe.heading')} />
+        <p class="text-xs text-ink-500 mt-1">{t('lab.probe.sub')}</p>
+      </div>
+      <button
+        type="button"
+        data-action="run-probe"
+        class="inline-flex items-center gap-1.5 bg-ink-900 hover:bg-ink-800 text-white text-xs font-mono font-medium px-3.5 py-2 rounded-lg transition-colors self-start sm:self-auto"
+      >
+        {t('lab.probe.btn')}
+      </button>
+    </div>
+
+    <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-5">
+      {t('lab.probe.intro')}
+    </p>
+
+    {targets.map((target) => (
+      <div
+        data-probe-target={target.url}
+        class="bg-panel-900 border border-panel-800 rounded-xl p-5 font-mono text-xs text-panel-300"
+      >
+        <div class="flex items-center justify-between pb-3 border-b border-panel-800 text-panel-400">
+          <span>{target.url.replace(/^https?:\/\//, '')}</span>
+          <span data-probe-status>{t('lab.probe.ready')}</span>
+        </div>
+
+        <ul data-probe-components class="py-3 space-y-1.5"></ul>
+
+        <div class="pt-3 border-t border-panel-800 flex flex-col gap-1 text-panel-400 sm:flex-row sm:justify-between">
+          <span data-probe-clock></span>
+          <span data-probe-latency></span>
+        </div>
+      </div>
+    ))}
+  </div>
+</Section>
+
+<script>
+  /**
+   * Reads the API's own health report from the visitor's browser.
+   *
+   * `mode` is left at its default: the endpoint serves
+   * `access-control-allow-origin: *`, so the response is readable and the
+   * console reports what the API actually said rather than that something
+   * answered. `cache: 'no-store'` is what makes the server clock meaningful — a
+   * cached body would carry a stale timestamp and the check would prove nothing.
+   */
+  interface HealthCheck {
+    component: string;
+    status: string;
+    message?: string;
+  }
+
+  interface HealthBody {
+    status?: string;
+    checks?: HealthCheck[];
+    timestamp?: string;
+  }
+
+  const clock = (d: Date): string =>
+    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  async function probe(card: HTMLElement, url: string, msg: Record<string, string>): Promise<void> {
+    const statusEl = card.querySelector('[data-probe-status]');
+    const listEl = card.querySelector('[data-probe-components]');
+    const clockEl = card.querySelector('[data-probe-clock]');
+    const latencyEl = card.querySelector('[data-probe-latency]');
+
+    if (statusEl) statusEl.textContent = msg.running;
+    if (listEl) listEl.innerHTML = '';
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const t0 = performance.now();
+
+    try {
+      const response = await fetch(url, { cache: 'no-store', signal: controller.signal });
+      const latencyMs = Math.round(performance.now() - t0);
+      clearTimeout(timeoutId);
+
+      const body: HealthBody = await response.json();
+      const checks = body.checks ?? [];
+      const healthy = checks.filter((c) => c.status === 'healthy').length;
+
+      if (listEl) {
+        for (const check of checks) {
+          const li = document.createElement('li');
+          const ok = check.status === 'healthy';
+          li.className = 'flex items-center justify-between gap-3';
+          li.innerHTML =
+            `<span class="text-panel-300">${check.component}</span>` +
+            `<span class="${ok ? 'text-ok-400' : 'text-warn-400'}">${ok ? msg.healthy : msg.degraded}</span>`;
+          listEl.appendChild(li);
+        }
+      }
+
+      if (statusEl) {
+        statusEl.textContent = msg.summary
+          .replace('{n}', String(healthy))
+          .replace('{m}', String(checks.length));
+        statusEl.className = healthy === checks.length ? 'text-ok-400' : 'text-warn-400';
+      }
+
+      // The payload `no-cors` could never give: the server's own clock beside
+      // the visitor's. A cached response cannot fake it, which is why the
+      // request is `no-store`.
+      if (clockEl && body.timestamp) {
+        clockEl.textContent = `${msg.serverClock}: ${clock(new Date(body.timestamp))} · ${clock(new Date())}`;
+      }
+      if (latencyEl) latencyEl.textContent = `${msg.roundTrip}: ${latencyMs} ms`;
+    } catch {
+      clearTimeout(timeoutId);
+      if (statusEl) {
+        statusEl.textContent = msg.failed;
+        statusEl.className = 'text-warn-400';
+      }
+      if (clockEl) clockEl.textContent = '';
+      if (latencyEl) latencyEl.textContent = '';
+    }
+  }
+
+  function runAll(): void {
+    const root = document.querySelector<HTMLElement>('[data-lab-probe]');
+    if (!root) return;
+
+    const msg = JSON.parse(root.dataset.probeI18n || '{}');
+    const cards = root.querySelectorAll<HTMLElement>('[data-probe-target]');
+    const btn = root.querySelector<HTMLButtonElement>('[data-action="run-probe"]');
+
+    if (btn) btn.disabled = true;
+    Promise.all(
+      [...cards].map((card) => probe(card, card.dataset.probeTarget || '', msg)),
+    ).finally(() => {
+      if (btn) btn.disabled = false;
+    });
+  }
+
+  document.querySelector('[data-action="run-probe"]')?.addEventListener('click', runAll);
+  runAll();
+</script>
