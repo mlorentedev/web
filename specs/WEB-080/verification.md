@@ -360,6 +360,25 @@ in § PR3 used a different method and are **not** comparable to these.)
 
 Weight is **102.3 KB against the 150 KB budget**, +9.9 KB for the section.
 
+### Looked at, not only asserted
+
+`evidence/pr5-{en,es}-{320,1440}.png`. Two things the tests could not have told me:
+
+- **`Public` next to `open ↗` is not PR3's duplicate, and the badge stays.** It
+  looks like the same defect — two elements saying one thing — but it is not.
+  PR3's case was two spans both saying *there is no address*. Here the badge is
+  one of three mutually exclusive states in a column every row shares, and the
+  anchor is the affordance. Dropping it on the five public rows would ragged the
+  column and leave "public" implied by the presence of a link rather than stated.
+- **The capture itself needed three attempts, and the first two produced wrong
+  images that the script reported as successes.** Element screenshots stitch the
+  sticky header over the middle of the section; `fullPage` with a `boundingBox()`
+  clip captures the top of the *document*, because that clip is in document
+  coordinates and `boundingBox()` is viewport-relative. Both wrote a plausible
+  PNG and exited 0. Fixed by sizing the viewport to the section so nothing
+  scrolls and nothing sticks — worth recording because "the command succeeded"
+  and "the artefact is right" came apart twice in five minutes.
+
 ### Debt found and filed
 
 kubelab's `services.yaml.j2` on `master` still carries
