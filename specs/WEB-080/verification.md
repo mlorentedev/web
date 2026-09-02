@@ -561,7 +561,7 @@ screen, and the markup reads as *more* accessible, not less. Nothing before an
 axe pass could have found it.
 
 Stripped in `LabDiagram.astro`, beside the id namespacing and with the same
-self-enforcing shape — `assertNothingFocusable` refuses to render a diagram that
+self-enforcing shape — `assertViewerAffordancesGone` refuses to render a diagram that
 can still be tabbed into, so a future archify that makes a node focusable some
 other way fails the build instead of quietly restoring this. Done at render
 rather than in `scripts/diagrams.mjs generate` because the SVGs are committed and
