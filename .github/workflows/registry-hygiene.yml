@@ -37,8 +37,8 @@ jobs:
     name: Every release has an image
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Assert release/image parity
@@ -56,8 +56,8 @@ jobs:
     # Independent of the audit: a missing release image is a reason to look, not
     # a reason to let the registry keep growing.
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Prune
