@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-33 lessons, one file each, newest first. Numbers are assigned in the order
+34 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 034 | [A release PR closes every issue its commits named, and `grep` cannot see which](lesson-034-a-release-pr-closes-every-issue-its-commits.md) | 2026-09-03 | `#release-please` `#github` `#verification` |
 | 033 | [A re-run that overwrites its predecessor destroys the evidence that justified it](lesson-033-a-re-run-that-overwrites-its-predecessor-dest.md) | 2026-09-02 | `#spec-driven-development` `#verification` |
 | 032 | [A gate that refuses is not proof the check you added is the one that fired](lesson-032-a-gate-that-refuses-is-not-proof-the-check-yo.md) | 2026-09-02 | `#verification` `#spec-driven-development` |
 | 031 | [Two numbering sequences in one namespace, and nothing tells you which one you are in](lesson-031-two-numbering-sequences-in-one-namespac.md) | 2026-09-02 | `#documentation` `#adr` `#knowledge-base` |
