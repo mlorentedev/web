@@ -9,11 +9,13 @@ tags: [web, lessons, index]
 
 # Lessons
 
-31 lessons, one file each, newest first. Numbers are assigned in the order
+33 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 033 | [A re-run that overwrites its predecessor destroys the evidence that justified it](lesson-033-a-re-run-that-overwrites-its-predecessor-dest.md) | 2026-09-02 | `#spec-driven-development` `#verification` |
+| 032 | [A gate that refuses is not proof the check you added is the one that fired](lesson-032-a-gate-that-refuses-is-not-proof-the-check-yo.md) | 2026-09-02 | `#verification` `#spec-driven-development` |
 | 031 | [Two numbering sequences in one namespace, and nothing tells you which one you are in](lesson-031-two-numbering-sequences-in-one-namespac.md) | 2026-09-02 | `#documentation` `#adr` `#knowledge-base` |
 | 030 | [GitHub's answer about a merge is not ground truth, and neither is `git`'s ancestry](lesson-030-github-s-answer-about-a-merge-is-not-gro.md) | 2026-09-02 | `#git` `#github` `#verification` |
 | 029 | [A gate that restates its `needs` list checks less than it waits for](lesson-029-a-gate-that-restates-its-needs-list-check.md) | 2026-09-02 | `#ci` `#github-actions` `#verification` |
