@@ -1,0 +1,85 @@
+---
+/**
+ * The AI Harness Artifacts & Executable Contracts (WEB-091).
+ *
+ * Exposes real, verifiable operating contracts, kernel concurrency semaphores,
+ * in-stream secret redactors, and adversarial reviewer prompts.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { aiArtifacts } from '../data/ai-artifacts';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  number: string;
+}
+
+const { number } = Astro.props;
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const badgeColors: Record<string, string> = {
+  Doctrine: 'bg-ok-50 text-ok-700 border-ok-200',
+  Concurrency: 'bg-accent-50 text-accent-700 border-accent-200',
+  Security: 'bg-danger-50 text-danger-700 border-danger-200',
+  Verification: 'bg-warn-50 text-warn-700 border-warn-200',
+};
+---
+
+<Section padding="py-14" data-ai-section="artifacts">
+  <SectionHeading number={number} label={t('ai.artifacts.heading')} margin="mb-2" />
+  <p class="text-sm text-ink-500 mb-8 max-w-2xl">
+    {t('ai.artifacts.sub')}
+  </p>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {aiArtifacts.map((artifact) => {
+      const colorClass = badgeColors[artifact.badge] || 'bg-panel-100 text-panel-700 border-panel-200';
+      return (
+        <div class="flex flex-col justify-between rounded-xl border border-ink-200 bg-white shadow-xs overflow-hidden">
+          <div class="p-6 pb-4">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class:list={['text-xs font-mono px-2.5 py-0.5 rounded-full border font-medium', colorClass]}>
+                {artifact.badge}
+              </span>
+              <span class="text-xs font-mono text-ink-400">
+                {artifact.filename}
+              </span>
+            </div>
+
+            <h3 class="text-base font-bold text-ink-900 mb-2">
+              {lang === 'es' ? artifact.titleEs : artifact.title}
+            </h3>
+
+            <p class="text-xs text-ink-600 leading-relaxed mb-4">
+              {lang === 'es' ? artifact.descriptionEs : artifact.description}
+            </p>
+
+            <div class="rounded-lg bg-panel-950 p-4 border border-panel-800 overflow-x-auto">
+              <div class="flex items-center justify-between pb-2 mb-2 border-b border-panel-800 text-[11px] font-mono text-panel-400">
+                <span>{artifact.filename}</span>
+                <span>{artifact.language}</span>
+              </div>
+              <pre class="font-mono text-xs text-panel-100 leading-relaxed selection:bg-accent-700 selection:text-white whitespace-pre">{artifact.codeSnippet}</pre>
+            </div>
+          </div>
+
+          <div class="px-6 py-3 bg-panel-50 border-t border-ink-100 flex items-center justify-between">
+            <span class="text-xs font-mono text-ink-500">
+              {lang === 'es' ? 'Contrato público' : 'Public contract'}
+            </span>
+            <a
+              href={artifact.gistUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs font-semibold text-accent-700 hover:text-accent-800 transition-colors inline-flex items-center gap-1.5"
+            >
+              <span>{lang === 'es' ? 'Inspeccionar fuente / Gist' : 'Inspect source / Gist'}</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</Section>

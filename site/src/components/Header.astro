@@ -7,8 +7,8 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
 const navItems: { label: string; href: string }[] = [
-  { label: t('nav.ai'), href: translatePath('/ai') },
   { label: t('nav.lab'), href: translatePath('/lab') },
+  { label: t('nav.ai'), href: translatePath('/ai') },
   { label: t('nav.notes'), href: translatePath('/notes') },
   { label: t('nav.contact'), href: translatePath('/contact') },
 ];

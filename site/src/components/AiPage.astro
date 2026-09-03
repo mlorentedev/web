@@ -1,8 +1,8 @@
 ---
 /**
- * The AI Harness — dedicated public architecture and engineering chapter.
+ * The AI Harness — dedicated public architecture and engineering chapter (WEB-091).
  *
- * Showcases the bounded harness, active agents, safety gates, and 104-week curriculum.
+ * Showcases the bounded harness, active execution contracts, and safety gates.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
@@ -10,8 +10,7 @@ import Footer from './Footer.astro';
 import AiHero from './AiHero.astro';
 import LabDiagram from './LabDiagram.astro';
 import AiPillars from './AiPillars.astro';
-import AiCatalog from './AiCatalog.astro';
-import AiRoadmap from './AiRoadmap.astro';
+import AiArtifacts from './AiArtifacts.astro';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -37,9 +36,7 @@ const t = useTranslations(lang);
 
     <AiPillars number="02" />
 
-    <AiCatalog number="03" />
-
-    <AiRoadmap number="04" />
+    <AiArtifacts number="03" />
   </main>
 
   <Footer />
