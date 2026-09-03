@@ -3,7 +3,7 @@
 .DEFAULT_GOAL := help
 SITE := site
 
-.PHONY: help install dev build preview docker-build clean
+.PHONY: help install dev build preview test test-audit diagrams verify check docker-build clean
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -14,6 +14,21 @@ install: ## Install dependencies
 
 dev: ## Run the Astro dev server (no cluster needed)
 	cd $(SITE) && npm run dev
+
+diagrams: ## Generate architecture diagrams from IR JSON
+	cd $(SITE) && npm run diagrams
+
+verify: ## Verify architecture diagrams against schema and checksums
+	cd $(SITE) && npm run prebuild
+
+check: ## Type-check Astro and TypeScript files
+	cd $(SITE) && npx astro check
+
+test: ## Run unit and integration tests
+	cd $(SITE) && npm test
+
+test-audit: ## Run token and design system audits against built site
+	cd $(SITE) && npm run test:audit
 
 build: ## Production build (astro check && astro build)
 	cd $(SITE) && npm run build
