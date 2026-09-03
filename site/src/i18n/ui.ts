@@ -21,21 +21,44 @@ export const ui = {
     'nav.skipToContent': 'Skip to content',
 
     // AI Section
-    'ai.hero.eyebrow': 'Autonomous Systems · SRE Rigor',
+    'ai.hero.eyebrow': 'Autonomous Systems Architecture · Deterministic Governance',
     'ai.hero.title': 'Deterministic execution harnesses for stochastic AI models',
     'ai.hero.description':
-      'Foundation models are untrusted, stochastic execution engines. The platform engineering lives in the bounded harness: OS-level kernel semaphores, zero-copy ephemeral worktrees, dynamic loop circuit breakers, and automated CI eval gates.',
+      'Foundation models are untrusted, stochastic execution engines. Engineering autonomous software does not reside in prompts, but in the deterministic platform harness that binds them: OS-level kernel concurrency, zero-copy ephemeral sandboxes, in-stream secret redaction, and independent adversarial review gates.',
     'ai.diagram.heading': 'Autonomous Agent Execution Plane',
     'ai.diagram.caption':
       'Task dispatch, knowledge retrieval via FastMCP, sandboxed worktree execution, and adversarial review.',
     'ai.diagram.legend':
       'Every agent operation runs within an isolated Git worktree. Destructive actions trigger a synchronous HITL gate. PRs are audited by an independent model family before reaching human review.',
-    'ai.pillars.heading': 'The Five Pillars of Harness Engineering',
-    'ai.pillars.sub': 'Operating autonomous swarms with deterministic systems engineering.',
-    'ai.catalog.heading': 'Active Agent Swarm & Protocols',
-    'ai.catalog.sub': 'Autonomous roles, operating doctrines, and headless tool servers.',
-    'ai.roadmap.heading': '104-Week Technical Curriculum',
-    'ai.roadmap.sub': 'From Homelab Hardware to Agentic Platform Engineering.',
+    'ai.pillars.heading': 'The Four Pillars of Deterministic Containment',
+    'ai.pillars.sub': 'Operating autonomous swarms with deterministic Unix systems engineering.',
+    'ai.pillars.p1.title': 'OS Concurrency & Worktree Sandboxing',
+    'ai.pillars.p1.desc':
+      'Zero-copy ephemeral git worktrees sharing the object pool. Kernel POSIX flock semaphores prevent race conditions and branch collisions across concurrent autonomous agents.',
+    'ai.pillars.p1.i1': 'Zero-copy storage isolation',
+    'ai.pillars.p1.i2': 'Kernel-level flock semaphores',
+    'ai.pillars.p1.i3': 'Monotonic deadline timeouts',
+    'ai.pillars.p2.title': 'In-Stream Secret Redaction & JIT Injection',
+    'ai.pillars.p2.desc':
+      'Real-time stream writer scrubbing process stdout/stderr before transcript persistence. Zero plaintext secrets on disk: Age/SOPS decryption piped strictly in-memory.',
+    'ai.pillars.p2.i1': 'In-memory redactWriter stream filter',
+    'ai.pillars.p2.i2': 'Age / SOPS asymmetric encryption',
+    'ai.pillars.p2.i3': 'Immediate HALT on credential leak',
+    'ai.pillars.p3.title': 'Safety Brakes & Atomic PR Cap',
+    'ai.pillars.p3.desc':
+      'Dynamic AST loop circuit breaker halting recursive tool invocations. Synchronous cryptographic HITL gate for destructive actions and hard ~300 executable LOC cap.',
+    'ai.pillars.p3.i1': 'Dynamic tool loop circuit breaker',
+    'ai.pillars.p3.i2': 'Synchronous HITL approval gate',
+    'ai.pillars.p3.i3': '~300 executable LOC PR budget',
+    'ai.pillars.p4.title': 'Cross-Model Adversarial Audit & Zero Auto-Merge',
+    'ai.pillars.p4.desc':
+      'Independent model family auditing pull request diffs for anti-sycophancy. Strict prohibition of auto-merge: every production change merges under human review.',
+    'ai.pillars.p4.i1': 'Cross-model independent diff review',
+    'ai.pillars.p4.i2': 'Strict zero auto-merge doctrine',
+    'ai.pillars.p4.i3': 'CI regression & mutation suites',
+    'ai.artifacts.heading': 'Executable Artifacts & Operating Contracts',
+    'ai.artifacts.sub':
+      'Inspectable rules, kernel mutex scripts, stream redactors, and adversarial review prompts.',
 
     // Hero
     // A2 = C: the homelab is the proof, the agent platform is the direction, and
@@ -437,21 +460,44 @@ export const ui = {
     'nav.skipToContent': 'Saltar al contenido',
 
     // AI Section
-    'ai.hero.eyebrow': 'Sistemas Autónomos · Rigor SRE',
+    'ai.hero.eyebrow': 'Arquitectura de Sistemas Autónomos · Gobernanza Determinista',
     'ai.hero.title': 'Arneses de ejecución deterministas para modelos estocásticos de IA',
     'ai.hero.description':
-      'Los modelos fundacionales son motores de ejecución estocásticos y no confiables. La ingeniería reside en el arnés de plataforma delimitado: semáforos a nivel de kernel, worktrees efímeros zero-copy, disyuntores de bucles dinámicos y puertas de evaluación en CI.',
+      'Los modelos fundacionales son motores de ejecución estocásticos y no confiables. La ingeniería de sistemas autónomos no reside en prompts, sino en el arnés determinista que los acota: concurrencia a nivel de kernel, sandboxes efímeros zero-copy, redacción de secretos en flujo y auditorías adversariales independientes.',
     'ai.diagram.heading': 'Plano de Ejecución de Agentes Autónomos',
     'ai.diagram.caption':
       'Despacho de tareas, recuperación de conocimiento vía FastMCP, ejecución aislada en worktrees y revisión adversarial.',
     'ai.diagram.legend':
       'Cada operación del agente corre en un Git worktree aislado. Las acciones destructivas activan una puerta HITL sincrónica. Las PRs son auditadas por una familia de modelos independiente antes de la revisión humana.',
-    'ai.pillars.heading': 'Los Cinco Pilares de la Ingeniería del Arnés',
-    'ai.pillars.sub': 'Operando enjambres autónomos con ingeniería de sistemas determinista.',
-    'ai.catalog.heading': 'Enjambre Activo de Agentes y Protocolos',
-    'ai.catalog.sub': 'Roles autónomos, doctrinas operativas y servidores de herramientas headless.',
-    'ai.roadmap.heading': 'Currículum Técnico de 104 Semanas',
-    'ai.roadmap.sub': 'Desde el Hardware del Homelab hasta la Ingeniería de Plataforma de Agentes.',
+    'ai.pillars.heading': 'Los Cuatro Pilares de Contención Determinista',
+    'ai.pillars.sub': 'Operando enjambres autónomos con ingeniería de sistemas Unix determinista.',
+    'ai.pillars.p1.title': 'Aislamiento y Concurrencia a Nivel de OS',
+    'ai.pillars.p1.desc':
+      'Worktrees efímeros zero-copy sobre el pool de objetos Git. Semáforos flock a nivel de kernel previenen colisiones de ramas y condiciones de carrera entre agentes concurrentes.',
+    'ai.pillars.p1.i1': 'Aislamiento de almacenamiento sin copias',
+    'ai.pillars.p1.i2': 'Semáforos flock a nivel de kernel',
+    'ai.pillars.p1.i3': 'Límites de tiempo monótonos anti-bloqueo',
+    'ai.pillars.p2.title': 'Redacción de Secretos en Flujo e Inyección JIT',
+    'ai.pillars.p2.desc':
+      'Filtro en tiempo real que purga stdout/stderr antes de persistir transcripciones. Cero secretos en texto plano: descifrado Age/SOPS inyectado estrictamente en memoria.',
+    'ai.pillars.p2.i1': 'Filtro redactWriter en memoria',
+    'ai.pillars.p2.i2': 'Cifrado asimétrico Age/SOPS',
+    'ai.pillars.p2.i3': 'Parada inmediata ante cualquier fuga',
+    'ai.pillars.p3.title': 'Frenos de Seguridad y Cap Atómico de PR',
+    'ai.pillars.p3.desc':
+      'Disyuntor dinámico de bucles en AST para frenar recursiones. Puerta HITL criptográfica sincrónica para comandos destructivos y límite estricto de ~300 LOC ejecutables.',
+    'ai.pillars.p3.i1': 'Disyuntor dinámico de bucles en herramientas',
+    'ai.pillars.p3.i2': 'Puerta de aprobación humana sincrónica',
+    'ai.pillars.p3.i3': 'Presupuesto de ~300 LOC ejecutables por PR',
+    'ai.pillars.p4.title': 'Auditoría Adversarial Cruzada y Cero Auto-Merge',
+    'ai.pillars.p4.desc':
+      'Familia de modelos independiente auditando cada diff para eliminar condescendencia. Prohibición estricta de auto-merge: todo cambio se fusiona bajo supervisión humana.',
+    'ai.pillars.p4.i1': 'Revisión de diffs por modelos independientes',
+    'ai.pillars.p4.i2': 'Doctrina estricta de cero auto-merge',
+    'ai.pillars.p4.i3': 'Suites de regresión y mutación en CI',
+    'ai.artifacts.heading': 'Artefactos Ejecutables y Contratos Operativos',
+    'ai.artifacts.sub':
+      'Reglas inspeccionables, scripts de mutex de kernel, redactor de secretos y prompts de revisión adversarial.',
 
     // Hero
     'hero.eyebrow': 'Ingeniero de plataforma · Infraestructura para IA',

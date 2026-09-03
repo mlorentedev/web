@@ -1,8 +1,9 @@
 ---
 /**
- * The Five Pillars of Harness Engineering.
+ * The Four Deterministic Containment Pillars (WEB-091).
  *
- * Explains how the platform binds and governs autonomous agents.
+ * Explains how the platform binds and governs stochastic autonomous models
+ * through deterministic OS primitives and verification gates.
  */
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
@@ -16,61 +17,53 @@ const { number } = Astro.props;
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 
+const badgeColors: Record<string, string> = {
+  Isolation: 'bg-accent-50 text-accent-700 border-accent-200',
+  Security: 'bg-danger-50 text-danger-700 border-danger-200',
+  Safety: 'bg-warn-50 text-warn-700 border-warn-200',
+  Verification: 'bg-ok-50 text-ok-700 border-ok-200',
+};
+
 const pillars = [
   {
-    title: lang === 'es' ? 'Doctrina y Cero Atribución' : 'Doctrine & Zero Attribution',
-    badge: 'Governance',
-    tagColor: 'ok',
-    description: lang === 'es'
-      ? 'Prohibición estricta de marcas de IA en el historial de Git. Commits atómicos de ~300 LOC ejecutables. Inyección de secretos JIT en memoria sin volcados a stdout.'
-      : 'Zero AI attribution in Git history. Atomic PRs under ~300 executable LOC. JIT in-memory secret injection into child processes without stdout leaks.',
-    items: lang === 'es'
-      ? ['Sin trailers Co-Authored-By de bots', 'Regla de tres capas de memoria (ADR-018)', 'Cifrado Age/SOPS']
-      : ['No bot Co-Authored-By trailers', 'Three-layer memory doctrine (ADR-018)', 'Age/SOPS encryption']
-  },
-  {
-    title: lang === 'es' ? 'Sandboxing y Concurrencia OS' : 'Sandboxing & OS Concurrency',
     badge: 'Isolation',
-    tagColor: 'accent',
-    description: lang === 'es'
-      ? 'Espacios de trabajo efímeros mediante git worktree compartiendo el pool de objetos. Semáforos a nivel de kernel (flock en Go vía dotf) con límites de tiempo monótonos.'
-      : 'Zero-copy ephemeral git worktree sandboxes sharing the object pool. Kernel-level file semaphores (flock in Go via dotf) with monotonic deadlines.',
-    items: lang === 'es'
-      ? ['Aislamiento sin copias pesadas', 'Prevención de colisiones de ramas', 'Semáforos de kernel concurrentes']
-      : ['Zero-copy storage isolation', 'Branch collision prevention', 'Concurrent kernel semaphores']
+    title: t('ai.pillars.p1.title'),
+    description: t('ai.pillars.p1.desc'),
+    items: [
+      t('ai.pillars.p1.i1'),
+      t('ai.pillars.p1.i2'),
+      t('ai.pillars.p1.i3'),
+    ]
   },
   {
-    title: lang === 'es' ? 'Frenos y Puertas de Seguridad' : 'Safety Brakes & HITL Gates',
+    badge: 'Security',
+    title: t('ai.pillars.p2.title'),
+    description: t('ai.pillars.p2.desc'),
+    items: [
+      t('ai.pillars.p2.i1'),
+      t('ai.pillars.p2.i2'),
+      t('ai.pillars.p2.i3'),
+    ]
+  },
+  {
     badge: 'Safety',
-    tagColor: 'danger',
-    description: lang === 'es'
-      ? 'Disyuntor dinámico de bucles en AST para detener recursiones descontroladas de herramientas. Puerta HITL sincrónica con tokens criptográficos para comandos destructivos.'
-      : 'Real-time AST loop breaker detecting and halting tool recursion. Synchronous cryptographic HITL gate requiring signed tokens for destructive operations.',
-    items: lang === 'es'
-      ? ['Disyuntor de bucles dinámico', 'Aprobación sincrónica humana', 'Comandos destructivos bloqueados']
-      : ['Dynamic loop circuit breaker', 'Synchronous human sign-off', 'Destructive commands gated']
+    title: t('ai.pillars.p3.title'),
+    description: t('ai.pillars.p3.desc'),
+    items: [
+      t('ai.pillars.p3.i1'),
+      t('ai.pillars.p3.i2'),
+      t('ai.pillars.p3.i3'),
+    ]
   },
   {
-    title: lang === 'es' ? 'Motor de Conocimiento FastMCP' : 'FastMCP Knowledge Engine',
-    badge: 'Context',
-    tagColor: 'observe',
-    description: lang === 'es'
-      ? 'Daemon Hive FastMCP conectando más de 1.660 notas con Frontmatter Law. Búsqueda híbrida SQLite FTS5 (BM25) y chunker jerárquico AST que reduce entre 67% y 82% los tokens.'
-      : 'Hive FastMCP daemon serving 1,660+ markdown nodes with Frontmatter Law. SQLite FTS5 BM25 search and hierarchical AST chunker cutting prompt tokens by 67–82%.',
-    items: lang === 'es'
-      ? ['Servidor FastMCP en producción', 'Indexación SQLite FTS5 BM25', '67–82% de reducción de contexto']
-      : ['Production FastMCP server', 'SQLite FTS5 BM25 indexing', '67–82% context token reduction']
-  },
-  {
-    title: lang === 'es' ? 'Verificación y Auditoría Cruzada' : 'Verification & Adversarial Evals',
     badge: 'Verification',
-    tagColor: 'warn',
-    description: lang === 'es'
-      ? 'Pool de revisión adversarial con familias de modelos independientes para evitar sesgos de auto-aprobación. Datasets dorados en GitHub Actions y doctor de 126 comprobaciones.'
-      : 'Anti-sycophancy reviewer pool using independent model families to audit diffs. Golden Datasets in CI and a 126-check system diagnostic doctor.',
-    items: lang === 'es'
-      ? ['Revisión cruzada entre modelos', 'Evaluaciones doradas como CI', 'Diagnóstico dotf doctor']
-      : ['Cross-model diff review pool', 'Golden Dataset evals in CI', 'dotf doctor diagnostic runner']
+    title: t('ai.pillars.p4.title'),
+    description: t('ai.pillars.p4.desc'),
+    items: [
+      t('ai.pillars.p4.i1'),
+      t('ai.pillars.p4.i2'),
+      t('ai.pillars.p4.i3'),
+    ]
   }
 ];
 ---
@@ -81,31 +74,34 @@ const pillars = [
     {t('ai.pillars.sub')}
   </p>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {pillars.map((pillar) => (
-      <div class="p-5 rounded-lg border border-ink-200 bg-white shadow-xs flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between gap-2 mb-3">
-            <span class="text-xs font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border border-ink-200 bg-ink-50 text-ink-700">
-              {pillar.badge}
-            </span>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {pillars.map((pillar) => {
+      const colorClass = badgeColors[pillar.badge] || 'bg-panel-100 text-panel-700 border-panel-200';
+      return (
+        <div class="p-6 rounded-xl border border-ink-200 bg-white shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class:list={['text-xs font-mono px-2.5 py-0.5 rounded-full border font-medium', colorClass]}>
+                {pillar.badge}
+              </span>
+            </div>
+            <h3 class="text-base font-bold text-ink-900 mb-2">
+              {pillar.title}
+            </h3>
+            <p class="text-sm text-ink-600 leading-relaxed mb-6">
+              {pillar.description}
+            </p>
           </div>
-          <h3 class="text-base font-semibold text-ink-900 mb-2">
-            {pillar.title}
-          </h3>
-          <p class="text-sm text-ink-600 leading-relaxed mb-4">
-            {pillar.description}
-          </p>
+          <ul class="space-y-2 border-t border-ink-100 pt-4 text-xs text-ink-600 font-mono">
+            {pillar.items.map((item) => (
+              <li class="flex items-center gap-2">
+                <span class="text-accent-700 font-bold">›</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul class="space-y-1.5 border-t border-ink-100 pt-3 text-xs text-ink-500">
-          {pillar.items.map((item) => (
-            <li class="flex items-center gap-2">
-              <span class="text-accent-700">›</span>
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    ))}
+      );
+    })}
   </div>
 </Section>
