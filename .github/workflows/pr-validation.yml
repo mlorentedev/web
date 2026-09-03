@@ -152,6 +152,12 @@ jobs:
             *) mode="--advisory" ;;
           esac
 
+          # `pageInfo { hasNextPage }` is not decoration: `closingIssuesReferences`
+          # is a connection, and a truncated list read as a complete one would let
+          # an open issue on page two through the exact guard meant to catch it.
+          # The checker exits 2 when `hasNextPage` is true, and a test over this
+          # file asserts the selection stays here.
+          #
           # SC2016 fires on `$owner`/`$name`/`$number` below. They are GraphQL
           # variables, bound by the `-f`/`-F` flags on the same command, and
           # single quotes are what keeps the shell from eating them. Expanding
@@ -162,7 +168,10 @@ jobs:
             -f query='query($owner: String!, $name: String!, $number: Int!) {
               repository(owner: $owner, name: $name) {
                 pullRequest(number: $number) {
-                  closingIssuesReferences(first: 50) { nodes { number state title } }
+                  closingIssuesReferences(first: 100) {
+                    nodes { number state title }
+                    pageInfo { hasNextPage }
+                  }
                 }
               }
             }')

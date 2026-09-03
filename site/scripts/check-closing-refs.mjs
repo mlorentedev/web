@@ -93,9 +93,22 @@ export function decide(payload) {
     return unanswerable('data.repository.pullRequest is missing');
   }
 
-  const nodes = pr.closingIssuesReferences?.nodes;
+  const refs = pr.closingIssuesReferences;
+  const nodes = refs?.nodes;
   if (!Array.isArray(nodes)) {
     return unanswerable('closingIssuesReferences.nodes is missing or not an array');
+  }
+
+  // A truncated list read as a complete one is the same defect as an unreadable
+  // one read as a clean one, one level down: the open issue is simply on page
+  // two. `closingIssuesReferences` is a GraphQL connection, so it pages at
+  // whatever `first:` asked for — and both reviewers of `#289` caught this
+  // independently. Fail closed rather than paginate: a release PR closing more
+  // than a page of issues is not a case to handle silently, it is a case to
+  // stop on. The workflow asks for `pageInfo { hasNextPage }`, and a test over
+  // the workflow file asserts it keeps doing so.
+  if (refs.pageInfo?.hasNextPage === true) {
+    return unanswerable(`there are more linked issues than the query returned (${nodes.length} so far)`);
   }
 
   // A node without a readable `state` is not a pass — it is the same failure as
@@ -156,6 +169,13 @@ export function report(verdict, { advisory = false } = {}) {
   ];
 }
 
+/**
+ * Read the payload from `--file <path>` when given, otherwise from stdin (fd 0),
+ * which is how the workflow pipes `gh api graphql` into it.
+ *
+ * @param {string[]} argv arguments after the script name
+ * @returns {string} the raw JSON text
+ */
 function readInput(argv) {
   const i = argv.indexOf('--file');
   if (i !== -1) {
@@ -166,6 +186,15 @@ function readInput(argv) {
   return readFileSync(0, 'utf8');
 }
 
+/**
+ * Read, decide, print, and return the process exit code.
+ *
+ * `--advisory` downgrades only a BLOCKED verdict to 0; UNANSWERABLE stays 2 in
+ * both modes, because that is the half the advisory run exists to exercise.
+ *
+ * @param {string[]} argv arguments after the script name
+ * @returns {number} 0 clean, 1 blocked, 2 unanswerable
+ */
 function main(argv) {
   const advisory = argv.includes('--advisory');
 

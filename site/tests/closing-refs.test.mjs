@@ -134,6 +134,71 @@ test('the process exits 1 on the blocked payload, and says why on stderr', () =>
 });
 
 /**
+ * Truncation, found on `#289` by both reviewers independently.
+ *
+ * `closingIssuesReferences` is a GraphQL connection. Reading one page as if it
+ * were the whole list would let an open issue on page two through the guard
+ * built to catch it — the same defect as an unreadable payload read as clean,
+ * one level down. It fails closed rather than paginating: a release closing
+ * more than a page of issues is a thing to stop on, not to handle quietly.
+ */
+test('a truncated list is unanswerable, not clean', () => {
+  const page = (hasNextPage) => ({
+    data: {
+      repository: {
+        pullRequest: {
+          closingIssuesReferences: {
+            nodes: [{ number: 1, state: 'CLOSED' }],
+            pageInfo: { hasNextPage },
+          },
+        },
+      },
+    },
+  });
+
+  assert.equal(decide(page(true)).code, UNANSWERABLE, 'more pages means the answer is incomplete');
+  assert.match(report(decide(page(true))).join('\n'), /more linked issues/);
+  assert.equal(decide(page(false)).code, OK, 'and a complete single page still passes');
+});
+
+test('--advisory does not soften a truncated list either', () => {
+  const truncated = {
+    data: {
+      repository: {
+        pullRequest: {
+          closingIssuesReferences: { nodes: [], pageInfo: { hasNextPage: true } },
+        },
+      },
+    },
+  };
+  // Same reasoning as the unreadable case: advisory mode exists to exercise the
+  // query, so anything that means "the query did not answer" must still fail.
+  assert.equal(decide(truncated).code, UNANSWERABLE);
+});
+
+/**
+ * The checker can only refuse a truncated list if the query asks whether it was
+ * truncated. That selection lives in the workflow, not in this package, so it is
+ * asserted here — otherwise dropping it would silently disarm the check above
+ * while every test in this file still passed.
+ */
+test('the workflow asks GitHub whether the list is complete', () => {
+  const workflow = readFileSync(join(here, '../../.github/workflows/pr-validation.yml'), 'utf8');
+
+  const job = workflow.slice(workflow.indexOf('closing-refs:'));
+  assert.ok(job.length > 0, 'the closing-refs job must exist');
+  assert.match(job, /closingIssuesReferences\(first: \d+\)/, 'it queries the connection');
+  assert.match(job, /pageInfo \{ hasNextPage \}/, 'and asks whether there is more of it');
+  assert.match(job, /check-closing-refs\.mjs/, 'and pipes the answer into this checker');
+
+  assert.match(
+    workflow,
+    /needs: \[[^\]]*closing-refs[^\]]*\]/,
+    'and PR gate depends on it, or the job could fail without blocking anything',
+  );
+});
+
+/**
  * Advisory mode is what keeps the query itself exercised on ordinary PRs. It has
  * to soften exactly one thing — an open reference — and nothing else, or the
  * continuous check stops checking.
