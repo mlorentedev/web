@@ -1,0 +1,46 @@
+---
+/**
+ * The AI Harness — dedicated public architecture and engineering chapter.
+ *
+ * Showcases the bounded harness, active agents, safety gates, and 104-week curriculum.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import AiHero from './AiHero.astro';
+import LabDiagram from './LabDiagram.astro';
+import AiPillars from './AiPillars.astro';
+import AiCatalog from './AiCatalog.astro';
+import AiRoadmap from './AiRoadmap.astro';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t('ai.hero.title')} — Manu Lorente`}
+  description={t('ai.hero.description')}
+>
+  <Header />
+
+  <main id="main-content" class="flex-grow pb-16">
+    <AiHero />
+
+    <LabDiagram
+      name="harness"
+      number="01"
+      label={t('ai.diagram.heading')}
+      caption={t('ai.diagram.caption')}
+      legend={t('ai.diagram.legend')}
+    />
+
+    <AiPillars number="02" />
+
+    <AiCatalog number="03" />
+
+    <AiRoadmap number="04" />
+  </main>
+
+  <Footer />
+</BaseLayout>

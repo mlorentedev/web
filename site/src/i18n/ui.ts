@@ -12,12 +12,30 @@ export const ui = {
     // Nav
     // "Lab" is the door; "IDP" is what is inside. Keep it 3 characters wide —
     // the nav row is already at its 320px limit (see Header.astro).
+    'nav.ai': 'AI',
     'nav.lab': 'Lab',
     'nav.notes': 'Notes',
     'nav.contact': 'Contact',
     'nav.consulting': 'Consulting',
     'nav.toggle': 'Toggle menu',
     'nav.skipToContent': 'Skip to content',
+
+    // AI Section
+    'ai.hero.eyebrow': 'Autonomous Systems · SRE Rigor',
+    'ai.hero.title': 'Deterministic execution harnesses for stochastic AI models',
+    'ai.hero.description':
+      'Foundation models are untrusted, stochastic execution engines. The platform engineering lives in the bounded harness: OS-level kernel semaphores, zero-copy ephemeral worktrees, dynamic loop circuit breakers, and automated CI eval gates.',
+    'ai.diagram.heading': 'Autonomous Agent Execution Plane',
+    'ai.diagram.caption':
+      'Task dispatch, knowledge retrieval via FastMCP, sandboxed worktree execution, and adversarial review.',
+    'ai.diagram.legend':
+      'Every agent operation runs within an isolated Git worktree. Destructive actions trigger a synchronous HITL gate. PRs are audited by an independent model family before reaching human review.',
+    'ai.pillars.heading': 'The Five Pillars of Harness Engineering',
+    'ai.pillars.sub': 'Operating autonomous swarms with deterministic systems engineering.',
+    'ai.catalog.heading': 'Active Agent Swarm & Protocols',
+    'ai.catalog.sub': 'Autonomous roles, operating doctrines, and headless tool servers.',
+    'ai.roadmap.heading': '104-Week Technical Curriculum',
+    'ai.roadmap.sub': 'From Homelab Hardware to Agentic Platform Engineering.',
 
     // Hero
     // A2 = C: the homelab is the proof, the agent platform is the direction, and
@@ -410,12 +428,30 @@ export const ui = {
   },
   es: {
     // Nav
+    'nav.ai': 'IA',
     'nav.lab': 'Lab',
     'nav.notes': 'Notas',
     'nav.contact': 'Contacto',
     'nav.consulting': 'Consultoría',
     'nav.toggle': 'Abrir menú',
     'nav.skipToContent': 'Saltar al contenido',
+
+    // AI Section
+    'ai.hero.eyebrow': 'Sistemas Autónomos · Rigor SRE',
+    'ai.hero.title': 'Arneses de ejecución deterministas para modelos estocásticos de IA',
+    'ai.hero.description':
+      'Los modelos fundacionales son motores de ejecución estocásticos y no confiables. La ingeniería reside en el arnés de plataforma delimitado: semáforos a nivel de kernel, worktrees efímeros zero-copy, disyuntores de bucles dinámicos y puertas de evaluación en CI.',
+    'ai.diagram.heading': 'Plano de Ejecución de Agentes Autónomos',
+    'ai.diagram.caption':
+      'Despacho de tareas, recuperación de conocimiento vía FastMCP, ejecución aislada en worktrees y revisión adversarial.',
+    'ai.diagram.legend':
+      'Cada operación del agente corre en un Git worktree aislado. Las acciones destructivas activan una puerta HITL sincrónica. Las PRs son auditadas por una familia de modelos independiente antes de la revisión humana.',
+    'ai.pillars.heading': 'Los Cinco Pilares de la Ingeniería del Arnés',
+    'ai.pillars.sub': 'Operando enjambres autónomos con ingeniería de sistemas determinista.',
+    'ai.catalog.heading': 'Enjambre Activo de Agentes y Protocolos',
+    'ai.catalog.sub': 'Roles autónomos, doctrinas operativas y servidores de herramientas headless.',
+    'ai.roadmap.heading': 'Currículum Técnico de 104 Semanas',
+    'ai.roadmap.sub': 'Desde el Hardware del Homelab hasta la Ingeniería de Plataforma de Agentes.',
 
     // Hero
     'hero.eyebrow': 'Ingeniero de plataforma · Infraestructura para IA',
