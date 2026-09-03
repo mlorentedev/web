@@ -91,6 +91,84 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  # WEB-103. release-please builds the release PR body from the changelog, and
+  # the changelog reproduces each commit subject *including its closing
+  # keywords* — so a commit that once said `closes #N` re-arms that keyword on
+  # the release PR, whether or not `#N` is still finished.
+  #
+  # `#184` carried `closes [#244](…)` from `9f29f1c`, and `#244` is open on
+  # purpose: `#248` fixed it interim. The manual defence — edit the line to
+  # `refs` immediately before merging — was applied, and lost 37 minutes later
+  # when an unrelated docs PR merged and regenerated the body. *Any* push to
+  # master re-arms it, not only a releasable one, so the manual step has to be
+  # redone after every merge and will eventually be skipped.
+  #
+  # The job runs on every PR rather than being conditioned on the branch,
+  # because `gate` treats a **skipped** dependency as a failure — deliberately,
+  # see below. So the branch test lives inside the step, which exits 0 with a
+  # sentence for anything that is not a release branch.
+  closing-refs:
+    name: Release closing refs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # Everything from the event goes through `env` rather than straight into
+      # the script — `head_ref` is a branch name, which a fork controls.
+      #
+      # The query is the check. A grep over the body is not equivalent and was
+      # measured returning nothing on a body that plainly contained one:
+      # release-please writes `closes [#244](url)`, the markdown-link form,
+      # which GitHub parses and a `closes[[:space:]]*#` pattern does not.
+      - name: Refuse a release PR that would close an issue still open
+        working-directory: site
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_REF: ${{ github.head_ref }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          # The query runs on EVERY pull request, and only the enforcement is
+          # conditional. If it ran solely on release branches, a wrong token
+          # scope or a renamed field would first surface on the one PR whose job
+          # is to ship. Off a release branch the checker runs `--advisory`:
+          # closing an open issue is the intended case there and passes, while an
+          # unreadable answer still fails. So the plumbing is exercised
+          # continuously and the rule is applied where it belongs.
+          case "$HEAD_REF" in
+            release-please--branches--*) mode="" ;;
+            *) mode="--advisory" ;;
+          esac
+
+          # SC2016 fires on `$owner`/`$name`/`$number` below. They are GraphQL
+          # variables, bound by the `-f`/`-F` flags on the same command, and
+          # single quotes are what keeps the shell from eating them. Expanding
+          # them would send an empty query.
+          # shellcheck disable=SC2016
+          payload=$(gh api graphql \
+            -f owner="$OWNER" -f name="$REPO" -F number="$PR_NUMBER" \
+            -f query='query($owner: String!, $name: String!, $number: Int!) {
+              repository(owner: $owner, name: $name) {
+                pullRequest(number: $number) {
+                  closingIssuesReferences(first: 50) { nodes { number state title } }
+                }
+              }
+            }')
+
+          printf '%s' "$payload" | node scripts/check-closing-refs.mjs ${mode:+"$mode"}
+
   # One context with a stable name, so branch protection can require it.
   #
   # `#275` measured that `master` required *nothing*: a pull request was
@@ -117,7 +195,7 @@ jobs:
     # the job is skipped when a dependency fails, and a skipped required check
     # does not block a merge — it reports neutral. The job has to *run* and fail.
     if: always()
-    needs: [test, validate]
+    needs: [test, validate, closing-refs]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

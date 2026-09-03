@@ -1,0 +1,42 @@
+{
+  "_comment": "The response captured from PR #184 on 2026-09-03, before the closes->refs edit, with only this key added. Real data: #244 was linked as a closing reference while still OPEN, which is the defect WEB-103 exists to catch. The extra fields beside closingIssuesReferences are from the query as it was run and are kept deliberately, so the fixture proves the checker tolerates both a wider selection than it reads and an unknown key beside it.",
+  "data": {
+    "repository": {
+      "pullRequest": {
+        "title": "chore(master): release 1.12.0",
+        "state": "OPEN",
+        "mergeable": "MERGEABLE",
+        "headRefOid": "8488c45c31878b4044e6901132610407fcbf19fe",
+        "closingIssuesReferences": {
+          "nodes": [
+            {
+              "number": 105,
+              "state": "CLOSED",
+              "title": "WEB-030: newsletter consent checkbox is neither enforced nor sent"
+            },
+            {
+              "number": 106,
+              "state": "CLOSED",
+              "title": "WEB-031: cookie banner breaks completely when localStorage throws"
+            },
+            {
+              "number": 181,
+              "state": "CLOSED",
+              "title": "WEB-080: rebuild the IDP section as the single public platform surface"
+            },
+            {
+              "number": 235,
+              "state": "CLOSED",
+              "title": "WEB-090: notes end with no way to contact you — the footer half is done, the notes half is not"
+            },
+            {
+              "number": 244,
+              "state": "OPEN",
+              "title": "WEB-096: rendered mermaid diagrams overflow the prose column — one is 3573px wide"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
