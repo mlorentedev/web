@@ -49,7 +49,8 @@ export const aiArtifacts: AiArtifact[] = [
     language: 'go',
     filename: 'pkg/semaphore/flock.go',
     codeSnippet: `// AcquireWorktreeLock acquires a non-blocking kernel file lock (flock).
-// It retries with a monotonic deadline to prevent race conditions across agents.
+// Retries with monotonic deadline. Caller releases via defer file.Close().
+// (POSIX primitive for Linux/macOS; Windows uses LockFileEx).
 func AcquireWorktreeLock(lockPath string, timeout time.Duration) (*os.File, error) {
     file, err := os.OpenFile(lockPath, os.O_CREATE|os.O_RDWR, 0600)
     if err != nil {
