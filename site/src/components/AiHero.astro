@@ -1,0 +1,40 @@
+---
+/**
+ * The AI Harness Hero opening.
+ *
+ * Establishes the engineering posture: foundation models as stochastic execution
+ * engines operating inside a deterministic, bounded platform harness.
+ */
+import SectionHeading from './SectionHeading.astro';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+---
+
+<section class="max-w-4xl mx-auto px-4 pt-10 pb-8" data-ai-section="hero">
+  <SectionHeading number="00" label={t('ai.hero.eyebrow')} margin="mb-3" />
+
+  <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3">
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-ink-900 tracking-tight">
+      {t('ai.hero.title')}
+    </h1>
+
+    <div class="flex flex-wrap items-center gap-2 shrink-0 text-xs font-mono">
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ok-50 text-ok-700 border border-ok-200">
+        <span class="h-1.5 w-1.5 rounded-full bg-ok-500"></span>
+        Zero AI Attribution
+      </span>
+      <span class="px-2.5 py-0.5 rounded-full bg-panel-100 text-panel-700 border border-panel-200">
+        Kernel flock
+      </span>
+      <span class="px-2.5 py-0.5 rounded-full bg-accent-50 text-accent-700 border border-accent-200">
+        Git Worktrees
+      </span>
+    </div>
+  </div>
+
+  <p class="text-lg text-ink-600 mt-4 leading-relaxed max-w-3xl">
+    {t('ai.hero.description')}
+  </p>
+</section>

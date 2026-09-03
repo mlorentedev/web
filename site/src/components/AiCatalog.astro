@@ -1,0 +1,86 @@
+---
+/**
+ * The AI Agent Swarm & Protocols Catalog.
+ *
+ * Renders active agents, protocols, and tool servers with verifiable access boundaries.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { labAi, type LabAiEntry } from '../data/lab-ai';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  number: string;
+}
+
+const { number } = Astro.props;
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const accessBadge = (access: LabAiEntry['access']) => {
+  switch (access) {
+    case 'public':
+      return { label: lang === 'es' ? 'Público' : 'Public', class: 'bg-ok-50 text-ok-700 border-ok-200' };
+    case 'mesh':
+      return { label: lang === 'es' ? 'Malla' : 'Mesh', class: 'bg-accent-50 text-accent-700 border-accent-200' };
+    case 'private':
+      return { label: lang === 'es' ? 'Privado' : 'Private', class: 'bg-panel-100 text-panel-700 border-panel-200' };
+  }
+};
+---
+
+<Section padding="py-14" data-ai-section="catalog">
+  <SectionHeading number={number} label={t('ai.catalog.heading')} margin="mb-2" />
+  <p class="text-sm text-ink-500 mb-8 max-w-2xl">
+    {t('ai.catalog.sub')}
+  </p>
+
+  <div class="space-y-8">
+    {labAi.groups.map((group) => (
+      <div>
+        <h3 class="text-xs font-mono uppercase tracking-widest text-ink-400 mb-4 border-b border-ink-100 pb-1">
+          <span class="text-ink-300">//</span> {lang === 'es' ? group.nameEs : group.name}
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {group.entries.map((entry) => {
+            const badge = accessBadge(entry.access);
+            return (
+              <div class="p-4 rounded-lg border border-ink-200 bg-white hover:border-accent-300 transition-colors flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-2">
+                    <h4 class="text-sm font-semibold text-ink-900">
+                      {entry.name}
+                    </h4>
+                    <span class:list={['text-xs font-mono px-2 py-0.5 rounded-full border', badge.class]}>
+                      {badge.label}
+                    </span>
+                  </div>
+                  <p class="text-xs text-ink-600 leading-relaxed mb-3">
+                    {lang === 'es' ? entry.descriptionEs : entry.description}
+                  </p>
+                </div>
+
+                {entry.url ? (
+                  <a
+                    href={entry.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-xs font-medium text-accent-700 hover:text-accent-800 transition-colors inline-flex items-center gap-1 mt-2 border-t border-ink-50 pt-2"
+                  >
+                    <span>{lang === 'es' ? 'Inspeccionar fuente' : 'Inspect source'}</span>
+                    <span>→</span>
+                  </a>
+                ) : (
+                  <span class="text-xs text-ink-400 inline-flex items-center gap-1 mt-2 border-t border-ink-50 pt-2">
+                    {entry.access === 'mesh' ? (lang === 'es' ? 'Gated por Authelia' : 'Gated by Authelia') : (lang === 'es' ? 'Repositorio privado' : 'Private repository')}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    ))}
+  </div>
+</Section>
