@@ -1,7 +1,7 @@
 ---
 id: "WEB-080"
 type: spec
-status: verifying # draft | implementing | verifying | archived
+status: archived # draft | implementing | verifying | archived
 created: "2026-08-27"
 issue: "mlorentedev/web#181"   # repo#NNN — GitHub issue / Project item that tracks this spec
 tags: [spec, proposal]

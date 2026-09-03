@@ -31,3 +31,11 @@ site/dist/
 # without vendoring megabytes of somebody else's renderer into this repo.
 # `.claude/skills/<name>` is a symlink into here, which is why both are ignored.
 .agents/
+
+# Adversarial-review transcripts. The verdict in review.md is the deliverable
+# and is committed; the transcript is the machine-readable record of HOW the
+# reviewer got there, and it is large — WEB-080's round 2 ran to 2.8 MB, past
+# this repo's own 1000 KB pre-commit ceiling. Same rule as mlorentedev/dotfiles,
+# so a spec archived here and there looks the same.
+specs/**/review-transcript.jsonl
+specs/**/review-transcript.jsonl.stderr
