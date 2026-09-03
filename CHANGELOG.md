@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.12.0](https://github.com/mlorentedev/web/compare/v1.11.0...v1.12.0) (2026-09-03)
+
+
+### Features
+
+* **ai:** scaffold dedicated AI harness section and pages ([#291](https://github.com/mlorentedev/web/issues/291)) ([ffae4ea](https://github.com/mlorentedev/web/commit/ffae4eaea7e8f6521f8b1b779f1838a3ded9c252))
+* **ci:** refuse a release PR that would close an issue still open ([#289](https://github.com/mlorentedev/web/issues/289)) ([aad0080](https://github.com/mlorentedev/web/commit/aad00802108aeeb9c54ccd2bae8ccaa3272a7279))
+* **lab:** add the delivery-path diagram and both diagrams' bilingual prose ([#257](https://github.com/mlorentedev/web/issues/257)) ([0b07576](https://github.com/mlorentedev/web/commit/0b07576461cd55ce8369d44d110ce969b7f94481)), closes [#181](https://github.com/mlorentedev/web/issues/181)
+* **lab:** close WEB-080 — the axe and weight checks, and what axe found ([#271](https://github.com/mlorentedev/web/issues/271)) ([410699d](https://github.com/mlorentedev/web/commit/410699dda5c4cf0599a20f3916acdb387b43c17b)), closes [#181](https://github.com/mlorentedev/web/issues/181)
+* **lab:** cut over to the rebuilt page and delete IdpPage.astro ([#267](https://github.com/mlorentedev/web/issues/267)) ([c60d96f](https://github.com/mlorentedev/web/commit/c60d96f2105715da1bd1549a7101c8fd67c62525)), closes [#181](https://github.com/mlorentedev/web/issues/181)
+* **lab:** give the platform manifest a provenance and the Lab an audit ([#255](https://github.com/mlorentedev/web/issues/255)) ([238bc41](https://github.com/mlorentedev/web/commit/238bc4124ea834cd148bf5deb5fcdc83c431b1bb)), closes [#181](https://github.com/mlorentedev/web/issues/181)
+* **lab:** migrate AI & Automations from the platform manifest ([#266](https://github.com/mlorentedev/web/issues/266)) ([975e569](https://github.com/mlorentedev/web/commit/975e569614fcbc24bab93e34a29423cf4083b266)), closes [#181](https://github.com/mlorentedev/web/issues/181)
+* **lab:** rebuild Services and Infra from the manifest, static ([#262](https://github.com/mlorentedev/web/issues/262)) ([752db33](https://github.com/mlorentedev/web/commit/752db3328e7dab16dd31a8b38479fa6ff75789d0)), closes [#181](https://github.com/mlorentedev/web/issues/181)
+* **lab:** render diagrams from a typed source, and prove it in CI ([#251](https://github.com/mlorentedev/web/issues/251)) ([4b36950](https://github.com/mlorentedev/web/commit/4b36950e5ac47da34b5bbf850b5c5002d2963697)), closes [#181](https://github.com/mlorentedev/web/issues/181)
+* **notes:** give every note a way out ([#246](https://github.com/mlorentedev/web/issues/246)) ([1a76340](https://github.com/mlorentedev/web/commit/1a763405b5916e5c4b9b763b4fea4219d4bfb4d5)), closes [#235](https://github.com/mlorentedev/web/issues/235)
+* **notes:** publish an RSS feed so the next note can be found ([#183](https://github.com/mlorentedev/web/issues/183)) ([a1466c5](https://github.com/mlorentedev/web/commit/a1466c5d527c170ec0b78da5fde4569e44e68f80))
+
+
+### Bug Fixes
+
+* **a11y:** give rendered diagrams an accessible name ([#248](https://github.com/mlorentedev/web/issues/248)) ([9f29f1c](https://github.com/mlorentedev/web/commit/9f29f1cce8efd4e6aa3f9e7cf213b6ebdcbe7420)), closes [#244](https://github.com/mlorentedev/web/issues/244)
+* **consent:** make the cookie choice survivable and reversible ([#185](https://github.com/mlorentedev/web/issues/185)) ([1b41c39](https://github.com/mlorentedev/web/commit/1b41c397fddc12f8d84e803767c27ea9475c0cbb)), closes [#106](https://github.com/mlorentedev/web/issues/106) [#107](https://github.com/mlorentedev/web/issues/107)
+* **lab:** apply the review — translate status, and assert access per row ([#263](https://github.com/mlorentedev/web/issues/263)) ([3932c49](https://github.com/mlorentedev/web/commit/3932c49db596e77a6afb7364743564d7eb6b9128)), closes [#181](https://github.com/mlorentedev/web/issues/181)
+* **newsletter:** enforce the consent checkbox and send what it says ([#186](https://github.com/mlorentedev/web/issues/186)) ([23d2e00](https://github.com/mlorentedev/web/commit/23d2e003b35bef6f1a77b2788dea41b4f393100b)), closes [#105](https://github.com/mlorentedev/web/issues/105)
+* **notes:** stop rendered diagrams overflowing the prose column ([#245](https://github.com/mlorentedev/web/issues/245)) ([6de3ac9](https://github.com/mlorentedev/web/commit/6de3ac920dd35a86f533284e89839037f9538109))
+* **tests:** stop the dist server being walked out of, and persist the review ([#279](https://github.com/mlorentedev/web/issues/279)) ([b24890a](https://github.com/mlorentedev/web/commit/b24890a5dc2afa1dbb0c585f4cec0957bbf2c582)), closes [#181](https://github.com/mlorentedev/web/issues/181)
+
 ## [1.11.0](https://github.com/mlorentedev/web/compare/v1.10.1...v1.11.0) (2026-08-25)
 
 
