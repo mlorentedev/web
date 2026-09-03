@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Autonomous agent execution within bounded platform harness",
+    "quality_profile": "showcase",
+    "viewBox": [
+      880,
+      640
+    ]
+  },
+  "components": [
+    {
+      "id": "operator",
+      "type": "frontend",
+      "label": "Human Operator",
+      "sublabel": "task intent & triage",
+      "tag": "supervision",
+      "pos": [
+        60,
+        96
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "dotf",
+      "type": "security",
+      "label": "dotf CLI (Go)",
+      "sublabel": "pools.deny & semaphores",
+      "tag": "kernel flock",
+      "pos": [
+        340,
+        96
+      ],
+      "size": [
+        210,
+        76
+      ]
+    },
+    {
+      "id": "vault",
+      "type": "database",
+      "label": "Knowledge Vault",
+      "sublabel": "1,660+ markdown nodes",
+      "tag": "frontmatter SSOT",
+      "pos": [
+        630,
+        96
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "iris",
+      "type": "messagebus",
+      "label": "Iris Engine",
+      "sublabel": "Go motor & NATS bus",
+      "tag": "agent factory",
+      "pos": [
+        60,
+        260
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "safety",
+      "type": "security",
+      "label": "Safety Brakes",
+      "sublabel": "loop breaker & HITL token",
+      "tag": "dynamic guard",
+      "pos": [
+        340,
+        260
+      ],
+      "size": [
+        210,
+        76
+      ]
+    },
+    {
+      "id": "hive",
+      "type": "backend",
+      "label": "Hive FastMCP",
+      "sublabel": "AST chunker & SQLite FTS5",
+      "tag": "hybrid RAG",
+      "pos": [
+        630,
+        260
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "worktrees",
+      "type": "cloud",
+      "label": "Ephemeral Worktrees",
+      "sublabel": "zero-copy git isolation",
+      "tag": "sandboxed edits",
+      "pos": [
+        60,
+        430
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "reviewpool",
+      "type": "external",
+      "label": "Reviewer Pool",
+      "sublabel": "cross-model diff audit",
+      "tag": "anti-sycophancy",
+      "pos": [
+        340,
+        430
+      ],
+      "size": [
+        210,
+        76
+      ]
+    },
+    {
+      "id": "cievals",
+      "type": "security",
+      "label": "CI Eval Gate",
+      "sublabel": "golden dataset & merge",
+      "tag": "regression block",
+      "pos": [
+        630,
+        430
+      ],
+      "size": [
+        190,
+        76
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Control & Knowledge Plane",
+      "wraps": [
+        "dotf",
+        "vault"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Deterministic Quality & Verification Gate",
+      "wraps": [
+        "reviewpool",
+        "cievals"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "op-dotf",
+      "from": "operator",
+      "to": "dotf",
+      "label": "dispatch"
+    },
+    {
+      "id": "dotf-vault",
+      "from": "dotf",
+      "to": "vault",
+      "label": "memlink"
+    },
+    {
+      "id": "dotf-iris",
+      "from": "dotf",
+      "to": "iris",
+      "label": "permit",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "vault-hive",
+      "from": "vault",
+      "to": "hive",
+      "label": "indexes",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "iris-safety",
+      "from": "iris",
+      "to": "safety",
+      "label": "inspect"
+    },
+    {
+      "id": "safety-hive",
+      "from": "safety",
+      "to": "hive",
+      "label": "vault_ask"
+    },
+    {
+      "id": "iris-worktrees",
+      "from": "iris",
+      "to": "worktrees",
+      "label": "provisions",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "worktrees-review",
+      "from": "worktrees",
+      "to": "reviewpool",
+      "label": "PR diff"
+    },
+    {
+      "id": "review-evals",
+      "from": "reviewpool",
+      "to": "cievals",
+      "label": "audit pass",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Control & Sandboxing",
+      "items": [
+        "Ephemeral worktrees prevent dirty state leaks",
+        "OS semaphores enforce atomic checkouts"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Deterministic Safety",
+      "items": [
+        "Dynamic AST loop breaker halts tool recursion",
+        "Synchronous HITL gate for destructive commands"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Zero-Trust Verification",
+      "items": [
+        "Cross-model review pool audits PR diffs",
+        "Golden dataset regression gates block regressions"
+      ]
+    }
+  ]
+}
