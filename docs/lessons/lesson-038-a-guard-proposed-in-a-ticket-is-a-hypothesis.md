@@ -27,6 +27,27 @@ digest(1.13.0)                        = c1b8ccb0…   (sha-a76e8fa, the release 
 digest(staging overlay's sha-69c0d4c) = 47d5da40…   (the commit before it)
 ```
 
+Reproducible, and cheaper than the code would have been — one file read for the
+left-hand side of the comparison, one registry lookup per tag for the right:
+
+```bash
+# what the staging overlay pins — the check's second operand
+gh api repos/mlorentedev/kubelab/contents/infra/k8s/overlays/staging/generated/deployments.yaml \
+  -q .content | base64 -d | grep 'kubelab-web:'
+
+# resolve a tag to its manifest-list digest (NOT `docker pull`, NOT the tag list:
+# both can report a stale or per-arch digest)
+TOK=$(curl -sS "https://auth.docker.io/token?service=registry.docker.io\
+&scope=repository:mlorentedev/kubelab-web:pull" | jq -r .token)
+for t in 1.13.0 latest sha-a76e8fa sha-69c0d4c; do
+  curl -sS -D- -o /dev/null \
+    -H "Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json" \
+    -H "Authorization: Bearer $TOK" \
+    "https://registry-1.docker.io/v2/mlorentedev/kubelab-web/manifests/$t" |
+    grep -i '^docker-content-digest'
+done
+```
+
 **The check would have refused a promotion that was correct**, and not as an
 edge case — on *every* automated release. The staging deploy PR for a release
 commit opens on the same push and waits for a human merge (ADR-046), while
@@ -59,10 +80,11 @@ override that outlives the reason for it.
 **Solution**: Before implementing a proposed check, resolve its inputs against
 history that is already known to be good, and write the numbers down.
 
-Here that cost two registry lookups and one file read, and it produced a better
-artifact than the check would have been: the closing comment on `kubelab#1585`
-records the measurement **and** declares the comparison a rejected non-check with
-its reason, so it is not proposed a third time.
+Here that cost the four commands above, and it produced a better artifact than
+the check would have been: the closing comment on
+[`kubelab#1585`](https://github.com/mlorentedev/kubelab/issues/1585) records the
+measurement **and** declares the comparison a rejected non-check with its reason,
+so it is not proposed a third time.
 
 **Rule**:
 
