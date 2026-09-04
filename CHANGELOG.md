@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.13.0](https://github.com/mlorentedev/web/compare/v1.12.0...v1.13.0) (2026-09-04)
+
+
+### Features
+
+* **ci:** dispatch prod promotion to kubelab on published release ([#298](https://github.com/mlorentedev/web/issues/298)) ([44462cd](https://github.com/mlorentedev/web/commit/44462cd1c6bf80664ce6869d7b3353a483797a46))
+* **home:** streamline landing page into cohesive proof of work ([#300](https://github.com/mlorentedev/web/issues/300)) ([69c0d4c](https://github.com/mlorentedev/web/commit/69c0d4c33e365bf049eb99669d6c2ce58f371bc0))
+
 ## [1.12.0](https://github.com/mlorentedev/web/compare/v1.11.0...v1.12.0) (2026-09-03)
 
 
