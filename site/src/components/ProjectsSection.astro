@@ -18,8 +18,8 @@ const t = useTranslations(lang);
 <Section id="projects">
   <SectionHeading label={t('home.projects')} margin="mb-6" />
 
-  <div class="mb-8 rounded-lg border border-ink-200 bg-white p-4 shadow-sm">
-    <div class="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-ink-100">
+  <div class="mb-8 rounded-lg border border-ink-200 bg-white p-4 shadow-sm max-w-full overflow-hidden">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-2 border-b border-ink-100">
       <div class="flex items-center gap-2">
         <span class="h-2 w-2 rounded-full bg-ok-500 animate-pulse"></span>
         <span class="text-xs font-mono font-medium text-ink-600 uppercase tracking-wider">
@@ -35,7 +35,7 @@ const t = useTranslations(lang);
         github.com/mlorentedev →
       </a>
     </div>
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto max-w-full">
       <a href="https://github.com/mlorentedev" target="_blank" rel="noopener noreferrer" class="block min-w-[663px]">
         <img
           src={ghchartSrc}
