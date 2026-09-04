@@ -9,7 +9,8 @@ name: Release & Deploy
 #      then fires a repository_dispatch to mlorentedev/kubelab → staging.
 #   3. When a release PR merges, the SAME image digest is re-tagged to the clean
 #      semver `X.Y.Z` (no rebuild) — so prod ships the exact bytes staging
-#      validated. kubelab's gated promote-prod.yml then ships that semver tag.
+#      validated. Fires a repository_dispatch to mlorentedev/kubelab to open the
+#      gated prod promotion PR (ADR-046 / WEB-108).
 #
 # Pull-request validation (Dockerfile build, no push) lives in pr-validation.yml.
 #
@@ -141,3 +142,16 @@ jobs:
             "${IMAGE}:${SHA_TAG}"
           echo "Promoted ${IMAGE}:${SHA_TAG} -> ${IMAGE}:${VERSION}, ${IMAGE}:latest"
           docker buildx imagetools inspect "${IMAGE}:${VERSION}"
+
+      - name: Notify kubelab (prod promotion)
+        env:
+          TOKEN: ${{ secrets.KUBELAB_DISPATCH_TOKEN }}
+          VERSION: ${{ needs.release-please.outputs.version }}
+        run: |
+          curl --fail-with-body -sS -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/mlorentedev/kubelab/dispatches \
+            -d "$(printf '{"event_type":"web-release-published","client_payload":{"version":"%s"}}' "$VERSION")"
+          echo "Dispatched web-release-published (version=$VERSION) to mlorentedev/kubelab"
