@@ -71,6 +71,8 @@ export const ui = {
     'hero.subtitle':
       'Almost everyone building for AI agents arrives from the application side. I arrive from the metal — Kubernetes on hardware I own, mesh, split DNS, GitOps that reconciles in under thirty seconds. That platform is where my own agents now run, under a harness with hard limits. The homelab below is the proof. The agent platform is what I am building on it.',
     'hero.cta': 'Tell me what you are building',
+    'hero.explorePlatform': 'Explore my platform',
+    'hero.whatIBuild': 'What I build on it',
 
     // Cockpit (WEB-157 / PORT-03)
     'idp.heading': 'Platform telemetry',
@@ -358,7 +360,7 @@ export const ui = {
 
     // Home sections
     'home.stack': 'What I work with',
-    'home.projects': 'What I build',
+    'home.projects': 'What I build on it',
 
     // Projects
     'projects.viewProject': 'View project',
@@ -505,6 +507,8 @@ export const ui = {
     'hero.subtitle':
       'Casi todo el que construye para agentes de IA llega desde el lado de la aplicación. Yo llego desde el metal — Kubernetes sobre hardware que es mío, malla, DNS partido, GitOps que reconcilia en menos de treinta segundos. Ahí es donde corren ahora mis propios agentes, bajo un harness con límites duros. El homelab de abajo es la prueba. La plataforma de agentes es lo que estoy construyendo encima.',
     'hero.cta': 'Cuéntame qué estás construyendo',
+    'hero.explorePlatform': 'Explora mi plataforma',
+    'hero.whatIBuild': 'Lo que construyo encima',
 
     // Cockpit (WEB-157 / PORT-03)
     'idp.heading': 'Telemetría de plataforma',
@@ -793,7 +797,7 @@ export const ui = {
 
     // Home sections
     'home.stack': 'Con qué trabajo',
-    'home.projects': 'Lo que construyo',
+    'home.projects': 'Lo que construyo encima',
 
     // Projects
     'projects.viewProject': 'Ver proyecto',

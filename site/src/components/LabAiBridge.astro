@@ -1,0 +1,43 @@
+---
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import type { Lang } from '../i18n/ui';
+import { useTranslatedPath } from '../i18n/utils';
+
+interface Props {
+  number?: string;
+  lang: Lang;
+}
+
+const { number, lang } = Astro.props;
+const translatePath = useTranslatedPath(lang);
+const aiHref = translatePath('/ai');
+const headingLabel = lang === 'es' ? 'Plano de ejecución autónomo' : 'Autonomous execution plane';
+---
+
+<Section padding="py-12">
+  <SectionHeading number={number} label={headingLabel} margin="mb-6" />
+  <div class="rounded-xl border border-ink-200 bg-gradient-to-br from-panel-900 to-panel-950 p-6 sm:p-8 text-panel-100 shadow-md">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="max-w-2xl">
+        <h3 class="text-xl sm:text-2xl font-bold text-white tracking-tight [text-wrap:balance]">
+          {lang === 'es' ? '¿Cómo construyo en la era de los agentes?' : 'How do I build in this agentic era?'}
+        </h3>
+        <p class="text-sm sm:text-base text-panel-300 mt-2 leading-relaxed [text-wrap:pretty]">
+          {lang === 'es'
+            ? 'Los modelos estocásticos de IA no pueden dejarse sin contención. Esta plataforma es donde operan — acotados por semáforos POSIX en el kernel, sandboxes zero-copy en Git y revisión adversarial cruzada.'
+            : 'Stochastic AI models cannot run unconstrained. The platform above is where they execute — bounded by kernel flock semaphores, zero-copy Git worktrees, and cross-model adversarial review gates.'}
+        </p>
+      </div>
+      <div class="shrink-0">
+        <a
+          href={aiHref}
+          class="inline-flex items-center gap-2 rounded-md bg-accent-700 hover:bg-accent-600 px-4 py-2.5 text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent-400 shadow-sm"
+        >
+          <span>{lang === 'es' ? 'Explorar el harness de IA' : 'Explore the AI Harness'}</span>
+          <span class="font-mono">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</Section>

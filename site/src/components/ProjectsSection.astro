@@ -2,6 +2,7 @@
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { projects, localize } from '../data/portfolio';
+import { ghchartSrc } from '../data/site';
 import ProjectCard from './ProjectCard.astro';
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
@@ -15,7 +16,39 @@ const t = useTranslations(lang);
 ---
 
 <Section id="projects">
-  <SectionHeading label={t('home.projects')} margin="mb-8" />
+  <SectionHeading label={t('home.projects')} margin="mb-6" />
+
+  <div class="mb-8 rounded-lg border border-ink-200 bg-white p-4 shadow-sm">
+    <div class="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-ink-100">
+      <div class="flex items-center gap-2">
+        <span class="h-2 w-2 rounded-full bg-ok-500 animate-pulse"></span>
+        <span class="text-xs font-mono font-medium text-ink-600 uppercase tracking-wider">
+          {lang === 'es' ? 'Actividad de commits · mlorentedev' : 'GitHub Commit Activity · mlorentedev'}
+        </span>
+      </div>
+      <a
+        href="https://github.com/mlorentedev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-xs font-mono text-accent-700 hover:text-accent-900 transition-colors"
+      >
+        github.com/mlorentedev →
+      </a>
+    </div>
+    <div class="overflow-x-auto">
+      <a href="https://github.com/mlorentedev" target="_blank" rel="noopener noreferrer" class="block min-w-[663px]">
+        <img
+          src={ghchartSrc}
+          alt={t('meta.ghchart.alt')}
+          width="663"
+          height="104"
+          class="w-full hover:opacity-90 transition-opacity"
+          loading="lazy"
+        />
+      </a>
+    </div>
+  </div>
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     {projects.map((project) => (
       <ProjectCard project={localize(project, lang)} lang={lang} />

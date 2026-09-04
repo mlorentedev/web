@@ -27,6 +27,7 @@ import LabAutomations from './LabAutomations.astro';
 import LabSlos from './LabSlos.astro';
 import LabProbe from './LabProbe.astro';
 import LabProvenance from './LabProvenance.astro';
+import LabAiBridge from './LabAiBridge.astro';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -69,6 +70,8 @@ const t = useTranslations(lang);
     <LabSlos number="07" />
 
     <LabProbe number="08" />
+
+    <LabAiBridge number="09" lang={lang} />
 
     <LabProvenance />
   </main>

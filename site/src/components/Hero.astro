@@ -9,36 +9,37 @@ const labHref = translatePath('/lab');
 const ctaHref = translatePath('/contact');
 ---
 
-<div class="max-w-4xl mx-auto px-4 pt-6 pb-12 text-gray-800">
-  <div class="flex items-center gap-3 mb-5">
-    <p class="text-sm font-medium text-gray-500 tracking-widest uppercase">
-      <span class="text-cyan-700">[</span> {t('hero.eyebrow')} <span class="text-cyan-700">]</span>
+<div class="max-w-4xl mx-auto px-4 pt-8 pb-12 text-ink-900">
+  <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-5">
+    <p class="text-xs sm:text-sm font-mono font-medium text-ink-500 tracking-wider uppercase">
+      <span class="text-accent-700">[</span> {t('hero.eyebrow')} <span class="text-accent-700">]</span>
     </p>
-    <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono bg-emerald-50 text-emerald-700 border border-emerald-200/80">
-      <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono bg-ok-50 text-ok-700 border border-ok-200/80">
+      <span class="h-1.5 w-1.5 rounded-full bg-ok-500 animate-pulse"></span>
       KubeLab 24/7 · GitOps
     </span>
   </div>
-  <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">{t('hero.title')}</h1>
-  <p class="text-xl text-gray-500 mt-5 leading-relaxed">{t('hero.subtitle')}</p>
+  <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink-900 tracking-tight leading-[1.18] [text-wrap:balance]">{t('hero.title')}</h1>
+  <p class="text-base sm:text-lg lg:text-xl text-ink-600 mt-5 leading-relaxed max-w-3xl [text-wrap:pretty]">{t('hero.subtitle')}</p>
   <div class="mt-8 flex flex-wrap items-center gap-3">
     <a
       href={labHref}
-      class="inline-flex items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 shadow-sm"
+      class="inline-flex items-center gap-2 rounded-md bg-ink-900 px-4 py-2 text-sm font-medium text-white hover:bg-accent-700 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 shadow-sm"
     >
-      <span>{t('idp.cta')}</span>
+      <span>{t('hero.explorePlatform')}</span>
+      <span class="font-mono">→</span>
     </a>
     <a
       href="#projects"
-      class="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500"
+      class="inline-flex items-center gap-2 rounded-md border border-ink-300 bg-white px-4 py-2 text-sm font-medium text-ink-700 hover:border-ink-400 hover:bg-ink-50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500"
     >
-      <span>{t('home.projects')}</span>
+      <span>{t('hero.whatIBuild')}</span>
     </a>
     <a
       href={ctaHref}
-      class="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-500 hover:text-cyan-700 transition-colors"
+      class="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm text-ink-500 hover:text-accent-700 transition-colors"
     >
-      <span class="inline-block h-2 w-2 rounded-full bg-emerald-500"></span>
+      <span class="inline-block h-2 w-2 rounded-full bg-ok-500"></span>
       {t('hero.cta')}
     </a>
   </div>

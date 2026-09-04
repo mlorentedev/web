@@ -18,36 +18,37 @@ const translatePath = useTranslatedPath(lang);
 const link = project.url ?? project.github;
 ---
 
-<div class="border border-gray-200 rounded-md p-4 hover:border-cyan-700 transition-colors flex flex-col">
-  <h3 class="font-bold text-gray-800 text-base leading-snug mb-2">
-    {link ? (
-      <a
-        href={link}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="hover:text-cyan-700 transition-colors"
-      >
-        {project.title}
-      </a>
-    ) : (
-      project.title
-    )}
-  </h3>
+<div class="border border-ink-200 bg-white rounded-lg p-5 hover:border-accent-700 transition-colors flex flex-col shadow-sm">
+  <div class="flex items-baseline justify-between gap-2 mb-2">
+    <h3 class="font-bold text-ink-900 text-lg leading-snug [text-wrap:balance]">
+      {link ? (
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-accent-700 transition-colors"
+        >
+          {project.title}
+        </a>
+      ) : (
+        project.title
+      )}
+    </h3>
+    <span
+      data-metric
+      class="px-2 py-0.5 rounded bg-accent-50 text-accent-700 text-xs font-semibold tabular-nums font-mono whitespace-nowrap"
+    >
+      {project.metric}
+    </span>
+  </div>
 
-  <span
-    data-metric
-    class="self-start mb-2 px-2 py-0.5 rounded bg-cyan-50 text-cyan-700 text-xs font-semibold tabular-nums"
-  >
-    {project.metric}
-  </span>
+  <p class="text-ink-600 text-sm sm:text-base leading-relaxed mb-4 flex-grow [text-wrap:pretty]">{project.description}</p>
 
-  <p class="text-gray-600 text-base leading-relaxed mb-3 flex-grow">{project.description}</p>
-
-  <div class="flex flex-wrap items-center gap-1.5">
+  <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-ink-100">
     {project.tags.map((tag) => (
       <a
         href={translatePath(`/tags/${tag.toLowerCase()}`)}
-        class="px-1.5 py-0.5 text-xs rounded bg-gray-100 text-gray-600 hover:bg-cyan-700 hover:text-white transition-colors"
+        class="px-2 py-0.5 text-xs rounded bg-ink-100 text-ink-600 hover:bg-accent-700 hover:text-white transition-colors"
       >
         {tag}
       </a>
@@ -57,7 +58,7 @@ const link = project.url ?? project.github;
         href={link}
         target="_blank"
         rel="noopener noreferrer"
-        class="ml-auto text-xs font-medium text-cyan-700 hover:underline whitespace-nowrap"
+        class="ml-auto text-xs font-mono font-medium text-accent-700 hover:text-accent-900 hover:underline whitespace-nowrap"
       >
         {t('projects.viewProject')} &rarr;
       </a>
