@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.14.0](https://github.com/mlorentedev/web/compare/v1.13.0...v1.14.0) (2026-09-04)
+
+
+### Features
+
+* **editorial:** restore commit chart, bridge lab to ai, and polish typography ([#301](https://github.com/mlorentedev/web/issues/301)) ([05de760](https://github.com/mlorentedev/web/commit/05de760150b6e31b5d4f8d00d2e9ea57b59a277d))
+* **positioning:** sharpen systems engineer identity, contact framing, and llm metadata ([#305](https://github.com/mlorentedev/web/issues/305)) ([c9ffec1](https://github.com/mlorentedev/web/commit/c9ffec1ff4f832d24418d4359d6f65ac0b8a3b98))
+* **site:** state which release built the page ([#307](https://github.com/mlorentedev/web/issues/307)) ([efd83c5](https://github.com/mlorentedev/web/commit/efd83c5a6910fc25f311f153b5a7cb20b10638f4))
+
+
+### Bug Fixes
+
+* **responsive:** eliminate viewport overflows and purge ghost consulting key ([#309](https://github.com/mlorentedev/web/issues/309)) ([ada3bfe](https://github.com/mlorentedev/web/commit/ada3bfe74cca98b4dbfccfcff303ac8e32a3f19e)), closes [#233](https://github.com/mlorentedev/web/issues/233) [#140](https://github.com/mlorentedev/web/issues/140) [#281](https://github.com/mlorentedev/web/issues/281)
+
 ## [1.13.0](https://github.com/mlorentedev/web/compare/v1.12.0...v1.13.0) (2026-09-04)
 
 
