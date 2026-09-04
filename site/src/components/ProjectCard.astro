@@ -19,7 +19,7 @@ const link = project.url ?? project.github;
 ---
 
 <div class="border border-ink-200 bg-white rounded-lg p-5 hover:border-accent-700 transition-colors flex flex-col shadow-sm">
-  <div class="flex items-baseline justify-between gap-2 mb-2">
+  <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
     <h3 class="font-bold text-ink-900 text-lg leading-snug [text-wrap:balance]">
       {link ? (
         <a
@@ -36,7 +36,7 @@ const link = project.url ?? project.github;
     </h3>
     <span
       data-metric
-      class="px-2 py-0.5 rounded bg-accent-50 text-accent-700 text-xs font-semibold tabular-nums font-mono whitespace-nowrap"
+      class="px-2 py-0.5 rounded bg-accent-50 text-accent-700 text-xs font-semibold tabular-nums font-mono whitespace-nowrap shrink-0"
     >
       {project.metric}
     </span>

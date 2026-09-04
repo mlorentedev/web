@@ -16,7 +16,6 @@ export const ui = {
     'nav.lab': 'Lab',
     'nav.notes': 'Notes',
     'nav.contact': 'Contact',
-    'nav.consulting': 'Consulting',
     'nav.toggle': 'Toggle menu',
     'nav.skipToContent': 'Skip to content',
 
@@ -457,7 +456,6 @@ export const ui = {
     'nav.lab': 'Lab',
     'nav.notes': 'Notas',
     'nav.contact': 'Contacto',
-    'nav.consulting': 'Consultoría',
     'nav.toggle': 'Abrir menú',
     'nav.skipToContent': 'Saltar al contenido',
 
