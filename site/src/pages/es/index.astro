@@ -3,14 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import Hero from '../../components/Hero.astro';
-import CredibilityBand from '../../components/CredibilityBand.astro';
-import Timeline from '../../components/Timeline.astro';
 import ProjectsSection from '../../components/ProjectsSection.astro';
-import StackSection from '../../components/StackSection.astro';
-import CommunitySection from '../../components/CommunitySection.astro';
-import LatestNotesSection from '../../components/LatestNotesSection.astro';
 import IdpStrip from '../../components/IdpStrip.astro';
+import LatestNotesSection from '../../components/LatestNotesSection.astro';
+import Timeline from '../../components/Timeline.astro';
 import ProofSurface from '../../components/ProofSurface.astro';
+import CommunitySection from '../../components/CommunitySection.astro';
 import { getLocale } from '../../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -20,14 +18,12 @@ const lang = getLocale(Astro.currentLocale);
   <Header />
   <main id="main-content" class="flex-grow">
     <Hero />
-    <CredibilityBand lang={lang} />
-    <Timeline lang={lang} />
     <ProjectsSection lang={lang} />
-    <StackSection lang={lang} />
-    <CommunitySection lang={lang} />
-    <LatestNotesSection lang={lang} />
     <IdpStrip lang={lang} />
+    <LatestNotesSection lang={lang} />
+    <Timeline lang={lang} />
     <ProofSurface lang={lang} />
+    <CommunitySection lang={lang} />
   </main>
   <Footer />
 </BaseLayout>

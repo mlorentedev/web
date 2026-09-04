@@ -17,29 +17,37 @@ const translatePath = useTranslatedPath(lang);
 const indicators = [
   {
     title: t('idp.k3s'),
-    sub: `${platform.cluster.name} (${platform.cluster.version})`,
+    sub: lang === 'es'
+      ? `${platform.cluster.version} · Flota híbrida multi-nodo`
+      : `${platform.cluster.version} · Hybrid multi-node fleet`,
     accent: 'emerald',
   },
   {
     title: t('idp.edge'),
-    sub: platform.metrics.edgeArchitecture,
+    sub: lang === 'es'
+      ? `${platform.metrics.edgeArchitecture} · Inferencia en hardware`
+      : `${platform.metrics.edgeArchitecture} · Hardware inference`,
     accent: 'emerald',
   },
   {
     title: t('idp.hive'),
-    sub: platform.metrics.contextReduction,
+    sub: lang === 'es'
+      ? 'FastMCP: reducción de contexto y grafo de memoria'
+      : 'FastMCP context reduction & memory graph',
     accent: 'emerald',
   },
   {
     title: t('idp.uptime'),
-    sub: platform.metrics.reconciliationTime,
+    sub: lang === 'es'
+      ? `Reconciliación en ${platform.metrics.reconciliationTime} · Cero ops manuales`
+      : `${platform.metrics.reconciliationTime} reconciliation · Zero manual ops`,
     accent: 'emerald',
   },
 ];
 ---
 
 <Section data-idp-strip padding="py-12">
-  <SectionHeading number="06" label={t('idp.heading')} margin="mb-6" />
+  <SectionHeading label={t('idp.heading')} margin="mb-6" />
 
     <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800/80 rounded-2xl p-6 sm:p-8 text-slate-100 shadow-xl relative overflow-hidden">
       <div class="absolute -right-16 -top-16 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
