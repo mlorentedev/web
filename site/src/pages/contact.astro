@@ -8,9 +8,8 @@ import { site } from '../data/site';
 const [page] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'contact' && data.lang === 'en');
 const { Content } = await render(page);
 
-// Interim CTA: email from the brand SSOT (site.social) with a prefilled subject.
-// Replaces a dead Calendly booking link; swap for the real booking flow later.
-const mailto = `mailto:${site.social.email}?subject=${encodeURIComponent("Let's talk")}`;
+// Direct contact CTA using the brand SSOT (site.social) with technical prefilled subject.
+const mailto = `mailto:${site.social.email}?subject=${encodeURIComponent('Technical Inquiry — Systems & Platform Engineering')}`;
 ---
 
 <BaseLayout
@@ -21,16 +20,16 @@ const mailto = `mailto:${site.social.email}?subject=${encodeURIComponent("Let's 
   <main id="main-content" class="flex-grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">
       <div class="max-w-3xl mx-auto px-4">
-        <div class="prose prose-base max-w-none prose-p:text-base prose-p:text-gray-700 prose-headings:font-bold prose-headings:text-gray-800 prose-h1:text-3xl prose-h1:mb-10 prose-a:text-cyan-700 hover:prose-a:text-cyan-800">
+        <div class="prose prose-base max-w-none prose-p:text-base prose-p:text-ink-700 prose-headings:font-bold prose-headings:text-ink-900 prose-h1:text-3xl prose-h1:mb-8 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-2 prose-a:text-accent-700 hover:prose-a:text-accent-800">
           <Content />
         </div>
 
-        <div class="border-t border-gray-200 pt-8">
+        <div class="border-t border-ink-200 pt-8 mt-8">
           <a
             href={mailto}
-            class="inline-block px-6 py-2 bg-cyan-700 text-white rounded-md text-sm font-medium hover:bg-cyan-800 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300"
+            class="inline-block px-6 py-2.5 bg-ink-900 text-white rounded-md text-sm font-medium hover:bg-accent-700 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-300 shadow-sm"
           >
-            Let's talk
+            Email manu@mlorente.dev
           </a>
         </div>
       </div>
