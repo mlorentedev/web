@@ -66,11 +66,11 @@ export const ui = {
     // AI agents run on" against a corpus where zero of sixteen notes were about
     // AI or agents. It also published "40 services" while the platform manifest
     // said 31 and then 35 (#133) — no figure here now needs defending.
-    'hero.eyebrow': 'Platform engineer · AI infrastructure',
+    'hero.eyebrow': 'Systems & Platform Engineer · Sovereign AI Infrastructure',
     'hero.title': 'The infrastructure under the agents, not the prompts on top',
     'hero.subtitle':
       'Almost everyone building for AI agents arrives from the application side. I arrive from the metal — Kubernetes on hardware I own, mesh, split DNS, GitOps that reconciles in under thirty seconds. That platform is where my own agents now run, under a harness with hard limits. The homelab below is the proof. The agent platform is what I am building on it.',
-    'hero.cta': 'Tell me what you are building',
+    'hero.cta': 'How to work with me',
     'hero.explorePlatform': 'Explore my platform',
     'hero.whatIBuild': 'What I build on it',
 
@@ -502,11 +502,11 @@ export const ui = {
       'Reglas inspeccionables, scripts de mutex de kernel, redactor de secretos y prompts de revisión adversarial.',
 
     // Hero
-    'hero.eyebrow': 'Ingeniero de plataforma · Infraestructura para IA',
+    'hero.eyebrow': 'Ingeniería de Sistemas y Plataforma · Infraestructura Soberana de IA',
     'hero.title': 'La infraestructura de debajo de los agentes, no los prompts de encima',
     'hero.subtitle':
       'Casi todo el que construye para agentes de IA llega desde el lado de la aplicación. Yo llego desde el metal — Kubernetes sobre hardware que es mío, malla, DNS partido, GitOps que reconcilia en menos de treinta segundos. Ahí es donde corren ahora mis propios agentes, bajo un harness con límites duros. El homelab de abajo es la prueba. La plataforma de agentes es lo que estoy construyendo encima.',
-    'hero.cta': 'Cuéntame qué estás construyendo',
+    'hero.cta': 'Cómo trabajar conmigo',
     'hero.explorePlatform': 'Explora mi plataforma',
     'hero.whatIBuild': 'Lo que construyo encima',
 

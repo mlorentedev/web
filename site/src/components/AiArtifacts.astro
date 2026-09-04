@@ -20,9 +20,9 @@ const t = useTranslations(lang);
 
 const badgeColors: Record<string, string> = {
   Doctrine: 'bg-ok-50 text-ok-700 border-ok-200',
-  Concurrency: 'bg-accent-50 text-accent-700 border-accent-200',
-  Security: 'bg-danger-50 text-danger-700 border-danger-200',
   Verification: 'bg-warn-50 text-warn-700 border-warn-200',
+  Governance: 'bg-accent-50 text-accent-700 border-accent-200',
+  Architecture: 'bg-panel-100 text-panel-800 border-panel-300',
 };
 ---
 
@@ -56,7 +56,7 @@ const badgeColors: Record<string, string> = {
             </p>
 
             <div class="rounded-lg bg-panel-950 p-4 border border-panel-800 overflow-x-auto">
-              <div class="flex items-center justify-between pb-2 mb-2 border-b border-panel-800 text-[11px] font-mono text-panel-400">
+              <div class="flex items-center justify-between pb-2 mb-2 border-b border-panel-800 text-xs font-mono text-panel-400">
                 <span>{artifact.filename}</span>
                 <span>{artifact.language}</span>
               </div>
@@ -74,7 +74,7 @@ const badgeColors: Record<string, string> = {
               rel="noopener noreferrer"
               class="text-xs font-semibold text-accent-700 hover:text-accent-800 transition-colors inline-flex items-center gap-1.5"
             >
-              <span>{lang === 'es' ? 'Inspeccionar fuente / Gist' : 'Inspect source / Gist'}</span>
+              <span>{lang === 'es' ? 'Inspeccionar fuente en GitHub' : 'Inspect source on GitHub'}</span>
               <span>→</span>
             </a>
           </div>

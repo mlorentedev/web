@@ -1,29 +1,29 @@
 # mlorente.dev
 
-> Manu Lorente's personal site. Engineer — infrastructure, platforms, and products.
+> Manu Lorente's personal site and engineering platform. Systems & Platform Engineer — infrastructure under autonomous AI agents, Kubernetes bare-metal, local inference, and GitOps.
 
 ## About
 
-Manu Lorente is a platform engineer with 10+ years of experience across Spain, France, China, and the US. Background in hardware engineering (cleanroom semiconductor fab), firmware, backend systems, and cloud infrastructure. Currently focused on Kubernetes, IaC, and self-hosted platforms.
+Manu Lorente is a Systems & Platform Engineer with 10+ years of engineering experience across Spain, France, China, and the US. Background spanning CMOS image sensor testing, cleanroom hardware, low-latency firmware, Linux kernel systems, Go concurrency, and production Kubernetes platforms. Currently focused on building sovereign AI infrastructure, autonomous agent execution harnesses, and reproducible cloud-native systems.
 
 ## Site Structure
 
-- / — Homepage: projects, latest notes, GitHub activity
-- /lab/ — The internal developer platform (IDP): hybrid cloud and bare-metal topology, architecture diagrams, service catalog, SLOs, and a client-side reachability probe
-- /notes/ — Technical blog posts about platform engineering, homelab, Kubernetes, networking
-- /tags/[tag]/ — Posts and projects filtered by technology tag
-- /es/ — Spanish version of all pages (includes newsletter)
+- / — Homepage: engineering thesis, featured open-source systems, latest technical notes, and verified GitHub commit activity.
+- /lab/ — The KubeLab Platform: hybrid cloud (Hetzner, GCP) and bare-metal homelab topology, interactive architectural flows, service catalog, real-time SLOs, and client-side reachability probe.
+- /ai/ — Autonomous AI Harness: deterministic execution harnesses for stochastic AI models (OS concurrency, worktree sandboxing, in-stream secret redaction, and multi-model adversarial review gates).
+- /notes/ — Technical notes and deep dives covering systems engineering, Kubernetes internals, networking (Split DNS, WireGuard), and GitOps failure modes.
+- /contact/ — How to work with Manu: Systems & Platform Implementation (Service-as-a-Software) and Strategic Systems Engineering (Staff / Technical Advisory).
+- /es/ — Complete Spanish localization of all platform pages and technical notes.
 
-## Key Topics
+## Core Engineering Domains
 
-Platform engineering, Kubernetes (K3s), Infrastructure as Code, Terraform, Ansible, Docker, Tailscale/Headscale VPN, DNS (Pi-hole, CoreDNS), observability (Grafana, Loki), security (Authelia, CrowdSec), homelab, self-hosting, MCP servers, Go, Python, TypeScript.
+Systems Engineering, Platform Engineering, Kubernetes (K3s), Infrastructure as Code (Ansible, Terraform), Docker, GitOps (Argo CD), Autonomous Agent Harnesses, Local LLM Inference (vLLM, Ollama), Networking (WireGuard, Headscale/Tailscale, Split DNS, CoreDNS), Linux POSIX Primitives, Go, Python, Zero-Trust Security (Authelia, CrowdSec).
 
-## Projects
+## Flagship Systems & Proof of Work
 
-- KubeLab: hybrid cloud and bare-metal homelab IDP (K3s, VPN mesh, SSO, full observability)
-- Hive: MCP server for Obsidian vault context (67-82% token reduction)
-- Pollex: Local LLM English polisher on Jetson Nano
-- ts-bridge: Tailscale userspace VPN tunnel (one binary, no admin)
+- KubeLab: 24/7 hybrid cloud and bare-metal platform IDP (K3s, VPN mesh, SSO, full Prometheus/Grafana observability, automated GitOps delivery).
+- Deterministic AI Harness: OS-level agent execution framework featuring AST loop circuit breakers, zero-copy worktree sandboxing, in-stream secret scrubbing, and cross-model adversarial audit gates.
+- Pollex: Local LLM inference engine operating on edge hardware (Jetson Nano).
 
 ## Contact
 
