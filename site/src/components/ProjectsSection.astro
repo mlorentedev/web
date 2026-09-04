@@ -2,7 +2,6 @@
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { projects, localize } from '../data/portfolio';
-import { ghchartSrc } from '../data/site';
 import ProjectCard from './ProjectCard.astro';
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
@@ -15,21 +14,11 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<Section>
-  <SectionHeading number="02" label={t('home.projects')} margin="mb-8" />
-    <a href="https://github.com/mlorentedev" target="_blank" rel="noopener noreferrer">
-      <img
-        src={ghchartSrc}
-        alt={t('meta.ghchart.alt')}
-        width="663"
-        height="104"
-        class="w-full mb-8 hover:opacity-80 transition-opacity"
-        loading="lazy"
-      />
-    </a>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {projects.map((project) => (
-        <ProjectCard project={localize(project, lang)} lang={lang} />
-      ))}
-    </div>
+<Section id="projects">
+  <SectionHeading label={t('home.projects')} margin="mb-8" />
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {projects.map((project) => (
+      <ProjectCard project={localize(project, lang)} lang={lang} />
+    ))}
+  </div>
 </Section>
