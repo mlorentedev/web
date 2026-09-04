@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-37 lessons, one file each, newest first. Numbers are assigned in the order
+38 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 038 | [A guard proposed in a ticket is a hypothesis — backtest it against known-good history before building it](lesson-038-a-guard-proposed-in-a-ticket-is-a-hypothesis.md) | 2026-09-04 | `#verification` `#gitops-delivery` `#adr` |
 | 037 | [A mutation you did not verify actually mutated is not evidence — in either direction](lesson-037-a-mutation-you-did-not-verify-mutated-is-not.md) | 2026-09-02 | `#testing` `#verification` |
 | 036 | [A black-box probe tells you what happens, never why](lesson-036-a-black-box-probe-tells-you-what-happens-nev.md) | 2026-09-02 | `#verification` `#security` `#review` |
 | 035 | [A green delivery job is the pipeline's claim, not the delivery](lesson-035-a-green-delivery-job-is-the-pipelines-claim.md) | 2026-09-02 | `#delivery` `#ci-automation` `#verification` |
