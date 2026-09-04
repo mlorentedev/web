@@ -67,6 +67,16 @@ RUN npx playwright install chromium
 
 COPY --chown=node:node site/ ./
 
+# The release number, one level above the Astro project so `../version.txt`
+# resolves identically here (WORKDIR /app) and in a local checkout (WEB-106).
+#
+# It is release-please's SSOT and it lives at the repo root, outside the `COPY
+# site/` above — which is exactly why no published image ever stated which
+# release it was. Placed after the sources so a version bump invalidates only
+# the build layer, and deliberately NOT earlier: the bump must rebuild `dist/`,
+# or the site would keep serving the previous release's number.
+COPY --chown=node:node version.txt /version.txt
+
 RUN npm run build
 
 # ---------- Runtime Stage — Nginx static serving ----------
