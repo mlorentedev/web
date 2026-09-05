@@ -76,15 +76,16 @@ for (const [locale, page] of PAGES) {
   });
 }
 
-const IDP_BUDGET_BYTES = 80_000;
+const IDP_CATALOG_BUDGET_BYTES = 80_000;
+const IDP_ARCH_BUDGET_BYTES = 120_000;
 const IDP_PAGES = [
-  ['en catalog', join(distDir, 'lab/idp/index.html')],
-  ['es catalog', join(distDir, 'es/lab/idp/index.html')],
-  ['en architecture', join(distDir, 'lab/idp/architecture/index.html')],
-  ['es architecture', join(distDir, 'es/lab/idp/architecture/index.html')],
+  ['en catalog', join(distDir, 'lab/idp/index.html'), IDP_CATALOG_BUDGET_BYTES],
+  ['es catalog', join(distDir, 'es/lab/idp/index.html'), IDP_CATALOG_BUDGET_BYTES],
+  ['en architecture', join(distDir, 'lab/idp/architecture/index.html'), IDP_ARCH_BUDGET_BYTES],
+  ['es architecture', join(distDir, 'es/lab/idp/architecture/index.html'), IDP_ARCH_BUDGET_BYTES],
 ];
 
-for (const [name, page] of IDP_PAGES) {
+for (const [name, page, budget] of IDP_PAGES) {
   test(`[${name}] the built IDP page exists`, () => {
     assert.ok(
       existsSync(page),
@@ -97,9 +98,9 @@ for (const [name, page] of IDP_PAGES) {
 
     const bytes = statSync(page).size;
     assert.ok(
-      bytes < IDP_BUDGET_BYTES,
+      bytes < budget,
       `${page} is ${bytes.toLocaleString('en-US')} B, ` +
-        `over the ${IDP_BUDGET_BYTES.toLocaleString('en-US')} B budget.`,
+        `over the ${budget.toLocaleString('en-US')} B budget.`,
     );
   });
 }

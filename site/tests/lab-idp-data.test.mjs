@@ -210,6 +210,12 @@ for (const [locale, pagePath, expectedBackPath] of IDP_ARCH_PAGES) {
     assert.ok(html.includes('Tailscale Mesh'), `Tailscale Mesh missing on ${locale} IDP architecture page`);
     assert.ok(html.includes('K3s Cloud Prod'), `K3s Cloud Prod missing on ${locale} IDP architecture page`);
 
+    // Secret flow diagram embedded
+    assert.ok(html.includes('data-lab-section="secret-flow"'), `secret-flow section missing on ${locale} IDP architecture page`);
+    assert.ok(html.includes('Age Identity Key'), `Age Identity Key node missing on ${locale} IDP architecture page`);
+    assert.ok(html.includes('Mozilla SOPS'), `Mozilla SOPS node missing on ${locale} IDP architecture page`);
+    assert.ok(html.includes('Toolkit Secrets'), `Toolkit Secrets node missing on ${locale} IDP architecture page`);
+
     // Zero addressing: no IP addresses leaked
     assert.ok(!/\b162\.55\.57\.175\b/.test(html), `Hetzner IP leaked on ${locale} IDP architecture page`);
     assert.ok(!/\b100\.64\.\d{1,3}\.\d{1,3}\b/.test(html), `Tailscale IP leaked on ${locale} IDP architecture page`);
