@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.15.0](https://github.com/mlorentedev/web/compare/v1.14.0...v1.15.0) (2026-09-05)
+
+
+### Features
+
+* **ai:** wire fail-closed harness note and refine worktree terminology ([#315](https://github.com/mlorentedev/web/issues/315)) ([0302cc8](https://github.com/mlorentedev/web/commit/0302cc84d5ae4d2675ed1a6391f1de61e9d06032))
+* **lab:** add IDP GitOps delivery mesh diagram and architecture flow ([#322](https://github.com/mlorentedev/web/issues/322)) ([2e2d8e9](https://github.com/mlorentedev/web/commit/2e2d8e91b087fd880f8a4a06b40f6515067ecb8b))
+* **lab:** add IDP request path architecture flow and dedicated subpage ([#321](https://github.com/mlorentedev/web/issues/321)) ([08c83e4](https://github.com/mlorentedev/web/commit/08c83e41f66845bfb471d38989e010247e94cb2b))
+* **lab:** add IDP zero-trust secret management diagram and architecture flow ([#323](https://github.com/mlorentedev/web/issues/323)) ([557d693](https://github.com/mlorentedev/web/commit/557d693fc5bc9c42266838a383311de18e9f42fd))
+* **lab:** declare KubeLab IDP catalog data contract and provenance test ([#318](https://github.com/mlorentedev/web/issues/318)) ([c49f2db](https://github.com/mlorentedev/web/commit/c49f2db8cd0d0ea5a53fe60950eb99b0e9d74456))
+* **lab:** implement KubeLab IDP catalog page, teaser, and views ([#319](https://github.com/mlorentedev/web/issues/319)) ([bc11a81](https://github.com/mlorentedev/web/commit/bc11a818c2209a563af20daca021481a8c7c9b0a))
+* **layout:** widen the section container so card grids use the screen ([#320](https://github.com/mlorentedev/web/issues/320)) ([2cb519c](https://github.com/mlorentedev/web/commit/2cb519cfe63e1d062f953c8f05b6f2619ad5bebd))
+* **notes:** add contextual superseded notices for legacy topology notes ([#311](https://github.com/mlorentedev/web/issues/311)) ([945f863](https://github.com/mlorentedev/web/commit/945f863178a0472e8c6edfc0fc2c33d18faa62ed)), closes [#237](https://github.com/mlorentedev/web/issues/237)
+* **notes:** publish fail-closed agent harnesses technical note ([#313](https://github.com/mlorentedev/web/issues/313)) ([a63284a](https://github.com/mlorentedev/web/commit/a63284afbc785d9af98eb94c8b8bb1feacdf5aaa))
+
+
+### Bug Fixes
+
+* **i18n:** resolve SubscribeForm strings and privacy link via i18n layer ([#316](https://github.com/mlorentedev/web/issues/316)) ([6dd2d13](https://github.com/mlorentedev/web/commit/6dd2d13d6eb77829598fc1295116b40fea283b4e))
+* **notes:** reshape mermaid diagrams to eliminate horizontal overflow ([#317](https://github.com/mlorentedev/web/issues/317)) ([be58426](https://github.com/mlorentedev/web/commit/be5842604816f02e03f0233ccd76e082f02338d8))
+
 ## [1.14.0](https://github.com/mlorentedev/web/compare/v1.13.0...v1.14.0) (2026-09-04)
 
 
