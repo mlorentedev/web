@@ -38,8 +38,20 @@ import { chromium } from 'playwright';
 import { labBaseUrl } from './lib/serve.mjs';
 
 const { url: BASE, server: served } = await labBaseUrl();
-const PATHS = ['/lab', '/es/lab', '/lab/idp', '/es/lab/idp'];
-const DIAGRAM_PATHS = new Set(['/lab', '/es/lab']);
+const PATHS = [
+  '/lab',
+  '/es/lab',
+  '/lab/idp',
+  '/es/lab/idp',
+  '/lab/idp/architecture',
+  '/es/lab/idp/architecture',
+];
+const DIAGRAM_PATHS = new Set([
+  '/lab',
+  '/es/lab',
+  '/lab/idp/architecture',
+  '/es/lab/idp/architecture',
+]);
 const WIDTHS = [320, 768, 1440, 2048];
 const MIN_DIAGRAM_WIDTH = 754;
 

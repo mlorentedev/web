@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Defense-in-depth request routing and security perimeter",
+    "quality_profile": "showcase",
+    "viewBox": [
+      880,
+      640
+    ]
+  },
+  "components": [
+    {
+      "id": "client",
+      "type": "cloud",
+      "label": "Public Client",
+      "sublabel": "TLS 1.3 / HTTP/3",
+      "tag": "Anycast WAN",
+      "pos": [
+        60,
+        96
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "cloudflare",
+      "type": "cloud",
+      "label": "Cloudflare Edge",
+      "sublabel": "WAF, DDoS & CDN",
+      "tag": "DNS proxy",
+      "pos": [
+        330,
+        96
+      ],
+      "size": [
+        220,
+        76
+      ]
+    },
+    {
+      "id": "traefik",
+      "type": "frontend",
+      "label": "Traefik Ingress",
+      "sublabel": "Let's Encrypt TLS",
+      "tag": "HostSNI & Path",
+      "pos": [
+        630,
+        96
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "crowdsec",
+      "type": "security",
+      "label": "CrowdSec Engine",
+      "sublabel": "Bouncer & LAPI",
+      "tag": "IP threat intel",
+      "pos": [
+        60,
+        290
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "authelia",
+      "type": "security",
+      "label": "Authelia IAM",
+      "sublabel": "ForwardAuth Middleware",
+      "tag": "Duo MFA / 2FA",
+      "pos": [
+        330,
+        290
+      ],
+      "size": [
+        220,
+        76
+      ]
+    },
+    {
+      "id": "redis",
+      "type": "database",
+      "label": "Redis Session Store",
+      "sublabel": "Encrypted session cache",
+      "tag": "K3s pod",
+      "pos": [
+        630,
+        290
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "workloads",
+      "type": "backend",
+      "label": "KubeLab Services",
+      "sublabel": "API \u00b7 Web \u00b7 n8n",
+      "tag": "Internal Pods",
+      "pos": [
+        60,
+        476
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "vector",
+      "type": "messagebus",
+      "label": "Vector DaemonSet",
+      "sublabel": "Structured log shipper",
+      "tag": "eBPF / Syslog",
+      "pos": [
+        330,
+        476
+      ],
+      "size": [
+        220,
+        76
+      ]
+    },
+    {
+      "id": "loki",
+      "type": "database",
+      "label": "Grafana & Loki",
+      "sublabel": "LogQL & Prometheus",
+      "tag": "Observability",
+      "pos": [
+        630,
+        476
+      ],
+      "size": [
+        190,
+        76
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Edge Ingress & WAF Perimeter",
+      "wraps": [
+        "client",
+        "cloudflare",
+        "traefik"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "ForwardAuth & Threat Intelligence",
+      "wraps": [
+        "crowdsec",
+        "authelia",
+        "redis"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Internal Workloads & Telemetry Plane",
+      "wraps": [
+        "workloads",
+        "vector",
+        "loki"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "client-cf",
+      "from": "client",
+      "to": "cloudflare",
+      "label": "HTTPS"
+    },
+    {
+      "id": "cf-traefik",
+      "from": "cloudflare",
+      "to": "traefik",
+      "label": "Strict TLS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "traefik-crowdsec",
+      "from": "traefik",
+      "to": "crowdsec",
+      "label": "Bouncer check",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "traefik-authelia",
+      "from": "traefik",
+      "to": "authelia",
+      "label": "ForwardAuth",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "authelia-redis",
+      "from": "authelia",
+      "to": "redis",
+      "label": "session cache"
+    },
+    {
+      "id": "authelia-workloads",
+      "from": "authelia",
+      "to": "workloads",
+      "label": "passed auth",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "workloads-vector",
+      "from": "workloads",
+      "to": "vector",
+      "label": "container logs"
+    },
+    {
+      "id": "vector-loki",
+      "from": "vector",
+      "to": "loki",
+      "label": "Loki ingest",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Dual-layer perimeter",
+      "items": [
+        "Cloudflare proxies anycast edge traffic before origin reach",
+        "Traefik terminates TLS with automated Let's Encrypt certificates"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Zero-trust identity",
+      "items": [
+        "Internal routes gate behind Authelia forward-auth middleware",
+        "CrowdSec drops malicious scanners at the ingress gateway"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Unified telemetry",
+      "items": [
+        "Vector ships structured audit and access logs directly to Loki",
+        "Grafana surfaces real-time burn rates without opening public telemetry"
+      ]
+    }
+  ]
+}

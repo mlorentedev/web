@@ -1,0 +1,92 @@
+---
+/**
+ * KubeLab IDP (Internal Developer Platform) Architecture & Operational Flows.
+ *
+ * Visualizes the platform's defense-in-depth request lifecycle, ingress perimeter,
+ * zero-trust identity plane (Authelia), and structured telemetry (Loki/Vector).
+ *
+ * Implements strict tokens-only styling (`panel-*`, `ink-*`, `accent-*`),
+ * zero client JavaScript, and full WCAG 2.1 AA compliance with containment.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import LabDiagram from './LabDiagram.astro';
+import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+---
+
+<BaseLayout
+  title={`${t('idp.arch.title')} — Manu Lorente`}
+  description={t('idp.arch.description')}
+>
+  <Header />
+
+  <main id="main-content" class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+    <!-- Breadcrumb back link -->
+    <div class="mb-8">
+      <a
+        href={translatePath('/lab/idp')}
+        class="inline-flex items-center gap-1.5 text-xs font-mono text-ink-500 hover:text-accent-700 transition-colors focus:outline-none focus:text-accent-700"
+      >
+        <span aria-hidden="true">&larr;</span>
+        <span>{t('idp.arch.backToIdp')}</span>
+      </a>
+    </div>
+
+    <!-- Hero Header -->
+    <header class="mb-10 border-b border-panel-200 pb-8">
+      <div class="inline-flex items-center gap-2 mb-3">
+        <span class="text-xs font-mono uppercase tracking-widest text-accent-700 bg-accent-50 px-2.5 py-0.5 rounded border border-accent-200">
+          {t('idp.arch.eyebrow')}
+        </span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-ink-900 tracking-tight mb-3">
+        {t('idp.arch.title')}
+      </h1>
+      <p class="text-sm sm:text-base text-ink-600 max-w-3xl leading-relaxed mb-6">
+        {t('idp.arch.intro')}
+      </p>
+
+      <!-- Sub-navigation tabs -->
+      <nav class="flex items-center gap-2 pt-2" aria-label={t('idp.nav.sections')}>
+        <a
+          href={translatePath('/lab/idp')}
+          class="text-xs font-mono px-3 py-1.5 rounded transition-colors text-ink-600 hover:text-ink-900 hover:bg-panel-100 border border-panel-200 focus:outline-none focus:ring-1 focus:ring-accent-500"
+        >
+          {t('idp.nav.catalog')}
+        </a>
+        <a
+          href={translatePath('/lab/idp/architecture')}
+          aria-current="page"
+          class="text-xs font-mono px-3 py-1.5 rounded transition-colors bg-panel-900 text-white font-medium focus:outline-none focus:ring-1 focus:ring-accent-500"
+        >
+          {t('idp.nav.architecture')}
+        </a>
+      </nav>
+    </header>
+
+    <!-- Request Path Diagram -->
+    <div class="space-y-16">
+      <LabDiagram
+        name="request-path"
+        number="01"
+        label={t('idp.arch.requestPath.heading')}
+        caption={t('idp.arch.requestPath.caption')}
+        legend={t('idp.arch.requestPath.legend')}
+      />
+    </div>
+
+    <!-- Provenance notice -->
+    <footer class="mt-20 pt-8 border-t border-panel-200 text-xs font-mono text-ink-500 text-center">
+      <p>
+        {t('idp.arch.source')}
+      </p>
+    </footer>
+  </main>
+
+  <Footer />
+</BaseLayout>

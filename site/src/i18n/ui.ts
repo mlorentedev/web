@@ -264,6 +264,20 @@ export const ui = {
     'idp.action.open': 'Open resource',
     'idp.action.internal': 'Internal resource',
 
+    // IDP Architecture
+    'idp.nav.sections': 'IDP Sections',
+    'idp.nav.catalog': 'Catalog & Tooling',
+    'idp.nav.architecture': 'Operational Flows',
+    'idp.arch.title': 'KubeLab IDP · Operational Flows & Request Architecture',
+    'idp.arch.description': 'Public request routing, edge WAF, forward authentication, and telemetry pipeline.',
+    'idp.arch.eyebrow': 'Internal Developer Platform',
+    'idp.arch.backToIdp': 'Back to IDP Catalog',
+    'idp.arch.intro': 'Visualizing the defense-in-depth request lifecycle: from public edge Anycast and Cloudflare WAF, through Traefik ingress and Authelia forward-authentication, to containerized workloads and Loki telemetry.',
+    'idp.arch.requestPath.heading': 'Request Path & Defense-in-Depth',
+    'idp.arch.requestPath.caption': 'Dual-layer perimeter routing, zero-trust forward authentication, and structured logging.',
+    'idp.arch.requestPath.legend': 'Every inbound HTTP request terminates TLS at the Cloudflare edge before reaching the production Hetzner host over an encrypted origin tunnel. Traefik validates host headers, interrogates the CrowdSec security engine for known malicious threat intelligence, and delegates private route authentication to Authelia via ForwardAuth middleware. Container logs flow through Vector directly into Loki without exposing cluster internals or metrics endpoints to the public internet.',
+    'idp.arch.source': 'Reconciled from mlorentedev/kubelab · custom.js request architecture · zero-addressing compliant (ADR-056 §3)',
+
     // Lab teaser (section 08)
     'lab.idp.heading': 'Internal Developer Platform (IDP) Catalog',
     'lab.idp.intro': 'The operational cockpit and tooling suite: live cloud infrastructure spend, incident runbooks, security posture, and upstream dependencies.',
@@ -733,6 +747,20 @@ export const ui = {
     'idp.access.local': 'Bóveda local',
     'idp.action.open': 'Abrir recurso',
     'idp.action.internal': 'Recurso interno',
+
+    // IDP Architecture
+    'idp.nav.sections': 'Secciones del IDP',
+    'idp.nav.catalog': 'Catálogo y Herramientas',
+    'idp.nav.architecture': 'Flujos Operativos',
+    'idp.arch.title': 'KubeLab IDP · Flujos Operativos y Arquitectura de Petición',
+    'idp.arch.description': 'Enrutamiento público de peticiones, WAF perimetral, autenticación forward y pipeline de telemetría.',
+    'idp.arch.eyebrow': 'Internal Developer Platform',
+    'idp.arch.backToIdp': 'Volver al Catálogo IDP',
+    'idp.arch.intro': 'Visualización del ciclo de vida de peticiones en defensa en profundidad: desde el edge Anycast y WAF de Cloudflare, pasando por el ingress Traefik y autenticación forward con Authelia, hasta las cargas de trabajo en contenedores y la telemetría en Loki.',
+    'idp.arch.requestPath.heading': 'Ruta de Petición y Defensa en Profundidad',
+    'idp.arch.requestPath.caption': 'Enrutamiento perimetral en doble capa, autenticación forward zero-trust y registro estructurado.',
+    'idp.arch.requestPath.legend': 'Cada petición HTTP entrante termina TLS en el borde perimetral de Cloudflare antes de alcanzar el host de producción en Hetzner mediante un túnel de origen cifrado. Traefik valida las cabeceras de host, consulta al motor de seguridad CrowdSec para verificar inteligencia de amenazas conocidas y delega la autenticación de rutas privadas a Authelia mediante el middleware ForwardAuth. Los registros de contenedores viajan a través de Vector directamente hacia Loki sin exponer las interioridades del clúster ni los endpoints de métricas al internet público.',
+    'idp.arch.source': 'Reconciliado desde mlorentedev/kubelab · arquitectura de petición custom.js · conforme con zero-addressing (ADR-056 §3)',
 
     // Lab teaser (section 08)
     'lab.idp.heading': 'Catálogo del Internal Developer Platform (IDP)',

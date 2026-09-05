@@ -52,12 +52,6 @@ const PAGES = [
   ['es', join(distDir, 'es/lab/index.html')],
 ];
 
-const IDP_BUDGET_BYTES = 80_000;
-const IDP_PAGES = [
-  ['en', join(distDir, 'lab/idp/index.html')],
-  ['es', join(distDir, 'es/lab/idp/index.html')],
-];
-
 for (const [locale, page] of PAGES) {
   test(`[${locale}] the built Lab page exists`, () => {
     assert.ok(
@@ -82,21 +76,29 @@ for (const [locale, page] of PAGES) {
   });
 }
 
-for (const [locale, page] of IDP_PAGES) {
-  test(`[${locale}] the built IDP catalog page exists`, () => {
+const IDP_BUDGET_BYTES = 80_000;
+const IDP_PAGES = [
+  ['en catalog', join(distDir, 'lab/idp/index.html')],
+  ['es catalog', join(distDir, 'es/lab/idp/index.html')],
+  ['en architecture', join(distDir, 'lab/idp/architecture/index.html')],
+  ['es architecture', join(distDir, 'es/lab/idp/architecture/index.html')],
+];
+
+for (const [name, page] of IDP_PAGES) {
+  test(`[${name}] the built IDP page exists`, () => {
     assert.ok(
       existsSync(page),
       `${page} not found — this suite reads the built site, so run \`npm run build\` first`,
     );
   });
 
-  test(`[${locale}] the built IDP catalog page is under the budget`, () => {
+  test(`[${name}] the built IDP page is under the budget`, () => {
     assert.ok(existsSync(page), `${page} not found — run \`npm run build\` first`);
 
     const bytes = statSync(page).size;
     assert.ok(
       bytes < IDP_BUDGET_BYTES,
-      `dist/${locale === 'en' ? '' : 'es/'}lab/idp/index.html is ${bytes.toLocaleString('en-US')} B, ` +
+      `${page} is ${bytes.toLocaleString('en-US')} B, ` +
         `over the ${IDP_BUDGET_BYTES.toLocaleString('en-US')} B budget.`,
     );
   });
