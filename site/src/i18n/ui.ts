@@ -276,7 +276,10 @@ export const ui = {
     'idp.arch.requestPath.heading': 'Request Path & Defense-in-Depth',
     'idp.arch.requestPath.caption': 'Dual-layer perimeter routing, zero-trust forward authentication, and structured logging.',
     'idp.arch.requestPath.legend': 'Every inbound HTTP request terminates TLS at the Cloudflare edge before reaching the production Hetzner host over an encrypted origin tunnel. Traefik validates host headers, interrogates the CrowdSec security engine for known malicious threat intelligence, and delegates private route authentication to Authelia via ForwardAuth middleware. Container logs flow through Vector directly into Loki without exposing cluster internals or metrics endpoints to the public internet.',
-    'idp.arch.source': 'Reconciled from mlorentedev/kubelab · custom.js request architecture · zero-addressing compliant (ADR-056 §3)',
+    'idp.arch.gitops.heading': 'Continuous Delivery & GitOps Mesh',
+    'idp.arch.gitops.caption': 'Hub-and-spoke automated reconciliation over private WireGuard overlay tunnels.',
+    'idp.arch.gitops.legend': 'Application source code and declarative K8s manifests live in GitHub monorepos as the single source of truth. Continuous integration builds multi-architecture container images and publishes immutable sha digests to Docker Hub and GHCR. Argo CD operates as an isolated control plane hub on GCP, rendering environment-specific Kustomize overlays and reconciling spoke clusters across cloud VPS and on-prem homelab through private Tailscale WireGuard tunnels without exposing Kubernetes API port 6443 to the public internet.',
+    'idp.arch.source': 'Reconciled from mlorentedev/kubelab · custom.js request & gitops architecture · zero-addressing compliant (ADR-056 §3)',
 
     // Lab teaser (section 08)
     'lab.idp.heading': 'Internal Developer Platform (IDP) Catalog',
@@ -760,7 +763,10 @@ export const ui = {
     'idp.arch.requestPath.heading': 'Ruta de Petición y Defensa en Profundidad',
     'idp.arch.requestPath.caption': 'Enrutamiento perimetral en doble capa, autenticación forward zero-trust y registro estructurado.',
     'idp.arch.requestPath.legend': 'Cada petición HTTP entrante termina TLS en el borde perimetral de Cloudflare antes de alcanzar el host de producción en Hetzner mediante un túnel de origen cifrado. Traefik valida las cabeceras de host, consulta al motor de seguridad CrowdSec para verificar inteligencia de amenazas conocidas y delega la autenticación de rutas privadas a Authelia mediante el middleware ForwardAuth. Los registros de contenedores viajan a través de Vector directamente hacia Loki sin exponer las interioridades del clúster ni los endpoints de métricas al internet público.',
-    'idp.arch.source': 'Reconciliado desde mlorentedev/kubelab · arquitectura de petición custom.js · conforme con zero-addressing (ADR-056 §3)',
+    'idp.arch.gitops.heading': 'Entrega Continua y Malla GitOps',
+    'idp.arch.gitops.caption': 'Reconciliación automatizada hub-and-spoke sobre túneles privados WireGuard.',
+    'idp.arch.gitops.legend': 'El código fuente y los manifiestos declarativos residen en GitHub como única fuente de verdad. La integración continua compila imágenes multi-arquitectura y publica digests inmutables en Docker Hub y GHCR. Argo CD opera como un hub de plano de control aislado en GCP, renderizando overlays de Kustomize específicos por entorno y reconciliando los clústeres spoke en cloud VPS y homelab bare-metal mediante túneles privados WireGuard en Tailscale sin exponer el puerto 6443 de la API de Kubernetes al internet público.',
+    'idp.arch.source': 'Reconciliado desde mlorentedev/kubelab · arquitectura de petición y gitops custom.js · conforme con zero-addressing (ADR-056 §3)',
 
     // Lab teaser (section 08)
     'lab.idp.heading': 'Catálogo del Internal Developer Platform (IDP)',

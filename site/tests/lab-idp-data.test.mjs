@@ -204,9 +204,22 @@ for (const [locale, pagePath, expectedBackPath] of IDP_ARCH_PAGES) {
     assert.ok(html.includes('Authelia IAM'), `Authelia node missing on ${locale} IDP architecture page`);
     assert.ok(html.includes('Vector DaemonSet'), `Vector node missing on ${locale} IDP architecture page`);
 
+    // GitOps continuous delivery diagram embedded
+    assert.ok(html.includes('data-lab-section="gitops"'), `gitops section missing on ${locale} IDP architecture page`);
+    assert.ok(html.includes('Argo CD Hub'), `Argo CD Hub missing on ${locale} IDP architecture page`);
+    assert.ok(html.includes('Tailscale Mesh'), `Tailscale Mesh missing on ${locale} IDP architecture page`);
+    assert.ok(html.includes('K3s Cloud Prod'), `K3s Cloud Prod missing on ${locale} IDP architecture page`);
+
     // Zero addressing: no IP addresses leaked
     assert.ok(!/\b162\.55\.57\.175\b/.test(html), `Hetzner IP leaked on ${locale} IDP architecture page`);
     assert.ok(!/\b100\.64\.\d{1,3}\.\d{1,3}\b/.test(html), `Tailscale IP leaked on ${locale} IDP architecture page`);
     assert.ok(!/\b172\.16\.\d{1,3}\.\d{1,3}\b/.test(html), `LAN IP leaked on ${locale} IDP architecture page`);
+
+    // No duplicate IDs across inlined diagrams or markup
+    const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+    const seen = new Map();
+    for (const id of ids) seen.set(id, (seen.get(id) || 0) + 1);
+    const duplicates = [...seen.entries()].filter(([, n]) => n > 1).map(([id, n]) => `${id} ×${n}`);
+    assert.deepEqual(duplicates, [], `duplicate ids on ${locale} IDP architecture page:\n  ${duplicates.join('\n  ')}`);
   });
 }
