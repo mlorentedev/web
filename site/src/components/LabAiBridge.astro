@@ -12,6 +12,7 @@ interface Props {
 const { number, lang } = Astro.props;
 const translatePath = useTranslatedPath(lang);
 const aiHref = translatePath('/ai');
+const noteHref = translatePath('/notes/fail-closed-agent-harnesses');
 const headingLabel = lang === 'es' ? 'Plano de ejecución autónomo' : 'Autonomous execution plane';
 ---
 
@@ -25,16 +26,23 @@ const headingLabel = lang === 'es' ? 'Plano de ejecución autónomo' : 'Autonomo
         </h3>
         <p class="text-sm sm:text-base text-panel-300 mt-2 leading-relaxed [text-wrap:pretty]">
           {lang === 'es'
-            ? 'Los modelos estocásticos de IA no pueden dejarse sin contención. Esta plataforma es donde operan — acotados por semáforos POSIX en el kernel, sandboxes zero-copy en Git y revisión adversarial cruzada.'
-            : 'Stochastic AI models cannot run unconstrained. The platform above is where they execute — bounded by kernel flock semaphores, zero-copy Git worktrees, and cross-model adversarial review gates.'}
+            ? 'Los modelos estocásticos de IA no pueden dejarse sin contención. Esta plataforma es donde operan — acotados por semáforos POSIX en el kernel, worktrees efímeros de Git compartiendo .git/objects y revisión adversarial cruzada.'
+            : 'Stochastic AI models cannot run unconstrained. The platform above is where they execute — bounded by kernel flock semaphores, ephemeral Git worktrees sharing .git/objects, and cross-model adversarial review gates.'}
         </p>
       </div>
-      <div class="shrink-0">
+      <div class="shrink-0 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3">
         <a
           href={aiHref}
-          class="inline-flex items-center gap-2 rounded-md bg-accent-700 hover:bg-accent-600 px-4 py-2.5 text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent-400 shadow-sm"
+          class="inline-flex items-center justify-center gap-2 rounded-md bg-accent-700 hover:bg-accent-600 px-4 py-2.5 text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent-400 shadow-sm"
         >
           <span>{lang === 'es' ? 'Explorar el harness de IA' : 'Explore the AI Harness'}</span>
+          <span class="font-mono">→</span>
+        </a>
+        <a
+          href={noteHref}
+          class="inline-flex items-center justify-center gap-2 rounded-md border border-panel-700 bg-panel-800/80 hover:bg-panel-800 hover:border-panel-600 px-4 py-2.5 text-sm font-medium text-panel-200 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent-400 shadow-sm"
+        >
+          <span>{lang === 'es' ? 'Leer la nota técnica' : 'Read technical note'}</span>
           <span class="font-mono">→</span>
         </a>
       </div>

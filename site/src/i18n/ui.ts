@@ -23,7 +23,7 @@ export const ui = {
     'ai.hero.eyebrow': 'Autonomous Systems Architecture · Deterministic Governance',
     'ai.hero.title': 'Deterministic execution harnesses for stochastic AI models',
     'ai.hero.description':
-      'Foundation models are untrusted, stochastic execution engines. Engineering autonomous software does not reside in prompts, but in the deterministic platform harness that binds them: OS-level kernel concurrency, zero-copy ephemeral sandboxes, in-stream secret redaction, and independent adversarial review gates.',
+      'Foundation models are untrusted, stochastic execution engines. Engineering autonomous software does not reside in prompts, but in the deterministic platform harness that binds them: OS-level kernel concurrency, ephemeral worktree sandboxes, in-stream secret redaction, and independent adversarial review gates.',
     'ai.diagram.heading': 'Autonomous Agent Execution Plane',
     'ai.diagram.caption':
       'Task dispatch, knowledge retrieval via FastMCP, sandboxed worktree execution, and adversarial review.',
@@ -33,8 +33,8 @@ export const ui = {
     'ai.pillars.sub': 'Operating autonomous swarms with deterministic Unix systems engineering.',
     'ai.pillars.p1.title': 'OS Concurrency & Worktree Sandboxing',
     'ai.pillars.p1.desc':
-      'Zero-copy ephemeral git worktrees sharing the object pool. Kernel POSIX flock semaphores prevent race conditions and branch collisions across concurrent autonomous agents.',
-    'ai.pillars.p1.i1': 'Zero-copy storage isolation',
+      'Ephemeral git worktrees sharing the .git/objects pool. Kernel POSIX flock semaphores prevent race conditions and branch collisions across concurrent autonomous agents.',
+    'ai.pillars.p1.i1': 'Shared object pool isolation',
     'ai.pillars.p1.i2': 'Kernel-level flock semaphores',
     'ai.pillars.p1.i3': 'Monotonic deadline timeouts',
     'ai.pillars.p2.title': 'In-Stream Secret Redaction & JIT Injection',
@@ -463,7 +463,7 @@ export const ui = {
     'ai.hero.eyebrow': 'Arquitectura de Sistemas Autónomos · Gobernanza Determinista',
     'ai.hero.title': 'Arneses de ejecución deterministas para modelos estocásticos de IA',
     'ai.hero.description':
-      'Los modelos fundacionales son motores de ejecución estocásticos y no confiables. La ingeniería de sistemas autónomos no reside en prompts, sino en el arnés determinista que los acota: concurrencia a nivel de kernel, sandboxes efímeros zero-copy, redacción de secretos en flujo y auditorías adversariales independientes.',
+      'Los modelos fundacionales son motores de ejecución estocásticos y no confiables. La ingeniería de sistemas autónomos no reside en prompts, sino en el arnés determinista que los acota: concurrencia a nivel de kernel, sandboxes efímeros en worktrees, redacción de secretos en flujo y auditorías adversariales independientes.',
     'ai.diagram.heading': 'Plano de Ejecución de Agentes Autónomos',
     'ai.diagram.caption':
       'Despacho de tareas, recuperación de conocimiento vía FastMCP, ejecución aislada en worktrees y revisión adversarial.',
@@ -473,8 +473,8 @@ export const ui = {
     'ai.pillars.sub': 'Operando enjambres autónomos con ingeniería de sistemas Unix determinista.',
     'ai.pillars.p1.title': 'Aislamiento y Concurrencia a Nivel de OS',
     'ai.pillars.p1.desc':
-      'Worktrees efímeros zero-copy sobre el pool de objetos Git. Semáforos flock a nivel de kernel previenen colisiones de ramas y condiciones de carrera entre agentes concurrentes.',
-    'ai.pillars.p1.i1': 'Aislamiento de almacenamiento sin copias',
+      'Worktrees efímeros sobre el pool de objetos .git/objects. Semáforos flock a nivel de kernel previenen colisiones de ramas y condiciones de carrera entre agentes concurrentes.',
+    'ai.pillars.p1.i1': 'Aislamiento por pool de objetos compartidos',
     'ai.pillars.p1.i2': 'Semáforos flock a nivel de kernel',
     'ai.pillars.p1.i3': 'Límites de tiempo monótonos anti-bloqueo',
     'ai.pillars.p2.title': 'Redacción de Secretos en Flujo e Inyección JIT',
