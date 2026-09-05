@@ -37,35 +37,34 @@ Headscale gives me all of Tailscale's coordination features -- automatic key exc
 ## The architecture
 
 Headscale runs in Docker Compose on my Hetzner VPS (CX22, 5 EUR/month). The same VPS that hosts production. The Tailscale client runs on every other machine.
-
 ```mermaid
 flowchart TD
-    HS["Headscale\nvpn.kubelab.live\n(VPS - 162.55.57.175)"]
+    HS["Headscale Control Plane\nvpn.kubelab.live (162.55.57.175)"]
+    HS -.->|"Noise protocol coordination"| mesh
 
-    subgraph "Home LAN (172.16.1.0/24)"
-        RPi4["RPi4\n100.64.0.5\nDNS Gateway"]
-        K3S["k3s-server\n100.64.0.4"]
-        A1["agent-1\n100.64.0.7"]
-        A2["agent-2\n100.64.0.9"]
-        BEE["Beelink\n100.64.0.3\nOllama"]
-        JET["Jetson Nano\n100.64.0.8"]
+    subgraph mesh["Encrypted WireGuard Mesh (100.64.0.0/24)"]
+        direction TB
+        subgraph Remote["Remote Nodes"]
+            direction TB
+            MSI["MSI Workstation · 100.64.0.1"]
+            VPS["Hetzner VPS · 100.64.0.2"]
+            RPI3["RPi3 · 100.64.0.6"]
+            MSI ~~~ VPS ~~~ RPI3
+        end
+
+        subgraph LAN["Home LAN (172.16.1.0/24)"]
+            direction TB
+            RPi4["RPi4 Gateway · 100.64.0.5"]
+            K3S["k3s-server · 100.64.0.4"]
+            A1["agent-1 · 100.64.0.7"]
+            A2["agent-2 · 100.64.0.9"]
+            BEE["Beelink · 100.64.0.3"]
+            JET["Jetson Nano · 100.64.0.8"]
+            RPi4 ~~~ K3S ~~~ A1 ~~~ A2 ~~~ BEE ~~~ JET
+        end
+
+        Remote <-->|"direct p2p WireGuard tunnels"| LAN
     end
-
-    subgraph "Remote"
-        MSI["MSI Workstation\n100.64.0.1"]
-        VPS["VPS\n100.64.0.2"]
-        RPi3["RPi3\n100.64.0.6\nMonitoring"]
-    end
-
-    HS -.->|"coordination"| MSI
-    HS -.->|"coordination"| VPS
-    HS -.->|"coordination"| RPi4
-    HS -.->|"coordination"| K3S
-    HS -.->|"coordination"| A1
-    HS -.->|"coordination"| A2
-    HS -.->|"coordination"| BEE
-    HS -.->|"coordination"| JET
-    HS -.->|"coordination"| RPi3
 ```
 
 Nine nodes on the 100.64.0.0/24 range. The Headscale server itself sits outside the mesh -- it coordinates, but traffic flows directly between nodes over WireGuard tunnels. The VPS gets a Tailscale address too (100.64.0.2) so services running there are reachable over the mesh.

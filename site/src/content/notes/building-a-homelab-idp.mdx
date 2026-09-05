@@ -24,27 +24,41 @@ That is the sentence I got most wrong.
 Eight machines are powered on today. **Three of them run Kubernetes.** The other five run Docker or systemd, and that is not a migration in progress — it is the design.
 
 ```mermaid
-flowchart TB
+flowchart TD
     subgraph alwayson["Always-on cloud"]
-        VPS["Hetzner VPS · ARM64, 7.5GB<br/>Production K3s, single node<br/>Traefik · API · Web · Authelia · Grafana"]
-        GCP["gcp1 · GCP e2-small<br/>Argo CD hub, single node"]
-        RPI3["RPi3 · 0.9GB<br/>Uptime Kuma, out-of-band"]
+        direction TB
+        GCP["gcp1 · GCP e2-small\nArgo CD hub, single node"]
+        VPS["Hetzner VPS · ARM64, 7.5GB\nProduction K3s, single node\nTraefik · API · Web · Authelia · Grafana"]
+        RPI3["RPi3 · 0.9GB\nUptime Kuma, out-of-band"]
+        GCP -->|"reconciles"| VPS
+        VPS -.->|"mesh"| RPI3
     end
+
     subgraph homelab["Homelab, on demand"]
-        RPI4["RPi4 · gateway<br/>Pi-hole + CoreDNS"]
-        ACE1["ace1 · N95, 11.5GB<br/>Staging K3s, single node"]
-        ACE2["ace2 · N95, 11.5GB<br/>Dev node, agent workspaces"]
-        BEE["Beelink · N95, 7.5GB<br/>Gitea · CI runner · MinIO"]
-        JET["Jetson Nano · 3.9GB<br/>Local inference"]
+        direction TB
+        RPI4["RPi4 gateway\nPi-hole + CoreDNS"]
+        subgraph k3s_nodes["K3s & Workspaces"]
+            direction TB
+            ACE1["ace1 · N95, 11.5GB\nStaging K3s, single node"]
+            ACE2["ace2 · N95, 11.5GB\nDev node, agent workspaces"]
+            ACE1 ~~~ ACE2
+        end
+        subgraph srv_nodes["Services & Edge"]
+            direction TB
+            BEE["Beelink · N95, 7.5GB\nGitea · CI runner · MinIO"]
+            JET["Jetson Nano · 3.9GB\nLocal inference"]
+            BEE ~~~ JET
+        end
+        RPI4 --> ACE1
+        RPI4 --> ACE2
+        ACE2 ~~~ BEE
+        RPI4 --> BEE
+        RPI4 --> JET
     end
-    GCP -- "reconciles" --> VPS
-    GCP -- "reconciles" --> ACE1
-    VPS -. "mesh" .- RPI4
-    VPS -. "mesh" .- RPI3
-    RPI4 --- ACE1
-    RPI4 --- ACE2
-    RPI4 --- BEE
-    RPI4 --- JET
+
+    RPI3 ~~~ RPI4
+    GCP ==>|"reconciles"| ACE1
+    VPS -.-|"mesh tunnel"| RPI4
 ```
 
 Three Kubernetes clusters, each a single node: production on the VPS, staging on ace1, and the Argo CD hub on a small GCP instance. They do not federate. They do not share a control plane. Each one is a complete K3s install that happens to be one machine wide.
