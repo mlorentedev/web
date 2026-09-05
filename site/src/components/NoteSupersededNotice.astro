@@ -1,0 +1,41 @@
+---
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  supersededBy: {
+    title: string;
+    href: string;
+    summary: string;
+  };
+  lang: Lang;
+}
+
+const { supersededBy, lang } = Astro.props;
+---
+
+<aside
+  class="my-8 rounded-lg border border-panel-200 bg-panel-50/70 p-4 sm:p-5 text-sm text-panel-800 shadow-sm"
+  aria-label={lang === 'es' ? 'Aviso de evolución arquitectónica' : 'Architecture evolution context'}
+>
+  <div class="flex items-center gap-2 mb-2">
+    <span class="h-2 w-2 rounded-full bg-warn-500"></span>
+    <span class="text-xs font-mono font-semibold uppercase tracking-wider text-panel-600">
+      {lang === 'es' ? 'Evolución de la plataforma' : 'Platform Architecture Context'}
+    </span>
+  </div>
+  <p class="text-panel-700 leading-relaxed mb-3">
+    {supersededBy.summary}
+  </p>
+  <div class="pt-2 border-t border-panel-200/60 flex flex-wrap items-center gap-1.5 text-xs">
+    <span class="text-panel-500">
+      {lang === 'es' ? 'Referencia actual:' : 'Current architecture reference:'}
+    </span>
+    <a
+      href={supersededBy.href}
+      class="font-medium text-accent-700 hover:text-accent-900 transition-colors inline-flex items-center gap-1"
+    >
+      <span>{supersededBy.title}</span>
+      <span class="font-mono">→</span>
+    </a>
+  </div>
+</aside>

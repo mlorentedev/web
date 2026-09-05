@@ -10,6 +10,13 @@ const notes = defineCollection({
     tags: z.array(z.string()).default([]),
     lang: z.enum(['en', 'es']).default('en'),
     draft: z.boolean().default(false),
+    supersededBy: z
+      .object({
+        title: z.string(),
+        href: z.string(),
+        summary: z.string(),
+      })
+      .optional(),
   }),
 });
 
