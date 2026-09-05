@@ -5,6 +5,10 @@ pubDate: 2025-05-26
 tags: ["networking", "homelab", "architecture"]
 draft: false
 lang: en
+supersededBy:
+  title: "The Homelab IDP I Planned, and the One I Actually Run"
+  href: "/notes/building-a-homelab-idp"
+  summary: "This note documents the 2025 hybrid topology with multi-node K3s over Proxmox VMs. The platform has since removed the hypervisor layer in favor of bare-metal nodes, independent single-node K3s clusters per environment, and automated GitOps delivery via Argo CD."
 ---
 
 Someone asked me recently for a diagram of my homelab. I opened a blank canvas and stared at it for ten minutes. The problem wasn't that I didn't know the topology. The problem was that there are three topologies, layered on top of each other, and drawing one without the other two is misleading.

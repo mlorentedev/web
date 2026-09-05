@@ -2,6 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Header from '../../../components/Header.astro';
 import NoteClosing from '../../../components/NoteClosing.astro';
+import NoteSupersededNotice from '../../../components/NoteSupersededNotice.astro';
 import Footer from '../../../components/Footer.astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { getLocale, useTranslations, useTranslatedPath, formatDate, isoDate } from '../../../i18n/utils';
@@ -51,6 +52,9 @@ const formattedDate = formatDate(note.data.pubDate, lang);
               ))}
             </div>
           </header>
+          {note.data.supersededBy && (
+            <NoteSupersededNotice supersededBy={note.data.supersededBy} lang={lang} />
+          )}
           <div class="prose prose-lg max-w-none prose-headings:font-extrabold prose-headings:text-gray-800 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-800">
             <Content />
           </div>
