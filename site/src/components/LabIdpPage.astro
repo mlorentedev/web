@@ -77,6 +77,23 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
             .replace('{items}', String(totalItems))}
         </span>
       </div>
+
+      <!-- Sub-navigation tabs -->
+      <nav class="flex items-center gap-2 mt-6" aria-label={t('idp.nav.sections')}>
+        <a
+          href={translatePath('/lab/idp')}
+          aria-current="page"
+          class="text-xs font-mono px-3 py-1.5 rounded transition-colors bg-panel-900 text-white font-medium focus:outline-none focus:ring-1 focus:ring-accent-500"
+        >
+          {t('idp.nav.catalog')}
+        </a>
+        <a
+          href={translatePath('/lab/idp/architecture')}
+          class="text-xs font-mono px-3 py-1.5 rounded transition-colors text-ink-600 hover:text-ink-900 hover:bg-panel-100 border border-panel-200 focus:outline-none focus:ring-1 focus:ring-accent-500"
+        >
+          {t('idp.nav.architecture')}
+        </a>
+      </nav>
     </header>
 
     <!-- Categories Grid -->

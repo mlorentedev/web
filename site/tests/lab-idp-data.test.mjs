@@ -174,3 +174,39 @@ for (const [locale, pagePath, expectedBackPath] of IDP_HTML_PAGES) {
     }
   });
 }
+
+const IDP_ARCH_PAGES = [
+  ['en', join(siteRoot, 'dist/lab/idp/architecture/index.html'), '/lab/idp'],
+  ['es', join(siteRoot, 'dist/es/lab/idp/architecture/index.html'), '/es/lab/idp'],
+];
+
+for (const [locale, pagePath, expectedBackPath] of IDP_ARCH_PAGES) {
+  test(`[${locale}] IDP architecture page exists and has zero client JS`, () => {
+    const html = readFileSync(pagePath, 'utf8');
+
+    const executableScripts = [...html.matchAll(/<script\b([^>]*)>/g)]
+      .filter((m) => !m[1].includes('application/ld+json'));
+    assert.equal(executableScripts.length, 0, `found executable scripts on ${locale} IDP architecture page`);
+    assert.ok(!html.includes('<astro-island'), `found astro-island on ${locale} IDP architecture page`);
+  });
+
+  test(`[${locale}] IDP architecture page renders request-path diagram and back breadcrumb`, () => {
+    const html = readFileSync(pagePath, 'utf8');
+
+    assert.ok(
+      html.includes(`href="${expectedBackPath}"`),
+      `breadcrumb link to ${expectedBackPath} missing on ${locale} IDP architecture page`
+    );
+
+    // Request path diagram embedded
+    assert.ok(html.includes('data-lab-section="request-path"'), `request-path section missing on ${locale} IDP architecture page`);
+    assert.ok(html.includes('Cloudflare Edge'), `Cloudflare node missing on ${locale} IDP architecture page`);
+    assert.ok(html.includes('Authelia IAM'), `Authelia node missing on ${locale} IDP architecture page`);
+    assert.ok(html.includes('Vector DaemonSet'), `Vector node missing on ${locale} IDP architecture page`);
+
+    // Zero addressing: no IP addresses leaked
+    assert.ok(!/\b162\.55\.57\.175\b/.test(html), `Hetzner IP leaked on ${locale} IDP architecture page`);
+    assert.ok(!/\b100\.64\.\d{1,3}\.\d{1,3}\b/.test(html), `Tailscale IP leaked on ${locale} IDP architecture page`);
+    assert.ok(!/\b172\.16\.\d{1,3}\.\d{1,3}\b/.test(html), `LAN IP leaked on ${locale} IDP architecture page`);
+  });
+}

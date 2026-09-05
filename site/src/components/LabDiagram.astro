@@ -40,6 +40,7 @@
 import flowsSvg from '../diagrams/generated/flows.svg?raw';
 import topologySvg from '../diagrams/generated/topology.svg?raw';
 import harnessSvg from '../diagrams/generated/harness.svg?raw';
+import requestPathSvg from '../diagrams/generated/request-path.svg?raw';
 
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
@@ -47,7 +48,7 @@ import { getLocale, useTranslations } from '../i18n/utils';
 
 interface Props {
   /** Diagram name: the IR is `<name>.architecture.json`, the SVG `<name>.svg`. */
-  name: 'topology' | 'flows' | 'harness';
+  name: 'topology' | 'flows' | 'harness' | 'request-path';
   /** Section number in the page's sequence, e.g. "05". */
   number: string;
   /** Section heading. */
@@ -80,6 +81,7 @@ const SVGS: Record<Props['name'], string> = {
   topology: topologySvg,
   flows: flowsSvg,
   harness: harnessSvg,
+  'request-path': requestPathSvg,
 };
 
 /**
