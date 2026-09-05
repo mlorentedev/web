@@ -279,7 +279,10 @@ export const ui = {
     'idp.arch.gitops.heading': 'Continuous Delivery & GitOps Mesh',
     'idp.arch.gitops.caption': 'Hub-and-spoke automated reconciliation over private WireGuard overlay tunnels.',
     'idp.arch.gitops.legend': 'Application source code and declarative K8s manifests live in GitHub monorepos as the single source of truth. Continuous integration builds multi-architecture container images and publishes immutable sha digests to Docker Hub and GHCR. Argo CD operates as an isolated control plane hub on GCP, rendering environment-specific Kustomize overlays and reconciling spoke clusters across cloud VPS and on-prem homelab through private Tailscale WireGuard tunnels without exposing Kubernetes API port 6443 to the public internet.',
-    'idp.arch.source': 'Reconciled from mlorentedev/kubelab · custom.js request & gitops architecture · zero-addressing compliant (ADR-056 §3)',
+    'idp.arch.secretFlow.heading': 'Zero-Trust Secret Lifecycle & Cryptography',
+    'idp.arch.secretFlow.caption': 'Age envelope encryption, in-memory derivation, and ephemeral Kubernetes projections.',
+    'idp.arch.secretFlow.legend': 'No plaintext credentials ever touch version control or developer disks. Sensitive configurations are encrypted at rest using Age asymmetric keys through Mozilla SOPS. When deployed, toolkit secrets streams and decrypts the envelopes entirely in volatile memory, executes one-way cryptographic key derivation (Argon2id for Authelia user databases and bcrypt for Argo CD administrative access), and creates namespace-scoped Kubernetes Secret resources. Workload containers mount credentials exclusively via memory-backed tmpfs projections to guarantee zero disk persistence and prevent inadvertent secret exposure.',
+    'idp.arch.source': 'Reconciled from mlorentedev/kubelab · custom.js operational architecture · zero-addressing compliant (ADR-056 §3)',
 
     // Lab teaser (section 08)
     'lab.idp.heading': 'Internal Developer Platform (IDP) Catalog',
@@ -766,7 +769,10 @@ export const ui = {
     'idp.arch.gitops.heading': 'Entrega Continua y Malla GitOps',
     'idp.arch.gitops.caption': 'Reconciliación automatizada hub-and-spoke sobre túneles privados WireGuard.',
     'idp.arch.gitops.legend': 'El código fuente y los manifiestos declarativos residen en GitHub como única fuente de verdad. La integración continua compila imágenes multi-arquitectura y publica digests inmutables en Docker Hub y GHCR. Argo CD opera como un hub de plano de control aislado en GCP, renderizando overlays de Kustomize específicos por entorno y reconciliando los clústeres spoke en cloud VPS y homelab bare-metal mediante túneles privados WireGuard en Tailscale sin exponer el puerto 6443 de la API de Kubernetes al internet público.',
-    'idp.arch.source': 'Reconciliado desde mlorentedev/kubelab · arquitectura de petición y gitops custom.js · conforme con zero-addressing (ADR-056 §3)',
+    'idp.arch.secretFlow.heading': 'Ciclo de Vida de Secretos Zero-Trust y Criptografía',
+    'idp.arch.secretFlow.caption': 'Cifrado de sobre con Age, derivación en memoria y proyecciones efímeras en Kubernetes.',
+    'idp.arch.secretFlow.legend': 'Ninguna credencial en texto claro toca jamás el control de versiones ni los discos locales. Las configuraciones sensibles se cifran en reposo mediante claves asimétricas de Age a través de Mozilla SOPS. En el despliegue, toolkit secrets procesa y descifra los sobres íntegramente en memoria volátil, aplica derivación criptográfica unidireccional (Argon2id para bases de datos de Authelia y bcrypt para el acceso de administración de Argo CD) y genera objetos K8s Secret con ámbito estricto de namespace. Los contenedores montan las credenciales exclusivamente mediante proyecciones tmpfs en memoria para garantizar cero persistencia en disco y evitar fugas involuntarias.',
+    'idp.arch.source': 'Reconciliado desde mlorentedev/kubelab · arquitectura operativa custom.js · conforme con zero-addressing (ADR-056 §3)',
 
     // Lab teaser (section 08)
     'lab.idp.heading': 'Catálogo del Internal Developer Platform (IDP)',
