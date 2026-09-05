@@ -398,6 +398,16 @@ export const ui = {
     'newsletter.audience2': 'You want to stop copying tutorials and start <strong>building</strong>.',
     'newsletter.audience3': 'You\'re interested in <strong>DevOps/Platform</strong> with real examples.',
 
+    // Subscribe form (WEB-083)
+    'subscribe.placeholder': 'you@email.com',
+    'subscribe.successText': 'Done! Check your email.',
+    'subscribe.errorText': 'Please enter a valid email.',
+    'subscribe.consentText': 'Please accept the privacy policy to continue.',
+    'subscribe.consentPrefix': 'I agree to the',
+    'subscribe.privacyPolicy': 'privacy policy',
+    'subscribe.buttonSuccess': 'Received',
+    'subscribe.networkError': 'Error. Please try again.',
+
     // Lead magnet — NODO (DEFERRED 2026-03-15: keys unused post-MDX migration, kept for future NODO activation)
     'leadMagnet.pitch1': 'Everything you see here — the projects, the notes, the errors — is documented so my AI remembers it for me. Each session I pick up where I left off. No repeating context. No falling into the same mistakes.',
     'leadMagnet.pitch2': 'Yours probably doesn\'t. Every session you start from zero.',
@@ -833,6 +843,16 @@ export const ui = {
     'newsletter.audience1': 'Tienes curiosidad por montar tu propio <strong>homelab</strong>.',
     'newsletter.audience2': 'Quieres dejar de copiar tutoriales y empezar a <strong>construir</strong>.',
     'newsletter.audience3': 'Te interesa el mundo <strong>DevOps/Platform</strong> con ejemplos reales.',
+
+    // Subscribe form (WEB-083)
+    'subscribe.placeholder': 'tu@email.com',
+    'subscribe.successText': '¡Listo! Revisa tu email.',
+    'subscribe.errorText': 'Por favor, introduce un email válido.',
+    'subscribe.consentText': 'Necesito que aceptes la política de privacidad para poder escribirte.',
+    'subscribe.consentPrefix': 'Acepto la',
+    'subscribe.privacyPolicy': 'política de privacidad',
+    'subscribe.buttonSuccess': 'Recibido',
+    'subscribe.networkError': 'Error. Inténtalo de nuevo.',
 
     // Lead magnet — NODO (DEFERRED 2026-03-15: keys unused post-MDX migration, kept for future NODO activation)
     'leadMagnet.pitch1': 'Lunes: le explico el proyecto a Copilot. Martes: le explico otro a Claude. Miércoles: Copilot no recuerda el lunes.',
