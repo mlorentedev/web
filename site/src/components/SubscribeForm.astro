@@ -3,6 +3,8 @@
 // whether a request goes out, and it now checks the consent box explicitly. Turning
 // native validation back on would give one form two different error surfaces.
 import { site } from '../data/site';
+import type { Lang } from '../i18n/ui';
+import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
 interface Props {
   formId: string;
@@ -13,18 +15,25 @@ interface Props {
   successText?: string;
   errorText?: string;
   consentText?: string;
+  lang?: Lang;
 }
 
 const {
   formId,
   tag,
   utmSource = 'landing_page',
-  placeholder = 'tu@email.com',
   buttonText,
-  successText = '¡Listo! Revisa tu email.',
-  errorText = 'Por favor, introduce un email válido.',
-  consentText = 'Necesito que aceptes la política de privacidad para poder escribirte.',
+  lang = getLocale(Astro.currentLocale),
 } = Astro.props;
+
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+const placeholder = Astro.props.placeholder ?? t('subscribe.placeholder');
+const successText = Astro.props.successText ?? t('subscribe.successText');
+const errorText = Astro.props.errorText ?? t('subscribe.errorText');
+const consentText = Astro.props.consentText ?? t('subscribe.consentText');
+const privacyHref = translatePath('/legal/privacy');
 ---
 
 <div class="not-prose bg-cyan-700 text-white p-4 rounded-md max-w-xs mx-auto">
@@ -37,6 +46,8 @@ const {
     data-success-text={successText}
     data-error-text={errorText}
     data-consent-text={consentText}
+    data-button-success={t('subscribe.buttonSuccess')}
+    data-network-error={t('subscribe.networkError')}
     novalidate
   >
     <input
@@ -57,7 +68,7 @@ const {
     <div class="flex justify-center items-center text-center">
       <input type="checkbox" id={`privacy-${formId}`} name="privacy_policy" class="mr-2" required />
       <label for={`privacy-${formId}`} class="text-xs text-white">
-        Acepto la <a href="/es/legal/privacy" target="_blank" class="text-white underline">política de privacidad</a>
+        {t('subscribe.consentPrefix')} <a href={privacyHref} target="_blank" class="text-white underline">{t('subscribe.privacyPolicy')}</a>
       </label>
     </div>
     <p class="subscribe-msg text-xs text-center hidden"></p>
@@ -119,13 +130,13 @@ const {
             msg.textContent = f.dataset.successText || 'Done!';
             msg.className = 'subscribe-msg text-xs text-center text-cyan-200';
           }
-          button.textContent = 'Recibido';
+          button.textContent = f.dataset.buttonSuccess || 'Received';
         } else {
           throw new Error(`Status ${res.status}`);
         }
       } catch {
         if (msg) {
-          msg.textContent = 'Error. Inténtalo de nuevo.';
+          msg.textContent = f.dataset.networkError || 'Error. Please try again.';
           msg.className = 'subscribe-msg text-xs text-center text-red-200';
         }
         button.disabled = false;
