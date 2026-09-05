@@ -249,6 +249,31 @@ export const ui = {
     'idp.probe.summary': '{n}/{m} reachable · avg {ms}ms from your browser',
     'idp.probe.lastRun': 'Last run',
 
+    // IDP Catalog (KubeLab IDP)
+    'idp.catalog.title': 'KubeLab IDP · Control Plane & Tooling Catalog',
+    'idp.catalog.description': 'Public operational catalog, infrastructure spend, observability, and platform tooling.',
+    'idp.catalog.eyebrow': 'Internal Developer Platform',
+    'idp.catalog.backToLab': 'Back to Platform Lab',
+    'idp.catalog.intro': 'The internal developer platform powering autonomous agents, GitOps reconciliation, and edge workloads. Transparent cloud spend, incident runbooks, security posture, and core tooling.',
+    'idp.catalog.stats': '{categories} operational domains · {items} platform components · ~19€/mo cloud spend',
+    'idp.catalog.source': 'Reconciled from {repo} · commit {commit}',
+    'idp.access.public': 'Public',
+    'idp.access.mesh': 'Tailscale Mesh',
+    'idp.access.auth': 'IAM Auth',
+    'idp.access.local': 'Local Vault',
+    'idp.action.open': 'Open resource',
+    'idp.action.internal': 'Internal resource',
+
+    // Lab teaser (section 08)
+    'lab.idp.heading': 'Internal Developer Platform (IDP) Catalog',
+    'lab.idp.intro': 'The operational cockpit and tooling suite: live cloud infrastructure spend, incident runbooks, security posture, and upstream dependencies.',
+    'lab.idp.cta': 'Explore full IDP catalog',
+    'lab.idp.spendLabel': 'Monthly Cloud Spend',
+    'lab.idp.spendValue': '~19 €/mo',
+    'lab.idp.spendDate': 'Hetzner + GCP + AWS',
+    'lab.idp.categoriesLabel': 'Operational Domains',
+    'lab.idp.categoriesValue': 'Ops · Triage · Security · Tools · Status · Docs',
+
     // Lab diagrams (WEB-080). The prose lives here rather than inside the SVG:
     // one IR serves both locales, so node labels stay as identifiers — machine
     // names, protocols, environments — and every sentence a reader has to
@@ -693,6 +718,31 @@ export const ui = {
     'idp.probe.result': 'RESULTADO',
     'idp.probe.summary': '{n}/{m} alcanzables · media {ms}ms desde tu navegador',
     'idp.probe.lastRun': 'Última ejecución',
+
+    // IDP Catalog (KubeLab IDP)
+    'idp.catalog.title': 'KubeLab IDP · Catálogo de Control Plane y Herramientas',
+    'idp.catalog.description': 'Catálogo operativo público, costes de infraestructura, observabilidad y herramientas de plataforma.',
+    'idp.catalog.eyebrow': 'Internal Developer Platform',
+    'idp.catalog.backToLab': 'Volver al Lab de Plataforma',
+    'idp.catalog.intro': 'La plataforma de desarrollo interna que da soporte a los agentes autónomos, reconciliación GitOps y cargas edge. Costes cloud transparentes, runbooks de incidentes, postura de seguridad y herramientas core.',
+    'idp.catalog.stats': '{categories} dominios operativos · {items} componentes de plataforma · ~19 €/mes gasto cloud',
+    'idp.catalog.source': 'Reconciliado desde {repo} · commit {commit}',
+    'idp.access.public': 'Público',
+    'idp.access.mesh': 'Malla Tailscale',
+    'idp.access.auth': 'Autenticado (IAM)',
+    'idp.access.local': 'Bóveda local',
+    'idp.action.open': 'Abrir recurso',
+    'idp.action.internal': 'Recurso interno',
+
+    // Lab teaser (section 08)
+    'lab.idp.heading': 'Catálogo del Internal Developer Platform (IDP)',
+    'lab.idp.intro': 'El cockpit operativo y suite de herramientas: costes reales de infraestructura cloud, runbooks de incidentes, postura de seguridad y dependencias upstream.',
+    'lab.idp.cta': 'Explorar catálogo IDP completo',
+    'lab.idp.spendLabel': 'Coste Cloud Mensual',
+    'lab.idp.spendValue': '~19 €/mes',
+    'lab.idp.spendDate': 'Hetzner + GCP + AWS',
+    'lab.idp.categoriesLabel': 'Dominios Operativos',
+    'lab.idp.categoriesValue': 'Ops · Triage · Seguridad · Herramientas · Estado · Docs',
 
     // Diagramas del Lab (WEB-080). La prosa vive aquí y no dentro del SVG: un
     // único IR sirve a los dos idiomas, así que las etiquetas de los nodos se

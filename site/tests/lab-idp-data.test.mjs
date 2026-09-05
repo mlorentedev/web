@@ -76,7 +76,7 @@ test('link boundary: url is present if and only if access is public', () => {
   }
 });
 
-test('link safety: no public url references private mesh domains or local schemes', () => {
+test('link safety: no public url references private mesh domains, local schemes, or raw IP addresses', () => {
   for (const cat of catalog.categories) {
     for (const item of cat.items) {
       if (item.url) {
@@ -86,12 +86,8 @@ test('link safety: no public url references private mesh domains or local scheme
           `item ${item.id} leaked internal staging mesh domain`
         );
         assert.ok(
-          !item.url.includes('100.64.'),
-          `item ${item.id} leaked internal CGNAT address`
-        );
-        assert.ok(
-          !item.url.includes('172.16.'),
-          `item ${item.id} leaked internal LAN address`
+          !/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/.test(item.url),
+          `item ${item.id} leaked raw IP address in public url: ${item.url}`
         );
       }
     }
@@ -115,3 +111,66 @@ test('idp-catalog.ts types the data rather than leaving it untyped', () => {
   assert.ok(idpCatalogTs.includes('export interface IdpManifest'));
   assert.ok(idpCatalogTs.includes('export const idpCatalog'));
 });
+
+const IDP_HTML_PAGES = [
+  ['en', join(siteRoot, 'dist/lab/idp/index.html'), '/lab'],
+  ['es', join(siteRoot, 'dist/es/lab/idp/index.html'), '/es/lab'],
+];
+
+for (const [locale, pagePath, expectedBackPath] of IDP_HTML_PAGES) {
+  test(`[${locale}] IDP catalog page exists and has zero client JS`, () => {
+    const html = readFileSync(pagePath, 'utf8');
+
+    // No executable scripts
+    const executableScripts = [...html.matchAll(/<script\b([^>]*)>/g)]
+      .filter((m) => !m[1].includes('application/ld+json'));
+    assert.equal(executableScripts.length, 0, `found executable scripts on ${locale} IDP catalog page`);
+
+    // No Astro client islands
+    assert.ok(!html.includes('<astro-island'), `found astro-island on ${locale} IDP catalog page`);
+  });
+
+  test(`[${locale}] IDP catalog page renders all categories and back breadcrumb`, () => {
+    const html = readFileSync(pagePath, 'utf8');
+
+    // Breadcrumb back link
+    assert.ok(
+      html.includes(`href="${expectedBackPath}"`),
+      `breadcrumb link to ${expectedBackPath} missing on ${locale} IDP catalog page`
+    );
+
+    // All categories rendered
+    for (const cat of catalog.categories) {
+      const rawName = locale === 'es' ? cat.nameEs : cat.name;
+      const name = rawName.replace(/&/g, '&amp;');
+      assert.ok(html.includes(name), `category name "${name}" missing on ${locale} IDP catalog page`);
+
+      for (const item of cat.items) {
+        const itemName = item.name.replace(/&/g, '&amp;');
+        assert.ok(html.includes(itemName), `item name "${itemName}" missing on ${locale} IDP catalog page`);
+      }
+    }
+  });
+
+  test(`[${locale}] IDP catalog page respects link safety and security headers`, () => {
+    const html = readFileSync(pagePath, 'utf8');
+
+    // No private schemes or staging domains in the entire HTML
+    assert.ok(!html.includes('obsidian://'), `obsidian:// leaked into ${locale} IDP page`);
+    assert.ok(!html.includes('.staging.kubelab.live'), `staging mesh domain leaked into ${locale} IDP page`);
+
+    // All external links have rel="noopener noreferrer"
+    const externalLinks = [...html.matchAll(/<a\b[^>]*href="https?:\/\/[^"]*"[^>]*>/g)];
+    assert.ok(externalLinks.length > 0, `expected public external links on ${locale} IDP page`);
+    for (const [linkTag] of externalLinks) {
+      assert.ok(
+        linkTag.includes('rel="noopener noreferrer"'),
+        `external link missing rel="noopener noreferrer": ${linkTag}`
+      );
+      assert.ok(
+        linkTag.includes('target="_blank"'),
+        `external link missing target="_blank": ${linkTag}`
+      );
+    }
+  });
+}

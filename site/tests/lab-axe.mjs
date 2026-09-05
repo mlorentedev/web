@@ -77,7 +77,7 @@ import { labBaseUrl } from './lib/serve.mjs';
 // from somewhere else and report a clean page it never audited.
 const AXE_BUNDLE = createRequire(import.meta.url).resolve('axe-core/axe.min.js');
 
-const PATHS = ['/lab', '/es/lab'];
+const PATHS = ['/lab', '/es/lab', '/lab/idp', '/es/lab/idp'];
 
 /**
  * Both ends of the range `lab-containment.mjs` covers.

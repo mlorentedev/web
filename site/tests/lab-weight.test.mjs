@@ -52,6 +52,12 @@ const PAGES = [
   ['es', join(distDir, 'es/lab/index.html')],
 ];
 
+const IDP_BUDGET_BYTES = 80_000;
+const IDP_PAGES = [
+  ['en', join(distDir, 'lab/idp/index.html')],
+  ['es', join(distDir, 'es/lab/idp/index.html')],
+];
+
 for (const [locale, page] of PAGES) {
   test(`[${locale}] the built Lab page exists`, () => {
     assert.ok(
@@ -72,6 +78,26 @@ for (const [locale, page] of PAGES) {
         `over the ${BUDGET_BYTES.toLocaleString('en-US')} B budget from verification.md § "AC6 budget". ` +
         `Both diagrams are inline (~48 KB of it); if a third one is being added, the budget is the ` +
         `decision to revisit, not the assertion.`,
+    );
+  });
+}
+
+for (const [locale, page] of IDP_PAGES) {
+  test(`[${locale}] the built IDP catalog page exists`, () => {
+    assert.ok(
+      existsSync(page),
+      `${page} not found — this suite reads the built site, so run \`npm run build\` first`,
+    );
+  });
+
+  test(`[${locale}] the built IDP catalog page is under the budget`, () => {
+    assert.ok(existsSync(page), `${page} not found — run \`npm run build\` first`);
+
+    const bytes = statSync(page).size;
+    assert.ok(
+      bytes < IDP_BUDGET_BYTES,
+      `dist/${locale === 'en' ? '' : 'es/'}lab/idp/index.html is ${bytes.toLocaleString('en-US')} B, ` +
+        `over the ${IDP_BUDGET_BYTES.toLocaleString('en-US')} B budget.`,
     );
   });
 }
