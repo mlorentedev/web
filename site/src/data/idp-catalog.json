@@ -1,0 +1,336 @@
+{
+  "source": {
+    "repo": "mlorentedev/kubelab",
+    "path": "infra/k8s/base/services/homepage-config/bookmarks.yaml",
+    "commit": "3f85fe5ae6f09404727c930da7017a671c95074c",
+    "fixtureSha256": "edad5769a5ab45641d91a2a6c48a404956c2001ca500be94d0559500844be131"
+  },
+  "categories": [
+    {
+      "id": "ops",
+      "name": "Cloud Infrastructure & Spend",
+      "nameEs": "Infraestructura cloud y costes",
+      "description": "Real-world infrastructure hosting and transparent monthly cloud budget",
+      "descriptionEs": "Alojamiento de infraestructura real y presupuesto cloud mensual transparente",
+      "items": [
+        {
+          "id": "hetzner",
+          "name": "Hetzner CX22",
+          "sourceHref": "https://console.hetzner.cloud/billing",
+          "icon": "si-hetzner",
+          "description": "ARM64 8GB VPS hosting production K3s, Traefik, and Headscale control plane",
+          "descriptionEs": "VPS ARM64 8GB alojando K3s de producción, Traefik y el plano de control Headscale",
+          "access": "auth",
+          "spendBadge": {
+            "en": "~9€/mo",
+            "es": "~9 €/mes"
+          }
+        },
+        {
+          "id": "gcp-hub",
+          "name": "GCP Hub",
+          "sourceHref": "https://console.cloud.google.com/welcome?project=kubelab-hub",
+          "icon": "si-googlecloud",
+          "description": "e2-small instance running the central Argo CD GitOps management hub",
+          "descriptionEs": "Instancia e2-small con el hub de gestión centralizado Argo CD GitOps",
+          "access": "auth",
+          "spendBadge": {
+            "en": "~$6/mo",
+            "es": "~$6/mes"
+          }
+        },
+        {
+          "id": "aws",
+          "name": "AWS Standby",
+          "sourceHref": "https://console.aws.amazon.com/billing",
+          "icon": "si-amazonaws",
+          "description": "Cold standby infrastructure for automated disaster recovery exercises",
+          "descriptionEs": "Infraestructura de reserva en frío para ejercicios automatizados de recuperación",
+          "access": "auth",
+          "spendBadge": {
+            "en": "~$4/mo",
+            "es": "~$4/mes"
+          }
+        },
+        {
+          "id": "cloudflare-r2",
+          "name": "Cloudflare R2",
+          "sourceHref": "https://dash.cloudflare.com/?to=/:account/r2/overview",
+          "icon": "si-cloudflare",
+          "description": "Zero-egress S3-compatible storage for off-site encrypted backup snapshots",
+          "descriptionEs": "Almacenamiento S3 sin costes de egreso para snapshots de backup cifrados fuera de sitio",
+          "access": "auth"
+        },
+        {
+          "id": "vault",
+          "name": "Knowledge Vault",
+          "sourceHref": "obsidian://vault/knowledge",
+          "icon": "si-obsidian",
+          "description": "Local Obsidian repository holding architecture ADRs and technical runbooks",
+          "descriptionEs": "Bóveda local de Obsidian con ADRs de arquitectura y runbooks técnicos",
+          "access": "local"
+        }
+      ]
+    },
+    {
+      "id": "triage",
+      "name": "Incident Triage & Observability",
+      "nameEs": "Triage de incidentes y observabilidad",
+      "description": "Telemetric tracebacks, GitOps delivery state, and on-call runbooks",
+      "descriptionEs": "Trazas telemétricas, estado de entrega GitOps y runbooks de guardia",
+      "items": [
+        {
+          "id": "grafana-logs",
+          "name": "Grafana Logs",
+          "sourceHref": "https://grafana.kubelab.live/explore",
+          "icon": "si-grafana",
+          "description": "Loki cluster log exploration, LogQL telemetry, and anomaly classifiers",
+          "descriptionEs": "Exploración de logs de cluster en Loki, telemetría LogQL y clasificadores de anomalías",
+          "access": "mesh"
+        },
+        {
+          "id": "argo-sync",
+          "name": "Argo CD Sync",
+          "sourceHref": "https://argo.kubelab.live",
+          "icon": "si-argo",
+          "description": "Declarative GitOps continuous delivery and spoke cluster drift healing",
+          "descriptionEs": "Entrega continua declarativa GitOps y corrección de drift en clusters spoke",
+          "access": "mesh"
+        },
+        {
+          "id": "status-overview",
+          "name": "Status Overview",
+          "sourceHref": "https://status.kubelab.live",
+          "url": "https://status.kubelab.live",
+          "icon": "si-uptimekuma",
+          "description": "Live multi-burn-rate SLO monitoring and edge probe health status",
+          "descriptionEs": "Monitorización de SLOs multi-burn-rate en vivo y estado de sondas de salud perimetrales",
+          "access": "public"
+        },
+        {
+          "id": "sre-runbooks",
+          "name": "SRE Runbooks",
+          "sourceHref": "https://github.com/mlorentedev/kubelab/tree/master/docs/runbooks",
+          "url": "https://github.com/mlorentedev/kubelab/tree/master/docs/runbooks",
+          "icon": "mdi-book-open-page-variant",
+          "description": "Operational playbooks for platform recovery, failover, and maintenance",
+          "descriptionEs": "Playbooks operativos para recuperación de plataforma, failover y mantenimiento",
+          "access": "public"
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security & Perimeter Auditing",
+      "nameEs": "Seguridad y auditoría perimetral",
+      "description": "Automated secret scanners, TLS cipher suite testing, and perimeter audits",
+      "descriptionEs": "Escaneo automatizado de secretos, pruebas de suites TLS y auditoría de perímetro",
+      "items": [
+        {
+          "id": "gitguardian",
+          "name": "GitGuardian",
+          "sourceHref": "https://dashboard.gitguardian.com",
+          "icon": "mdi-shield-search",
+          "description": "Automated secrets detection and leak prevention across Git repositories",
+          "descriptionEs": "Detección automatizada de secretos y prevención de fugas en repositorios Git",
+          "access": "auth"
+        },
+        {
+          "id": "ssl-labs",
+          "name": "SSL Labs",
+          "sourceHref": "https://www.ssllabs.com/ssltest/analyze.html?d=kubelab.live",
+          "url": "https://www.ssllabs.com/ssltest/analyze.html?d=kubelab.live",
+          "icon": "mdi-certificate",
+          "description": "Qualys SSL Labs public A+ TLS rating and cipher configuration audit",
+          "descriptionEs": "Auditoría pública de calificación TLS A+ y configuración de cifrado en Qualys SSL Labs",
+          "access": "public"
+        },
+        {
+          "id": "headers-kubelab",
+          "name": "Headers kubelab",
+          "sourceHref": "https://securityheaders.com/?q=kubelab.live&followRedirects=on",
+          "url": "https://securityheaders.com/?q=kubelab.live&followRedirects=on",
+          "icon": "mdi-shield-check",
+          "description": "SecurityHeaders.com automated CSP, HSTS, and frame restriction verification",
+          "descriptionEs": "Verificación automatizada de CSP, HSTS y restricciones de frame en SecurityHeaders.com",
+          "access": "public"
+        },
+        {
+          "id": "headers-mlorente",
+          "name": "Headers mlorente",
+          "sourceHref": "https://securityheaders.com/?q=mlorente.dev&followRedirects=on",
+          "url": "https://securityheaders.com/?q=mlorente.dev&followRedirects=on",
+          "icon": "mdi-shield-check",
+          "description": "SecurityHeaders.com automated evaluation for the public mlorente.dev portal",
+          "descriptionEs": "Evaluación automatizada de SecurityHeaders.com para el portal público mlorente.dev",
+          "access": "public"
+        },
+        {
+          "id": "shodan",
+          "name": "Shodan Perimeter",
+          "sourceHref": "https://www.shodan.io/host/162.55.57.175",
+          "url": "https://www.shodan.io/host/162.55.57.175",
+          "icon": "mdi-magnify-scan",
+          "description": "External port visibility and attack surface verification for the production VPS",
+          "descriptionEs": "Visibilidad externa de puertos y verificación de superficie de ataque del VPS de producción",
+          "access": "public"
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "name": "Core Platform Tooling",
+      "nameEs": "Herramientas core de plataforma",
+      "description": "Identity, container image registries, code repositories, and AI token tracking",
+      "descriptionEs": "Identidad, registros de imágenes, repositorios de código y tracking de tokens IA",
+      "items": [
+        {
+          "id": "cloudflare-one",
+          "name": "Cloudflare One",
+          "sourceHref": "https://one.dash.cloudflare.com",
+          "icon": "si-cloudflare",
+          "description": "Zero Trust Network Access policies, edge DNS filtering, and warp tunnels",
+          "descriptionEs": "Políticas de Zero Trust Network Access, filtrado DNS perimetral y túneles warp",
+          "access": "auth"
+        },
+        {
+          "id": "github-kubelab",
+          "name": "GitHub kubelab",
+          "sourceHref": "https://github.com/mlorentedev/kubelab",
+          "url": "https://github.com/mlorentedev/kubelab",
+          "icon": "si-github",
+          "description": "Infrastructure as Code repository containing all Kubernetes and Ansible assets",
+          "descriptionEs": "Repositorio de infraestructura como código con todos los activos de Kubernetes y Ansible",
+          "access": "public"
+        },
+        {
+          "id": "docker-hub",
+          "name": "Docker Hub",
+          "sourceHref": "https://hub.docker.com/u/mlorentedev",
+          "url": "https://hub.docker.com/u/mlorentedev",
+          "icon": "si-docker",
+          "description": "Container image repository hosting immutable multi-arch build artifacts",
+          "descriptionEs": "Registro de imágenes de contenedores con artefactos de build inmutables multi-arquitectura",
+          "access": "public"
+        },
+        {
+          "id": "claude-usage",
+          "name": "Claude Usage",
+          "sourceHref": "https://claude.ai/settings/usage",
+          "icon": "si-anthropic",
+          "description": "Inference token consumption analytics and engineering spend tracking",
+          "descriptionEs": "Analítica de consumo de tokens de inferencia y seguimiento de gasto técnico",
+          "access": "auth"
+        }
+      ]
+    },
+    {
+      "id": "status",
+      "name": "Upstream Dependencies Status",
+      "nameEs": "Estado de dependencias upstream",
+      "description": "Operational health of third-party cloud backbones and foundation model APIs",
+      "descriptionEs": "Salud operativa de proveedores cloud y APIs de modelos de lenguaje",
+      "items": [
+        {
+          "id": "github-status",
+          "name": "GitHub Status",
+          "sourceHref": "https://www.githubstatus.com",
+          "url": "https://www.githubstatus.com",
+          "icon": "si-github",
+          "description": "Operational availability of GitHub VCS, webhooks, and CI runners",
+          "descriptionEs": "Disponibilidad operativa del VCS de GitHub, webhooks y runners de CI",
+          "access": "public"
+        },
+        {
+          "id": "cloudflare-status",
+          "name": "Cloudflare Status",
+          "sourceHref": "https://www.cloudflarestatus.com",
+          "url": "https://www.cloudflarestatus.com",
+          "icon": "si-cloudflare",
+          "description": "Real-time health of global Anycast DNS, CDN, and Zero Trust tunnels",
+          "descriptionEs": "Salud en tiempo real de DNS Anycast global, CDN y túneles Zero Trust",
+          "access": "public"
+        },
+        {
+          "id": "claude-status",
+          "name": "Claude Status",
+          "sourceHref": "https://status.anthropic.com",
+          "url": "https://status.anthropic.com",
+          "icon": "si-anthropic",
+          "description": "Inference API latency, error rates, and platform incident reports",
+          "descriptionEs": "Latencia de API de inferencia, tasas de error e informes de incidentes",
+          "access": "public"
+        }
+      ]
+    },
+    {
+      "id": "docs",
+      "name": "Architecture Reference Docs",
+      "nameEs": "Documentación de arquitectura de referencia",
+      "description": "Official technical references for core components deployed in the platform",
+      "descriptionEs": "Referencias técnicas oficiales para los componentes core desplegados en la plataforma",
+      "items": [
+        {
+          "id": "kubernetes-docs",
+          "name": "Kubernetes",
+          "sourceHref": "https://kubernetes.io/docs/",
+          "url": "https://kubernetes.io/docs/",
+          "icon": "si-kubernetes",
+          "description": "Core container scheduling, networking, and declarative API primitives",
+          "descriptionEs": "Primitivas de planificación de contenedores, red y APIs declarativas",
+          "access": "public"
+        },
+        {
+          "id": "k3s-docs",
+          "name": "K3s",
+          "sourceHref": "https://docs.k3s.io/",
+          "url": "https://docs.k3s.io/",
+          "icon": "si-k3s",
+          "description": "Lightweight certified Kubernetes distro packaging and edge configuration",
+          "descriptionEs": "Distribución certificada liviana de Kubernetes y configuración para edge",
+          "access": "public"
+        },
+        {
+          "id": "traefik-docs",
+          "name": "Traefik",
+          "sourceHref": "https://doc.traefik.io/traefik/",
+          "url": "https://doc.traefik.io/traefik/",
+          "icon": "si-traefikproxy",
+          "description": "Dynamic HTTP/TCP reverse proxy routing and automatic ACME TLS issuance",
+          "descriptionEs": "Enrutamiento dinámico HTTP/TCP con emisión automática de certificados ACME TLS",
+          "access": "public"
+        },
+        {
+          "id": "argo-cd-docs",
+          "name": "Argo CD",
+          "sourceHref": "https://argo-cd.readthedocs.io/",
+          "url": "https://argo-cd.readthedocs.io/",
+          "icon": "si-argo",
+          "description": "GitOps operator pattern and multi-cluster application controller guides",
+          "descriptionEs": "Patrón operador GitOps y guías de controlador de aplicaciones multi-cluster",
+          "access": "public"
+        },
+        {
+          "id": "authelia-docs",
+          "name": "Authelia",
+          "sourceHref": "https://www.authelia.com/configuration/",
+          "url": "https://www.authelia.com/configuration/",
+          "icon": "mdi-shield-lock",
+          "description": "Forward authentication middleware and single sign-on access policies",
+          "descriptionEs": "Middleware de autenticación delegada y políticas de acceso single sign-on",
+          "access": "public"
+        },
+        {
+          "id": "headscale-docs",
+          "name": "Headscale",
+          "sourceHref": "https://headscale.net/stable/",
+          "url": "https://headscale.net/stable/",
+          "icon": "mdi-vpn",
+          "description": "Self-hosted coordination server for encrypted WireGuard mesh networks",
+          "descriptionEs": "Servidor de coordinación auto-alojado para redes de malla WireGuard cifradas",
+          "access": "public"
+        }
+      ]
+    }
+  ]
+}
