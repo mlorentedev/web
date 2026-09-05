@@ -69,7 +69,7 @@ const translatePath = useTranslatedPath(lang);
       </nav>
     </header>
 
-    <!-- Request Path Diagram -->
+    <!-- Architecture Operational Flows -->
     <div class="space-y-16">
       <LabDiagram
         name="request-path"
@@ -77,6 +77,13 @@ const translatePath = useTranslatedPath(lang);
         label={t('idp.arch.requestPath.heading')}
         caption={t('idp.arch.requestPath.caption')}
         legend={t('idp.arch.requestPath.legend')}
+      />
+      <LabDiagram
+        name="gitops"
+        number="02"
+        label={t('idp.arch.gitops.heading')}
+        caption={t('idp.arch.gitops.caption')}
+        legend={t('idp.arch.gitops.legend')}
       />
     </div>
 

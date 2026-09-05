@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Zero-trust GitOps control plane and continuous delivery mesh",
+    "quality_profile": "showcase",
+    "viewBox": [
+      880,
+      640
+    ]
+  },
+  "components": [
+    {
+      "id": "developer",
+      "type": "frontend",
+      "label": "Platform Engineer",
+      "sublabel": "Local dev workstation",
+      "tag": "Git Authoring",
+      "pos": [
+        60,
+        96
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "github",
+      "type": "frontend",
+      "label": "GitHub VCS",
+      "sublabel": "kubelab & web repos",
+      "tag": "Git SSOT",
+      "pos": [
+        60,
+        290
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "actions",
+      "type": "cloud",
+      "label": "GitHub Actions CI",
+      "sublabel": "Test & multi-arch build",
+      "tag": "Deterministic runner",
+      "pos": [
+        60,
+        476
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "argocd",
+      "type": "security",
+      "label": "Argo CD Hub",
+      "sublabel": "Continuous reconciliation",
+      "tag": "GCP Spot Control Plane",
+      "pos": [
+        330,
+        96
+      ],
+      "size": [
+        220,
+        76
+      ]
+    },
+    {
+      "id": "mesh",
+      "type": "cloud",
+      "label": "Tailscale Mesh",
+      "sublabel": "WireGuard control tunnel",
+      "tag": "Private 6443 API",
+      "pos": [
+        330,
+        290
+      ],
+      "size": [
+        220,
+        76
+      ]
+    },
+    {
+      "id": "registry",
+      "type": "database",
+      "label": "Container Registry",
+      "sublabel": "Docker Hub & GHCR",
+      "tag": "Immutable sha-* digests",
+      "pos": [
+        330,
+        476
+      ],
+      "size": [
+        220,
+        76
+      ]
+    },
+    {
+      "id": "staging",
+      "type": "backend",
+      "label": "K3s Edge Staging",
+      "sublabel": "Homelab bare-metal",
+      "tag": "On-demand cluster",
+      "pos": [
+        630,
+        96
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "prod",
+      "type": "backend",
+      "label": "K3s Cloud Prod",
+      "sublabel": "Hetzner Cloud VPS",
+      "tag": "Always-on cluster",
+      "pos": [
+        630,
+        290
+      ],
+      "size": [
+        190,
+        76
+      ]
+    },
+    {
+      "id": "workloads",
+      "type": "backend",
+      "label": "Active Workloads",
+      "sublabel": "Web, API, n8n, Traefik",
+      "tag": "Running pods",
+      "pos": [
+        630,
+        476
+      ],
+      "size": [
+        190,
+        76
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Source & Engineering Plane",
+      "wraps": [
+        "developer",
+        "github",
+        "actions"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Central Control Plane & Artifact Hub",
+      "wraps": [
+        "argocd",
+        "mesh",
+        "registry"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Distributed Spoke Kubernetes Fleet",
+      "wraps": [
+        "staging",
+        "prod",
+        "workloads"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "dev-gh",
+      "from": "developer",
+      "to": "github",
+      "label": "git push",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "gh-actions",
+      "from": "github",
+      "to": "actions",
+      "label": "PR merge",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "actions-reg",
+      "from": "actions",
+      "to": "registry",
+      "label": "push digest",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gh-argo",
+      "from": "github",
+      "to": "argocd",
+      "label": "webhook sync",
+      "variant": "emphasis"
+    },
+    {
+      "id": "argo-mesh",
+      "from": "argocd",
+      "to": "mesh",
+      "label": "TLS tunnel",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24,
+      "variant": "emphasis"
+    },
+    {
+      "id": "mesh-staging",
+      "from": "mesh",
+      "to": "staging",
+      "label": "reconcile stg",
+      "fromSide": "top",
+      "toSide": "left",
+      "labelDy": -10
+    },
+    {
+      "id": "mesh-prod",
+      "from": "mesh",
+      "to": "prod",
+      "label": "reconcile prod",
+      "variant": "emphasis"
+    },
+    {
+      "id": "reg-workloads",
+      "from": "registry",
+      "to": "workloads",
+      "label": "pull sha-*",
+      "variant": "emphasis"
+    },
+    {
+      "id": "prod-workloads",
+      "from": "prod",
+      "to": "workloads",
+      "label": "rollout pods",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Centralized Hub Control",
+      "items": [
+        "Argo CD runs on an isolated GCP instance, decoupled from application workloads",
+        "Declarative Kustomize manifests define desired state without manual cluster changes"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Zero-Trust Mesh Transport",
+      "items": [
+        "All cluster API endpoints remain private and unreachable from the public internet",
+        "WireGuard overlay provides encrypted point-to-point synchronization across cloud and homelab"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Immutable Delivery",
+      "items": [
+        "GitHub Actions builds multi-arch OCI images stamped with deterministic Git digests",
+        "Spoke clusters pull verified digests with zero drift across staging and production"
+      ]
+    }
+  ]
+}
