@@ -1,6 +1,6 @@
 # ADR-056: Decoupled Live Platform Cockpit Architecture & Telemetry Contract
 
-- **Status:** Accepted — **§4.2/§4.3 amended 2026-09-01** (the `no-cors` premise expired; see the amendment in Decision §4)
+- **Status:** Accepted — **§4.2/§4.3 amended 2026-09-01** (the `no-cors` premise expired; see the amendment in Decision §4); **§1 amended 2026-09-05** (every component name and route in §1 is stale, and indicator 2 was false; see the amendment in Decision §1)
 - **Date:** 2026-08-23
 - **Deciders:** Manu Lorente
 - **Extends / refines:** ADR-053 (platform/product repo split), ADR-054 (same-origin API base)
@@ -57,6 +57,53 @@ We adopt a **Static Baseline + Progressive Live Hydration (Islands Architecture)
   - **Public Services Grid:** Interactive cards for public services (Pollex, Hive, Platform API, Docs) with category tags, tech stack badges, and probe badges.
   - **Hybrid Node & Topology Visualizer:** Cards representing physical and cloud nodes (Hetzner VPS prod, Acemagic staging, Jetson Nano AI edge, CI/CD runner) with hardware specifications (CPU, RAM, GPU, OS).
   - **Interactive Reachability Console (Mini-Terminal):** Client-side runner letting visitors probe the public endpoints from their own browser, reporting reachability and round-trip latency in milliseconds (`performance.now()`). See §4.3 for what that can and cannot claim.
+
+> **Amended 2026-09-05 (WEB-102). The design above shipped; every name and route
+> it uses to point at that design is wrong, and one of its four indicator strings
+> was false on an accepted ADR for twelve days.**
+>
+> The two-level structure was built and is live. What follows corrects where it
+> lives and what it says, and records the decision §1 assumed without stating.
+>
+> **Nothing named in §1 exists under that name.** Measured 2026-09-05 against
+> `site/src/`: all six references resolve to nothing.
+>
+> | §1 says | What shipped |
+> |---|---|
+> | `CockpitStrip.astro` | `IdpStrip.astro` |
+> | `CockpitPage.astro` | `LabPage.astro` (plus `Lab*.astro` per section) |
+> | `cockpit.json` / `cockpit.ts` | `platform.json` / `platform.ts` |
+> | `pages/cockpit.astro`, `pages/es/cockpit.astro` | `pages/lab.astro`, `pages/es/lab.astro` |
+> | CTA to `/cockpit` (or `/es/cockpit`) | CTA to `/lab`, via `translatePath` |
+>
+> The ASCII diagram in Decision carries the same stale names. **No live link to
+> `/cockpit` remains** — `grep -rn cockpit site/src` returns nothing outside this
+> document, so the rename left no 404 behind. The cost was to the record only,
+> which is the failure mode that goes unnoticed longest.
+>
+> **The four Level 1 indicators are not hardcoded, and indicator 2 was wrong.**
+> What ships is a title from `i18n/ui.ts` (`idp.k3s`, `idp.edge`, `idp.hive`,
+> `idp.uptime`) over a subtitle derived from `platform.metrics.*` — so the figures
+> come from the same SSOT `/lab` reads, not from a second hand-maintained copy.
+>
+> Indicator 2 above reads `● Jetson Nano GPU Online · ~3.2s TTFT (Qwen 1.5B)`.
+> **The page has said `Jetson Nano · Qwen 2.5 1.5B, CPU inference` for some time**
+> — the correction landed in the code and never reached the ADR, so the false
+> claim `#272` measured survived here alone. It is not re-measured because the
+> honest value is the one the SSOT already carries: `inferenceLatency` is
+> `"not measured"`. No number is asserted in its place.
+>
+> **Indicator 4 is half-sourced and stays flagged.** `99.9%` comes from
+> `platform.metrics.uptimeScore`; the `(90d)` window is a literal in `i18n/ui.ts`
+> that nothing measures or bounds. Tracked in `#272` (`platform.json` staleness)
+> and `#173`; not resolved here.
+>
+> **Decided: the home page previews, it does not argue.** `#281` asked whether the
+> home page argues the platform and delegates proof to `/lab`, or previews `/lab`
+> and delegates the argument. `#300` answered it in code — `IdpStrip.astro`
+> imports `platform` from the SSOT, leaving no hand-maintained platform figure on
+> the home page. This records that as the decision rather than leaving it implicit
+> in a diff, so `#133`'s node-count reconciliation has one surface to fix.
 
 ### 2. JSON Data Contract (`site/src/data/cockpit.json`)
 
