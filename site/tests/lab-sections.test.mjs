@@ -61,8 +61,8 @@ const labAi = require('../src/data/lab-ai.json');
 /** Every AI & Automations entry, flattened out of its group. */
 const aiEntries = labAi.groups.flatMap((g) => g.entries);
 
-/** Sections rebuilt so far. PR5 adds automations. */
-const REBUILT = ['story', 'services', 'infra', 'topology', 'flows', 'automations', 'slos'];
+/** Sections rebuilt so far. PR5 adds automations; idp adds catalog teaser. */
+const REBUILT = ['story', 'services', 'infra', 'topology', 'flows', 'automations', 'slos', 'idp'];
 
 /**
  * The one section that is deliberately not static, kept apart from `REBUILT`

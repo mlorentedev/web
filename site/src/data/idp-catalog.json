@@ -101,11 +101,10 @@
           "id": "status-overview",
           "name": "Status Overview",
           "sourceHref": "https://status.kubelab.live",
-          "url": "https://status.kubelab.live",
           "icon": "si-uptimekuma",
           "description": "Live multi-burn-rate SLO monitoring and edge probe health status",
           "descriptionEs": "Monitorización de SLOs multi-burn-rate en vivo y estado de sondas de salud perimetrales",
-          "access": "public"
+          "access": "mesh"
         },
         {
           "id": "sre-runbooks",
@@ -169,7 +168,8 @@
           "id": "shodan",
           "name": "Shodan Perimeter",
           "sourceHref": "https://www.shodan.io/host/162.55.57.175",
-          "url": "https://www.shodan.io/host/162.55.57.175",
+          "url": "https://www.shodan.io/domain/kubelab.live",
+          "urlNote": "Sanitized to domain query to conform to ADR-056 §3 zero-addressing doctrine.",
           "icon": "mdi-magnify-scan",
           "description": "External port visibility and attack surface verification for the production VPS",
           "descriptionEs": "Visibilidad externa de puertos y verificación de superficie de ataque del VPS de producción",

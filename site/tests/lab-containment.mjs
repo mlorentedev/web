@@ -38,7 +38,8 @@ import { chromium } from 'playwright';
 import { labBaseUrl } from './lib/serve.mjs';
 
 const { url: BASE, server: served } = await labBaseUrl();
-const PATHS = ['/lab', '/es/lab'];
+const PATHS = ['/lab', '/es/lab', '/lab/idp', '/es/lab/idp'];
+const DIAGRAM_PATHS = new Set(['/lab', '/es/lab']);
 const WIDTHS = [320, 768, 1440, 2048];
 const MIN_DIAGRAM_WIDTH = 754;
 
@@ -46,6 +47,8 @@ const browser = await chromium.launch();
 let failures = 0;
 
 for (const path of PATHS) {
+  const hasDiagram = DIAGRAM_PATHS.has(path);
+
   for (const width of WIDTHS) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     let result;
@@ -79,12 +82,12 @@ for (const path of PATHS) {
     }
 
     const overflows = result.scrollWidth > result.innerWidth;
-    const noDiagram = result.svgCount === 0;
-    const tooNarrow = result.narrowestSvg !== Infinity && result.narrowestSvg < MIN_DIAGRAM_WIDTH;
+    const noDiagram = hasDiagram && result.svgCount === 0;
+    const tooNarrow = hasDiagram && result.narrowestSvg !== Infinity && result.narrowestSvg < MIN_DIAGRAM_WIDTH;
     // Below the floor the diagram cannot fit, so the container must absorb it.
     // If nothing scrolls there, either the page is overflowing (caught above)
     // or the diagram was squashed by something this check cannot see.
-    const mustScroll = width < MIN_DIAGRAM_WIDTH;
+    const mustScroll = hasDiagram && width < MIN_DIAGRAM_WIDTH;
     const notScrolling = mustScroll && result.scrollingContainers < result.svgCount;
 
     if (overflows || noDiagram || tooNarrow || notScrolling) {
@@ -98,8 +101,8 @@ for (const path of PATHS) {
       console.error(`✗ ${path} @ ${width}px — ${why.join('; ')}`);
     } else {
       console.log(
-        `✓ ${path} @ ${width}px — document contained, ${result.svgCount} diagram(s), ` +
-          `${result.scrollingContainers} scrolling internally`,
+        `✓ ${path} @ ${width}px — document contained` +
+          (hasDiagram ? `, ${result.svgCount} diagram(s), ${result.scrollingContainers} scrolling internally` : ''),
       );
     }
     await page.close();

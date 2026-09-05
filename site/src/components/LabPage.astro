@@ -25,6 +25,7 @@ import LabInfra from './LabInfra.astro';
 import LabDiagram from './LabDiagram.astro';
 import LabAutomations from './LabAutomations.astro';
 import LabSlos from './LabSlos.astro';
+import LabIdpTeaser from './LabIdpTeaser.astro';
 import LabProbe from './LabProbe.astro';
 import LabProvenance from './LabProvenance.astro';
 import LabAiBridge from './LabAiBridge.astro';
@@ -70,9 +71,11 @@ const t = useTranslations(lang);
 
     <LabSlos number="07" />
 
-    <LabProbe number="08" />
+    <LabIdpTeaser number="08" />
 
-    <LabAiBridge number="09" lang={lang} />
+    <LabProbe number="09" />
+
+    <LabAiBridge number="10" lang={lang} />
 
     <LabProvenance />
   </main>
