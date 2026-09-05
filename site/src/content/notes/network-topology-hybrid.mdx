@@ -40,45 +40,49 @@ The RPi3 (1GB) sits on a separate network entirely. It runs Uptime Kuma for exte
 And then there's the VPS. A Hetzner CX22 at 162.55.57.175. That's production. Docker Compose today, K3s eventually. It's not on my LAN. It's not even in the same country.
 
 ```mermaid
-graph TB
-    subgraph "VPS Hetzner (162.55.57.175)"
-        VPS["Production<br/>Docker Compose → K3s<br/>Traefik + Headscale"]
+flowchart TD
+    subgraph external["Cloud & Remote Infrastructure"]
+        direction TB
+        VPS["VPS Hetzner (162.55.57.175)\nTraefik + Headscale (Prod)"]
+        RPI3["RPi3 External Monitor\nUptime Kuma"]
+        VPS ~~~ RPI3
     end
 
-    subgraph "Home LAN (172.16.1.0/24)"
-        subgraph "Acemagic-1 (.2)"
-            A1_PVE["Proxmox VE"]
-            A1_VM1["k3s-server (.10)"]
-            A1_VM2["k3s-agent-1 (.11)"]
+    subgraph lan["Home LAN (172.16.1.0/24)"]
+        direction TB
+        RPI4["RPi4 (.1) Gateway\nPi-hole + CoreDNS"]
+        subgraph pve["Proxmox Virtualization Hosts"]
+            direction TB
+            subgraph A1["Acemagic-1 (.2)"]
+                direction TB
+                A1_VM1["k3s-server (.10)"]
+                A1_VM2["k3s-agent-1 (.11)"]
+                A1_VM1 ---|"K3s cluster"| A1_VM2
+            end
+            subgraph A2["Acemagic-2 (.5)"]
+                A2_VM3["k3s-agent-2 (.12)"]
+            end
+            A1_VM2 ---|"K3s cluster"| A2_VM3
         end
-        subgraph "Acemagic-2 (.5)"
-            A2_PVE["Proxmox VE"]
-            A2_VM3["k3s-agent-2 (.12)"]
+
+        subgraph lan_bare["Bare Metal Services"]
+            direction TB
+            BEE["Beelink (.3) · Ollama"]
+            JET["Jetson Nano (.4) · llama.cpp"]
+            BEE ~~~ JET
         end
-        RPI4["RPi4 (.1)<br/>Pi-hole + CoreDNS"]
-        BEE["Beelink (.3)<br/>Ollama"]
-        JET["Jetson Nano (.4)<br/>llama.cpp"]
+
+        RPI4 ~~~ pve
+        pve ~~~ lan_bare
     end
 
-    subgraph "External Network"
-        RPI3["RPi3<br/>Uptime Kuma"]
+    subgraph mesh["VPN Mesh Overlay (Headscale 100.64.0.0/24)"]
+        direction TB
+        MESH_NOTE["Direct WireGuard Peering across all 9 nodes\nSubnet route: RPi4 advertises 172.16.1.0/24"]
     end
 
-    subgraph "VPN Overlay (Headscale 100.64.0.0/24)"
-        direction LR
-        MESH["MSI .1 ── VPS .2 ── Beelink .3<br/>k3s-server .4 ── RPi4 .5 ── RPi3 .6<br/>agent-1 .7 ── Jetson .8 ── agent-2 .9"]
-    end
-
-    VPS -.->|Headscale mesh| MESH
-    RPI4 -.->|Headscale mesh| MESH
-    A1_VM1 -.->|Headscale mesh| MESH
-    BEE -.->|Headscale mesh| MESH
-    RPI3 -.->|Headscale mesh| MESH
-
-    A1_VM1 ---|K3s cluster| A1_VM2
-    A1_VM2 ---|K3s cluster| A2_VM3
-
-    RPI4 -->|"advertises 172.16.1.0/24<br/>as subnet route"| MESH
+    external <==>|"Headscale WireGuard Mesh"| mesh
+    lan <==>|"Headscale WireGuard Mesh"| mesh
 ```
 
 Two things to notice. First, the K3s cluster spans two physical hosts but it's three VMs -- the control plane and one agent share Acemagic-1, the heavy worker gets all of Acemagic-2. Second, the VPN overlay connects everything, including nodes that can't see each other on the LAN.
@@ -98,25 +102,31 @@ The rule is absolute: `vpn.kubelab.live` must always resolve to the public IP `1
 This is where people's eyes glaze over, but it's the core of the whole design. There are three completely separate paths a request can take, depending on which domain you're hitting.
 
 ```mermaid
-flowchart TB
-    subgraph "1. Production"
+flowchart TD
+    subgraph p1["1. Production Path (*.kubelab.live)"]
+        direction TB
         U1["User"] -->|"*.kubelab.live"| CF["Cloudflare DNS"]
-        CF -->|"162.55.57.175"| VPS_T["VPS Traefik\n(Docker)"]
+        CF -->|"162.55.57.175"| VPS_T["VPS Traefik (Docker)"]
         VPS_T --> APP1["App containers"]
     end
 
-    subgraph "2. Staging (VPN only)"
-        U2["Developer\n(on VPN)"] -->|"*.staging.kubelab.live"| HS["Headscale\nsplit DNS"]
-        HS -->|"100.64.0.5"| PH["RPi4 Pi-hole\n:53"]
-        PH -->|"conditional\nforward"| CD["CoreDNS\n:5353"]
-        CD -->|"100.64.0.4"| K3S_T["K3s Traefik\nIngress"]
-        K3S_T --> APP2["K3s pods"]
+    subgraph p2["2. Staging Path (*.staging.kubelab.live — VPN only)"]
+        direction TB
+        U2["Developer (VPN)"] -->|"query *.staging"| HS["Headscale Split DNS"]
+        HS -->|"intercept (100.64.0.5)"| PH["RPi4 Pi-hole :53"]
+        PH -->|"conditional forward"| CD["CoreDNS :5353"]
+        CD -->|"resolves 100.64.0.4"| K3S_T["K3s Traefik Ingress"]
+        K3S_T --> APP2["K3s Pods"]
     end
 
-    subgraph "3. Development"
-        U3["Developer\n(localhost)"] -->|"*.kubelab.test"| ETC["/etc/hosts\n127.0.0.1"]
-        ETC --> LOCAL["Local dev\nserver"]
+    subgraph p3["3. Development Path (*.kubelab.test)"]
+        direction TB
+        U3["Developer (localhost)"] -->|"*.kubelab.test"| ETC["/etc/hosts (127.0.0.1)"]
+        ETC --> LOCAL["Local dev server"]
     end
+
+    p1 ~~~ p2
+    p2 ~~~ p3
 ```
 
 **Production** is public. `*.kubelab.live` goes through Cloudflare, hits the VPS at its public IP, and Traefik routes it to the right container. Standard setup, nothing unusual.
