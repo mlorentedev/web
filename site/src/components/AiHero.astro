@@ -6,10 +6,12 @@
  * engines operating inside a deterministic, bounded platform harness.
  */
 import SectionHeading from './SectionHeading.astro';
-import { getLocale, useTranslations } from '../i18n/utils';
+import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const noteHref = translatePath('/notes/fail-closed-agent-harnesses');
 ---
 
 <section class="max-w-4xl mx-auto px-4 pt-10 pb-8" data-ai-section="hero">
@@ -28,7 +30,7 @@ const t = useTranslations(lang);
       Kernel flock
     </span>
     <span class="px-2.5 py-0.5 rounded-full bg-accent-50 text-accent-700 border border-accent-200">
-      Zero-copy Worktrees
+      Ephemeral Worktrees
     </span>
     <span class="px-2.5 py-0.5 rounded-full bg-danger-50 text-danger-700 border border-danger-200">
       Stream Redactor
@@ -38,4 +40,17 @@ const t = useTranslations(lang);
   <p class="text-lg text-ink-600 mt-4 leading-relaxed max-w-3xl">
     {t('ai.hero.description')}
   </p>
+
+  <div class="mt-6 flex flex-wrap items-center gap-3">
+    <a
+      href={noteHref}
+      class="inline-flex items-center gap-2 rounded-md bg-ink-900 hover:bg-accent-700 text-white px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 shadow-sm"
+    >
+      <span>{lang === 'es' ? 'Leer la nota técnica fundacional' : 'Read foundational technical note'}</span>
+      <span class="font-mono">→</span>
+    </a>
+    <span class="text-xs text-ink-400 font-mono">
+      fail-closed-agent-harnesses
+    </span>
+  </div>
 </section>
