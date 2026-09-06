@@ -1,5 +1,5 @@
 ---
-id: lesson-040-a-build-rendered-diagrams-width-is-set-by-it
+id: lesson-041-a-build-rendered-diagrams-width-is-set-by-it
 type: lesson
 status: active
 created: "2026-09-04"
