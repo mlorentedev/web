@@ -12,7 +12,7 @@ interface Props {
 const { number, lang } = Astro.props;
 const translatePath = useTranslatedPath(lang);
 const aiHref = translatePath('/ai');
-const noteHref = translatePath('/notes/fail-closed-agent-harnesses');
+const noteHref = '/notes/fail-closed-agent-harnesses';
 const headingLabel = lang === 'es' ? 'Plano de ejecución autónomo' : 'Autonomous execution plane';
 ---
 

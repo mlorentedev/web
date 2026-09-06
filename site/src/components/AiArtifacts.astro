@@ -17,8 +17,7 @@ interface Props {
 const { number } = Astro.props;
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
-const translatePath = useTranslatedPath(lang);
-const noteHref = translatePath('/notes/fail-closed-agent-harnesses');
+const noteHref = '/notes/fail-closed-agent-harnesses';
 
 const badgeColors: Record<string, string> = {
   Doctrine: 'bg-ok-50 text-ok-700 border-ok-200',
@@ -44,7 +43,7 @@ const badgeColors: Record<string, string> = {
               <span class:list={['text-xs font-mono px-2.5 py-0.5 rounded-full border font-medium', colorClass]}>
                 {artifact.badge}
               </span>
-              <span class="text-xs font-mono text-ink-400">
+              <span class="text-xs font-mono text-ink-600">
                 {artifact.filename}
               </span>
             </div>
@@ -57,7 +56,12 @@ const badgeColors: Record<string, string> = {
               {lang === 'es' ? artifact.descriptionEs : artifact.description}
             </p>
 
-            <div class="rounded-lg bg-panel-950 p-4 border border-panel-800 overflow-x-auto">
+            <div
+              tabindex="0"
+              role="region"
+              aria-label={artifact.filename}
+              class="rounded-lg bg-panel-950 p-4 border border-panel-800 overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
+            >
               <div class="flex items-center justify-between pb-2 mb-2 border-b border-panel-800 text-xs font-mono text-panel-400">
                 <span>{artifact.filename}</span>
                 <span>{artifact.language}</span>

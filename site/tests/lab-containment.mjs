@@ -45,12 +45,16 @@ const PATHS = [
   '/es/lab/idp',
   '/lab/idp/architecture',
   '/es/lab/idp/architecture',
+  '/ai',
+  '/es/ai',
 ];
 const DIAGRAM_PATHS = new Set([
   '/lab',
   '/es/lab',
   '/lab/idp/architecture',
   '/es/lab/idp/architecture',
+  '/ai',
+  '/es/ai',
 ]);
 const WIDTHS = [320, 768, 1440, 2048];
 const MIN_DIAGRAM_WIDTH = 754;
