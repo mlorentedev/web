@@ -37,13 +37,24 @@ const labAi = require('../src/data/lab-ai.json');
 
 const aiEntries = labAi.groups.flatMap((g) => g.entries);
 
-const SECTIONS = ['pillars', 'automations', 'artifacts'];
+/** Sequential sections following section 01 (harness diagram). */
+const SECTIONS = [
+  { name: 'pillars', number: '02' },
+  { name: 'automations', number: '03' },
+  { name: 'artifacts', number: '04' },
+];
 
 const pages = [
   { locale: 'en', path: join(siteRoot, 'dist/ai/index.html') },
   { locale: 'es', path: join(siteRoot, 'dist/es/ai/index.html') },
 ];
 
+/**
+ * Decodes HTML entities commonly emitted by Astro templates.
+ *
+ * @param {string} html - HTML string to decode
+ * @returns {string} Decoded plain text string
+ */
 function decodeEntities(html) {
   return html
     .replace(/&#39;|&apos;/g, "'")
@@ -54,6 +65,13 @@ function decodeEntities(html) {
     .replace(/&amp;/g, '&');
 }
 
+/**
+ * Extracts the inner HTML of a section matching data-ai-section.
+ *
+ * @param {string} html - Full document HTML
+ * @param {string} name - The section name attribute value
+ * @returns {string | null} Inner HTML of the section, or null if not found
+ */
 function aiSection(html, name) {
   const open = new RegExp(`<section\\b[^>]*\\bdata-ai-section="${name}"[^>]*>`);
   const start = html.search(open);
@@ -105,13 +123,13 @@ for (const { locale, html } of built) {
     const harnessDiagram = html.match(/<section\b[^>]*\bdata-lab-section="harness"[^>]*>/);
     assert.ok(harnessDiagram, 'no harness diagram section on AI page');
 
-    for (const name of SECTIONS) {
+    for (const { name, number } of SECTIONS) {
       const body = aiSection(html, name);
       assert.ok(body, `no <section data-ai-section="${name}"> on the built AI page`);
       assert.match(
         body,
-        /\[\s*\d{2}\s*\/[^\]]*\]/,
-        `the ${name} section has no SectionHeading eyebrow — it is not built on the shared component`,
+        new RegExp(`\\[\\s*${number}\\s*\\/[^\\]]*\\]`),
+        `the ${name} section does not have expected eyebrow [ ${number} / ... ]`,
       );
     }
   });
