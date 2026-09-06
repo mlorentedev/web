@@ -31,23 +31,11 @@ advisory's lower bound and were never vulnerable. Reading the alert as "this
 package is bad" churns them for nothing — and worse, makes the fix look
 incomplete when they stay at their old versions.
 
-**What gates the fix is the parent's declared range, not whether the dependency
-is transitive.** Every one of these is transitive; that fact predicts nothing:
-
-| dep | parent's range | patched at | reachable? |
-| --- | --- | --- | --- |
-| `nanoid` | `postcss` → `^3.3.16` | 3.3.18 | yes |
-| `picomatch` | `anymatch` → `^2.0.4` | 2.3.2 | yes |
-| `postcss-selector-parser` | `postcss-nested` → `^6.1.1` | 6.1.3 | yes |
-| `sharp` | `astro` → `^0.34.0` | 0.35.0 | **no** |
-| `esbuild` | `astro` → `^0.27.3` | 0.28.1 | **no** |
-| `yaml` | `yaml-language-server` → `"2.7.1"` | 2.8.3 | **no** |
-
-The two `astro` rows are the trap. A caret on a `0.x` version pins the
-left-most **non-zero** digit, so `^0.34.0` means `>=0.34.0 <0.35.0` — the patch
-is one tick outside a range that looks permissive. Three advisories therefore
-fold into the `astro` major that was assumed to gate only eight, making it
-eleven.
+The second half of that framing — *transitive therefore separable* — was wrong
+too, but for a different reason with a different cure, so it lives in
+[a caret on a `0.x` dependency pins the minor](lesson-043-a-caret-on-a-0-x-dependency-pins-the-minor-n.md).
+This lesson is about **which copies are affected**; that one is about **whether
+the fix can be reached**.
 
 **Solution**: Judge every installed copy against the range from the alert
 payload, rather than the package against the advisory's title.
@@ -62,20 +50,15 @@ gh api repos/O/R/dependabot/alerts --paginate \
 npm ls --all --json     # then test each installed version against that range
 ```
 
-Then read the parent's declared range for each blocked one — that is the
-sentence that says whether a lockfile bump can reach the patch at all, before
-any is attempted. Measured on `#329`: **7 vulnerable copies before, 4 after**,
-exactly the three predicted reachable, with `package.json` untouched and a
-21-line lockfile diff.
+Measured on `#329`: **7 vulnerable copies before, 4 after** — a count of copies,
+which is the honest unit, against fifteen alerts naming seven packages.
 
 **Rule**: An identifier that names a *class* is not evidence about any
-*instance* of it. Before acting on a dependency alert, ask two questions in
-order — **which installed copies are actually in the range**, and **what does
-each one's parent permit**. The first stops work on copies that were never
-affected; the second predicts, before the install runs, which advisories a
-lockfile bump can close and which are gated on something bigger. A count of
-alerts is not a count of vulnerable things, and "it is transitive" is not a
-reason to expect it to move.
+*instance* of it. Before acting on a dependency alert, enumerate the installed
+copies and test each against the range in the alert payload, because the count
+of alerts is not the count of vulnerable things and the package name does not
+say which copy it means. Two of the seven here needed nothing at all; that is
+work not done and a "fix" not falsely reported as incomplete.
 
 See also
 [Dependabot security updates bypass `ignore`](lesson-007-dependabot-security-updates-bypass-ignore-a.md)
