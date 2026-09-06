@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-41 lessons, one file each, newest first. Numbers are assigned in the order
+42 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 042 | [A dependency alert names a package, not the copy that is vulnerable](lesson-042-a-dependency-alert-names-a-package-not-the-c.md) | 2026-09-06 | `#dependencies` `#verification` `#npm` |
 | 041 | [A build-rendered diagram's width is set by its rank direction, not by CSS](lesson-041-a-build-rendered-diagrams-width-is-set-by-it.md) | 2026-09-04 | `#mermaid` `#astro` `#responsive` `#testing` |
 | 040 | [A header the edge replaces cannot be verified end-to-end](lesson-040-a-header-the-edge-replaces-cannot-be-verifie.md) | 2026-09-05 | `#security` `#verification` `#nginx` |
 | 039 | [API quota is shared state, and spending it breaks other people's CI](lesson-039-api-quota-is-shared-state-and-spending-it-b.md) | 2026-09-05 | `#verification` `#ci-automation` `#agents` |
