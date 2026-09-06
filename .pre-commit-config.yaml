@@ -56,6 +56,16 @@ repos:
     hooks:
       - id: hadolint-docker
 
+  # Lessons numbering and index integrity (scripts/check-lessons.sh)
+  - repo: local
+    hooks:
+      - id: check-lessons
+        name: check-lessons
+        language: script
+        entry: scripts/check-lessons.sh
+        pass_filenames: false
+        files: ^docs/lessons/
+
 # Files to exclude
 exclude: |
   (?x)^(
