@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Move assigned issue to In Progress
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           # Needs project + repo scope, so GITHUB_TOKEN cannot serve: the board
           # is a user-level Project v2 outside this repository, and this script
