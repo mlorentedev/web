@@ -58,6 +58,12 @@ export const ui = {
     'ai.artifacts.heading': 'Executable Artifacts & Operating Contracts',
     'ai.artifacts.sub':
       'Inspectable rules, kernel mutex scripts, stream redactors, and adversarial review prompts.',
+    'ai.automations.heading': 'Autonomous Fleet & Automations',
+    'ai.automations.intro':
+      'The production agent fleet, deterministic protocols, reactive event routers, and observability sinks running across the cluster. Most endpoints operate within the mesh boundary — what you see here is the live inventory and execution contracts.',
+    'ai.automations.count': '{n} entries · {reachable} you can open from here',
+    'ai.automations.link': 'open',
+    'ai.automations.source': 'Migrated from {repo} · {commit}',
 
     // Hero
     // A2 = C: the homelab is the proof, the agent platform is the direction, and
@@ -391,13 +397,6 @@ export const ui = {
     'lab.status.degraded': 'degraded',
     'lab.status.maintenance': 'maintenance',
 
-    'lab.automations.heading': 'The agents and the automations',
-    'lab.automations.intro':
-      'The part of the platform that operates itself: agents that read the logs and file the triage, the protocols they are held to, the n8n workflows that fire without me, and where the telemetry lands. Most of it has no public address — it runs inside the mesh, so what you get here is the inventory and the boundary, not a dashboard link.',
-    'lab.automations.count': '{n} entries · {reachable} you can open from here',
-    'lab.automations.link': 'open',
-    'lab.automations.source': 'Migrated from {repo} · {commit}',
-
     'lab.diagram.source': 'Rendered at build from {file}',
     'lab.diagram.scroll': 'Scrollable diagram: {label}',
     'lab.provenance': 'Figures last reconciled against the cluster on',
@@ -553,6 +552,12 @@ export const ui = {
     'ai.artifacts.heading': 'Artefactos Ejecutables y Contratos Operativos',
     'ai.artifacts.sub':
       'Reglas inspeccionables, scripts de mutex de kernel, redactor de secretos y prompts de revisión adversarial.',
+    'ai.automations.heading': 'Flota Autónoma y Automatizaciones',
+    'ai.automations.intro':
+      'La flota de agentes en producción, protocolos deterministas, enrutadores de eventos reactivos y sumideros de observabilidad operando en el clúster. La mayoría opera dentro de la malla — lo que ves aquí es el inventario real y los contratos de acceso.',
+    'ai.automations.count': '{n} entradas · {reachable} que puedes abrir desde aquí',
+    'ai.automations.link': 'abrir',
+    'ai.automations.source': 'Migrado de {repo} · {commit}',
 
     // Hero
     'hero.eyebrow': 'Ingeniería de Sistemas y Plataforma · Infraestructura Soberana de IA',
@@ -881,13 +886,6 @@ export const ui = {
     'lab.status.operational': 'operativo',
     'lab.status.degraded': 'degradado',
     'lab.status.maintenance': 'en mantenimiento',
-
-    'lab.automations.heading': 'Los agentes y las automatizaciones',
-    'lab.automations.intro':
-      'La parte de la plataforma que se opera sola: agentes que leen los logs y hacen el triaje, los protocolos a los que están sujetos, los flujos de n8n que se disparan sin mí, y dónde acaba la telemetría. Casi nada de esto tiene dirección pública — corre dentro de la malla —, así que lo que hay aquí es el inventario y el límite, no un enlace a un panel.',
-    'lab.automations.count': '{n} entradas · {reachable} que puedes abrir desde aquí',
-    'lab.automations.link': 'abrir',
-    'lab.automations.source': 'Migrado de {repo} · {commit}',
 
     'lab.diagram.source': 'Generado en el build desde {file}',
     'lab.diagram.scroll': 'Diagrama desplazable: {label}',

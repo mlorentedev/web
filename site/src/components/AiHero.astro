@@ -10,8 +10,7 @@ import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
-const translatePath = useTranslatedPath(lang);
-const noteHref = translatePath('/notes/fail-closed-agent-harnesses');
+const noteHref = '/notes/fail-closed-agent-harnesses';
 ---
 
 <section class="max-w-6xl mx-auto px-4 pt-10 pb-8" data-ai-section="hero">
@@ -49,7 +48,7 @@ const noteHref = translatePath('/notes/fail-closed-agent-harnesses');
       <span>{lang === 'es' ? 'Leer la nota técnica fundacional' : 'Read foundational technical note'}</span>
       <span class="font-mono">→</span>
     </a>
-    <span class="text-xs text-ink-400 font-mono">
+    <span class="text-xs text-ink-600 font-mono">
       fail-closed-agent-harnesses
     </span>
   </div>

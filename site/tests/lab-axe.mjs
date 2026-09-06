@@ -84,6 +84,8 @@ const PATHS = [
   '/es/lab/idp',
   '/lab/idp/architecture',
   '/es/lab/idp/architecture',
+  '/ai',
+  '/es/ai',
 ];
 
 /**
