@@ -373,6 +373,13 @@ export const ui = {
     'lab.services.intro':
       'Three of these answer to anyone. The rest answer only from inside the WireGuard mesh, behind Authelia — there are zero port-forwarding rules on my residential USA network, so for most of this there is no address to expose in the first place.',
     'lab.services.count': '{n} documented here · {total} running across the three clusters',
+    'lab.services.th.status': 'Status',
+    'lab.services.th.service': 'Service',
+    'lab.services.th.category': 'Category',
+    'lab.services.th.access': 'Access',
+    'lab.services.th.node': 'Node',
+    'lab.services.th.endpoint': 'Endpoint',
+    'lab.services.th.description': 'Description & Stack',
 
     // One name per concept: Services and AI & Automations both state an access
     // boundary, so the strings live above either section rather than twice.
@@ -862,6 +869,13 @@ export const ui = {
     'lab.services.intro':
       'Tres de estos responden a cualquiera. El resto solo responden desde dentro de la malla WireGuard, tras Authelia: no hay una sola regla de port-forwarding en mi red residencial de Estados Unidos, así que para la mayoría no hay ni dirección que exponer.',
     'lab.services.count': '{n} documentados aquí · {total} corriendo entre los tres clústeres',
+    'lab.services.th.status': 'Estado',
+    'lab.services.th.service': 'Servicio',
+    'lab.services.th.category': 'Categoría',
+    'lab.services.th.access': 'Acceso',
+    'lab.services.th.node': 'Nodo',
+    'lab.services.th.endpoint': 'Endpoint',
+    'lab.services.th.description': 'Descripción y Stack',
 
     // Un solo nombre por concepto: Servicios e IA y automatizaciones declaran
     // ambos un límite de acceso, así que las cadenas viven por encima de las dos

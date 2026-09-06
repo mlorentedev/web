@@ -87,67 +87,125 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
       .replace('{total}', String(platform.cluster.totalServices))}
   </p>
 
-  <div class="space-y-8">
-    {grouped.map((group) => (
-      <div>
-        <h3 class="text-xs font-semibold text-ink-500 tracking-widest uppercase mb-3">
-          {group.label}
-        </h3>
+  <div
+    class="w-full overflow-x-auto border border-ink-200 rounded-lg shadow-xs bg-white"
+    tabindex="0"
+    role="region"
+    aria-label={t('lab.services.heading')}
+  >
+    <table class="ep-table w-full text-left border-collapse font-mono text-xs">
+      <thead class="bg-ink-900 text-ink-100 border-b border-ink-800">
+        <tr class="uppercase tracking-wider text-xs">
+          <th scope="col" class="py-2.5 px-3 w-8 text-center">
+            <span class="sr-only">{t('lab.services.th.status')}</span>
+          </th>
+          <th scope="col" class="py-2.5 px-3 font-semibold whitespace-nowrap">
+            {t('lab.services.th.service')}
+          </th>
+          <th scope="col" class="py-2.5 px-3 font-semibold whitespace-nowrap">
+            {t('lab.services.th.category')}
+          </th>
+          <th scope="col" class="py-2.5 px-3 font-semibold whitespace-nowrap">
+            {t('lab.services.th.access')}
+          </th>
+          <th scope="col" class="py-2.5 px-3 font-semibold whitespace-nowrap">
+            {t('lab.services.th.node')}
+          </th>
+          <th scope="col" class="py-2.5 px-3 font-semibold whitespace-nowrap">
+            {t('lab.services.th.endpoint')}
+          </th>
+          <th scope="col" class="py-2.5 px-3 font-semibold min-w-[300px]">
+            {t('lab.services.th.description')}
+          </th>
+        </tr>
+      </thead>
 
-        <ul class="border-t border-ink-100">
-          {group.services.map((svc) => (
-            <li
-              data-service-row={svc.env}
-              data-service-slug={svc.slug}
-              data-access={svc.isPublic ? 'public' : 'mesh'}
-              class="border-b border-ink-100 py-3 flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:gap-4"
-            >
-              <div class="flex items-center gap-2 sm:w-52 sm:shrink-0">
-                <ServiceIcon slug={svc.slug} class="w-4 h-4 shrink-0" />
-                <span class="font-semibold text-ink-900 text-sm">{svc.name}</span>
-                <span
-                  class:list={['h-1.5 w-1.5 rounded-full shrink-0', STATUS_DOT[svc.status]]}
-                  title={STATUS_LABEL[svc.status]}
-                ></span>
-              </div>
+      <tbody class="divide-y divide-ink-100">
+        {grouped.map((group) => (
+          <>
+            <tr class="bg-ink-100/70 font-mono text-xs font-semibold text-ink-700 border-t border-b border-ink-200">
+              <td colspan="7" class="py-1.5 px-3 uppercase tracking-widest text-ink-700">
+                // {group.label}
+              </td>
+            </tr>
+            {group.services.map((svc) => (
+              <tr
+                data-service-row={svc.env}
+                data-service-slug={svc.slug}
+                data-access={svc.isPublic ? 'public' : 'mesh'}
+                class="hover:bg-ink-50/80 transition-colors"
+              >
+                <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                  <span
+                    class:list={['inline-block w-2 h-2 rounded-full', STATUS_DOT[svc.status]]}
+                    title={STATUS_LABEL[svc.status]}
+                  ></span>
+                </td>
 
-              <p class="text-sm text-ink-600 leading-snug flex-grow">
-                {isEs ? svc.descriptionEs : svc.description}
-              </p>
+                <td class="py-2.5 px-3 whitespace-nowrap">
+                  <div class="flex items-center gap-2">
+                    <ServiceIcon slug={svc.slug} class="w-4 h-4 shrink-0 text-ink-700" />
+                    <span class="font-semibold text-ink-900 font-sans text-sm">{svc.name}</span>
+                  </div>
+                </td>
 
-              <div class="flex items-center gap-2 shrink-0 sm:justify-end">
-                {svc.isPublic ? (
-                  <span class="px-1.5 py-0.5 rounded text-xs font-semibold bg-accent-50 text-accent-800 border border-accent-200">
-                    {t('lab.access.public')}
+                <td class="py-2.5 px-3 whitespace-nowrap">
+                  <span class="inline-block px-1.5 py-0.5 rounded text-xs font-medium bg-panel-100 text-panel-800 border border-panel-200">
+                    {isEs ? svc.categoryEs : svc.category}
                   </span>
-                ) : (
-                  <span class="px-1.5 py-0.5 rounded text-xs font-semibold bg-panel-100 text-panel-700 border border-panel-200">
-                    {t('lab.access.mesh')}
-                  </span>
-                )}
+                </td>
 
-                {/*
-                  Nothing renders for a mesh-only service. The old page put
-                  "Not published" beside the badge on all eleven of them, which
-                  is the same sentence twice: `Mesh only` already says there is
-                  no address, and the repetition is what made a fourteen-row
-                  list feel like a wall.
-                */}
-                {svc.url && (
-                  <a
-                    href={svc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="font-mono text-xs font-semibold text-accent-700 hover:text-accent-900 transition-colors"
-                  >
-                    {svc.url.replace(/^https?:\/\//, '').replace(/\/$/, '')} &#8599;
-                  </a>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    ))}
+                <td class="py-2.5 px-3 whitespace-nowrap">
+                  {svc.isPublic ? (
+                    <span class="inline-block px-1.5 py-0.5 rounded text-xs font-semibold bg-accent-50 text-accent-800 border border-accent-200">
+                      {t('lab.access.public')}
+                    </span>
+                  ) : (
+                    <span class="inline-block px-1.5 py-0.5 rounded text-xs font-semibold bg-panel-100 text-panel-700 border border-panel-200">
+                      {t('lab.access.mesh')}
+                    </span>
+                  )}
+                </td>
+
+                <td class="py-2.5 px-3 whitespace-nowrap">
+                  <span class="font-mono text-xs uppercase font-medium text-ink-600 bg-ink-100 px-1.5 py-0.5 rounded border border-ink-200">
+                    {svc.node}
+                  </span>
+                </td>
+
+                <td class="py-2.5 px-3 whitespace-nowrap font-mono text-xs">
+                  {svc.url ? (
+                    <a
+                      href={svc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-accent-700 hover:text-accent-900 font-semibold hover:underline inline-flex items-center gap-1"
+                    >
+                      <span>{svc.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                      <span aria-hidden="true">&#8599;</span>
+                    </a>
+                  ) : (
+                    <span class="text-ink-400 select-none">—</span>
+                  )}
+                </td>
+
+                <td class="py-2.5 px-3 min-w-[300px] text-ink-600 font-sans text-xs leading-relaxed">
+                  <p>{isEs ? svc.descriptionEs : svc.description}</p>
+                  {svc.tech && svc.tech.length > 0 && (
+                    <div class="mt-1 flex flex-wrap gap-1">
+                      {svc.tech.map((tech) => (
+                        <span class="font-mono text-xs text-ink-500 bg-ink-50 px-1.5 py-0.5 rounded border border-ink-200/60">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </>
+        ))}
+      </tbody>
+    </table>
   </div>
 </Section>
