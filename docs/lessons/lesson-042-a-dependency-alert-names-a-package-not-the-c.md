@@ -21,7 +21,7 @@ would have produced work with nothing to show for it.
 seven flagged packages had two installed versions, and in three of those only
 one copy was in range:
 
-```
+```text
 esbuild                  0.27.3 and 0.25.12   advisory: >= 0.27.3, < 0.28.1
 postcss-selector-parser  6.1.2  and 6.0.10    advisory: >= 6.1.0, < 6.1.3
 ```

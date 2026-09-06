@@ -17,7 +17,7 @@ patch updates are fine"*, so `0.35.0` looked like a routine bump away.
 **Problem**: It is unreachable. `^` pins the **left-most non-zero** digit, and
 for a `0.x.y` version that digit is the *minor*:
 
-```
+```text
 ^1.34.0   ->  >=1.34.0 <2.0.0     minor bumps allowed
 ^0.34.0   ->  >=0.34.0 <0.35.0    minor bumps FORBIDDEN
 ^0.0.34   ->  >=0.0.34 <0.0.35    patch bumps forbidden too
