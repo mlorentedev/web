@@ -14,12 +14,14 @@ import test from 'node:test';
 const distDir = join(process.cwd(), 'dist');
 const notesDistDir = join(distDir, 'notes');
 
-test('all rendered Mermaid diagrams in notes stay within width threshold', () => {
-  if (!existsSync(notesDistDir)) {
-    // If not built yet, skip
-    return;
-  }
+// A silent early return would report this test as passed on a tree that was
+// never built, which is the `lesson-015` shape: a step that was skipped and a
+// step with nothing to do look identical. Report the skip so the runner shows it.
+const skipReason = existsSync(notesDistDir)
+  ? false
+  : `dist/notes is absent; run \`npm run build\` before this test (looked in ${notesDistDir})`;
 
+test('all rendered Mermaid diagrams in notes stay within width threshold', { skip: skipReason }, () => {
   const noteDirs = readdirSync(notesDistDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name);

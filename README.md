@@ -43,6 +43,7 @@ PUBLIC_API_URL=https://api.staging.kubelab.live npm run dev
 │       ├── pages/
 │       └── styles/
 ├── CLAUDE.md         # agent instructions (two-repo flow)
+├── harness/          # reviewer registry (review-attestation.json) and adversarial reviewer pool (reviewer-pool.json), see ADR-057
 └── docs/             # build/operate docs (adr, runbooks, troubleshooting, lessons)
 ```
 
