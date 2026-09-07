@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.15.0](https://github.com/mlorentedev/web/compare/v1.14.0...v1.15.0) (2026-09-07)
+
+
+### Features
+
+* **ai:** relocate autonomous fleet and automations from lab to dedicated ai chapter ([#324](https://github.com/mlorentedev/web/issues/324)) ([fbb9970](https://github.com/mlorentedev/web/commit/fbb99702fab92233f3113bfa6facf78c612ee7f5))
+* **ai:** wire fail-closed harness note and refine worktree terminology ([#315](https://github.com/mlorentedev/web/issues/315)) ([0302cc8](https://github.com/mlorentedev/web/commit/0302cc84d5ae4d2675ed1a6391f1de61e9d06032))
+* **lab:** add IDP GitOps delivery mesh diagram and architecture flow ([#322](https://github.com/mlorentedev/web/issues/322)) ([2e2d8e9](https://github.com/mlorentedev/web/commit/2e2d8e91b087fd880f8a4a06b40f6515067ecb8b))
+* **lab:** add IDP request path architecture flow and dedicated subpage ([#321](https://github.com/mlorentedev/web/issues/321)) ([08c83e4](https://github.com/mlorentedev/web/commit/08c83e41f66845bfb471d38989e010247e94cb2b))
+* **lab:** add IDP zero-trust secret management diagram and architecture flow ([#323](https://github.com/mlorentedev/web/issues/323)) ([557d693](https://github.com/mlorentedev/web/commit/557d693fc5bc9c42266838a383311de18e9f42fd))
+* **lab:** declare KubeLab IDP catalog data contract and provenance test ([#318](https://github.com/mlorentedev/web/issues/318)) ([c49f2db](https://github.com/mlorentedev/web/commit/c49f2db8cd0d0ea5a53fe60950eb99b0e9d74456))
+* **lab:** implement KubeLab IDP catalog page, teaser, and views ([#319](https://github.com/mlorentedev/web/issues/319)) ([bc11a81](https://github.com/mlorentedev/web/commit/bc11a818c2209a563af20daca021481a8c7c9b0a))
+* **lab:** redesign services section into minimalist ep-table ([#325](https://github.com/mlorentedev/web/issues/325)) ([e62fcef](https://github.com/mlorentedev/web/commit/e62fcef00f75e40bbfc8d4f0c4d0f52120202178))
+* **layout:** widen the section container so card grids use the screen ([#320](https://github.com/mlorentedev/web/issues/320)) ([2cb519c](https://github.com/mlorentedev/web/commit/2cb519cfe63e1d062f953c8f05b6f2619ad5bebd))
+* **notes:** add contextual superseded notices for legacy topology notes ([#311](https://github.com/mlorentedev/web/issues/311)) ([945f863](https://github.com/mlorentedev/web/commit/945f863178a0472e8c6edfc0fc2c33d18faa62ed)), closes [#237](https://github.com/mlorentedev/web/issues/237)
+* **notes:** publish fail-closed agent harnesses technical note ([#313](https://github.com/mlorentedev/web/issues/313)) ([a63284a](https://github.com/mlorentedev/web/commit/a63284afbc785d9af98eb94c8b8bb1feacdf5aaa))
+
+
+### Bug Fixes
+
+* **ci:** port the hardened PR-Agent guard from the dotfiles canon ([#337](https://github.com/mlorentedev/web/issues/337)) ([6aa8f71](https://github.com/mlorentedev/web/commit/6aa8f7179a1e34aa8534d6494a334c09f3b1c83b))
+* **ci:** skip the guard after a credential failure and keep lines under 130 columns ([#338](https://github.com/mlorentedev/web/issues/338)) ([bc95720](https://github.com/mlorentedev/web/commit/bc95720233817fc0374d8be0ef163346be4df274))
+* **deps:** clear the three transitive advisories a lockfile bump can reach ([#329](https://github.com/mlorentedev/web/issues/329)) ([fed1837](https://github.com/mlorentedev/web/commit/fed1837c073c184e539146d2f42f8ecb84cc08cb))
+* **i18n:** resolve SubscribeForm strings and privacy link via i18n layer ([#316](https://github.com/mlorentedev/web/issues/316)) ([6dd2d13](https://github.com/mlorentedev/web/commit/6dd2d13d6eb77829598fc1295116b40fea283b4e))
+* **nginx:** align origin security headers with the edge middleware ([#327](https://github.com/mlorentedev/web/issues/327)) ([e168ba7](https://github.com/mlorentedev/web/commit/e168ba72b2309a08601b3ada7940a840876f0ea6))
+* **notes:** reshape mermaid diagrams to eliminate horizontal overflow ([#317](https://github.com/mlorentedev/web/issues/317)) ([be58426](https://github.com/mlorentedev/web/commit/be5842604816f02e03f0233ccd76e082f02338d8))
+* **seo:** align canonical, omit broken hreflangs, add 404 noindex, and fix trailing slashes ([#336](https://github.com/mlorentedev/web/issues/336)) ([7a16e7d](https://github.com/mlorentedev/web/commit/7a16e7da431a4049e30fc452294cb8d567d3f568))
+
 ## [1.14.0](https://github.com/mlorentedev/web/compare/v1.13.0...v1.14.0) (2026-09-04)
 
 
