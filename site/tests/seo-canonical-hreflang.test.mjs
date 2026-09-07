@@ -104,3 +104,49 @@ test('Main navigation links in header carry trailing slashes', () => {
     );
   }
 });
+
+test('HTML head alternates and sitemap alternates agree across all URLs (WEB-034 / #109)', () => {
+  const sitemapFile = join(distDir, 'sitemap-0.xml');
+  assert.ok(existsSync(sitemapFile), 'dist/sitemap-0.xml must exist');
+
+  const sitemap = readFileSync(sitemapFile, 'utf8');
+  const urlBlocks = [...sitemap.matchAll(/<url>(.*?)<\/url>/gs)].map((m) => m[1]);
+  assert.ok(urlBlocks.length > 0, 'sitemap must have url entries');
+
+  for (const block of urlBlocks) {
+    const locMatch = block.match(/<loc>(https:\/\/mlorente\.dev(.*?)?)<\/loc>/);
+    if (!locMatch) continue;
+    const urlPath = locMatch[2] || '/';
+
+    // Sitemap alternates (language alternates only)
+    const sitemapLangs = [...block.matchAll(/<xhtml:link rel="alternate" hreflang="([^"]+)" href="([^"]+)"\/>/g)]
+      .map((m) => m[1])
+      .sort();
+
+    // Find corresponding HTML file in dist
+    let htmlPath = join(distDir, urlPath, 'index.html');
+    if (urlPath === '/' || urlPath === '') {
+      htmlPath = join(distDir, 'index.html');
+    } else if (!existsSync(htmlPath) && urlPath.endsWith('.html')) {
+      htmlPath = join(distDir, urlPath);
+    }
+
+    assert.ok(existsSync(htmlPath), `HTML file for sitemap url must exist: ${urlPath}`);
+
+    const html = readFileSync(htmlPath, 'utf8');
+    const headMatch = html.match(/<head>(.*?)<\/head>/s);
+    const head = headMatch ? headMatch[1] : '';
+
+    // HTML alternates (languages only, ignore x-default and rss)
+    const htmlLangs = [...head.matchAll(/<link rel="alternate" hreflang="([a-zA-Z-]+)" href="([^"]+)"/g)]
+      .filter((m) => m[1] !== 'x-default')
+      .map((m) => m[1])
+      .sort();
+
+    assert.deepEqual(
+      htmlLangs,
+      sitemapLangs,
+      `Alternate hreflang disagreement on ${urlPath}: HTML has [${htmlLangs}] but sitemap has [${sitemapLangs}]`
+    );
+  }
+});
