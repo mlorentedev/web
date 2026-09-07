@@ -5,8 +5,8 @@ const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-const labHref = translatePath('/lab');
-const ctaHref = translatePath('/contact');
+const labHref = translatePath('/lab/');
+const ctaHref = translatePath('/contact/');
 ---
 
 <div class="max-w-6xl mx-auto px-4 pt-8 pb-12 text-ink-900">

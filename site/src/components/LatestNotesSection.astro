@@ -21,11 +21,11 @@ const notes: CollectionEntry<'notes'>[] = (
 ---
 
 <Section>
-  <SectionHeading label={t('home.latest')} href={translatePath('/notes')} margin="mb-6" />
+  <SectionHeading label={t('home.latest')} href={translatePath('/notes/')} margin="mb-6" />
     {notes.length > 0 ? (
       <div class="divide-y divide-gray-100">
         {notes.map((note) => (
-          <a href={translatePath(`/notes/${note.id}`)} class="group block py-3 first:pt-0">
+          <a href={translatePath(`/notes/${note.id}/`)} class="group block py-3 first:pt-0">
             <span class="text-sm text-gray-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
             <span class="text-base text-gray-700 group-hover:text-cyan-700 transition-colors">{note.data.title}</span>
           </a>
@@ -35,7 +35,7 @@ const notes: CollectionEntry<'notes'>[] = (
       <p class="text-base text-gray-500">{t('notes.empty')}</p>
     )}
     <a
-      href={translatePath('/notes')}
+      href={translatePath('/notes/')}
       class="text-xs text-gray-500 hover:text-cyan-700 transition-colors mt-4 block"
     >
       {t('home.allNotes')} &rarr;

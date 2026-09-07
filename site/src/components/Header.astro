@@ -7,12 +7,17 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
 const navItems: { label: string; href: string }[] = [
-  { label: t('nav.lab'), href: translatePath('/lab') },
-  { label: t('nav.ai'), href: translatePath('/ai') },
-  { label: t('nav.notes'), href: translatePath('/notes') },
-  { label: t('nav.contact'), href: translatePath('/contact') },
+  { label: t('nav.lab'), href: translatePath('/lab/') },
+  { label: t('nav.ai'), href: translatePath('/ai/') },
+  { label: t('nav.notes'), href: translatePath('/notes/') },
+  { label: t('nav.contact'), href: translatePath('/contact/') },
 ];
 
+interface Props {
+  hasAlternates?: boolean;
+}
+
+const { hasAlternates = true } = Astro.props;
 const currentPath = Astro.url.pathname;
 const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
 ---
@@ -45,7 +50,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
           href={item.href}
           class:list={[
             'hover:text-accent-700 focus:outline-none focus:text-accent-700 transition-colors duration-200 text-sm',
-            currentPath === item.href || currentPath.startsWith(item.href + '/')
+            currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
               ? 'text-accent-700 font-bold no-underline'
               : '',
           ]}
@@ -53,7 +58,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
           {item.label}
         </a>
       ))}
-      {otherLangs.map(([l, label]) => (
+      {hasAlternates && otherLangs.map(([l, label]) => (
         <a
           href={switchLangUrl(Astro.url, l as keyof typeof languages)}
           aria-label={label}
