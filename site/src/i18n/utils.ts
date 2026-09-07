@@ -53,6 +53,24 @@ export function switchLangUrl(url: URL, targetLang: Lang): string {
   const currentLang = getLangFromUrl(url);
   const pathname = url.pathname;
 
+  // Fallback for unilingual routes where the alternate language page does not exist
+  if (targetLang === 'es') {
+    if (pathname.startsWith('/notes/')) {
+      return '/es/notes/';
+    }
+    if (pathname === '/projects' || pathname === '/projects/') {
+      return '/es/';
+    }
+  } else if (targetLang === 'en') {
+    if (
+      pathname === '/es/nodo' || pathname === '/es/nodo/' ||
+      pathname === '/es/rompe' || pathname === '/es/rompe/' ||
+      pathname === '/es/newsletter' || pathname === '/es/newsletter/'
+    ) {
+      return '/';
+    }
+  }
+
   if (currentLang === defaultLang) {
     return targetLang === defaultLang ? pathname : `/${targetLang}${pathname}`;
   }

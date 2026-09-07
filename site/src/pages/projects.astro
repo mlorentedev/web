@@ -18,8 +18,8 @@ const [page] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>)
 const { Content } = await render(page);
 ---
 
-<BaseLayout title={page.data.title} description={page.data.description}>
-  <Header />
+<BaseLayout title={page.data.title} description={page.data.description} hasAlternates={false}>
+  <Header hasAlternates={false} />
   <main id="main-content" class="flex-grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">
       <div class="max-w-3xl mx-auto px-4">

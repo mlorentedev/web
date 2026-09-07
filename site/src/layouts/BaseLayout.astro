@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import { site } from '../data/site';
 import { SITE_VERSION } from '../data/version';
-import { languages } from '../i18n/ui';
+import { languages, defaultLang } from '../i18n/ui';
 import { getLocale, useTranslations, switchLangUrl } from '../i18n/utils';
 
 interface Props {
@@ -11,6 +11,8 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   jsonLd?: boolean;
+  noindex?: boolean;
+  hasAlternates?: boolean;
 }
 
 const lang = getLocale(Astro.currentLocale);
@@ -22,10 +24,13 @@ const {
   ogImage = '/images/og-image.png',
   ogType = 'website',
   jsonLd = true,
+  noindex = false,
+  hasAlternates = true,
 } = Astro.props;
 
 const pageTitle = title;
 const canonicalUrl = new URL(Astro.url.pathname, site.url);
+const defaultLocaleUrl = new URL(switchLangUrl(Astro.url, defaultLang), site.url);
 
 const schemaGraph = {
   '@context': 'https://schema.org',
@@ -90,16 +95,21 @@ const schemaGraph = {
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="preload" href="/fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/Roboto-Bold.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {!noindex && <link rel="canonical" href={canonicalUrl} />}
 
     {/* One feed, English, on every page including the Spanish ones — all 16 notes
         are `lang: en`, so there is nothing else to point at yet (#129). */}
     <link rel="alternate" type="application/rss+xml" title={`${site.author} — ${t('notes.title')}`} href={new URL('/rss.xml', site.url)} />
 
-    {Object.keys(languages).map((l) => (
-      <link rel="alternate" hreflang={l} href={new URL(switchLangUrl(Astro.url, l as keyof typeof languages), site.url)} />
-    ))}
-    <link rel="alternate" hreflang="x-default" href={new URL(Astro.url.pathname, site.url)} />
+    {!noindex && hasAlternates && (
+      <>
+        {Object.keys(languages).map((l) => (
+          <link rel="alternate" hreflang={l} href={new URL(switchLangUrl(Astro.url, l as keyof typeof languages), site.url)} />
+        ))}
+        <link rel="alternate" hreflang="x-default" href={defaultLocaleUrl} />
+      </>
+    )}
 
     <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />

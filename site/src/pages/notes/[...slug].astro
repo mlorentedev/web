@@ -35,8 +35,8 @@ const translatePath = useTranslatedPath(lang);
 const formattedDate = formatDate(note.data.pubDate, lang);
 ---
 
-<BaseLayout title={note.data.title} description={note.data.description} ogType="article">
-  <Header />
+<BaseLayout title={note.data.title} description={note.data.description} ogType="article" hasAlternates={false}>
+  <Header hasAlternates={false} />
   <main id="main-content" class="flex-grow">
     <section class="pt-16 pb-16 md:pt-20 md:pb-20">
       <div class="max-w-3xl mx-auto px-4">

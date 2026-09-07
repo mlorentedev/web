@@ -4,8 +4,8 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<BaseLayout title="Not Found" description="This page doesn't exist.">
-  <Header />
+<BaseLayout title="Not Found" description="This page doesn't exist." noindex={true} hasAlternates={false}>
+  <Header hasAlternates={false} />
   <main id="main-content" class="flex-grow pb-16">
     <section class="pt-20 pb-16 md:pt-24 md:pb-20">
       <div class="max-w-3xl mx-auto px-4 text-center">
