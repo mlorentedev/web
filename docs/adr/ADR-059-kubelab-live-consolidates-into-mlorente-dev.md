@@ -27,7 +27,7 @@ HTTP/2 308
 location: https://mlorente.dev/
 ```
 
-#224 framed this as an open question with two options: keep the 308, or stand up
+Issue #224 framed this as an open question with two options: keep the 308, or stand up
 an independently indexed landing page on `kubelab.live` with its own `robots.txt`
 and canonical.
 
