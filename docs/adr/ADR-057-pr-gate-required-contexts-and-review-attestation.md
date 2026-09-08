@@ -81,6 +81,24 @@ Deliberately **not** required, each for a stated reason:
 - **`strict`.** Forces a rebase per merge and interacts badly with
   release-please regenerating its PR body. Separate decision if ever needed.
 
+**Approvals are not required, and that is the decision** —
+`required_approving_review_count` is `0` (`enforce_admins: true`,
+verified against the API 2026-09-07). This is a single-maintainer repo: setting
+it to 1 would mean no pull request could ever merge without recruiting a second
+GitHub account, so the rule would be satisfied by inventing an approver rather
+than by adding a reviewer. The human gate here is the **deliberate merge** —
+auto-merge is forbidden repo-wide (`allow_auto_merge=false`), so a person reads
+the diff and clicks. **What GitHub enforces is exactly the two required contexts
+in section 2 and nothing else.** The attestation in section 3 reddens the
+`review` job, which section 2 deliberately leaves un-required — so a PR with no
+published review is *mergeable*, and what stops it is the person, not the
+platform. That is the same shape as this paragraph: the enforcement is real, and
+it stops one step short of where a reader might assume. What a person supplies
+is the judgement to merge and the refusal to merge unreviewed work.
+Recorded because a protection that reads as enforced but
+is convention is worse than one that is honestly named — anyone auditing this
+repo should find the answer here rather than infer it from a `0`.
+
 ### 3. What "reviewed" means: the attestation registry
 
 A PR is reviewed when a comment on it carries a **review marker** from a
