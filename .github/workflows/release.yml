@@ -12,6 +12,11 @@ name: Release & Deploy
 #      validated. Fires a repository_dispatch to mlorentedev/kubelab to open the
 #      gated prod promotion PR (ADR-046 / WEB-108).
 #
+# The `latest` alias means the newest COMPLETED semver release, byte-identical to
+# that semver tag. It is human-facing only (the `docker run` line in README.md);
+# no manifest, overlay or job in either repo may pin it, and a push build never
+# writes it. Contract: docs/adr/ADR-058-mutable-latest-tag-contract.md.
+#
 # Pull-request validation (Dockerfile build, no push) lives in pr-validation.yml.
 #
 # Required secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN (build/push/re-tag);

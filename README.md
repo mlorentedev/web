@@ -59,6 +59,17 @@ This repo holds **code**; the platform repo (`kubelab`) holds the **K8s manifest
 
 A change that **also** needs a manifest/overlay edit spans two repos — open that PR in `kubelab`.
 
+## Look at the published image
+
+```sh
+docker run --rm -p 8080:8080 mlorentedev/kubelab-web:latest   # then open http://localhost:8080
+```
+
+`latest` is the newest completed semver release, byte-identical to that semver
+tag. It exists for exactly this — **nothing may pin it**: production pins a
+semver tag and staging pins `sha-<short>`. See
+[ADR-058](docs/adr/ADR-058-mutable-latest-tag-contract.md).
+
 ## Conventions
 
 - **Trunk-based**: `master` only; `feature/` `fix/` `chore/` `docs/` branches; **squash-merge**.
