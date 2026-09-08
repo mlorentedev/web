@@ -17,9 +17,18 @@ completed release moves both together. #173 opened because the alias had frozen
 at `1.1.1` (2026-06-15) through nine releases — not because the code was wrong,
 but because the promote step had never run against a completed release.
 
-It has now run against five. Measured 2026-09-07, digest = `sha256sum` over
-`docker buildx imagetools inspect --raw` (the multi-arch manifest **list**, not
-one platform's image):
+It has now run against five. Measured 2026-09-07. The values below are the
+**first 16 hex characters** of a locally computed `sha256sum` over
+`docker buildx imagetools inspect --raw` — that is, over the multi-arch manifest
+**list**, not one platform's image. They are a comparison key, not the registry's
+`sha256:<64-hex>` digest; run the command without `cut` for that.
+
+```sh
+for T in latest 1.15.0 1.14.0; do
+  docker buildx imagetools inspect --raw docker.io/mlorentedev/kubelab-web:$T \
+    | sha256sum | cut -c1-16
+done
+```
 
 ```text
 latest    981e221a43bf5d22
@@ -27,7 +36,8 @@ latest    981e221a43bf5d22
 1.14.0    0255aacc795c5875
 ```
 
-`latest` and `1.15.0` are one object under two names. The mechanism is sound.
+`latest` and `1.15.0` hash to the same manifest list: one object under two names.
+The mechanism is sound.
 
 **What was still undecided** is the meaning, and #173 was right that an alias
 meaning different things in two repos of one platform is its own defect. Two
@@ -55,11 +65,15 @@ Three parts, each checkable:
 2. **Human-facing only.** Its sole sanctioned consumer is a person running the
    published image to look at the site. `README.md` now carries that `docker run`
    line, so the alias has exactly one declared consumer instead of none.
-3. **Not pinnable.** No Kubernetes manifest, overlay, Helm value or CI job in
-   either repo may reference `:latest`. ADR-055 already calls a mutable tag in
-   the cluster the antipattern; this states the same rule from the publisher's
-   side, so it can be enforced where the tag is written, not only where it is
-   read.
+3. **Not pinnable — which constrains readers, not the writer.** No Kubernetes
+   manifest, overlay, Helm value, or CI job that *consumes* an image in either
+   repo may resolve `:latest`. The one job permitted to **write** it is
+   `release.yml`'s promote step, and only by re-tagging the digest staging
+   validated — that is the mechanism this whole contract describes, so a literal
+   audit of "no job may mention `:latest`" would flag the very step that
+   maintains it. ADR-055 already calls a mutable tag in the cluster the
+   antipattern; this states the same rule from the publisher's side, so it can be
+   enforced where the tag is written, not only where it is read.
 
 **Consistency across the platform.** kubelab's `api` publishes `latest` on the
 same terms — `kubelab-api:latest` and `kubelab-api:1.1.1` share a digest — while
