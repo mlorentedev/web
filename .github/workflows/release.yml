@@ -5,8 +5,9 @@ name: Release & Deploy
 # push serves BOTH environments by digest — build-once, promote-by-digest:
 #
 #   1. release-please accumulates Conventional Commits into a release PR.
-#   2. Every push builds ONE immutable `sha-<short>` image (multi-arch), pushes it,
-#      then fires a repository_dispatch to mlorentedev/kubelab → staging.
+#   2. Every push runs the test suite, then builds ONE immutable `sha-<short>`
+#      image (multi-arch), pushes it, and fires a repository_dispatch to
+#      mlorentedev/kubelab → staging. A red suite stops the push there.
 #   3. When a release PR merges, the SAME image digest is re-tagged to the clean
 #      semver `X.Y.Z` (no rebuild) — so prod ships the exact bytes staging
 #      validated. Fires a repository_dispatch to mlorentedev/kubelab to open the
@@ -83,9 +84,22 @@ jobs:
       - id: meta
         run: echo "sha_tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
+  # The same suite a pull request runs (test.yml), run again on the merge
+  # commit. A PR's checks ran against its own head, and `strict: false` lets it
+  # merge against a stale base, so the tree this push carries is not the one
+  # that went green. `build` needs this job, which puts it in front of
+  # everything that ships: `dispatch-staging` and `promote-prod` both need
+  # `build`, so a red suite leaves no `sha-<short>` image to send to staging
+  # and no digest to re-tag for prod (#343).
+  test:
+    name: Test
+    permissions:
+      contents: read
+    uses: ./.github/workflows/test.yml
+
   build:
     name: Build staging image
-    needs: meta
+    needs: [meta, test]
     permissions:
       contents: read
       security-events: write

@@ -68,7 +68,8 @@ Branch protection on `master` requires exactly:
 | `GitGuardian Security Checks` | GitGuardian app | Secret detection, independent of this repo's workflows. |
 
 `strict` (branch must be up to date) is **off**. Verified against the API on
-2026-09-06; the values match the command #276 asked the owner to run.
+2026-09-06 and again on 2026-09-22; the values match the command #276 asked the
+owner to run.
 
 Deliberately **not** required, each for a stated reason:
 
@@ -78,8 +79,24 @@ Deliberately **not** required, each for a stated reason:
 - **`review` (PR-Agent).** It can report success having published nothing, as
   on #271. The fix is the attestation check in section 3, not a required
   context.
-- **`strict`.** Forces a rebase per merge and interacts badly with
-  release-please regenerating its PR body. Separate decision if ever needed.
+- **`strict`.** Re-read and declined again on 2026-09-22 (#343), with the
+  reasons measured rather than inherited:
+  - *What `strict: false` costs is now bounded.* A PR's checks run against its
+    own head, so with a stale base the merge commit is a tree nothing tested.
+    Until #343 that commit was exactly what `release.yml` built, dispatched to
+    staging and later re-tagged for prod. `release.yml` now runs the same suite
+    (`test.yml`) on the merge commit and `build` needs it, so a semantic
+    conflict between two green PRs surfaces as a red master push that publishes
+    no image. `strict` would only move that detection from after the merge to
+    before it.
+  - *The release-please cost is real, not hypothetical.* release-please does not
+    re-push its branch when a push produces no changelog change: `#312` merged
+    with its head on `bc95720` while master was already on `3b2195d` (`#339`, a
+    `chore:`). Under `strict` that release PR would have been `BEHIND` and
+    needed an update-branch before it could ship, and so would every open
+    Dependabot PR after each merge.
+  - Revisit if a red master push from a stale-base merge is ever observed:
+    that is the event `strict` prevents, and it has not happened yet.
 
 **Approvals are not required, and that is the decision** —
 `required_approving_review_count` is `0` (`enforce_admins: true`,
@@ -147,6 +164,12 @@ reason kubelab's copy was not the source.
 
 - A red `Test`, `Validate build` or `Release closing refs` now blocks a merge,
   and so does a skipped or cancelled one.
+- The suite behind `Test` is `test.yml`, called by both `pr-validation.yml` and
+  `release.yml` (#343). On a push to master it runs before `build`, so the
+  merge commit is tested before it becomes an image. A red master push is
+  therefore possible and means "nothing shipped", not "something broken
+  shipped". `site/tests/delivery-gate.test.mjs` asserts both callers and that
+  no job that ships can start without it.
 - Adding a job to the PR's obligations is one edit: add it to `gate.needs`.
   Nothing else in the gate has to change, and the derived check makes that
   sentence true rather than a claim (`lesson-029`, `lesson-017`).
