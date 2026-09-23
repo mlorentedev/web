@@ -90,12 +90,18 @@ async function pinNetwork(page, base) {
  */
 async function settle(page, url) {
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.evaluate(async () => {
+  const pinned = await page.evaluate(async () => {
     await document.fonts.ready;
-    for (const el of document.querySelectorAll('[data-probe-clock], [data-probe-latency]')) {
-      el.textContent = '(live value)';
-    }
+    const live = document.querySelectorAll('[data-probe-clock], [data-probe-latency]');
+    for (const el of live) el.textContent = '(live value)';
+    return { consoles: document.querySelectorAll('[data-probe-target]').length, live: live.length };
   });
+  // If the console's markup is renamed, the readings stop being pinned and two
+  // captures drift again, which is how this was first found. Say so here, not
+  // as an unexplained pixel diff later.
+  if (pinned.consoles > 0 && pinned.live === 0) {
+    throw new Error(`${url}: the Lab console is on the page but no [data-probe-clock]/[data-probe-latency] was found to pin; update settle()`);
+  }
 }
 
 /** Every built page's URL path, from the files in `dist/`. */
