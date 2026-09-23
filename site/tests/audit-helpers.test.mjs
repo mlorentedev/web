@@ -32,6 +32,10 @@ test('variants are stripped, and only the ones outside brackets', () => {
   // drops the `[`, which is what let an arbitrary colour past the guard.
   assert.equal(withoutVariants('bg-[color:rgb(1,2,3)]'), 'bg-[color:rgb(1,2,3)]');
   assert.equal(withoutVariants('md:bg-[color:var(--x)]'), 'bg-[color:var(--x)]');
+  // Tailwind 4 spellings (WEB-022): `!` moved to the end, and a CSS variable
+  // can be named in parentheses, whose type hint carries a colon of its own.
+  assert.equal(withoutVariants('text-accent-700!'), 'text-accent-700');
+  assert.equal(withoutVariants('md:text-(color:--brand)'), 'text-(color:--brand)');
 });
 
 test('the raw-colour guard actually fires', () => {
@@ -44,8 +48,18 @@ test('the raw-colour guard actually fires', () => {
     // what the first version of `withoutVariants()` mistook for a variant.
     'bg-[color:rgb(1,2,3)]',
     'dark:hover:text-[color:var(--brand)]',
+    // Tailwind 4's variable shorthand names a colour with no brackets at all,
+    // so the bracket shapes above never see it (WEB-022).
+    'bg-(--brand)',
+    'md:border-(--x)',
+    'hover:text-(color:--brand)',
   ];
-  const shouldPass = ['bg-accent-700', 'text-[10px]', 'w-[754px]', 'grid-cols-[1fr_auto]'];
+  const shouldPass = [
+    'bg-accent-700', 'text-[10px]', 'w-[754px]', 'grid-cols-[1fr_auto]',
+    // A variable is only a colour escape on a colour utility, and a non-colour
+    // type hint says it is not one.
+    'w-(--sidebar)', 'text-(length:--size)',
+  ];
 
   assert.deepEqual(colourEscapes(shouldCatch), [...shouldCatch].sort(), 'the guard missed a raw colour');
   assert.deepEqual(colourEscapes(shouldPass), [], 'the guard flagged a non-colour arbitrary value');

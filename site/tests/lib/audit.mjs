@@ -14,7 +14,7 @@
  * that *does* something on import cannot be reused, only copied.
  *
  * The allowlist still has exactly one definition — `src/theme/tokens.mjs`,
- * which `tailwind.config.mjs` builds the palette from and this reads back.
+ * which `src/styles/tailwind.css` declares the palette from and this reads back.
  */
 
 import tailwindColors from 'tailwindcss/colors.js';
@@ -65,11 +65,13 @@ export function withoutVariants(className) {
   let start = 0;
   for (let i = 0; i < className.length; i += 1) {
     const char = className[i];
-    if (char === '[') depth += 1;
-    else if (char === ']') depth -= 1;
+    // Tailwind 4's `(--var)` shorthand carries type hints the same way.
+    if (char === '[' || char === '(') depth += 1;
+    else if (char === ']' || char === ')') depth -= 1;
     else if (char === ':' && depth === 0) start = i + 1;
   }
-  return className.slice(start).replace(/^!/, '');
+  // `!` marks a utility important: a prefix in Tailwind 3, a suffix in 4.
+  return className.slice(start).replace(/^!/, '').replace(/!$/, '');
 }
 
 /**
@@ -108,7 +110,17 @@ export function colourEscapes(classNameList) {
   // function, and Tailwind's `color:` type hint — `bg-[color:var(--x)]` names a
   // colour without containing one, so matching on the value alone misses it.
   const arbitraryColour = /\[(color:|#[0-9a-fA-F]{3,8}|(rgb|rgba|hsl|hsla|oklch|lab|color)\()/;
-  return [...classNameList].filter((c) => arbitraryColour.test(withoutVariants(c))).sort();
+  // Tailwind 4 adds a fourth: `bg-(--x)` names a colour through a variable with
+  // no brackets at all. It counts on a colour utility, unless its type hint
+  // says the variable is something else (`text-(length:--size)`).
+  const variableColour =
+    /^(bg|text|border(-[trblxy])?|ring|outline|fill|stroke|decoration|divide|from|via|to|accent|caret|shadow|placeholder)-\((?!(length|number|percentage|position|size|image|url|family-name|absolute-size|relative-size|line-width|bg-size):)/;
+  return [...classNameList]
+    .filter((c) => {
+      const bare = withoutVariants(c);
+      return arbitraryColour.test(bare) || variableColour.test(bare);
+    })
+    .sort();
 }
 
 /** Type set in pixels instead of from the scale — `text-[11px]`. */
