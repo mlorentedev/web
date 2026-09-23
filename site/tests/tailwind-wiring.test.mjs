@@ -34,9 +34,12 @@ function shippedCss(html) {
   return hrefs.map((href) => readFileSync(join(distDir, href), 'utf8')).join('\n');
 }
 
-// Preflight's first rule, as Tailwind 3 emits it minified. Its presence means
-// `@tailwind base` reached the page; nothing else in the site writes it.
-const PREFLIGHT = '*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid';
+// The head of preflight's first rule. Its presence means `@tailwind base`
+// reached the page; nothing else in the site writes it. Only the head: the rest
+// of the rule is minifier-shaped (Vite 6 keeps `border-width:0;border-style:
+// solid;…`, Vite 8 folds it into `border:0 solid …`), and this test is about
+// wiring, not about which minifier ran.
+const PREFLIGHT = '*,:before,:after{box-sizing:border-box;';
 // `global.css` opens with the Roboto faces. It must come after preflight, where
 // it sat when it was an inline <style> following the stylesheet link.
 const GLOBAL_CSS = '@font-face{font-family:Roboto';
