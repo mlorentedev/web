@@ -14,6 +14,7 @@ lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 046 | [npm's ERESOLVE names the package the lockfile anchors, not the one that conflicts](lesson-046-npm-s-eresolve-names-the-package-the-lockfil.md) | 2026-09-22 | `#dependencies` `#npm` `#verification` |
 | 045 | [Under a GraphQL rate limit the gh CLI does not fail loudly, it answers wrongly](lesson-045-under-a-graphql-rate-limit-the-gh-cli-does-n.md) | 2026-09-07 | `#github` `#verification` `#tooling` |
 | 044 | [A parallel fan-out has no completion accounting, so a lost deliverable is silent](lesson-044-a-parallel-fan-out-has-no-completion-account.md) | 2026-08-26 | `#verification` `#subagents` `#knowledge-placement` |
 | 043 | [A caret on a `0.x` dependency pins the minor, not the major](lesson-043-a-caret-on-a-0-x-dependency-pins-the-minor-n.md) | 2026-09-06 | `#dependencies` `#npm` `#semver` |
