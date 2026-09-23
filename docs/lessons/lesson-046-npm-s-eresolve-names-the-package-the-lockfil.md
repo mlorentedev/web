@@ -26,9 +26,10 @@ Conflicting peer dependency: astro@7.3.4
 Read literally, that says mdx 8 conflicts with astro 7. It doesn't: mdx 8
 *requires* astro 7. The real conflict was `@astrojs/tailwind` 6.0.2, whose
 `peer astro "^3.0.0 || ^4.0.0 || ^5.0.0"` rules astro 7 out. That package
-appears nowhere in the message. npm starts from the tree the lockfile
-describes, meets the first edge it cannot move, and reports that edge.
-Dependabot's `#368` failed with an error of the same shape.
+appears nowhere in the message. As far as we can tell from the output, npm
+starts from the tree the lockfile describes and reports the first edge it
+cannot move, not the edge that forbids the move. Dependabot's `#368` carries
+the same lockfile shape: astro 7 next to mdx 4 and tailwind 6.
 
 **Solution**: resolve without the lockfile, in a throwaway worktree, to find
 the real edge. The lockfile is only there to seed the search.
