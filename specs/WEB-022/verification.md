@@ -93,7 +93,24 @@ Page comparisons in this spec apply four steps:
   - The build produces the same 115 files. All non-asset files are identical after hash normalisation, the CSS is byte-identical, and all 13 mermaid SVGs are identical by content once the random id prefix is normalised (`#378`).
   - `npm test` is 187/187, and `test:browser` and `test:a11y` both exit 0.
   - **Gap found and closed:** with the mermaid plugin switched off, the build still exits 0, ships raw `language-mermaid` blocks and writes 0 SVGs, and every existing suite passed. `notes-diagrams.test.mjs` iterates over the diagrams it finds, so with zero it asserts nothing. The new `site/tests/mermaid-rendered.test.mjs` counts fences in the source (13 across 10 notes) and fails on that mutant with `notes/building-a-homelab-idp: mermaid shipped as source, not rendered`.
-- [ ] AC6 ->
+- [x] AC6 -> PR4, against a build of master `a3a1fe2` (Tailwind 3.4.19). The baseline is reproducible: build that commit and run `node tests/visual-diff.mjs capture` and `shots` there.
+  - **Pixels:** 20 full-page screenshots (`/`, `/es/`, `/lab/`, `/es/lab/`, `/contact/`, `/es/contact/`, a note, `/notes/`, `/tags/homelab/` and `/legal/privacy/`, at 320 and 1440 px) are **0 px different** from master. The check discriminates: master against itself is 20/20 identical, and moving `gray-600` by one unit in the blue channel turns 8 of the 20 red.
+  - **Computed styles:** across all 87 pages × 2 widths (26 174 elements), colours, type, shadows, radii, gradients and line heights are identical. The only remaining differences are geometry bookkeeping. Tailwind 4's `space-*` puts the margin on the other side of each child, and `divide-y` moves each separator line from the top of one item into the bottom of the previous one. Items shift by at most 1 px as boxes, while their content and the line keep the same position, which the pixels confirm.
+  - The first Tailwind 4 build was **not** identical. Each difference was found by the diff and fixed at its cause:
+    - OKLCH palette: pinned as v3 hex in `@theme`, with v4's palette cleared.
+    - `@tailwindcss/typography` shipping OKLCH `--tw-prose-*`: set from the v3 `gray` ramp in `tailwind.config.mjs`.
+    - `shadow-sm` and `rounded-sm` rescaled, and `outline-none` changed meaning: renamed to `shadow-xs`, `rounded-xs` and `outline-hidden`, per the upgrade guide. The upgrader had not done it.
+    - **Four `shadow-xs` on master rendered nothing**, because v3 has no such class. Under v4 they would have *added* shadows, so they were removed.
+    - Responsive `text-*` no longer overriding `leading-*`: 9 class lists got the responsive `leading-*` that v3 was applying implicitly.
+    - `text-*` line heights became unitless, so an inline `<code>` inside `prose-p:text-base` shrank from 24 px to 21 px and moved 292 elements by 1 px: the 24 `prose-*:text-*` overrides now use the `/N` line height.
+    - Gradients interpolated in OKLab: `bg-linear-to-br/srgb`.
+    - Form fields made transparent: the email input got `bg-white`.
+    - Button cursor and placeholder colour: restored in `@layer base`, as the upgrade guide suggests.
+  - **The upgrader rewrote test inputs.** In `audit-helpers.test.mjs` it turned the guard's must-catch strings into modern syntax (`text-[#fff]` became `text-white`), which would have weakened the colour guard silently. Those edits were reverted. The guard now also catches Tailwind 4's `bg-(--x)` shorthand and its suffix `!`, red before the change.
+  - `diagrams.mjs verify` passes. `generate` needs the archify renderer, which is not installed locally, so the tints were not re-rendered. They are equal by construction: `palette.mjs` was dumped from the same `tailwindcss@3.4.19` palette `diagrams.mjs` read before.
+  - `tests/tailwind-wiring.test.mjs` has 4 tests. It fails if the CSS palette and `palette.mjs` disagree (a one-unit mutation) and if `--color-*: initial` is removed.
+  - Suites: `npm test` is 188/188, `test:browser` reports "All widths contained", and `test:a11y` reports 0 violations. `npm audit` reports 0.
+  - Cascade note: v4 emits its CSS in `@layer`s, so the site's unlayered `global.css` now outranks every utility regardless of order. It changes nothing measured today, but a rule added to `global.css` will beat a utility on the same element.
 - [ ] AC7 -> `#368` was closed by Dependabot itself on 2026-09-23 ("astro is updatable in another way"). `#381`, a second Dependabot security PR opened between the two merges on astro 5, is obsolete now that master is on 7.3.4. `#7` is closed by the archiving PR.
 
 ## Test status
@@ -104,6 +121,8 @@ Page comparisons in this spec apply four steps:
 ## Decisions made during implementation
 
 - 2026-09-22, Manu: PR4 pins the v3 palette as hex in `@theme` (Risk 1).
+- 2026-09-22: the typography customisation stays in a JS config through `@config`, the plugin's documented v4 API (AC6 amended).
+- 2026-09-22: where v3 behaviour was accidental (responsive text size overriding `leading-relaxed`, dormant `shadow-xs`), PR4 reproduces what v3 *rendered*, not what the classes *said*. Honouring the author's `leading-relaxed` is a design change for another PR.
 - 2026-09-22, Manu: three PRs, and Tailwind 4 inside this migration. Together those give four PRs, ordered so that the security fix (PR2) does not wait on the visual one (PR4).
 
 ## Promotion candidates
