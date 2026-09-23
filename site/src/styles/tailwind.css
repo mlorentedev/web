@@ -1,0 +1,6 @@
+/* Tailwind's three layers. Imported first in BaseLayout.astro so `global.css`
+   and every component style follow preflight, as when the integration
+   injected this file into every page. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
