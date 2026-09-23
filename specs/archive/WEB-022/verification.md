@@ -94,7 +94,10 @@ Page comparisons in this spec apply four steps:
   - `npm test` is 187/187, and `test:browser` and `test:a11y` both exit 0.
   - **Gap found and closed:** with the mermaid plugin switched off, the build still exits 0, ships raw `language-mermaid` blocks and writes 0 SVGs, and every existing suite passed. `notes-diagrams.test.mjs` iterates over the diagrams it finds, so with zero it asserts nothing. The new `site/tests/mermaid-rendered.test.mjs` counts fences in the source (13 across 10 notes) and fails on that mutant with `notes/building-a-homelab-idp: mermaid shipped as source, not rendered`.
 - [x] AC6 -> PR4, against a build of master `a3a1fe2` (Tailwind 3.4.19). The baseline is reproducible: build that commit and run `node tests/visual-diff.mjs capture` and `shots` there.
-  - **Pixels:** 20 full-page screenshots (`/`, `/es/`, `/lab/`, `/es/lab/`, `/contact/`, `/es/contact/`, a note, `/notes/`, `/tags/homelab/` and `/legal/privacy/`, at 320 and 1440 px) are **0 px different** from master. The check discriminates: master against itself is 20/20 identical, and moving `gray-600` by one unit in the blue channel turns 8 of the 20 red.
+  - **Pixels:** 20 full-page screenshots (`/`, `/es/`, `/lab/`, `/es/lab/`, `/contact/`, `/es/contact/`, a note, `/notes/`, `/tags/homelab/` and `/legal/privacy/`, at 320 and 1440 px) are **0 px different** from master. Moving `gray-600` by one unit in the blue channel turns 8 of the 20 red.
+  - **Correction, found by the adversarial review (2026-09-22).** The first version of this evidence said "master against itself is 20/20 identical". That was true of one pair of runs, not of the tool. The reviewer's own control, two captures of one build, differed on `/lab` and `/es/lab`. The Lab's reachability console called the live `api.kubelab.live/health` and printed the visitor's clock and the round-trip time, all of which change on every load. With the network pinned, 4 of 20 still differed by 137 to 1,016 px, and cropping the changed strip showed `08:31:51 PM · round trip: 9 ms` against `08:39:49 PM · round trip: 7 ms`.
+    - `tests/visual-diff.mjs` now serves the console the healthy fixture `lab-axe.mjs` uses, aborts every other request that leaves the local server, and replaces the two live readings (`[data-probe-clock]`, `[data-probe-latency]`) with fixed text.
+    - Re-measured after the fix: three screenshot passes of one build are 20/20 identical, and master before Tailwind 4 (`a3a1fe2`) against after (`ba500ba`) is **20/20 at 0 px**, `/lab` included. The earlier 0 px on `/lab` held only because both captures happened to catch the same readings.
   - **Computed styles:** across all 87 pages × 2 widths (26 174 elements), colours, type, shadows, radii, gradients and line heights are identical. The only remaining differences are geometry bookkeeping. Tailwind 4's `space-*` puts the margin on the other side of each child, and `divide-y` moves each separator line from the top of one item into the bottom of the previous one. Items shift by at most 1 px as boxes, while their content and the line keep the same position, which the pixels confirm.
   - The first Tailwind 4 build was **not** identical. Each difference was found by the diff and fixed at its cause:
     - OKLCH palette: pinned as v3 hex in `@theme`, with v4's palette cleared.
@@ -111,7 +114,7 @@ Page comparisons in this spec apply four steps:
   - `tests/tailwind-wiring.test.mjs` has 4 tests. It fails if the CSS palette and `palette.mjs` disagree (a one-unit mutation) and if `--color-*: initial` is removed.
   - Suites: `npm test` is 188/188, `test:browser` reports "All widths contained", and `test:a11y` reports 0 violations. `npm audit` reports 0.
   - Cascade note: v4 emits its CSS in `@layer`s, so the site's unlayered `global.css` now outranks every utility regardless of order. It changes nothing measured today, but a rule added to `global.css` will beat a utility on the same element.
-- [ ] AC7 -> `#368` was closed by Dependabot itself on 2026-09-23 ("astro is updatable in another way"). `#381`, a second Dependabot security PR opened between the two merges on astro 5, is obsolete now that master is on 7.3.4. `#7` is closed by the archiving PR.
+- [x] AC7 -> `#368` was closed by Dependabot itself on 2026-09-23 ("astro is updatable in another way"). `#381`, a second Dependabot security PR opened between the two merges on astro 5, is obsolete now that master is on 7.3.4. `#7` is closed by the archiving PR.
 
 ## Test status
 
@@ -127,9 +130,23 @@ Page comparisons in this spec apply four steps:
 
 ## Promotion candidates
 
-- [ ] Lesson for `docs/lessons/`? Likely: npm's ERESOLVE names the wrong package when a lockfile is present. Re-resolve without it to find the real edge.
-- [ ] ADR-worthy decision? <yes / no>
-- [ ] New pattern candidate? <yes / no>
+- [x] Lessons for `docs/lessons/`: 046 (npm ERESOLVE blames the lockfile's anchor), 047 (the upgrader rewrote a guard's test inputs), 048 (release-please writes `closes` for any reference), 049 (a control that passes once proves nothing), 050 (an upgrade switches on classes the old version ignored).
+- [x] ADR-worthy decision? No. The palette pin and the typography `@config` are recorded here and in AC6; neither is a cross-cutting architecture choice.
+- [x] New pattern candidate? No. 047 and 049 may recur in other repos; promote them if they do.
+
+## Closing checklist (recorded here, not in `tasks.md`, so the review stays fresh)
+
+- Every AC is covered by a test or a recorded measurement, and `features.json` has a command for each: yes.
+- `verification.md` filled in per PR: yes (PR1-PR4, plus the review correction).
+- Independent adversarial review: yes, below.
+- The archiving PR closes #7: yes, by its body.
+
+## Independent review
+
+Two runs, both from `harness/reviewer-pool.json`:
+
+1. `nan/deepseek-v4-flash` on `ba500ba` was cut off at minute 10 and wrote no verdict. Before stopping, it ran the build, the mutations (removing the Tailwind import, disabling mermaid, #368's lockfile) and a screenshot control, and the control found that `/lab` captures were not deterministic. That was fixed in `9e3abfb` and the evidence corrected (§ AC6, "Correction").
+2. `agy/gemini-3.1-pro-high` on `9e3abfb` returned **PASS** (`review.md`). It ran `npm run build`, `npm test`, `test:a11y` and `test:browser`, and inspected `dist/`. **It did not repeat the mutations or the pixel comparison**, so the non-vacuity evidence for those comes from this file and from the first run, not from this verdict. Its one finding is Minor and SPECULATIVE: the vacuity assertion in `astro-peers.test.mjs`. That was declined on #380, because failing when nothing declares the peer is the intent.
 
 ## Archive checklist
 
