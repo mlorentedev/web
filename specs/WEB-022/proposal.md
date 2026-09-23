@@ -45,7 +45,7 @@ Each PR is independently releasable. The order puts the critical fix in front of
 ## Risks / open questions
 
 - **PR4 palette. Resolved 2026-09-22 (Manu): pin the v3 hex values.** The seven token families are declared in `@theme` with their current hex, so Tailwind 4 changes no colour. The hex consumers (`scripts/diagrams.mjs`, `tests/lib/audit.mjs`, the ghchart segment) keep receiving hex, and AC6's screenshot budget is near zero. OKLCH was the alternative; it would have shifted the colours and needed contrast re-measured.
-- **PR4 utility renames.** v4 renames or rescales utilities (`shadow-sm`, `rounded`, `ring`, and the default border colour becoming `currentColor`). The official upgrader got as far as the stylesheet and failed before the template pass, on a module lookup while the install was in flight. Re-run it after `npm install` has settled and review its diff line by line.
+- **PR4 utility renames. Resolved, measured.** See `verification.md` § AC6: the upgrader's template pass ran on its second attempt, and everything it missed or got wrong was found by the style and pixel diffs.
 - **Equivalence evidence does not survive the PR.** The baseline-vs-candidate `dist/` diffs are one-off measurements, recorded in `verification.md`. What lasts is the guard tests (AC1, AC3).
 - **Node.** Astro 7 needs `>=22.12`. `.nvmrc` is `22`, and the image is `node:22-bookworm-slim`; both resolve above that. The floor is noted here; nothing needs to change.
 
@@ -64,10 +64,12 @@ Each PR is independently releasable. The order puts the critical fix in front of
   - `npm test`, `test:browser` and `test:a11y` are green.
 - [ ] **AC5 — No deprecation left behind (PR3).** The build prints no `[astro] … deprecated` line, and `astro check` reports no `ts(6385)`. Every page is identical to the pre-PR build, mermaid SVG content included, after the same normalisation as AC1.
 - [ ] **AC6 — Tailwind 4 (PR4).**
-  - `tailwindcss` ^4 runs through `@tailwindcss/vite`; neither `postcss.config.mjs` nor a JS Tailwind config remains.
+  - `tailwindcss` ^4 runs through `@tailwindcss/vite`, and `postcss.config.mjs` is gone.
+  - Colours and fonts are configured in CSS (`@theme`). The palette is the v3 hex for exactly the ramps the site uses, and Tailwind 4's own palette is cleared.
+  - `tailwind.config.mjs` survives **only** for the `.prose` customisation, loaded through `@config`. *Amended 2026-09-22:* the original wording, "no JS Tailwind config remains", was written before measuring. A JS config through `@config` is `@tailwindcss/typography`'s documented way to change its raw CSS under v4. Hand-writing its `:where()` selectors in CSS would be the unsupported path.
   - `diagrams.mjs verify` passes, and `tests/lib/audit.mjs` consumers are green.
   - 0 axe violations.
-  - Screenshots of the landing pages, `/lab`, a note and `/contact`, at 320 and 1440 px on both locales, differ from the PR3 build by no more than the budget set once the palette decision is made. The budget is recorded in `verification.md`.
+  - Screenshots of the AC6 pages at 320 and 1440 px, both locales, plus the `divide-y` lists, are **pixel-identical** to master. The budget, set by the palette decision, is zero.
 - [ ] **AC7 — Closed out.** `#368` is closed as superseded by PR2, and `#7` is closed by the PR that archives this spec.
 
 ## References

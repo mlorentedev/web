@@ -45,11 +45,11 @@ created: "2026-09-22"
 
 ### PR4 — Tailwind 4
 
-- [ ] [AC6] Screenshot harness: Playwright over the pages named in AC6 at 320 and 1440 px on both locales, with a pixel-diff budget. Capture the PR3 baseline first.
-- [ ] [AC6] Run `npx @tailwindcss/upgrade` on a settled install and review its diff line by line.
-- [ ] [AC6] `@tailwindcss/vite` replaces `postcss.config.mjs` and `autoprefixer`. The CSS-first `@theme` replaces `tailwind.config.mjs`, per the palette decision.
-- [ ] [AC6] Hex consumers (`diagrams.mjs`, `tests/lib/audit.mjs`, the ghchart colour in `tokens.mjs`) keep passing, and `diagrams.mjs verify` stays green.
-- [ ] [AC6] Screenshot diff within budget, 0 axe violations, all suites green.
+- [x] [AC6] Screenshot harness: Playwright over the pages named in AC6 at 320 and 1440 px on both locales, with a pixel-diff budget. Capture the PR3 baseline first.
+- [x] [AC6] Run `npx @tailwindcss/upgrade` on a settled install and review its diff line by line.
+- [x] [AC6] `@tailwindcss/vite` replaces `postcss.config.mjs` and `autoprefixer`. The CSS-first `@theme` takes colours and fonts, per the palette decision; `tailwind.config.mjs` keeps only `.prose` (AC6 amended).
+- [x] [AC6] Hex consumers (`diagrams.mjs`, `tests/lib/audit.mjs`, the ghchart colour in `tokens.mjs`) keep passing, and `diagrams.mjs verify` stays green.
+- [x] [AC6] Screenshot diff within budget, 0 axe violations, all suites green.
 
 ## Closing
 

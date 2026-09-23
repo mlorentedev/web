@@ -19,14 +19,14 @@
     "@astrojs/mdx": "^8.0.2",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
+    "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.4",
-    "tailwindcss": "^3.4.14"
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@beoe/rehype-mermaid": "^0.4.2",
     "@tailwindcss/typography": "^0.5.20",
     "ajv": "^8.20.0",
-    "autoprefixer": "^10.6.1",
     "axe-core": "^4.13.0",
     "playwright": "^1.63.0",
     "semver": "^7.8.5",

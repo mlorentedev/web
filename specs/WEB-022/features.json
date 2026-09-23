@@ -36,8 +36,8 @@
   },
   {
     "id": "WEB-022-f6",
-    "behavior": "Tailwind 4 through @tailwindcss/vite; no postcss.config.mjs or JS Tailwind config; screenshots within the recorded budget; 0 axe violations",
-    "verification": "cd site && test ! -e postcss.config.mjs && test ! -e tailwind.config.mjs && npm run build && npm test && npm run test:a11y && node tests/visual-diff.mjs",
+    "behavior": "Tailwind 4 through @tailwindcss/vite with the pinned v3 palette in @theme and no PostCSS config; the only JS config is the typography customisation; 20 screenshots pixel-identical to a master build; 0 axe violations",
+    "verification": "cd site && test ! -e postcss.config.mjs && npm run build && npm test && npm run test:a11y && node tests/visual-diff.mjs shots /tmp/web022-tw4 && node tests/visual-diff.mjs pixels \"$WEB022_BASELINE_SHOTS\" /tmp/web022-tw4",
     "state": "pending",
     "evidence": ""
   }
