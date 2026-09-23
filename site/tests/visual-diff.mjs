@@ -49,6 +49,55 @@ const PROPERTIES = [
   'display', 'gap', 'opacity', 'width', 'height',
 ];
 
+/**
+ * Pin everything a page fetches at runtime, so two captures of one build agree.
+ *
+ * The Lab's reachability console calls `api.kubelab.live/health` on load and the
+ * landing asks the GitHub API for repository counts. Left live, both paint
+ * whatever the network answered at that moment: an adversarial review of WEB-022
+ * caught two captures of the *same* build differing on `/lab` at 320 px. The
+ * console gets the healthy fixture `lab-axe.mjs` uses; every other request that
+ * leaves the local server is aborted, which the pages answer with their
+ * committed fallbacks.
+ */
+async function pinNetwork(page, base) {
+  const healthy = {
+    status: 'healthy',
+    timestamp: '2026-09-01T12:00:00.000Z',
+    checks: [
+      { component: 'database', status: 'healthy' },
+      { component: 'cache', status: 'healthy' },
+      { component: 'beehiiv', status: 'healthy' },
+      { component: 'runtime', status: 'healthy' },
+    ],
+  };
+  await page.route('**/*', (route) => {
+    const url = route.request().url();
+    if (url.startsWith(base)) return route.continue();
+    if (/\/health(\?|$)/.test(url)) {
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(healthy) });
+    }
+    return route.abort();
+  });
+}
+
+/**
+ * Load a page and let it settle: fonts in, runtime requests answered, and the
+ * Lab console's two live readings, the visitor's clock and the round-trip
+ * time, replaced with fixed text. Those change on every load by design, and
+ * with the network pinned they were the last thing making two captures of one
+ * build differ (137 to 1,016 px on the Lab pages, measured).
+ */
+async function settle(page, url) {
+  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    for (const el of document.querySelectorAll('[data-probe-clock], [data-probe-latency]')) {
+      el.textContent = '(live value)';
+    }
+  });
+}
+
 /** Every built page's URL path, from the files in `dist/`. */
 async function pagePaths() {
   const { readdirSync } = await import('node:fs');
@@ -70,9 +119,9 @@ async function capture(out) {
     const paths = await pagePaths();
     for (const width of WIDTHS) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
+      await pinNetwork(page, base);
       for (const path of paths) {
-        await page.goto(base + path, { waitUntil: 'load' });
-        await page.evaluate(() => document.fonts.ready);
+        await settle(page, base + path);
         result[`${width} ${path}`] = await page.evaluate((props) => {
           // Identity is the element's position in the tree, which is stable
           // across two builds of the same content.
@@ -194,9 +243,9 @@ async function shots(dir) {
   try {
     for (const width of WIDTHS) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
+      await pinNetwork(page, base);
       for (const path of SHOT_PATHS) {
-        await page.goto(base + path, { waitUntil: 'load' });
-        await page.evaluate(() => document.fonts.ready);
+        await settle(page, base + path);
         const name = `${width}${path.replace(/\//g, '_')}.png`;
         await page.screenshot({ path: `${dir}/${name}`, fullPage: true, animations: 'disabled', caret: 'hide' });
       }
