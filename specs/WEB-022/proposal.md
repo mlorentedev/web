@@ -40,13 +40,11 @@ Each PR is independently releasable. The order puts the critical fix in front of
 - Visual redesign. PR4 changes the toolchain, not the design. Any colour shift it introduces is a defect to minimise, not an opportunity.
 - The nondeterministic mermaid SVG filenames. Two identical builds of master produce different `beoe/*.svg` names; that is pre-existing and ticketed as `#378`.
 - `dependabot.yml`. The majors `ignore` stays, because it is lifted per planned migration and this migration bumps by hand.
-- The 26 `MODULE_LEVEL_DIRECTIVE "use astro:head-inject"` build warnings from MDX 8 with Vite 8. They are upstream, and get one search and a ticket if unreported.
+- The 26 `MODULE_LEVEL_DIRECTIVE "use astro:head-inject"` build warnings. They are upstream: already reported as withastro/astro#18087, with a fix open in withastro/astro#18088, so this repo has no ticket. They go away with the astro release that ships the fix.
 
 ## Risks / open questions
 
-- **PR4 palette (must be resolved before PR4, blocks nothing earlier).** Tailwind 4's palette is OKLCH: `cyan-700` goes from `#0e7490` to `oklch(52% 0.105 223.128)`. The three hex consumers above break or shift. The choice is between two options, and it is Manu's:
-  - pin the seven token families to their v3 hex values in `@theme`, which gives zero visual change;
-  - adopt OKLCH and convert the consumers, which gives a small visible shift, and contrast needs re-measuring.
+- **PR4 palette. Resolved 2026-09-22 (Manu): pin the v3 hex values.** The seven token families are declared in `@theme` with their current hex, so Tailwind 4 changes no colour. The hex consumers (`scripts/diagrams.mjs`, `tests/lib/audit.mjs`, the ghchart segment) keep receiving hex, and AC6's screenshot budget is near zero. OKLCH was the alternative; it would have shifted the colours and needed contrast re-measured.
 - **PR4 utility renames.** v4 renames or rescales utilities (`shadow-sm`, `rounded`, `ring`, and the default border colour becoming `currentColor`). The official upgrader got as far as the stylesheet and failed before the template pass, on a module lookup while the install was in flight. Re-run it after `npm install` has settled and review its diff line by line.
 - **Equivalence evidence does not survive the PR.** The baseline-vs-candidate `dist/` diffs are one-off measurements, recorded in `verification.md`. What lasts is the guard tests (AC1, AC3).
 - **Node.** Astro 7 needs `>=22.12`. `.nvmrc` is `22`, and the image is `node:22-bookworm-slim`; both resolve above that. The floor is noted here; nothing needs to change.

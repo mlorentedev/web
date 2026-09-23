@@ -14,7 +14,7 @@ created: "2026-09-22"
 - [x] Worktree from `origin/master` via `dotf worktree add astro-7 --issue 7` (branch `chore/astro-7-migration`)
 - [x] Pre-spec measurement recorded in `verification.md`
 - [x] PR sequence and Tailwind 4 scope decided by Manu (2026-09-22)
-- [ ] PR4 palette decision (Risk 1). Blocks PR4 only.
+- [x] PR4 palette decision (Risk 1). Blocks PR4 only.
 
 ## Implementation
 
@@ -32,15 +32,16 @@ created: "2026-09-22"
 - [x] [AC4] Drop `i18n.routing.redirectToDefaultLocale` from `astro.config.mjs`.
 - [x] [AC2] Lockfile floors verified (astro, sharp, esbuild, yaml) and `npm audit` reports 0.
 - [x] [AC4] Baseline diff against PR1: same page set, and identical visible text on every page. Build, unit, browser and a11y suites green.
-- [ ] [AC2] After merge, check the Dependabot alerts API for the eleven, and record the result in `verification.md`.
-- [ ] [AC7] Close `#368` as superseded, linking PR2.
+- [x] [AC2] After merge, check the Dependabot alerts API for the eleven, and record the result in `verification.md`.
+- [x] [AC7] `#368` closed as superseded (Dependabot closed it itself once astro moved).
 
 ### PR3 — deprecations
 
-- [ ] [AC5] `z` from `astro/zod` in `src/content.config.ts` and any other schema file.
-- [ ] [AC5] Move `rehypeMermaid` into `markdown.processor: unified({ rehypePlugins })`, keeping `syntaxHighlight.excludeLangs: ['mermaid']`.
-- [ ] [AC5] Build log free of `[astro] … deprecated`, and `astro check` has no `ts(6385)`. Baseline diff against PR2, mermaid SVG content included, compared by content, not by filename.
-- [ ] Search for the `MODULE_LEVEL_DIRECTIVE` warning upstream, and ticket it if it is unreported (housekeeping).
+- [x] [AC5] `z` from `astro/zod` in `src/content.config.ts` and any other schema file.
+- [x] [AC5] Move `rehypeMermaid` into `markdown.processor: unified({ rehypePlugins })`, keeping `syntaxHighlight.excludeLangs: ['mermaid']`.
+- [x] [AC5] Build log free of `[astro] … deprecated`, and `astro check` has no `ts(6385)`. Baseline diff against PR2, mermaid SVG content included, compared by content, not by filename.
+- [x] [AC5] Guard `site/tests/mermaid-rendered.test.mjs`: every fence renders. Shown red with the plugin switched off.
+- [x] Search for the `MODULE_LEVEL_DIRECTIVE` warning upstream (housekeeping). Already reported as withastro/astro#18087, with a fix in #18088, so no ticket here.
 
 ### PR4 — Tailwind 4
 
