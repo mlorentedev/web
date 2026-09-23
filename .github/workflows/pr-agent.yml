@@ -22,9 +22,20 @@ permissions:
 
 jobs:
   review:
+    # Dependabot-triggered runs are skipped, ported from the dotfiles canon
+    # (HARNESS-080, dotfiles#1221). GitHub serves those runs from the
+    # Dependabot secrets store, which is empty here, so `secrets.NAN_API_KEY`
+    # expands to "" and the credential step below fails on every Dependabot
+    # PR — six at once on 2026-09-22 (#367-#372). Keyed on `github.actor`, the
+    # same field GitHub reads to pick the store, so the skip fires exactly when
+    # the credential is missing; `dependabot[bot]` cannot be claimed by a user
+    # because `[` is not allowed in a login. It only removes a review: a
+    # dependency PR is still read and merged by a human, and `/review` typed
+    # by a person on it runs with the secrets present.
     if: >
       (github.event_name == 'pull_request'
         && github.event.pull_request.draft == false
+        && github.actor != 'dependabot[bot]'
         && github.event.pull_request.head.repo.fork == false
         && !startsWith(github.head_ref, 'release-please--'))
       || (github.event_name == 'issue_comment'
