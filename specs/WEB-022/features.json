@@ -1,0 +1,44 @@
+[
+  {
+    "id": "WEB-022-f1",
+    "behavior": "Tailwind runs without @astrojs/tailwind: the built stylesheet carries preflight and the site's utilities, and the integration is absent from package.json and the lockfile",
+    "verification": "cd site && npm run build && node --test tests/tailwind-wiring.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-022-f2",
+    "behavior": "Lockfile resolves astro>=7.2.8, sharp>=0.35.4, esbuild>=0.28.1, yaml>=2.8.3 and npm audit reports zero vulnerabilities",
+    "verification": "cd site && npm audit --audit-level=low",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-022-f3",
+    "behavior": "Every installed package's astro peer range is satisfied by the installed astro",
+    "verification": "cd site && node --test tests/astro-peers.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-022-f4",
+    "behavior": "Astro 7 builds with 0 astro check errors and every suite is green",
+    "verification": "cd site && npm run build && npm test && npm run test:browser && npm run test:a11y",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-022-f5",
+    "behavior": "The build prints no Astro deprecation and astro check reports no ts(6385)",
+    "verification": "cd site && npm run build > /tmp/web022-build.log 2>&1 && ! grep -E '\\[astro\\].*deprecated|ts\\(6385\\)' /tmp/web022-build.log",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-022-f6",
+    "behavior": "Tailwind 4 through @tailwindcss/vite; no postcss.config.mjs or JS Tailwind config; screenshots within the recorded budget; 0 axe violations",
+    "verification": "cd site && test ! -e postcss.config.mjs && test ! -e tailwind.config.mjs && npm run build && npm test && npm run test:a11y && node tests/visual-diff.mjs",
+    "state": "pending",
+    "evidence": ""
+  }
+]
