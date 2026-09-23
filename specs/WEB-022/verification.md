@@ -74,10 +74,9 @@ Page comparisons in this spec apply four steps:
   - CSS: master's stylesheet (64 434 bytes plus a final newline) is a byte-identical prefix of PR1's. PR1 then appends `global.css`. `autoprefixer` 10.6.1 as a direct dev dependency produced the same bytes as the 10.4.27 the integration carried.
   - Pages: the same 101 non-asset files, and **0 differ** after normalisation and removal of the moved `global.css` block.
   - Mermaid: all 13 SVGs are identical in content once the random `m<digits>` id prefix (`#378`) is normalised.
-- [ ] AC2 -> PR2, pre-merge half:
-  - The lockfile resolves `astro` 7.3.4, `sharp` 0.35.4, `esbuild` 0.28.2 and `yaml` {2.8.3, 2.9.0}.
-  - `npm audit` reports `{'critical': 0, 'high': 0, 'moderate': 0, 'low': 0}`, down from 9 on master.
-  - The Dependabot alerts API half is checked after merge.
+- [x] AC2 -> PR2 (#380, merged as `aef8f88`):
+  - Before the merge, the lockfile resolved `astro` 7.3.4, `sharp` 0.35.4, `esbuild` 0.28.2 and `yaml` {2.8.3, 2.9.0}, and `npm audit` reported 0, down from 9 on master.
+  - After the merge, `gh api repos/mlorentedev/web/dependabot/alerts?state=open` returns **0**. Dependabot marked **14** alerts fixed between 01:35:57Z and 01:36:01Z on 2026-09-23: 1 critical (AVIF RCE), 4 high (sharp libheif, sharp libvips, SSRF, slot-name XSS), 6 medium (including `yaml`) and 3 low (including `esbuild`). That is more than the eleven counted on `#7` on 2026-09-06, because advisories were published after that count.
 - [x] AC3 -> PR2: `site/tests/astro-peers.test.mjs`.
   - It is green on PR1's lockfile (astro 5, integrations at 5) and on PR2's.
   - With `#368`'s lockfile swapped in, it fails: `astro 7.2.8 is outside the peer range of: @astrojs/mdx@4.3.14 wants astro ^5.0.0; @astrojs/tailwind@6.0.2 wants astro ^3.0.0 || ^4.0.0 || ^5.0.0`.
@@ -89,9 +88,13 @@ Page comparisons in this spec apply four steps:
   - `astro check` reports 0 errors and 20 hints; the 18 `ts(6385)` hints are PR3's work.
   - `npm test` is 186/186, `test:browser` reports "All widths contained", and `test:a11y` reports 0 violations.
   - PR1's wiring test first failed here on the preflight marker, because Vite 8 minifies differently. It was fixed on PR1 (`c44f670`) to match the rule's stable head.
-- [ ] AC5 ->
+- [x] AC5 -> PR3, against a master (`aef8f88`) build:
+  - The build log has 0 `[astro] … deprecated` lines (master had 2) and 0 `ts(6385)` (master had 18).
+  - The build produces the same 115 files. All non-asset files are identical after hash normalisation, the CSS is byte-identical, and all 13 mermaid SVGs are identical by content once the random id prefix is normalised (`#378`).
+  - `npm test` is 187/187, and `test:browser` and `test:a11y` both exit 0.
+  - **Gap found and closed:** with the mermaid plugin switched off, the build still exits 0, ships raw `language-mermaid` blocks and writes 0 SVGs, and every existing suite passed. `notes-diagrams.test.mjs` iterates over the diagrams it finds, so with zero it asserts nothing. The new `site/tests/mermaid-rendered.test.mjs` counts fences in the source (13 across 10 notes) and fails on that mutant with `notes/building-a-homelab-idp: mermaid shipped as source, not rendered`.
 - [ ] AC6 ->
-- [ ] AC7 ->
+- [ ] AC7 -> `#368` was closed by Dependabot itself on 2026-09-23 ("astro is updatable in another way"). `#381`, a second Dependabot security PR opened between the two merges on astro 5, is obsolete now that master is on 7.3.4. `#7` is closed by the archiving PR.
 
 ## Test status
 
@@ -100,6 +103,7 @@ Page comparisons in this spec apply four steps:
 
 ## Decisions made during implementation
 
+- 2026-09-22, Manu: PR4 pins the v3 palette as hex in `@theme` (Risk 1).
 - 2026-09-22, Manu: three PRs, and Tailwind 4 inside this migration. Together those give four PRs, ordered so that the security fix (PR2) does not wait on the visual one (PR4).
 
 ## Promotion candidates
