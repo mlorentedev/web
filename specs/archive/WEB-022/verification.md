@@ -114,7 +114,7 @@ Page comparisons in this spec apply four steps:
   - `tests/tailwind-wiring.test.mjs` has 4 tests. It fails if the CSS palette and `palette.mjs` disagree (a one-unit mutation) and if `--color-*: initial` is removed.
   - Suites: `npm test` is 188/188, `test:browser` reports "All widths contained", and `test:a11y` reports 0 violations. `npm audit` reports 0.
   - Cascade note: v4 emits its CSS in `@layer`s, so the site's unlayered `global.css` now outranks every utility regardless of order. It changes nothing measured today, but a rule added to `global.css` will beat a utility on the same element.
-- [ ] AC7 -> `#368` was closed by Dependabot itself on 2026-09-23 ("astro is updatable in another way"). `#381`, a second Dependabot security PR opened between the two merges on astro 5, is obsolete now that master is on 7.3.4. `#7` is closed by the archiving PR.
+- [x] AC7 -> `#368` was closed by Dependabot itself on 2026-09-23 ("astro is updatable in another way"). `#381`, a second Dependabot security PR opened between the two merges on astro 5, is obsolete now that master is on 7.3.4. `#7` is closed by the archiving PR.
 
 ## Test status
 
@@ -130,9 +130,23 @@ Page comparisons in this spec apply four steps:
 
 ## Promotion candidates
 
-- [ ] Lesson for `docs/lessons/`? Likely: npm's ERESOLVE names the wrong package when a lockfile is present. Re-resolve without it to find the real edge.
-- [ ] ADR-worthy decision? <yes / no>
-- [ ] New pattern candidate? <yes / no>
+- [x] Lessons for `docs/lessons/`: 046 (npm ERESOLVE blames the lockfile's anchor), 047 (the upgrader rewrote a guard's test inputs), 048 (release-please writes `closes` for any reference), 049 (a control that passes once proves nothing), 050 (an upgrade switches on classes the old version ignored).
+- [x] ADR-worthy decision? No. The palette pin and the typography `@config` are recorded here and in AC6; neither is a cross-cutting architecture choice.
+- [x] New pattern candidate? No. 047 and 049 may recur in other repos; promote them if they do.
+
+## Closing checklist (recorded here, not in `tasks.md`, so the review stays fresh)
+
+- Every AC is covered by a test or a recorded measurement, and `features.json` has a command for each: yes.
+- `verification.md` filled in per PR: yes (PR1-PR4, plus the review correction).
+- Independent adversarial review: yes, below.
+- The archiving PR closes #7: yes, by its body.
+
+## Independent review
+
+Two runs, both from `harness/reviewer-pool.json`:
+
+1. `nan/deepseek-v4-flash` on `ba500ba` was cut off at minute 10 and wrote no verdict. Before stopping, it ran the build, the mutations (removing the Tailwind import, disabling mermaid, #368's lockfile) and a screenshot control, and the control found that `/lab` captures were not deterministic. That was fixed in `9e3abfb` and the evidence corrected (§ AC6, "Correction").
+2. `agy/gemini-3.1-pro-high` on `9e3abfb` returned **PASS** (`review.md`). It ran `npm run build`, `npm test`, `test:a11y` and `test:browser`, and inspected `dist/`. **It did not repeat the mutations or the pixel comparison**, so the non-vacuity evidence for those comes from this file and from the first run, not from this verdict. Its one finding is Minor and SPECULATIVE: the vacuity assertion in `astro-peers.test.mjs`. That was declined on #380, because failing when nothing declares the peer is the intent.
 
 ## Archive checklist
 
