@@ -97,7 +97,7 @@ const ACCESS_BADGE: Record<LabAiEntry['access'], string> = {
                 {entry.name}
               </span>
 
-              <p class="text-sm text-ink-600 leading-snug flex-grow">
+              <p class="text-sm text-ink-600 leading-snug grow">
                 {isEs ? entry.descriptionEs : entry.description}
               </p>
 
@@ -117,7 +117,7 @@ const ACCESS_BADGE: Record<LabAiEntry['access'], string> = {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${t('ai.automations.link')}: ${entry.name}`}
-                    class="font-mono text-xs font-semibold text-accent-700 hover:text-accent-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:rounded-sm"
+                    class="font-mono text-xs font-semibold text-accent-700 hover:text-accent-900 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:rounded-xs"
                   >
                     {t('ai.automations.link')} &#8599;
                   </a>

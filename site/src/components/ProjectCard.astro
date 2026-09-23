@@ -18,9 +18,9 @@ const translatePath = useTranslatedPath(lang);
 const link = project.url ?? project.github;
 ---
 
-<div class="border border-ink-200 bg-white rounded-lg p-5 hover:border-accent-700 transition-colors flex flex-col shadow-sm">
+<div class="border border-ink-200 bg-white rounded-lg p-5 hover:border-accent-700 transition-colors flex flex-col shadow-xs">
   <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-    <h3 class="font-bold text-ink-900 text-lg leading-snug [text-wrap:balance]">
+    <h3 class="font-bold text-ink-900 text-lg leading-snug text-balance">
       {link ? (
         <a
           href={link}
@@ -42,7 +42,7 @@ const link = project.url ?? project.github;
     </span>
   </div>
 
-  <p class="text-ink-600 text-sm sm:text-base leading-relaxed mb-4 flex-grow [text-wrap:pretty]">{project.description}</p>
+  <p class="text-ink-600 text-sm sm:text-base leading-relaxed mb-4 grow text-pretty sm:leading-6">{project.description}</p>
 
   <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-ink-100">
     {project.tags.map((tag) => (

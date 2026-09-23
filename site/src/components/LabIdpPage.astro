@@ -44,12 +44,12 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
 >
   <Header />
 
-  <main id="main-content" class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+  <main id="main-content" class="grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
     <!-- Breadcrumb back link -->
     <div class="mb-8">
       <a
         href={translatePath('/lab')}
-        class="inline-flex items-center gap-1.5 text-xs font-mono text-ink-500 hover:text-accent-700 transition-colors focus:outline-none focus:text-accent-700"
+        class="inline-flex items-center gap-1.5 text-xs font-mono text-ink-500 hover:text-accent-700 transition-colors focus:outline-hidden focus:text-accent-700"
       >
         <span aria-hidden="true">&larr;</span>
         <span>{t('idp.catalog.backToLab')}</span>
@@ -66,7 +66,7 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
       <h1 class="text-2xl sm:text-3xl font-extrabold text-ink-900 tracking-tight mb-3">
         {t('idp.catalog.title')}
       </h1>
-      <p class="text-sm sm:text-base text-ink-600 max-w-3xl leading-relaxed mb-4">
+      <p class="text-sm sm:text-base text-ink-600 max-w-3xl leading-relaxed mb-4 sm:leading-6">
         {t('idp.catalog.intro')}
       </p>
       <div class="flex flex-wrap items-center gap-3 text-xs font-mono text-ink-500">
@@ -83,13 +83,13 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
         <a
           href={translatePath('/lab/idp')}
           aria-current="page"
-          class="text-xs font-mono px-3 py-1.5 rounded transition-colors bg-panel-900 text-white font-medium focus:outline-none focus:ring-1 focus:ring-accent-500"
+          class="text-xs font-mono px-3 py-1.5 rounded transition-colors bg-panel-900 text-white font-medium focus:outline-hidden focus:ring-1 focus:ring-accent-500"
         >
           {t('idp.nav.catalog')}
         </a>
         <a
           href={translatePath('/lab/idp/architecture')}
-          class="text-xs font-mono px-3 py-1.5 rounded transition-colors text-ink-600 hover:text-ink-900 hover:bg-panel-100 border border-panel-200 focus:outline-none focus:ring-1 focus:ring-accent-500"
+          class="text-xs font-mono px-3 py-1.5 rounded transition-colors text-ink-600 hover:text-ink-900 hover:bg-panel-100 border border-panel-200 focus:outline-hidden focus:ring-1 focus:ring-accent-500"
         >
           {t('idp.nav.architecture')}
         </a>
@@ -152,7 +152,7 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
                           href={item.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="inline-flex items-center gap-1 text-xs font-medium text-accent-700 hover:text-accent-900 transition-colors focus:outline-none focus:underline"
+                          class="inline-flex items-center gap-1 text-xs font-medium text-accent-700 hover:text-accent-900 transition-colors focus:outline-hidden focus:underline"
                         >
                           <span>{t('idp.action.open')}</span>
                           <span class="sr-only"> ({item.name})</span>

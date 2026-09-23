@@ -20,10 +20,10 @@ const { Content } = await render(page);
 
 <BaseLayout title={page.data.title} description={page.data.description} hasAlternates={false}>
   <Header hasAlternates={false} />
-  <main id="main-content" class="flex-grow">
+  <main id="main-content" class="grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">
       <div class="max-w-3xl mx-auto px-4">
-        <div class="prose prose-base max-w-none prose-p:text-base prose-p:text-gray-700 mb-10">
+        <div class="prose prose-base max-w-none prose-p:text-base/6 prose-p:text-gray-700 mb-10">
           <Content />
         </div>
         <a href="https://github.com/mlorentedev" target="_blank" rel="noopener noreferrer">
