@@ -9,11 +9,15 @@ tags: [web, lessons, index]
 
 # Lessons
 
-46 lessons, one file each, newest first. Numbers are assigned in the order
+50 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 050 | [A framework upgrade can switch on classes the old version silently ignored](lesson-050-a-framework-upgrade-can-switch-on-classes-th.md) | 2026-09-22 | `#tailwind` `#verification` |
+| 049 | [A screenshot control that passes once is not a determinism proof](lesson-049-a-screenshot-control-that-passes-once-is-not.md) | 2026-09-22 | `#verification` `#playwright` `#testing` |
+| 048 | [release-please writes `closes` for every issue a commit mentions, `Refs` included](lesson-048-release-please-writes-closes-for-every-issue.md) | 2026-09-22 | `#release-please` `#github` `#ci-automation` |
+| 047 | [Tailwind's upgrader rewrites the strings inside tests, and a guard's inputs are strings](lesson-047-tailwind-s-upgrader-rewrites-the-strings-ins.md) | 2026-09-22 | `#tailwind` `#testing` `#codemods` |
 | 046 | [npm's ERESOLVE names the package the lockfile anchors, not the one that conflicts](lesson-046-npm-s-eresolve-names-the-package-the-lockfil.md) | 2026-09-22 | `#dependencies` `#npm` `#verification` |
 | 045 | [Under a GraphQL rate limit the gh CLI does not fail loudly, it answers wrongly](lesson-045-under-a-graphql-rate-limit-the-gh-cli-does-n.md) | 2026-09-07 | `#github` `#verification` `#tooling` |
 | 044 | [A parallel fan-out has no completion accounting, so a lost deliverable is silent](lesson-044-a-parallel-fan-out-has-no-completion-account.md) | 2026-08-26 | `#verification` `#subagents` `#knowledge-placement` |
