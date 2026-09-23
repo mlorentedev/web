@@ -9,7 +9,7 @@ tags: [web, lessons, index]
 
 # Lessons
 
-45 lessons, one file each, newest first. Numbers are assigned in the order
+46 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |

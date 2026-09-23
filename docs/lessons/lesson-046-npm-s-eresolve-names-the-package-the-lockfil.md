@@ -35,8 +35,10 @@ the same lockfile shape: astro 7 next to mdx 4 and tailwind 6.
 the real edge. The lockfile is only there to seed the search.
 
 ```bash
-mv package-lock.json /tmp/ && npm install     # measurement only
+tmpdir="$(mktemp -d)"                          # measurement only
+mv package-lock.json "$tmpdir/" && npm install
 # peer astro@"^3.0.0 || ^4.0.0 || ^5.0.0" from @astrojs/tailwind@6.0.2
+mv "$tmpdir/package-lock.json" . && rm -rf "$tmpdir" node_modules
 ```
 
 Then throw that result away. The real change starts from the committed
@@ -51,5 +53,8 @@ from the lockfile and checks each against the installed `astro`. Against
 `#368`'s lockfile it names both real culprits, `@astrojs/mdx@4.3.14` and
 `@astrojs/tailwind@6.0.2`.
 
-**Generalises to**: any resolver error that begins with "Found: X". It tells
-you where the search started, not where the conflict is.
+**Observed pattern** (npm 12.0.2, Node 24): in this report, `Found: X` named
+the package the lockfile held, and the edge it printed was not the one that
+blocked the move. That is one report, not a rule for every resolver error. When
+an ERESOLVE names a package you bumped on purpose, resolve without the lockfile
+before believing it.
