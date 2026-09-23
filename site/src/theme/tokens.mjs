@@ -31,7 +31,9 @@ export const PRE_INK = '#e2e8f0';
 /**
  * The palette's seven hued families, each mapped to the Tailwind ramp it aliases.
  *
- * `tailwind.config.mjs` builds `theme.extend.colors` from this, and
+ * `src/styles/tailwind.css` declares each family in `@theme` with its ramp's v3
+ * hex from `palette.mjs` (`tests/tailwind-wiring.test.mjs` holds the two
+ * together), and
  * `tests/lab-audit.mjs` and `tests/lab-sections.test.mjs` assert, through
  * `tests/lib/audit.mjs`, that the built HTML uses nothing else. That is
  * the point of putting it here rather than in either of them: WEB-080's AC1

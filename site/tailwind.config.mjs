@@ -1,36 +1,52 @@
-import colors from 'tailwindcss/colors';
-
+/**
+ * The `.prose` customisation, and nothing else (WEB-022, #7).
+ *
+ * Tailwind 4 is configured in `src/styles/tailwind.css`: colours, fonts and the
+ * typography plugin itself. This file survives because a JavaScript config
+ * loaded through `@config` is the typography plugin's documented way to change
+ * the raw CSS it generates under Tailwind 4. Colours come from `tokens.mjs` as
+ * hex, so the prose matches the pinned v3 palette.
+ */
 import {
   ACCENT,
   CODE_SURFACE,
-  COLOR_FAMILIES,
   PRE_INK,
   PRE_SURFACE,
   PROSE_BODY,
   PROSE_HEADING,
 } from './src/theme/tokens.mjs';
+import { PALETTE } from './src/theme/palette.mjs';
 
-/**
- * The seven families, resolved from the names in `tokens.mjs` to the Tailwind
- * ramps they alias. The mapping lives there so `tests/lab-audit.test.mjs` can
- * read the same list without importing Tailwind's palette (AC1: one allowlist).
- */
-const familyColors = Object.fromEntries(
-  Object.entries(COLOR_FAMILIES).map(([family, ramp]) => [family, colors[ramp]]),
-);
+const gray = PALETTE.gray;
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
   theme: {
     extend: {
-      colors: familyColors,
-      fontFamily: {
-        sans: ['Roboto', 'system-ui', 'sans-serif'],
-      },
       typography: {
         DEFAULT: {
           css: {
+            // The plugin's own colour variables. Under Tailwind 3 it read them
+            // from the theme's `gray` ramp; under 4 it ships them as OKLCH
+            // literals, so they are set here from the pinned v3 ramp.
+            '--tw-prose-body': gray[700],
+            '--tw-prose-headings': gray[900],
+            '--tw-prose-lead': gray[600],
+            '--tw-prose-links': gray[900],
+            '--tw-prose-bold': gray[900],
+            '--tw-prose-counters': gray[500],
+            '--tw-prose-bullets': gray[300],
+            '--tw-prose-hr': gray[200],
+            '--tw-prose-quotes': gray[900],
+            '--tw-prose-quote-borders': gray[200],
+            '--tw-prose-captions': gray[500],
+            '--tw-prose-kbd': gray[900],
+            '--tw-prose-kbd-shadows': `${gray[900]}1a`,
+            '--tw-prose-code': gray[900],
+            '--tw-prose-pre-code': gray[200],
+            '--tw-prose-pre-bg': gray[800],
+            '--tw-prose-th-borders': gray[300],
+            '--tw-prose-td-borders': gray[200],
             color: PROSE_BODY,
             a: { color: ACCENT, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } },
             strong: { color: PROSE_HEADING },
@@ -107,5 +123,4 @@ export default {
       },
     },
   },
-  plugins: [require('@tailwindcss/typography')],
 };

@@ -3,10 +3,15 @@ import { rehypeMermaid } from '@beoe/rehype-mermaid';
 import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://mlorente.dev',
   output: 'static',
+  // Tailwind 4 runs as a Vite plugin, configured in `src/styles/tailwind.css`
+  // (WEB-022). It replaced a PostCSS config that had replaced the deprecated
+  // `@astrojs/tailwind` integration, and it prefixes CSS itself.
+  vite: { plugins: [tailwindcss()] },
   integrations: [
     sitemap({
       i18n: {

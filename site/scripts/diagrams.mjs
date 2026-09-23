@@ -41,8 +41,8 @@ import { fileURLToPath } from 'node:url';
 // archify's schemas declare draft 2020-12; ajv's default export only speaks
 // draft-07 and rejects them with "no schema with key or ref …/2020-12/schema".
 import Ajv from 'ajv/dist/2020.js';
-import colors from 'tailwindcss/colors.js';
 
+import { PALETTE as colors } from '../src/theme/palette.mjs';
 import { ACCENT, PROSE_BODY, PROSE_HEADING } from '../src/theme/tokens.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -53,7 +53,8 @@ const schemasDir = join(siteRoot, 'vendor/archify-schemas');
 const archifyRoot = resolve(siteRoot, '../.agents/skills/archify');
 
 /**
- * The site's seven token families, as `tailwind.config.mjs` binds them.
+ * The site's seven token families, as `src/styles/tailwind.css` binds them, in the
+ * v3 hex `src/theme/palette.mjs` pins (Tailwind 4's own palette is OKLCH).
  * Named here rather than inlined so a reader can check the mapping below
  * against the config without holding hex codes in their head.
  */
