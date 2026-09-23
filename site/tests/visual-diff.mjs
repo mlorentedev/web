@@ -1,8 +1,10 @@
 /**
  * Computed-style diff between two builds (WEB-022, AC6).
  *
- *   node tests/visual-diff.mjs capture <out.json>   # over the current dist/
+ *   node tests/visual-diff.mjs capture <out.json>   # computed styles, every page
  *   node tests/visual-diff.mjs compare <a.json> <b.json>
+ *   node tests/visual-diff.mjs shots <dir>           # full-page PNGs, SHOT_PATHS
+ *   node tests/visual-diff.mjs pixels <dirA> <dirB>
  *
  * Tailwind 4 must not change how the site looks, and the palette decision for
  * this migration (pin the v3 hex values) sets that budget at zero. Screenshots
@@ -23,6 +25,14 @@ import { chromium } from 'playwright';
 import { distDir, labBaseUrl } from './lib/serve.mjs';
 
 const WIDTHS = [320, 1440];
+
+// AC6's pages, both locales, plus the two `divide-y` lists: the one place where
+// Tailwind 4 moves a border into a different box, so the style diff reports a
+// 1px box shift that only pixels can confirm is invisible.
+const SHOT_PATHS = [
+  '/', '/es/', '/lab/', '/es/lab/', '/contact/', '/es/contact/',
+  '/notes/network-topology-hybrid/', '/notes/', '/tags/homelab/', '/legal/privacy/',
+];
 
 // What a Tailwind upgrade can move. Colours first: those are what the palette
 // decision promises. The box model catches renamed or rescaled utilities
@@ -74,10 +84,52 @@ async function capture(out) {
             }
             return parts.join('>');
           };
+          // Tailwind 4 serialises the same colour differently (`oklab(…)` for
+          // an opacity modifier, where 3 gave `rgba(…)`), writes `rounded-full`
+          // as an infinite radius, and pads shadows with transparent layers.
+          // None of that is visible, so it is normalised away here: a canvas
+          // re-serialises any CSS colour as sRGB hex or rgba, which is what the
+          // screen shows.
+          // Paint the colour into one pixel and read it back: the screen's own
+          // answer, whatever notation produced it. (A canvas's `fillStyle`
+          // getter keeps `oklab(…)` as written, so it cannot be the normaliser.)
+          const canvas = document.createElement('canvas');
+          canvas.width = canvas.height = 1;
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          const pixel = (c) => {
+            ctx.clearRect(0, 0, 1, 1);
+            ctx.fillStyle = c;
+            ctx.fillRect(0, 0, 1, 1);
+            const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+            return `rgba(${r},${g},${b},${a})`;
+          };
+          const colour = (v) => v.replace(/(?:rgba?|oklab|oklch|lab|lch|color)\([^()]*\)/g, pixel);
+          const normalise = (p, v, cs) => {
+            let out = colour(v);
+            if (p === 'box-shadow') {
+              out = out.split(/,(?![^()]*\))/).map((l) => l.trim())
+                .filter((l) => !/^rgba\(0,0,0,0\) 0px 0px 0px 0px$/.test(l)).join(', ') || 'none';
+            }
+            if (p.endsWith('radius') && parseFloat(out) >= 9999) out = 'full';
+            // Tailwind 4 writes the even stop positions (`0%`, `50%`, `100%`)
+            // that Tailwind 3 left implicit. Same gradient.
+            if (p === 'background-image' && /gradient\(/.test(out)) {
+              out = out.replace(/ (?:0|50|100)%(?=[,)])/g, '');
+            }
+            // A border side with no width shows no colour.
+            const side = p.match(/^border-(top|right|bottom|left)-color$/);
+            if (side && cs.getPropertyValue(`border-${side[1]}-width`) === '0px') out = '-';
+            return out;
+          };
           const styles = {};
           for (const el of document.body.querySelectorAll('*')) {
             const cs = getComputedStyle(el);
-            styles[id(el)] = props.map((p) => cs.getPropertyValue(p)).join('|');
+            // Where the element actually is. Margins that move from one side
+            // to the other (Tailwind 4's `space-*` and `divide-*`) are only a
+            // visible change if they move something, and this is what says so.
+            const r = el.getBoundingClientRect();
+            const box = [r.left, r.top + window.scrollY].map((n) => n.toFixed(2)).join(',');
+            styles[id(el)] = [...props.map((p) => normalise(p, cs.getPropertyValue(p), cs)), box].join('|');
           }
           return styles;
         }, PROPERTIES);
@@ -88,7 +140,7 @@ async function capture(out) {
     await browser.close();
     server?.close();
   }
-  writeFileSync(out, JSON.stringify({ properties: PROPERTIES, pages: result }));
+  writeFileSync(out, JSON.stringify({ properties: [...PROPERTIES, 'position'], pages: result }));
   const elements = Object.values(result).reduce((n, s) => n + Object.keys(s).length, 0);
   console.log(`captured ${Object.keys(result).length} page×width views, ${elements} elements → ${out}`);
 }
@@ -134,10 +186,72 @@ function compare(aFile, bFile) {
   process.exitCode = differing === 0 ? 0 : 1;
 }
 
+async function shots(dir) {
+  const { mkdirSync } = await import('node:fs');
+  mkdirSync(dir, { recursive: true });
+  const { url: base, server } = await labBaseUrl();
+  const browser = await chromium.launch();
+  try {
+    for (const width of WIDTHS) {
+      const page = await browser.newPage({ viewport: { width, height: 900 } });
+      for (const path of SHOT_PATHS) {
+        await page.goto(base + path, { waitUntil: 'load' });
+        await page.evaluate(() => document.fonts.ready);
+        const name = `${width}${path.replace(/\//g, '_')}.png`;
+        await page.screenshot({ path: `${dir}/${name}`, fullPage: true, animations: 'disabled', caret: 'hide' });
+      }
+      await page.close();
+    }
+  } finally {
+    await browser.close();
+    server?.close();
+  }
+  console.log(`${WIDTHS.length * SHOT_PATHS.length} screenshots → ${dir}`);
+}
+
+/** Pixel-by-pixel, in the browser's own decoder: no image library needed. */
+async function pixels(dirA, dirB) {
+  const { readdirSync } = await import('node:fs');
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  let failed = 0;
+  try {
+    for (const name of readdirSync(dirA).filter((f) => f.endsWith('.png')).sort()) {
+      const [a, b] = [dirA, dirB].map((d) => `data:image/png;base64,${readFileSync(`${d}/${name}`).toString('base64')}`);
+      const r = await page.evaluate(async ([srcA, srcB]) => {
+        const load = (src) => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src; });
+        const [ia, ib] = await Promise.all([load(srcA), load(srcB)]);
+        if (ia.width !== ib.width || ia.height !== ib.height) {
+          return { size: `${ia.width}x${ia.height} vs ${ib.width}x${ib.height}`, diff: -1 };
+        }
+        const data = (img) => {
+          const c = new OffscreenCanvas(img.width, img.height);
+          const x = c.getContext('2d');
+          x.drawImage(img, 0, 0);
+          return x.getImageData(0, 0, img.width, img.height).data;
+        };
+        const [da, db] = [data(ia), data(ib)];
+        let diff = 0;
+        for (let i = 0; i < da.length; i += 4) {
+          if (da[i] !== db[i] || da[i + 1] !== db[i + 1] || da[i + 2] !== db[i + 2]) diff++;
+        }
+        return { size: `${ia.width}x${ia.height}`, diff };
+      }, [a, b]);
+      if (r.diff !== 0) failed++;
+      console.log(`${r.diff === 0 ? 'same' : 'DIFF'}  ${name}  ${r.size}  ${r.diff < 0 ? 'size differs' : `${r.diff} px differ`}`);
+    }
+  } finally {
+    await browser.close();
+  }
+  process.exitCode = failed === 0 ? 0 : 1;
+}
+
 const [mode, ...args] = process.argv.slice(2);
 if (mode === 'capture' && args.length === 1) await capture(args[0]);
 else if (mode === 'compare' && args.length === 2) compare(args[0], args[1]);
+else if (mode === 'shots' && args.length === 1) await shots(args[0]);
+else if (mode === 'pixels' && args.length === 2) await pixels(args[0], args[1]);
 else {
-  console.error('usage: visual-diff.mjs capture <out.json> | compare <a.json> <b.json>');
+  console.error('usage: visual-diff.mjs capture <out.json> | compare <a.json> <b.json> | shots <dir> | pixels <a> <b>');
   process.exitCode = 2;
 }
