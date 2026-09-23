@@ -74,9 +74,21 @@ Page comparisons in this spec apply four steps:
   - CSS: master's stylesheet (64 434 bytes plus a final newline) is a byte-identical prefix of PR1's. PR1 then appends `global.css`. `autoprefixer` 10.6.1 as a direct dev dependency produced the same bytes as the 10.4.27 the integration carried.
   - Pages: the same 101 non-asset files, and **0 differ** after normalisation and removal of the moved `global.css` block.
   - Mermaid: all 13 SVGs are identical in content once the random `m<digits>` id prefix (`#378`) is normalised.
-- [ ] AC2 ->
-- [ ] AC3 ->
-- [ ] AC4 ->
+- [ ] AC2 -> PR2, pre-merge half:
+  - The lockfile resolves `astro` 7.3.4, `sharp` 0.35.4, `esbuild` 0.28.2 and `yaml` {2.8.3, 2.9.0}.
+  - `npm audit` reports `{'critical': 0, 'high': 0, 'moderate': 0, 'low': 0}`, down from 9 on master.
+  - The Dependabot alerts API half is checked after merge.
+- [x] AC3 -> PR2: `site/tests/astro-peers.test.mjs`.
+  - It is green on PR1's lockfile (astro 5, integrations at 5) and on PR2's.
+  - With `#368`'s lockfile swapped in, it fails: `astro 7.2.8 is outside the peer range of: @astrojs/mdx@4.3.14 wants astro ^5.0.0; @astrojs/tailwind@6.0.2 wants astro ^3.0.0 || ^4.0.0 || ^5.0.0`.
+  - `semver` becomes a direct dev dependency. It was already in the tree transitively.
+- [x] AC4 -> PR2, against a PR1 build:
+  - The build produces the same 87 pages and the same 101 non-asset files.
+  - Visible text differs on **0** pages.
+  - All 14 non-HTML files (sitemaps, RSS, robots, version, fonts, images) are byte-identical.
+  - `astro check` reports 0 errors and 20 hints; the 18 `ts(6385)` hints are PR3's work.
+  - `npm test` is 186/186, `test:browser` reports "All widths contained", and `test:a11y` reports 0 violations.
+  - PR1's wiring test first failed here on the preflight marker, because Vite 8 minifies differently. It was fixed on PR1 (`c44f670`) to match the rule's stable head.
 - [ ] AC5 ->
 - [ ] AC6 ->
 - [ ] AC7 ->

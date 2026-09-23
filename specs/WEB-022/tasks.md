@@ -27,11 +27,11 @@ created: "2026-09-22"
 
 ### PR2 — Astro 7 (security)
 
-- [ ] [AC3] Failing test `site/tests/astro-peers.test.mjs`. For every lockfile package with an `astro` peer range, the installed `astro` satisfies it. Show it red against `#368`'s lockfile.
-- [ ] [AC2] [AC4] `npm install astro@^7.3.4 @astrojs/mdx@^8.0.2 @astrojs/markdown-remark@^7.3.0` and `npm update @astrojs/language-server`, resolved on PR1's lockfile. Never regenerate it.
-- [ ] [AC4] Drop `i18n.routing.redirectToDefaultLocale` from `astro.config.mjs`.
-- [ ] [AC2] Lockfile floors verified (astro, sharp, esbuild, yaml) and `npm audit` reports 0.
-- [ ] [AC4] Baseline diff against PR1: same page set, and identical visible text on every page. Build, unit, browser and a11y suites green.
+- [x] [AC3] Failing test `site/tests/astro-peers.test.mjs`. For every lockfile package with an `astro` peer range, the installed `astro` satisfies it. Show it red against `#368`'s lockfile.
+- [x] [AC2] [AC4] `npm install astro@^7.3.4 @astrojs/mdx@^8.0.2 @astrojs/markdown-remark@^7.3.0` and `npm update @astrojs/language-server`, resolved on PR1's lockfile. Never regenerate it.
+- [x] [AC4] Drop `i18n.routing.redirectToDefaultLocale` from `astro.config.mjs`.
+- [x] [AC2] Lockfile floors verified (astro, sharp, esbuild, yaml) and `npm audit` reports 0.
+- [x] [AC4] Baseline diff against PR1: same page set, and identical visible text on every page. Build, unit, browser and a11y suites green.
 - [ ] [AC2] After merge, check the Dependabot alerts API for the eleven, and record the result in `verification.md`.
 - [ ] [AC7] Close `#368` as superseded, linking PR2.
 
