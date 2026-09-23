@@ -64,12 +64,12 @@ export const experience: Experience[] = [
     en: {
       role: 'Applications & Platform Engineer',
       highlight:
-        'Built an Internal Developer Platform on Kubernetes + AWS — infra cost −80% ($1.5K→$300/mo), customer onboarding 60→14 days.',
+        'Built the platform (Kubernetes + AWS) that turned out an SDK per camera and PoCs for shows, demos and customer requests; led hardware and product integration with customers — onboarding 120→20–30 days, infra −80%.',
     },
     es: {
       role: 'Ingeniero de Plataforma y Aplicaciones',
       highlight:
-        'Construí una plataforma interna (IDP) en Kubernetes + AWS — coste de infra −80% (1,5K$→300$/mes), onboarding de clientes de 60 a 14 días.',
+        'Construí la plataforma (Kubernetes + AWS) que producía un SDK por cámara y PoCs para ferias, demos y peticiones de clientes; lideré la integración de hardware y producto con clientes — onboarding de 120 a 20–30 días, −80% de coste de infra.',
     },
   },
   {
