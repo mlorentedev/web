@@ -28,6 +28,13 @@ on:
         required: false
       DOCKERHUB_TOKEN:
         required: false
+    outputs:
+      digest:
+        # The manifest digest of what was pushed: the index when several
+        # platforms were built. release.yml tests and promotes by this, never by
+        # the tag, which can be pointed elsewhere after the fact (#376).
+        description: Digest of the built image (sha256:…)
+        value: ${{ jobs.build.outputs.digest }}
 
 permissions:
   contents: read
@@ -51,6 +58,8 @@ jobs:
     # builds linux/amd64,linux/arm64 and has been measured from ~30 s warm to
     # 4m34s cold. Keep the cap a few times that worst case, not the average.
     timeout-minutes: 20
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -66,6 +75,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push
+        id: build
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         env:
           # The action uploads a `.dockerbuild` build record after every build —

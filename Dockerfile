@@ -6,11 +6,16 @@
 # from this stage is published — the runtime image below is still Alpine, and
 # only dist/ crosses over — so the larger base costs layer cache, not registry
 # size or attack surface.
+#
+# The stage runs on the build platform and must not declare TARGETPLATFORM,
+# TARGETOS or TARGETARCH. The output is static files, identical for every
+# architecture, and an ARG in scope is part of every RUN's cache key: declaring
+# them made BuildKit run this stage once per target, and with the diagram
+# renderer's random ids (#378) the amd64 and arm64 halves of one digest carried
+# different files (36 of 116, measured on sha-641b26a). Without them the stage
+# runs once and both platforms copy the same dist/ — which the release workflow
+# asserts before testing it (#376).
 FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS build
-
-ARG TARGETPLATFORM
-ARG TARGETOS
-ARG TARGETARCH
 
 # Astro build arguments (injected by CI from values/*.yaml)
 ARG PUBLIC_SITE_TITLE
@@ -82,10 +87,16 @@ RUN npm run build
 # ---------- Runtime Stage — Nginx static serving ----------
 FROM nginx:1.27-alpine
 
+# The base image ships its own index.html and 50x.html in the web root, and the
+# COPY below merges into that directory rather than replacing it. index.html is
+# overwritten; 50x.html was not, so prod answered nginx's stock error page with
+# a 200 at /50x.html, a page no build produced and nothing links. Emptying the
+# root first makes the served tree exactly dist/ (#376).
 RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup && \
     chown -R appuser:appgroup /var/cache/nginx /var/log/nginx /var/run && \
-    touch /var/run/nginx.pid && chown appuser:appgroup /var/run/nginx.pid
+    touch /var/run/nginx.pid && chown appuser:appgroup /var/run/nginx.pid && \
+    rm -rf /usr/share/nginx/html/*
 
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY site/nginx.conf /etc/nginx/conf.d/default.conf
