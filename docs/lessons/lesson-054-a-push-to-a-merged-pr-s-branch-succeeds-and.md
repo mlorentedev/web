@@ -15,4 +15,4 @@ tags: [web, git, pull-requests, review]
 
 **Solution**: The two commits were cherry-picked onto a fresh branch from `origin/master` and opened as #399. A correction was posted on #396 so its triage record does not claim what master lacks.
 
-**Rule**: Before pushing a follow-up to a PR branch, ask whether the PR is still open (`gh pr view <N> --json state`). A push only reaches master through an open PR. After pushing review fixes, confirm the PR's `headRefOid` equals your commit before a triage comment says "applied". If the PR merged in between, the fix needs a new PR.
+**Rule**: Before pushing a follow-up to a PR branch, ask whether the PR is still open (`gh pr view <N> --json state,headRefOid`). A push only reaches master through an open PR. Record a review fix as "applied" only when **both** hold: the PR is `OPEN` and its `headRefOid` is your commit. It then lands on master with the merge. If the state is `MERGED`, the `headRefOid` is the head the merge used (here `33a230d`). A squash merge makes `git merge-base --is-ancestor` against master say nothing, so compare that oid with your commit. If it is not yours, the fix is not on master and needs a new PR.
