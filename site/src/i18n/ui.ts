@@ -20,7 +20,8 @@ export const ui = {
     'nav.skipToContent': 'Skip to content',
 
     // AI Section
-    'ai.hero.eyebrow': 'Autonomous Systems Architecture · Deterministic Governance',
+    // A section name, not a second label: the label is the home eyebrow (WEB-137).
+    'ai.hero.eyebrow': 'How I run AI agents',
     'ai.hero.title': 'Deterministic execution harnesses for stochastic AI models',
     'ai.hero.description':
       'Foundation models are untrusted, stochastic execution engines. Engineering autonomous software does not reside in prompts, but in the deterministic platform harness that binds them: OS-level kernel concurrency, ephemeral worktree sandboxes, in-stream secret redaction, and independent adversarial review gates.',
@@ -71,7 +72,11 @@ export const ui = {
     // AI agents run on" against a corpus where zero of sixteen notes were about
     // AI or agents. It also published "40 services" while the platform manifest
     // said 31 and then 35 (#133) — no figure here now needs defending.
-    'hero.eyebrow': 'Systems & Platform Engineer · Sovereign AI Infrastructure',
+    //
+    // The eyebrow is the one label repeated on every surface and profile
+    // (WEB-137): where the career comes from, CMOS sensors to clusters. The
+    // title below says what the work is now; the two do different jobs.
+    'hero.eyebrow': 'Engineer from Silicon to Cloud',
     'hero.title': 'The infrastructure under the agents, not the prompts on top',
     'hero.subtitle':
       'Almost everyone building for AI agents arrives from the application side. I arrive from the metal — Kubernetes on hardware I own, mesh, split DNS, GitOps that reconciles in under thirty seconds. That platform is where my own agents now run, under a harness with hard limits. The homelab below is the proof. The agent platform is what I am building on it.',
@@ -521,7 +526,7 @@ export const ui = {
     'nav.skipToContent': 'Saltar al contenido',
 
     // AI Section
-    'ai.hero.eyebrow': 'Arquitectura de Sistemas Autónomos · Gobernanza Determinista',
+    'ai.hero.eyebrow': 'Cómo trabajo con agentes de IA',
     'ai.hero.title': 'Arneses de ejecución deterministas para modelos estocásticos de IA',
     'ai.hero.description':
       'Los modelos fundacionales son motores de ejecución estocásticos y no confiables. La ingeniería de sistemas autónomos no reside en prompts, sino en el arnés determinista que los acota: concurrencia a nivel de kernel, sandboxes efímeros en worktrees, redacción de secretos en flujo y auditorías adversariales independientes.',
@@ -567,7 +572,7 @@ export const ui = {
     'ai.automations.source': 'Migrado de {repo} · {commit}',
 
     // Hero
-    'hero.eyebrow': 'Ingeniería de Sistemas y Plataforma · Infraestructura Soberana de IA',
+    'hero.eyebrow': 'Ingeniero del silicio a la nube',
     'hero.title': 'La infraestructura de debajo de los agentes, no los prompts de encima',
     'hero.subtitle':
       'Casi todo el que construye para agentes de IA llega desde el lado de la aplicación. Yo llego desde el metal — Kubernetes sobre hardware que es mío, malla, DNS partido, GitOps que reconcilia en menos de treinta segundos. Ahí es donde corren ahora mis propios agentes, bajo un harness con límites duros. El homelab de abajo es la prueba. La plataforma de agentes es lo que estoy construyendo encima.',

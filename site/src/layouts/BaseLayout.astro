@@ -40,7 +40,9 @@ const schemaGraph = {
       '@type': 'Person',
       '@id': `${site.url}/#person`,
       name: site.author,
-      jobTitle: 'Systems & Platform Engineer',
+      // The role people search for; the label (WEB-137) rides in `description`.
+      jobTitle: 'Platform Engineer',
+      description: 'Engineer from Silicon to Cloud',
       url: site.url,
       sameAs: [
         site.social.github,
@@ -51,7 +53,9 @@ const schemaGraph = {
         'Systems Engineering',
         'Platform Engineering',
         'Kubernetes',
-        'Sovereign AI Infrastructure',
+        'CMOS Image Sensors',
+        'Embedded Systems',
+        'Field Application Engineering',
         'Autonomous Agent Harnesses',
         'GitOps',
         'Linux POSIX Internals',
