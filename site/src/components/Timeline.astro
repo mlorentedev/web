@@ -20,6 +20,7 @@ const entries = experience.map((e) => localizeExperience(e, lang, t('experience.
 // edited as markdown rather than as an i18n string (WEB-137). Every figure in it
 // must already be in `data/experience.ts`.
 const [bio] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'bio' && data.lang === lang);
+if (!bio) throw new Error(`Timeline: no bio for "${lang}" — expected src/content/pages/${lang}-bio.mdx with page: bio`);
 const { Content: Bio } = await render(bio);
 ---
 

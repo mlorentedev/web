@@ -42,7 +42,9 @@ for (const [lang, page] of [['en', 'index.html'], ['es', 'es/index.html']]) {
     assert.ok(existsSync(file), `dist/${page} must exist — run the build first`);
     const html = readFileSync(file, 'utf8');
     const section = html.match(/<section[^>]*data-experience[\s\S]*?<\/section>/)?.[0] ?? '';
-    assert.match(section, /data-bio/, `dist/${page}: the Timeline section has no bio`);
-    assert.match(section, /Teledyne e2v/, `dist/${page}: the bio rendered empty`);
+    const bio = section.match(/<div[^>]*data-bio[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? '';
+    // Any wording passes; an empty block does not. The words are Manu's to change.
+    const text = bio.replace(/<[^>]*>/g, '').trim();
+    assert.ok(text.length > 100, `dist/${page}: the Timeline section has no bio, or it rendered empty`);
   });
 }
