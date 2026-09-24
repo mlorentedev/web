@@ -1,9 +1,10 @@
 import { defineConfig } from 'astro/config';
-import { rehypeMermaid } from '@beoe/rehype-mermaid';
 import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+
+import { rehypeMermaid } from './plugins/rehype-mermaid.mjs';
 
 export default defineConfig({
   site: 'https://mlorente.dev',
@@ -32,6 +33,10 @@ export default defineConfig({
     // and can never go stale against the page it illustrates. That costs a
     // headless browser in the build stage — see the Dockerfile, where the stage
     // is Debian for exactly this reason and the runtime image is untouched.
+    //
+    // The plugin is ours, not `@beoe/rehype-mermaid`'s: that one gave every
+    // diagram a random id prefix, so no two builds of one commit wrote the same
+    // files (#378). See `plugins/rehype-mermaid.mjs`.
     //
     // Astro 7's default processor is Sätteri; rehype plugins run on unified,
     // which is why `@astrojs/markdown-remark` is a direct dependency (WEB-022).
