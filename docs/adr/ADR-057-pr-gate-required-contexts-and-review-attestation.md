@@ -180,9 +180,16 @@ reason kubelab's copy was not the source.
   `review-attestation.json` (which comment counts as a review, and where triage
   is recorded) and `reviewer-pool.json` (who may sign an adversarial review).
   No test in this repo guards their contents; they are held by review.
-- Branch protection itself is remote state set by hand (#276's `gh api` call).
-  It is not IaC and can drift; re-measure with the command in Context before
-  trusting it.
+- Branch protection itself was set by hand (#276's `gh api` call). Since
+  2026-09-23 it is declared in kubelab, in `infra/config/values/common.yaml`
+  under `ci.branch_protection` → `mlorentedev/web` → `master`, with the values in
+  section 2. `make branch-protection-check` there (`toolkit tools
+  branch-protection --check --all`) compares the live object with that entry and
+  fails on any difference. The check is not scheduled yet: reading protection
+  needs `administration: read`, which a workflow's own token cannot have, and
+  the CI GitHub App meant to carry it does not exist. Until then kubelab's
+  manual `Branch protection drift` workflow, or the make target, is the way to
+  re-measure. A change to section 2 is a change to that entry too.
 
 ## Alternatives considered
 
