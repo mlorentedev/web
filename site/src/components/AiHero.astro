@@ -6,7 +6,7 @@
  * engines operating inside a deterministic, bounded platform harness.
  */
 import SectionHeading from './SectionHeading.astro';
-import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
+import { getLocale, useTranslations } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
