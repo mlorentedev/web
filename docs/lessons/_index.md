@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-52 lessons, one file each, newest first. Numbers are assigned in the order
+53 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 053 | [npm install of a named package re-resolves its whole subtree](lesson-053-npm-install-of-a-named-package-re-resolves-i.md) | 2026-09-23 | `#npm` `#dependencies` `#lockfile` |
 | 052 | [A TARGET ARG in a build-platform stage builds it once per platform](lesson-052-a-target-arg-in-a-build-platform-stage-build.md) | 2026-09-23 | `#docker` `#buildkit` `#delivery` |
 | 051 | [A COPY into the base image's web root merges with what is already there](lesson-051-a-copy-into-the-base-image-s-web-root-merges.md) | 2026-09-23 | `#docker` `#nginx` `#delivery` |
 | 050 | [A framework upgrade can switch on classes the old version silently ignored](lesson-050-a-framework-upgrade-can-switch-on-classes-th.md) | 2026-09-22 | `#tailwind` `#verification` |
