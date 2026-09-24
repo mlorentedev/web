@@ -153,6 +153,19 @@ test('the image that ships is the one the suite tested (#376)', () => {
   assert.match(extract, /^ {8}if: inputs\.image != ''\s*$/m);
   assert.match(extract, /^ {8}run: node scripts\/served-tree\.mjs "\$IMAGE" dist\s*$/m);
 
+  // The pull needs a login, and the login leaves a push-capable token on disk.
+  // It must be gone before the suite runs dependency code, whether or not the
+  // extraction succeeded.
+  const logout = step(suite, 'Logout from Docker Hub');
+  assert.ok(logout, 'test.yml must log out of Docker Hub after the extraction');
+  assert.match(logout, /^ {8}if: always\(\) && inputs\.image != ''\s*$/m);
+  assert.match(logout, /^ {8}run: docker logout docker\.io\s*$/m);
+  const at = (name) => suite.indexOf(`- name: ${name}\n`);
+  assert.ok(
+    at('Extract the tree the image serves') < at('Logout from Docker Hub') && at('Logout from Docker Hub') < at('Test'),
+    'the logout must come after the extraction and before the suite',
+  );
+
   // What leaves for staging and prod is that same digest.
   const guard = step(release, 'Require the tag to name the tested digest');
   assert.ok(guard, '`dispatch-staging` must check the tag still names the tested digest');

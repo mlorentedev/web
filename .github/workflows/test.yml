@@ -104,6 +104,13 @@ jobs:
           IMAGE: ${{ inputs.image }}
         run: node scripts/served-tree.mjs "$IMAGE" dist
 
+      # The login above stores the push-capable token in ~/.docker/config.json,
+      # and everything below runs dependency code. Drop it before that starts,
+      # and on failure too.
+      - name: Logout from Docker Hub
+        if: always() && inputs.image != ''
+        run: docker logout docker.io
+
       - name: Test
         working-directory: site
         run: npm test
