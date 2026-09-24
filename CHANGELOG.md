@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.1](https://github.com/mlorentedev/web/compare/v1.15.0...v1.15.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* **content:** tell the Teledyne platform and field work as one chain ([#385](https://github.com/mlorentedev/web/issues/385)) ([f37af0e](https://github.com/mlorentedev/web/commit/f37af0eaa74adec4e740ce570880e481cf11a321))
+* **deps:** move to Astro 7 with every [@astrojs](https://github.com/astrojs) integration ([#380](https://github.com/mlorentedev/web/issues/380)) ([aef8f88](https://github.com/mlorentedev/web/commit/aef8f880a01e3b056793cdfd6881c285052aa8e9)), closes [#7](https://github.com/mlorentedev/web/issues/7)
+
 ## [1.15.0](https://github.com/mlorentedev/web/compare/v1.14.0...v1.15.0) (2026-09-07)
 
 
