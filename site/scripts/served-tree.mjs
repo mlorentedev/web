@@ -26,7 +26,9 @@
  * The served root is read from `nginx.conf`, the file that decides it, rather
  * than written here a second time.
  *
- * Exit status: 0 extracted, 1 the image failed a check, 2 usage.
+ * Exit status: 0 extracted, 1 the image failed a check, 2 usage, 3 the question
+ * could not be answered (docker or the registry failed) — kept apart from 1 so
+ * an outage never reads as a verdict on the image.
  */
 
 import { execFileSync } from 'node:child_process';
@@ -38,11 +40,17 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const siteRoot = join(here, '..');
 
-/** The web root `nginx.conf` serves. */
+/**
+ * The web root `nginx.conf` serves. Exactly one `root` directive is accepted:
+ * with several (a `location` overriding the server's), which tree "the image
+ * serves" stops having one answer, and taking the first would hide that.
+ */
 export const servedRoot = (conf) => {
-  const m = conf.match(/^\s*root\s+(\S+);/m);
-  if (!m) throw new Error('nginx.conf declares no `root`');
-  return m[1];
+  const roots = [...conf.matchAll(/^\s*root\s+(\S+);/gm)].map((m) => m[1]);
+  if (roots.length !== 1) {
+    throw new Error(`nginx.conf declares ${roots.length} \`root\` directives; the extractor needs exactly one`);
+  }
+  return roots[0];
 };
 
 /** Only `<name>@sha256:<64 hex>`: a tag may point elsewhere by the time the image ships. */
@@ -149,5 +157,11 @@ const main = ([ref, destArg = 'dist']) => {
 };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  process.exitCode = main(process.argv.slice(2));
+  try {
+    process.exitCode = main(process.argv.slice(2));
+  } catch (err) {
+    // docker's own message is already on stderr (inherited); name the call, not a stack.
+    console.error(`served-tree: could not extract the image: ${err.message.split('\n')[0]}`);
+    process.exitCode = 3;
+  }
 }

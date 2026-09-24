@@ -98,6 +98,12 @@ test('trees are compared by content, and every kind of difference is named', () 
 
 test('the extracted root is the one nginx serves and the Dockerfile fills', () => {
   assert.equal(root, '/usr/share/nginx/html');
+  assert.throws(() => servedRoot('server {\n  listen 8080;\n}'), /declares 0 `root`/);
+  assert.throws(
+    () => servedRoot('server {\n  root /a;\n  location /x {\n    root /b;\n  }\n}'),
+    /declares 2 `root`/,
+    'a second root must not be ignored in favour of the first',
+  );
   const runtime = stage(/^FROM nginx:/);
   assert.ok(runtime, 'no nginx runtime stage in the Dockerfile');
   assert.match(runtime, new RegExp(`^COPY --from=build /app/dist ${root}\\s*$`, 'm'));
