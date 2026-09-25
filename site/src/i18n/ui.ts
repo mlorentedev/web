@@ -98,7 +98,6 @@ export const ui = {
     'idp.cta': 'Explore the platform →',
     'idp.title': 'KubeLab Platform & Engineering Cockpit',
     'idp.description': 'The 24/7 hybrid cloud and bare-metal infrastructure platform powering my autonomous AI agents, edge inference, and GitOps workflows.',
-    'idp.eyebrow': 'Infrastructure & AI agent platform',
     'idp.overview': 'Infrastructure telemetry across Hetzner Cloud, on-prem bare-metal K3s, and NVIDIA Jetson edge inference. Figures are recorded at build time.',
     'idp.story.heading': 'The Engineering Foundry Behind Every Product',
     'idp.story.p1': 'KubeLab is the operating foundation behind every project, open-source tool, and product showcased across this portfolio (including Pollex, Hive MCP, KubeLab Platform API, and this Astro website). It spans eight machines across Hetzner Cloud (Germany), Google Cloud and a bare-metal homelab in the USA, running three single-node K3s clusters.',
@@ -332,7 +331,8 @@ export const ui = {
     // `context.md` records the hero wording as blocked on #182, whose three
     // positioning options were produced and then lost. Restructuring the markup
     // does not need that answer; rewriting the sentences does.
-    'lab.hero.eyebrow': 'Infrastructure & AI agent platform',
+    // A section name, not a second label: the label is the home eyebrow (WEB-137).
+    'lab.hero.eyebrow': 'Where my AI agents run',
     'lab.hero.title': 'KubeLab Platform & Engineering Cockpit',
     'lab.hero.description':
       'The 24/7 hybrid cloud and bare-metal infrastructure platform powering my autonomous AI agents, edge inference, and GitOps workflows.',
@@ -597,7 +597,6 @@ export const ui = {
     'idp.cta': 'Explorar la plataforma →',
     'idp.title': 'Plataforma KubeLab y Cockpit de Ingeniería',
     'idp.description': 'La plataforma híbrida en la nube y bare-metal que opera 24/7 mis agentes de IA autónomos, inferencia edge y flujos GitOps.',
-    'idp.eyebrow': 'Infraestructura y plataforma de agentes de IA',
     'idp.overview': 'Telemetría de infraestructura en Hetzner Cloud, K3s bare-metal on-prem e inferencia edge con NVIDIA Jetson. Las cifras se registran en el build.',
     'idp.story.heading': 'La Fábrica de Ingeniería Detrás de Cada Producto',
     'idp.story.p1': 'KubeLab es la base operativa sobre la que he construido, probado y desplegado cada proyecto, herramienta open-source y producto de mi portfolio (incluyendo Pollex, Hive MCP Server, la API de KubeLab y esta misma web en Astro). Abarca ocho máquinas entre Hetzner Cloud (Alemania), Google Cloud y un homelab bare-metal en EE.UU., con tres clústeres K3s de un nodo cada uno.',
@@ -831,7 +830,7 @@ export const ui = {
     // bloqueada por #182, cuyas tres opciones de posicionamiento se produjeron y
     // se perdieron. Reestructurar el markup no necesita esa respuesta; reescribir
     // las frases sí.
-    'lab.hero.eyebrow': 'Infraestructura y plataforma de agentes de IA',
+    'lab.hero.eyebrow': 'Donde corren mis agentes de IA',
     'lab.hero.title': 'Plataforma KubeLab y Cockpit de Ingeniería',
     'lab.hero.description':
       'La plataforma híbrida en la nube y bare-metal que opera 24/7 mis agentes de IA autónomos, inferencia edge y flujos GitOps.',
