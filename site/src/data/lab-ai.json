@@ -54,6 +54,9 @@
         {
           "slug": "deterministic-gates",
           "name": "Deterministic Gates",
+          "label": "Review gates",
+          "labelEs": "Puertas de revisión",
+          "labelNote": "The source's name is in the register the brand package bans (WEB-141, AC4).",
           "description": "dotf pr triage-queue & 100% Mutation Kill",
           "descriptionEs": "dotf pr triage-queue y 100 % de mutantes muertos",
           "sourceHref": "https://github.com/mlorentedev/kubelab/pulls",
@@ -63,6 +66,9 @@
         {
           "slug": "zero-debt-doctrine",
           "name": "Zero-Debt Doctrine",
+          "label": "No silent debt",
+          "labelEs": "Sin deuda silenciosa",
+          "labelNote": "The source's name is in the register the brand package bans (WEB-141, AC4).",
           "description": "In-Flight Lessons & Real-Time ADR Recording",
           "descriptionEs": "Lecciones en vuelo y ADR registrados en tiempo real",
           "sourceHref": "https://github.com/mlorentedev/kubelab/tree/master/docs/lessons",

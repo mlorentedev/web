@@ -157,7 +157,7 @@
     },
     {
       "kind": "security-group",
-      "label": "Deterministic Quality & Verification Gate",
+      "label": "Quality & Verification Gate",
       "wraps": [
         "reviewpool",
         "cievals"
@@ -241,7 +241,7 @@
     },
     {
       "dot": "rose",
-      "title": "Deterministic Safety",
+      "title": "Safety brakes",
       "items": [
         "Dynamic AST loop breaker halts tool recursion",
         "Synchronous HITL gate for destructive commands"

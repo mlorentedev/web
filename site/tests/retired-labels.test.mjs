@@ -72,7 +72,7 @@ const banned = [
   /\bstochastic\b|\bestoc[aá]stic[oa]s?\b/i,
   /\bswarms?\b|\benjambres?\b/i,
   /\bsovereign\w*|\bsoberan[oíia]\w*/i,
-  /\bzero\W{0,3}(technical\s+)?debt\b|\bcero\s+deuda\b/i,
+  /\bzero\W{0,3}(technical\s+)?debt\b|\bcero\s+deuda\b|\bdeuda\s+t[eé]cnica\s+cero\b/i,
   /\b100\s?%\s*(IaC|automat\w*)/i,
   /\bcertified\b|\bcertificad[oa]\b|\bCKAD?\b|Terraform Associate|Solutions Architect/i,
   /service-as-a-software/i,
