@@ -47,6 +47,9 @@ Things this PR explicitly does NOT include. Forces a sharp boundary and prevents
 - **The ES funnel pages (#342) and `llms.txt` (#128)**, which have their own tickets.
 - **Visual redesign and new copy**: the current style stays, and the words come from `brand-package.md`. This spec
   reorders and reuses; it does not invent text.
+- **The home's `<title>` and meta description** ("Infrastructure for AI agents, from the metal up"): they already fit
+  the label, so they stay as they are.
+- **The header nav** keeps "Contact"; the hero's primary button is already the door.
 
 ## Risks / open questions
 
@@ -79,19 +82,32 @@ Failure modes, dependencies, and unknowns to clarify before implementation. If a
 - The hero's "What I build on it" → `#projects` link goes; the secondary button becomes "see the proof" → `#proof`.
 - `/projects` exists in English only, so the Spanish home's "all projects →" lands on an English page.
 - WEB-141 plans to touch `data/portfolio.ts` (#31); the other session announces it before doing so.
+- **No dead code left behind.** Removing the four sections orphans their components, `data/github.ts` (only
+  ProofSurface reads it) and their `ui.ts` keys; they are deleted in the same PR. `/projects` keeps working: it renders
+  its own grid and does not import them.
 - Work lands as small PRs, one step each: (1) `HomePage` for both locales, (2) drop the four sections + bio paragraph,
   (3) proof block, (4) the door block on the home.
 
 ## Acceptance criteria
 
-Observable outcomes. Each must be testable.
+Observable outcomes. Each must be testable. (Agreed with Manu 2026-09-24.)
 
-- [ ] Outcome 1
-- [ ] Outcome 2
-- [ ] Outcome 3
+- [ ] **AC1 · First screen.** At 1280 px and at 400 px wide, the label, the H1 and the door are visible without
+  scrolling, in both locales (browser check, same harness as `tests/lab-containment.mjs`).
+- [ ] **AC2 · Structure.** The home renders five blocks in order (hero, who I am, proof, how the work starts, latest
+  notes) and exactly one `<h1>`, in both locales, from one `HomePage` component (#142). IdpStrip, ProofSurface,
+  ProjectsSection and CommunitySection no longer render on it.
+- [ ] **AC3 · One source.** The home's "how the work starts" block and `/contact` render the same contact markdown and
+  the same `data/offer.ts` figures; a test fails if they diverge.
+- [ ] **AC4 · Proof.** The proof block renders three pieces from `data/proofs.ts`, and every link resolves to an
+  existing route in both locales. The `agents` piece carries no figure until #238 settles.
+- [ ] **AC5 · Honesty.** No "open to work", "available now" or equivalent anywhere; the only availability text is the
+  `nextStart` line. No node or service counts and no hand-written uptime on the home.
+- [ ] **AC6 · No regressions.** The SEO alternates, `/lab` JSON-LD, bio facts, contact and retired-labels tests stay
+  green.
 
 ## References
 
-- Bitácora board: the GitHub issue / Project item tracking this spec (see the `issue:` frontmatter field)
-- Related ADR: `<repo>/docs/adr/adr-XXX.md` (if any)
-- Related patterns: `00_meta/patterns/<pattern>.md` (if any)
+- Bitácora board: mlorentedev/web#398 (WEB-140); predecessor #390 (WEB-137, closed); sibling #402 (WEB-141).
+- Copy SSOT: vault `10_projects/web/brand-package.md` (§0 goal, §3 story, §4 proofs, §5 offer, §7 banned).
+- Related: #142 (duplicated home pages), #238 (Hive figure), #133/#355 (no counts), web#401 (door + offer).

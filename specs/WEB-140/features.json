@@ -1,8 +1,43 @@
 [
   {
     "id": "WEB-140-f1",
-    "behavior": "Outcome 1",
-    "verification": "echo 'not implemented' && exit 1",
+    "behavior": "AC1: at 1280 and 400 px, in both locales, the label, the H1 and the door are in the first viewport",
+    "verification": "cd site && npm run build && node tests/home-first-screen.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-140-f2",
+    "behavior": "AC2: five home blocks in order, one h1, both locales from one HomePage; the four retired sections gone",
+    "verification": "cd site && npm run build && node --test tests/home.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-140-f3",
+    "behavior": "AC3: the home's door and offer render the same markdown and offer.ts figures as /contact",
+    "verification": "cd site && npm run build && node --test --test-name-pattern='one source' tests/home.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-140-f4",
+    "behavior": "AC4: three proof pieces from proofs.ts, every href resolves in both locales, agents states no figure",
+    "verification": "cd site && npm run build && node --test tests/proofs.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-140-f5",
+    "behavior": "AC5: no availability claim but the nextStart line; no node/service count or hand-written uptime on the home",
+    "verification": "cd site && npm run build && node --test --test-name-pattern='honesty' tests/home.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-140-f6",
+    "behavior": "AC6: SEO alternates, /lab JSON-LD, bio, contact and retired-labels tests stay green",
+    "verification": "cd site && npm run build && npm test",
     "state": "pending",
     "evidence": ""
   }
