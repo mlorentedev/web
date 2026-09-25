@@ -164,3 +164,35 @@ export function labSection(html, name) {
 
   return null;
 }
+
+const entities = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+
+/**
+ * Everything on a built page that a person or a search engine reads, as one
+ * string: text nodes, the `alt`, `aria-label` and `title` attributes a screen
+ * reader speaks, `<meta content>` (description, Open Graph) and JSON-LD.
+ *
+ * Scripts and styles are dropped, except JSON-LD: that is what a search result
+ * quotes, so a banned phrase hiding there is still on the page. Entities are
+ * decoded, so a pattern meets the characters a reader sees, not `&amp;` or
+ * `&#8209;`.
+ *
+ * Copy checks read this rather than the i18n keys because the copy is not all in
+ * `ui.ts`: catalog descriptions, diagram labels and artifact cards come from
+ * JSON and TypeScript data, and a key-prefix grep never sees them.
+ */
+export function readableText(html) {
+  const attributes = [...html.matchAll(/\s(?:alt|aria-label|title|content)="([^"]*)"/g)].map((m) => m[1]);
+  const body = html
+    .replace(/<script\b(?![^>]*application\/ld\+json)[^>]*>[\s\S]*?<\/script>/g, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/g, ' ')
+    .replace(/<[^>]+>/g, ' ');
+
+  return [body, ...attributes]
+    .join(' ')
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
+    .replace(/&([a-z]+);/gi, (whole, name) => entities[name.toLowerCase()] ?? whole)
+    .replace(/\s+/g, ' ')
+    .trim();
+}

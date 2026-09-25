@@ -21,6 +21,7 @@ import {
   colourEscapes,
   labSection,
   offTokenFamilies,
+  readableText,
   withoutVariants,
 } from './lib/audit.mjs';
 
@@ -113,4 +114,22 @@ test('an absent section is null, never an empty pass', () => {
   // string passes vacuously, which is worse than failing.
   assert.equal(labSection('<section data-lab-section="services"></section>', 'infra'), null);
   assert.equal(labSection('<div></div>', 'services'), null);
+});
+
+test('readable text keeps what a reader or a search engine reads, and nothing else', () => {
+  const html = [
+    '<head><title>Rules &amp; gates</title><meta name="description" content="Meta line">',
+    '<script type="application/ld+json">{"name":"JSON-LD line"}</script>',
+    '<script>const hidden = "inline script";</script><style>.x{color:red}</style></head>',
+    '<body><p>Zero&#8209;Debt &#x41;gents</p><img src="a.png" alt="Alt line">',
+    '<a aria-label="Aria line" data-node-label="data only">link</a></body>',
+  ].join('');
+
+  const text = readableText(html);
+  for (const kept of ['Rules & gates', 'Meta line', 'JSON-LD line', 'Zero\u2011Debt Agents', 'Alt line', 'Aria line', 'link']) {
+    assert.ok(text.includes(kept), `lost "${kept}" from: ${text}`);
+  }
+  for (const dropped of ['inline script', 'color:red', 'data only', '<p>']) {
+    assert.ok(!text.includes(dropped), `kept "${dropped}", which no reader sees: ${text}`);
+  }
 });
