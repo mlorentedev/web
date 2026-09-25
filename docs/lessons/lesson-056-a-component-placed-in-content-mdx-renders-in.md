@@ -25,8 +25,14 @@ no `lang` prop, and the entry is rendered by `render(entry)` inside the page, no
 context of the page that calls `render(entry)`, so `getLocale(Astro.currentLocale)`
 returns `es` on `/es/contact/` and `en` on `/contact/`. The built pages prove it: the
 Spanish offer block says "Sesión de 60 minutos · desde $300" and the English one
-"60-minute session · from $300". `tests/contact.test.mjs` pins it by requiring both
-locales to quote the same figures, and the markdown to state none.
+"60-minute session · from $300". `tests/contact.test.mjs` checks three separate things:
+both locales quote the same figures, the markdown states none, and the two locales'
+offer and door render different words. Only the last one catches the locale failing
+to reach the component, because with the same figures an all-English Spanish page
+passes the other two. It caught nothing at first: it compared a slice from the offer to
+`</main>`, and on the Spanish page that slice ends in Spanish markdown, so forcing
+`offerSteps('en')` still passed. It now compares exactly the offer's `<div>`, and the
+same mutation fails it.
 
 **Rule**: When copy must stay editable in markdown but some of its content has to come
 from data, place components from the MDX and let them read `Astro.currentLocale`, not a

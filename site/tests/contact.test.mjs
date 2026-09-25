@@ -48,6 +48,20 @@ function block(html, attr) {
   return start < 0 ? '' : html.slice(start, html.indexOf('</main>', start));
 }
 
+/** Exactly the `<div>` carrying `attr`, nested divs included, and nothing after it. */
+function element(html, attr) {
+  const start = html.search(new RegExp(`<div[^>]*\\b${attr}\\b`));
+  if (start < 0) return '';
+  const tags = /<\/?div\b[^>]*>/g;
+  tags.lastIndex = start;
+  let depth = 0;
+  for (let m; (m = tags.exec(html)); ) {
+    depth += m[0][1] === '/' ? -1 : 1;
+    if (depth === 0) return html.slice(start, tags.lastIndex);
+  }
+  return '';
+}
+
 /** The figure a field of `offer.ts` holds, e.g. `fromUsd: 300` → `300`. */
 function offerField(name) {
   const value = offerSrc.match(new RegExp(`\\b${name}:\\s*(\\d+)`))?.[1];
@@ -66,7 +80,7 @@ const expected = [
 
 for (const { lang, contact } of pages) {
   test(`[${lang}] the offer block quotes every figure in offer.ts`, () => {
-    const offer = text(block(dist(contact), 'data-offer'));
+    const offer = text(element(dist(contact), 'data-offer'));
     assert.ok(offer.length > 100, `dist/${contact}: the offer block is missing or empty`);
     const missing = expected.filter((f) => !offer.includes(f));
     assert.deepEqual(missing, [], `dist/${contact}: offer block lacks ${missing.join(', ')}`);
@@ -81,9 +95,23 @@ for (const { lang, contact } of pages) {
 }
 
 test('both locales quote the same figures', () => {
-  const [en, es] = pages.map(({ contact }) => text(block(dist(contact), 'data-offer')).match(/\$?\d+(?:–\d+)?/g) ?? []);
+  const [en, es] = pages.map(({ contact }) => text(element(dist(contact), 'data-offer')).match(/\$?\d+(?:–\d+)?/g) ?? []);
   assert.ok(en.length >= expected.length, 'the English offer block quotes no figures');
   assert.deepEqual([...es].sort(), [...en].sort());
+});
+
+test('each locale renders its own words around those figures', () => {
+  // The offer and the door are placed from the markdown with no `lang` prop; they
+  // read the page's locale (lesson 056). If that broke, both pages would render the
+  // same language, and the figure checks above would still pass.
+  // `element`, not `block`: the markdown after the offer is already Spanish on the
+  // Spanish page, so a slice running on to </main> would differ even with an
+  // all-English offer.
+  const [en, es] = pages.map(({ contact }) => text(element(dist(contact), 'data-offer')));
+  assert.ok(en.length > 100 && es.length > 100, 'an offer block rendered empty');
+  assert.notEqual(es, en, 'the Spanish and English offer blocks are identical: the locale did not reach the component');
+  const [enDoor, esDoor] = pages.map(({ contact }) => text(element(dist(contact), 'data-door')));
+  assert.notEqual(esDoor, enDoor, 'the Spanish and English doors are identical: the locale did not reach the component');
 });
 
 // ── The busy line is asymmetric ────────────────────────────────────────────
@@ -111,7 +139,7 @@ for (const { lang, contact } of pages) {
   test(`[${lang}] the busy line renders exactly when site.nextStart is ahead of the build`, () => {
     assert.ok(nextStart, 'site.ts must declare nextStart as null or a quoted YYYY-MM-DD');
     const html = dist(contact);
-    assert.ok(text(block(html, 'data-door')).length > 0, `dist/${contact}: the door did not render`);
+    assert.ok(text(element(html, 'data-door')).length > 0, `dist/${contact}: the door did not render`);
     const busy = busyMonth(nextStart[2] ?? null, new Date(), 'en-US') !== null;
     assert.equal(/\bdata-busy\b/.test(html), busy, `dist/${contact}: busy line ${busy ? 'missing' : 'shown with no future date'}`);
   });
@@ -121,7 +149,7 @@ for (const { lang, contact } of pages) {
 
 for (const { lang, contact, home, href } of pages) {
   test(`[${lang}] the door is a mailto carrying the three-line filter`, () => {
-    const door = block(dist(contact), 'data-door');
+    const door = element(dist(contact), 'data-door');
     const mailto = door.match(/href="(mailto:[^"]+)"/)?.[1] ?? '';
     assert.match(mailto, /[?&]subject=[^&]+/, 'the door mail has no subject');
     const body = decodeURIComponent(mailto.match(/[?&](?:amp;)?body=([^&"]+)/)?.[1] ?? '');
