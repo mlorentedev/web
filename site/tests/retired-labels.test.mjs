@@ -27,7 +27,7 @@ function* files(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) yield* files(path);
-    else if (/\.(astro|ts|mjs|mdx?|json)$/.test(entry.name)) yield path;
+    else if (/\.(astro|[cm]?[jt]sx?|mdx?|json)$/.test(entry.name)) yield path;
   }
 }
 
