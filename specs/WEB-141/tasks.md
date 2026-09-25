@@ -21,9 +21,9 @@ created: "2026-09-24"
 
 ### Phase 1 — stop the false claims (web only)
 
-- [ ] [P] [AC4] Extend `tests/retired-labels.test.mjs` with the brand package's banned terms, scoped to the
+- [x] [P] [AC4] Extend `tests/retired-labels.test.mjs` with the brand package's banned terms, scoped to the
       `lab.*`, `ai.*` and `idp.*` copy in both locales; watch it fail on today's `/ai` title
-- [ ] [AC4] Rewrite the `/ai` hero and section copy (`ai.*`) in the site's register until the test passes
+- [x] [AC4] Rewrite the `/ai` hero and section copy (`ai.*`) in the site's register until the test passes
 - [ ] [P] [AC4] Write a failing test that the Spanish Lab and AI pages carry no English strings (the Lab and AI
       part of #354)
 - [ ] [AC4] Translate those strings until it passes
