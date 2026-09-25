@@ -25,7 +25,7 @@ export const aiArtifacts: AiArtifact[] = [
     title: 'Harness Non-Negotiables & Standing Orders',
     titleEs: 'Doctrina del Arnés y Órdenes Permanentes',
     description: 'Core invariants governing all agents: zero AI attribution, atomic commits under ~300 LOC, forbidden auto-merge, and in-flight documentation.',
-    descriptionEs: 'Invariantes nucleares para todo agente: cero atribución de IA, commits atómicos bajo ~300 LOC, prohibición estricta de auto-merge y deuda técnica cero.',
+    descriptionEs: 'Invariantes nucleares para todo agente: cero atribución de IA, commits atómicos bajo ~300 LOC, prohibición estricta de auto-merge y documentación al día.',
     language: 'markdown',
     filename: 'AGENTS.md',
     codeSnippet: `## Non-negotiable rules (harness-enforced)
@@ -36,7 +36,7 @@ export const aiArtifacts: AiArtifact[] = [
 - Auto-merge is strictly forbidden in every repository. Merge is a supervised human action.
 - Strict IaC & Idempotence: zero manual operations on remote systems or cloud environments.
 - Atomic PRs: ~300 executable LOC hard cap to maintain human reviewability.
-- In-flight documentation & zero debt: ADRs and lessons recorded in real time.`,
+- In-flight documentation: ADRs and lessons recorded as they happen; debt is fixed or ticketed, never silent.`,
     gistUrl: 'https://github.com/mlorentedev/web/blob/master/AGENTS.md'
   },
   {
@@ -69,8 +69,8 @@ export const aiArtifacts: AiArtifact[] = [
     badge: 'Governance',
     title: 'Autonomous Execution Concurrency & Budgeting',
     titleEs: 'Gobernanza de Concurrencia y Presupuesto de Ejecución',
-    description: 'Strict concurrency scaling and blast-radius budgeting for autonomous agent swarms, preventing infinite loops and uncontained state mutation.',
-    descriptionEs: 'Límites estrictos de concurrencia y radio de impacto para enjambres de agentes, evitando bucles descontrolados y mutaciones de estado no contenidas.',
+    description: 'Strict concurrency scaling and blast-radius budgeting for concurrent autonomous agents, preventing infinite loops and uncontained state mutation.',
+    descriptionEs: 'Límites estrictos de concurrencia y radio de impacto para agentes autónomos concurrentes, evitando bucles descontrolados y mutaciones de estado no contenidas.',
     language: 'markdown',
     filename: 'harness/priority-scale.md',
     codeSnippet: `# Priority Scale & Concurrency Budgeting

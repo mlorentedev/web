@@ -226,8 +226,8 @@
       "name": "Hive MCP Server",
       "category": "AI & Inference",
       "categoryEs": "IA e Inferencia",
-      "description": "Deterministic AST chunker and MCP memory layer for multi-agent workflows.",
-      "descriptionEs": "Fragmentador AST determinista y capa de memoria MCP para flujos multi-agente.",
+      "description": "AST-based chunker and MCP memory layer for multi-agent workflows.",
+      "descriptionEs": "Fragmentador basado en AST y capa de memoria MCP para flujos multi-agente.",
       "url": "https://mlorentedev.github.io/hive/",
       "node": "vps",
       "env": "prod",
@@ -476,8 +476,8 @@
       "titleEs": "Pipeline de Entrega GitOps Edge-to-Cloud",
       "category": "Delivery & CI/CD",
       "categoryEs": "Entrega y CI/CD",
-      "description": "Deterministic build-once promote-by-digest delivery promoting verified container bytes from staging to production.",
-      "descriptionEs": "Flujo determinista build-once/promote-by-digest que promueve bytes verificados de staging a producción.",
+      "description": "Build-once, promote-by-digest delivery promoting verified container bytes from staging to production.",
+      "descriptionEs": "Flujo build-once/promote-by-digest que promueve bytes verificados de staging a producción.",
       "mermaid": "flowchart LR\n    PR[\"1. PR (feature/*)<br/>Conventional Commits\"] --> CI[\"2. CI Validation<br/>Astro check + Lint\"]\n    CI --> BUILD[\"3. Build Image<br/>sha-&lt;short&gt;\"]\n    BUILD --> MERGE[\"4. Squash-Merge<br/>to master branch\"]\n    MERGE --> SD[\"5. Staging Dispatch<br/>Webhook to kubelab\"]\n    SD --> AS[\"6. Argo CD Staging<br/>Auto-sync to Ace1 in &lt;30s\"]\n    MERGE --> RP[\"7. Release Please<br/>Release PR (SemVer vX.Y.Z)\"]\n    RP --> PP[\"8. Promote Prod<br/>Re-tag exact staging digest\"]\n    PP --> AP[\"9. Argo CD Prod<br/>Zero-downtime K3s rollout\"]"
     },
     {

@@ -38,6 +38,14 @@ export interface LabAiEntry {
   url?: string;
   /** Required whenever `url` departs from `sourceHref`, so the edit is never silent. */
   urlNote?: string;
+  /**
+   * The name the page shows, when it departs from `name`. `name` stays the
+   * source's, for the same reason `sourceHref` does. Both locales or neither.
+   */
+  label?: string;
+  labelEs?: string;
+  /** Required whenever `label` is set, so the rename is never silent. */
+  labelNote?: string;
 }
 
 export interface LabAiGroup {

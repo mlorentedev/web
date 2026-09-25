@@ -286,8 +286,8 @@
           "sourceHref": "https://docs.k3s.io/",
           "url": "https://docs.k3s.io/",
           "icon": "si-k3s",
-          "description": "Lightweight certified Kubernetes distro packaging and edge configuration",
-          "descriptionEs": "Distribución certificada liviana de Kubernetes y configuración para edge",
+          "description": "Lightweight CNCF-conformant Kubernetes distribution and edge configuration",
+          "descriptionEs": "Distribución ligera de Kubernetes, conforme con la CNCF, y configuración para edge",
           "access": "public"
         },
         {

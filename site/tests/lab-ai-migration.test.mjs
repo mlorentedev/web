@@ -206,6 +206,23 @@ test('a link that departs from its source says why', () => {
   }
 });
 
+test('a name that departs from its source says why, in both locales', () => {
+  // The same rule as `url`/`urlNote`: `name` stays the fixture's, so the
+  // migration is still checkable line by line, and the page shows `label`.
+  // WEB-141 renamed the entries whose names the brand package bans.
+  for (const group of data.groups) {
+    for (const entry of group.entries) {
+      if (entry.label === undefined && entry.labelEs === undefined) continue;
+      assert.ok(entry.label && entry.labelEs, `${group.name}/${entry.name} is relabelled in one locale only`);
+      assert.notEqual(entry.labelEs, entry.label, `${group.name}/${entry.name}'s \`labelEs\` is the English string`);
+      assert.ok(
+        entry.labelNote && entry.labelNote.length > 20,
+        `${group.name}/${entry.name} shows a name its source does not, with no note explaining the departure`,
+      );
+    }
+  }
+});
+
 test('every visible string has its es twin', () => {
   for (const group of data.groups) {
     assert.ok(group.nameEs, `group ${group.name} has no \`nameEs\``);

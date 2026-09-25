@@ -45,7 +45,7 @@
       "type": "cloud",
       "label": "GitHub Actions CI",
       "sublabel": "Test & multi-arch build",
-      "tag": "Deterministic runner",
+      "tag": "Reproducible build",
       "pos": [
         60,
         476

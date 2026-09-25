@@ -22,16 +22,16 @@ export const ui = {
     // AI Section
     // A section name, not a second label: the label is the home eyebrow (WEB-137).
     'ai.hero.eyebrow': 'How I run AI agents',
-    'ai.hero.title': 'Deterministic execution harnesses for stochastic AI models',
+    'ai.hero.title': 'The rules my AI agents work under, and what enforces them',
     'ai.hero.description':
-      'Foundation models are untrusted, stochastic execution engines. Engineering autonomous software does not reside in prompts, but in the deterministic platform harness that binds them: OS-level kernel concurrency, ephemeral worktree sandboxes, in-stream secret redaction, and independent adversarial review gates.',
+      'A language model makes mistakes nobody can predict, so the prompt is not what keeps an agent in line. The rules are: each agent works in its own Git worktree, secrets are scrubbed from its output before anything is saved, a second model reviews every pull request, and nothing an agent writes merges until I have read it.',
     'ai.diagram.heading': 'Autonomous Agent Execution Plane',
     'ai.diagram.caption':
       'Task dispatch, knowledge retrieval via FastMCP, sandboxed worktree execution, and adversarial review.',
     'ai.diagram.legend':
       'Every agent operation runs within an isolated Git worktree. Destructive actions trigger a synchronous HITL gate. PRs are audited by an independent model family before reaching human review.',
-    'ai.pillars.heading': 'The Four Pillars of Deterministic Containment',
-    'ai.pillars.sub': 'Operating autonomous swarms with deterministic Unix systems engineering.',
+    'ai.pillars.heading': 'Four rules, each with a mechanism behind it',
+    'ai.pillars.sub': 'None of them relies on the model behaving well: each one is a lock, a filter, a limit or a review.',
     'ai.pillars.p1.title': 'OS Concurrency & Worktree Sandboxing',
     'ai.pillars.p1.desc':
       'Ephemeral git worktrees sharing the .git/objects pool. Kernel POSIX flock semaphores prevent race conditions and branch collisions across concurrent autonomous agents.',
@@ -61,7 +61,7 @@ export const ui = {
       'Inspectable rules, kernel mutex scripts, stream redactors, and adversarial review prompts.',
     'ai.automations.heading': 'Autonomous Fleet & Automations',
     'ai.automations.intro':
-      'The production agent fleet, deterministic protocols, reactive event routers, and observability sinks running across the cluster. Most endpoints operate within the mesh boundary — what you see here is the live inventory and execution contracts.',
+      'The agents in production, the protocols they use, the event routers and the telemetry sinks running across the cluster. Most endpoints operate within the mesh boundary — what you see here is the live inventory and execution contracts.',
     'ai.automations.count': '{n} entries · {reachable} you can open from here',
     'ai.automations.link': 'open',
     'ai.automations.source': 'Migrated from {repo} · {commit}',
@@ -341,12 +341,12 @@ export const ui = {
     'lab.story.p1':
       'KubeLab is the operating foundation behind every project, open-source tool, and product showcased across this portfolio (including Pollex, Hive MCP, KubeLab Platform API, and this Astro website). It spans eight machines across Hetzner Cloud (Germany), Google Cloud and a bare-metal homelab in the USA, running three single-node K3s clusters.',
     'lab.story.p2':
-      'Nothing shown here is an isolated mockup or tutorial demo: every workload is built, tested in staging, secured behind Zero-Trust authentication, and operated 24/7 through immutable GitOps pipelines and deterministic multi-agent context systems.',
+      'Nothing shown here is an isolated mockup or tutorial demo: every workload is built, tested in staging, secured behind Zero-Trust authentication, and operated 24/7 through immutable GitOps pipelines.',
     'lab.pillar.gitops': 'Reproducible GitOps',
-    'lab.pillar.gitopsDesc': '100% IaC with Ansible, Terraform, and K3s. Argo CD reconciles drift in <30s.',
+    'lab.pillar.gitopsDesc': 'Infrastructure as code with Ansible, Terraform and K3s. Argo CD reconciles drift in <30s.',
     'lab.pillar.privacy': 'Edge AI & Privacy',
     'lab.pillar.privacyDesc': 'Local LLM inference on a Jetson Nano. The prompt never leaves the house.',
-    'lab.pillar.memory': 'Deterministic Memory',
+    'lab.pillar.memory': 'Agent memory',
     'lab.pillar.memoryDesc': 'Hive MCP AST RAG serving AI agents with 67–82% prompt context reduction.',
 
     'lab.slos.heading': 'Service Level Objectives (SLOs) & Reliability',
@@ -532,16 +532,16 @@ export const ui = {
 
     // AI Section
     'ai.hero.eyebrow': 'Cómo trabajo con agentes de IA',
-    'ai.hero.title': 'Arneses de ejecución deterministas para modelos estocásticos de IA',
+    'ai.hero.title': 'Las reglas con las que trabajan mis agentes de IA, y qué las hace cumplir',
     'ai.hero.description':
-      'Los modelos fundacionales son motores de ejecución estocásticos y no confiables. La ingeniería de sistemas autónomos no reside en prompts, sino en el arnés determinista que los acota: concurrencia a nivel de kernel, sandboxes efímeros en worktrees, redacción de secretos en flujo y auditorías adversariales independientes.',
+      'Un modelo de lenguaje se equivoca de formas que nadie puede prever, así que lo que mantiene a raya a un agente no es el prompt. Las reglas: cada agente trabaja en su propia copia de Git (un worktree), los secretos se borran de su salida antes de guardar nada, un segundo modelo revisa cada pull request y nada de lo que escribe un agente se fusiona sin que yo lo haya leído.',
     'ai.diagram.heading': 'Plano de Ejecución de Agentes Autónomos',
     'ai.diagram.caption':
       'Despacho de tareas, recuperación de conocimiento vía FastMCP, ejecución aislada en worktrees y revisión adversarial.',
     'ai.diagram.legend':
       'Cada operación del agente corre en un Git worktree aislado. Las acciones destructivas activan una puerta HITL sincrónica. Las PRs son auditadas por una familia de modelos independiente antes de la revisión humana.',
-    'ai.pillars.heading': 'Los Cuatro Pilares de Contención Determinista',
-    'ai.pillars.sub': 'Operando enjambres autónomos con ingeniería de sistemas Unix determinista.',
+    'ai.pillars.heading': 'Cuatro reglas, cada una con un mecanismo detrás',
+    'ai.pillars.sub': 'Ninguna depende de que el modelo se porte bien: cada una es un cerrojo, un filtro, un límite o una revisión.',
     'ai.pillars.p1.title': 'Aislamiento y Concurrencia a Nivel de OS',
     'ai.pillars.p1.desc':
       'Worktrees efímeros sobre el pool de objetos .git/objects. Semáforos flock a nivel de kernel previenen colisiones de ramas y condiciones de carrera entre agentes concurrentes.',
@@ -571,7 +571,7 @@ export const ui = {
       'Reglas inspeccionables, scripts de mutex de kernel, redactor de secretos y prompts de revisión adversarial.',
     'ai.automations.heading': 'Flota Autónoma y Automatizaciones',
     'ai.automations.intro':
-      'La flota de agentes en producción, protocolos deterministas, enrutadores de eventos reactivos y sumideros de observabilidad operando en el clúster. La mayoría opera dentro de la malla — lo que ves aquí es el inventario real y los contratos de acceso.',
+      'Los agentes en producción, los protocolos que usan, los enrutadores de eventos y los sumideros de telemetría que funcionan en el clúster. La mayoría opera dentro de la malla — lo que ves aquí es el inventario real y los contratos de acceso.',
     'ai.automations.count': '{n} entradas · {reachable} que puedes abrir desde aquí',
     'ai.automations.link': 'abrir',
     'ai.automations.source': 'Migrado de {repo} · {commit}',
@@ -839,12 +839,12 @@ export const ui = {
     'lab.story.p1':
       'KubeLab es la base operativa sobre la que he construido, probado y desplegado cada proyecto, herramienta open-source y producto de mi portfolio (incluyendo Pollex, Hive MCP Server, la API de KubeLab y esta misma web en Astro). Abarca ocho máquinas entre Hetzner Cloud (Alemania), Google Cloud y un homelab bare-metal en EE.UU., con tres clústeres K3s de un nodo cada uno.',
     'lab.story.p2':
-      'Nada de lo que muestro es una demo aislada de tutorial: cada carga de trabajo se compila en local, se valida en staging, se protege con autenticación Zero-Trust y se opera 24/7 mediante pipelines GitOps inmutables y sistemas de contexto multi-agente deterministas.',
+      'Nada de lo que muestro es una demo aislada de tutorial: cada carga de trabajo se compila en local, se valida en staging, se protege con autenticación Zero-Trust y se opera 24/7 mediante pipelines GitOps inmutables.',
     'lab.pillar.gitops': 'GitOps Reproducible',
-    'lab.pillar.gitopsDesc': '100% IaC con Ansible, Terraform y K3s. Argo CD reconcilia el estado en <30s.',
+    'lab.pillar.gitopsDesc': 'Infraestructura como código con Ansible, Terraform y K3s. Argo CD reconcilia el estado en <30s.',
     'lab.pillar.privacy': 'Edge AI y Privacidad',
     'lab.pillar.privacyDesc': 'Inferencia LLM local en una Jetson Nano. El prompt no sale de casa.',
-    'lab.pillar.memory': 'Memoria Determinista',
+    'lab.pillar.memory': 'Memoria de los agentes',
     'lab.pillar.memoryDesc': 'RAG AST en Hive MCP que abastece a los agentes con un ahorro de contexto del 67% al 82%.',
 
     'lab.slos.heading': 'Objetivos de Nivel de Servicio (SLOs) y Confiabilidad',
