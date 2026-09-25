@@ -1,0 +1,17 @@
+---
+// The offer ladder (WEB-137), rendered from `data/offer.ts` so both locales
+// quote the same figures. Placed from the contact markdown.
+import { offerSteps } from '../data/offer';
+import { getLocale } from '../i18n/utils';
+
+const steps = offerSteps(getLocale(Astro.currentLocale));
+---
+
+<div data-offer class="not-prose my-8 grid gap-4 sm:grid-cols-2">
+  {steps.map((step) => (
+    <div class="rounded-md border border-ink-200 bg-white p-5">
+      <p class="text-base/6 font-bold text-ink-900">{step.title}</p>
+      <p class="mt-2 text-base/6 text-ink-700">{step.body}</p>
+    </div>
+  ))}
+</div>

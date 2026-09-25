@@ -1,0 +1,42 @@
+---
+// Renders the contact page for one locale, the way LegalPage renders the legal
+// ones: both routes were full copies of each other and had already drifted (the
+// Spanish mailto subject was still the old positioning). The door and the offer
+// are placed from the markdown, so the page's order is edited there.
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const [entry] = await getCollection(
+  'pages',
+  ({ data }: CollectionEntry<'pages'>) => data.page === 'contact' && data.lang === lang,
+);
+
+if (!entry) {
+  throw new Error(`No 'contact' page in the 'pages' collection for lang '${lang}' — expected src/content/pages/${lang}-contact.mdx`);
+}
+
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <Header />
+  <main id="main-content" class="grow">
+    <section class="pt-8 pb-12 md:pt-10 md:pb-14">
+      <div class="max-w-3xl mx-auto px-4">
+        <div data-contact class="prose prose-base max-w-none prose-p:text-base/6 prose-p:text-ink-700 prose-headings:font-bold prose-headings:text-ink-900 prose-h1:text-3xl/9 prose-h1:mb-8 prose-a:text-accent-700 hover:prose-a:text-accent-800">
+          <Content />
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

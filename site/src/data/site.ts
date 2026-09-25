@@ -9,6 +9,11 @@ export const site = {
   // the Spanish homepage fall back to an English <title>.
   description: 'The infrastructure under the agents, not the prompts on top. Kubernetes on hardware I own — the homelab is the proof, the agent platform is the direction.',
   author: 'Manu Lorente',
+  // One project at a time (WEB-137). While on one, set this to the date the next
+  // can start (`YYYY-MM-DD`) and the contact door says "the next one starts in
+  // <month>". Leave it `null` when free: the free state says nothing, and a past
+  // date also says nothing, so forgetting to clear it cannot make the page lie.
+  nextStart: null as string | null,
   domain: 'mlorente.dev',
   url: 'https://mlorente.dev',
   api: {

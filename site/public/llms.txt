@@ -12,7 +12,7 @@ Manu Lorente is a Systems & Platform Engineer with 10+ years of engineering expe
 - /lab/ — The KubeLab Platform: hybrid cloud (Hetzner, GCP) and bare-metal homelab topology, interactive architectural flows, service catalog, real-time SLOs, and client-side reachability probe.
 - /ai/ — Autonomous AI Harness: deterministic execution harnesses for stochastic AI models (OS concurrency, worktree sandboxing, in-stream secret redaction, and multi-model adversarial review gates).
 - /notes/ — Technical notes and deep dives covering systems engineering, Kubernetes internals, networking (Split DNS, WireGuard), and GitOps failure modes.
-- /contact/ — How to work with Manu: Systems & Platform Implementation (Service-as-a-Software) and Strategic Systems Engineering (Staff / Technical Advisory).
+- /contact/ — How to hire Manu. He takes one project at a time: a three-line written brief first, then a paid session and a fixed-length sprint, with the terms on the page.
 - /es/ — Complete Spanish localization of all platform pages and technical notes.
 
 ## Core Engineering Domains

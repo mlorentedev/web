@@ -80,7 +80,12 @@ export const ui = {
     'hero.title': 'The infrastructure under the agents, not the prompts on top',
     'hero.subtitle':
       'Almost everyone building for AI agents arrives from the application side. I arrive from the metal — Kubernetes on hardware I own, mesh, split DNS, GitOps that reconciles in under thirty seconds. That platform is where my own agents now run, under a harness with hard limits. The homelab below is the proof. The agent platform is what I am building on it.',
-    'hero.cta': 'How to work with me',
+    // The door (WEB-137): the one way in, the same button on the hero and on
+    // /contact/. The mail it opens is the written filter, three lines.
+    'door.cta': 'Tell me what has to work',
+    'door.subject': 'What has to work',
+    'door.body': "What has to work:\nWhat's already in production:\nWhen you need it:\n",
+    'door.busy': 'Currently on a project; the next one starts in {month}.',
     'hero.explorePlatform': 'Explore my platform',
     'hero.whatIBuild': 'What I build on it',
 
@@ -576,7 +581,10 @@ export const ui = {
     'hero.title': 'La infraestructura de debajo de los agentes, no los prompts de encima',
     'hero.subtitle':
       'Casi todo el que construye para agentes de IA llega desde el lado de la aplicación. Yo llego desde el metal — Kubernetes sobre hardware que es mío, malla, DNS partido, GitOps que reconcilia en menos de treinta segundos. Ahí es donde corren ahora mis propios agentes, bajo un harness con límites duros. El homelab de abajo es la prueba. La plataforma de agentes es lo que estoy construyendo encima.',
-    'hero.cta': 'Cómo trabajar conmigo',
+    'door.cta': 'Cuéntame qué tiene que funcionar',
+    'door.subject': 'Qué tiene que funcionar',
+    'door.body': 'Qué tiene que funcionar:\nQué hay ya en producción:\nPara cuándo lo necesitas:\n',
+    'door.busy': 'Ahora mismo en un proyecto; el siguiente arranca en {month}.',
     'hero.explorePlatform': 'Explora mi plataforma',
     'hero.whatIBuild': 'Lo que construyo encima',
 
