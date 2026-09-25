@@ -97,6 +97,14 @@ Items marked **gate** must be resolved before their phase starts. None blocks ph
       read-only (a write attempt is refused) and rate-limited, checked by a smoke test.
 - [ ] **AC6 — chat (phase 5, gated).** It answers from public content only, it switches off with a message at
       the spend cap, and its call to action points at the door. There is a test for each.
+- [ ] **AC7 — nothing that works today breaks.** The `/lab` single-JSON-LD invariant, the sitemap-to-HTML
+      alternates test (`seo-canonical-hreflang.test.mjs`) and the WEB-080 suite (`lab-*.test.mjs`,
+      `lab-containment.mjs`) stay green.
+- [ ] **AC8 — captures are light and accessible.** Every capture has alt text and loads lazily, each page stays
+      within the weight budget `lab-weight.test.mjs` enforces, and axe (`lab-axe.mjs`) passes on every changed
+      page.
+- [ ] **AC9 — every measurement is dated.** Each figure says when it was measured, and each capture says when it
+      was taken, so an old proof reads as old instead of passing for current.
 
 ## References
 
