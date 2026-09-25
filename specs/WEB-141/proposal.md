@@ -44,12 +44,12 @@ fails at the one click that matters.
    an accepted ADR amending it before any code, plus its kubelab half (proxy and ingress).
 5. **An "ask about the work" chat on `/ai`** (gated): it answers questions about the work from public content
    only. It is never a way to hire, and its call to action points at the door (#390). The backend
-   (`/v1/knowledge/chat`) lives in kubelab. It needs rate limiting and a spend cap. #45 is reopened with this
-   decision before anything is built.
+   (`/v1/knowledge/chat`) lives in kubelab. It needs rate limiting and a spend cap. #45 was reopened with this
+   decision on 2026-09-24 and tracks it.
 
 **Delivery order** (so the site stops making false claims first): phase 1 removes or corrects what is false;
 phase 2 adds the kubelab producers and the measured figures; phase 3 adds the captures; phase 4 adds the live
-surfaces once their ADR is accepted; phase 5 adds the chat once #45 is reopened.
+surfaces once their ADR is accepted; phase 5 adds the chat once its gate (risk 2) is resolved.
 
 ## Out of scope
 
