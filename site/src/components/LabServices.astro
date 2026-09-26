@@ -148,7 +148,7 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
               <td class="py-2.5 px-3 whitespace-nowrap">
                 <div class="flex items-center gap-2">
                   <ServiceIcon slug={svc.slug} class="w-4 h-4 shrink-0 text-ink-700" />
-                  <span class="font-semibold text-ink-900 font-sans text-sm">{svc.name}</span>
+                  <span class="font-semibold text-ink-900 font-sans text-sm" data-i18n-pending="platform">{svc.name}</span>
                 </div>
               </td>
 
@@ -171,7 +171,7 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
               </td>
 
               <td class="py-2.5 px-3 whitespace-nowrap">
-                <span class="font-mono text-xs uppercase font-medium text-ink-600 bg-ink-100 px-1.5 py-0.5 rounded border border-ink-200">
+                <span class="font-mono text-xs uppercase font-medium text-ink-600 bg-ink-100 px-1.5 py-0.5 rounded border border-ink-200" translate="no">
                   {svc.node}
                 </span>
               </td>
@@ -184,7 +184,7 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
                     rel="noopener noreferrer"
                     class="text-accent-700 hover:text-accent-900 font-semibold hover:underline inline-flex items-center gap-1"
                   >
-                    <span>{svc.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                    <span translate="no">{svc.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
                     <span aria-hidden="true">&#8599;</span>
                   </a>
                 ) : (
@@ -197,7 +197,7 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
                 {svc.tech && svc.tech.length > 0 && (
                   <div class="mt-1 flex flex-wrap gap-1">
                     {svc.tech.map((tech) => (
-                      <span class="font-mono text-xs text-ink-700 bg-ink-100/60 px-1.5 py-0.5 rounded border border-ink-200/60">
+                      <span class="font-mono text-xs text-ink-700 bg-ink-100/60 px-1.5 py-0.5 rounded border border-ink-200/60" translate="no">
                         {tech}
                       </span>
                     ))}

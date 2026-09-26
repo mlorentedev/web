@@ -73,7 +73,7 @@ const INDICATORS = [
         <span class="h-2.5 w-2.5 rounded-full bg-ok-500"></span>
         <span class="font-bold text-ink-900 text-sm font-mono">{t('lab.slos.platformAvailability')}</span>
       </div>
-      <span class="font-mono font-bold text-ok-700 text-sm">{platform.cluster.uptime}</span>
+      <span class="font-mono font-bold text-ok-700 text-sm" data-i18n-pending="platform">{platform.cluster.uptime}</span>
     </div>
     <p class="text-xs font-mono text-ink-500">{t('lab.slos.snapshot')}</p>
   </div>
@@ -83,10 +83,10 @@ const INDICATORS = [
       <div class="bg-white border border-ink-100 rounded-xl p-4">
         <span class="text-xs text-ink-500 uppercase tracking-wider block mb-1">{sli.label}</span>
         <div class="flex items-baseline justify-between gap-2">
-          <span class="text-xl font-bold text-ink-900">{sli.value}</span>
+          <span class="text-xl font-bold text-ink-900" data-i18n-pending="platform">{sli.value}</span>
           <span class="text-xs text-ink-500 shrink-0">{sli.target}</span>
         </div>
-        <span class="text-xs text-ink-500 block mt-1">{sli.source}</span>
+        <span class="text-xs text-ink-500 block mt-1" translate="no">{sli.source}</span>
       </div>
     ))}
   </div>

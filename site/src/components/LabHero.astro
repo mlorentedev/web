@@ -34,9 +34,9 @@ const t = useTranslations(lang);
     <div class="flex items-center gap-2 shrink-0 text-xs font-mono">
       <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-ok-50 text-ok-700 border border-ok-200">
         <span class="h-1.5 w-1.5 rounded-full bg-ok-500"></span>
-        {platform.cluster.gitops}
+        <span data-i18n-pending="platform">{platform.cluster.gitops}</span>
       </span>
-      <span class="px-2.5 py-0.5 rounded-full bg-panel-100 text-panel-700 border border-panel-200">
+      <span class="px-2.5 py-0.5 rounded-full bg-panel-100 text-panel-700 border border-panel-200" translate="no">
         {platform.cluster.version}
       </span>
     </div>

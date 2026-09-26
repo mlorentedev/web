@@ -16,6 +16,7 @@
         {
           "id": "hetzner",
           "name": "Hetzner CX22",
+          "brand": true,
           "sourceHref": "https://console.hetzner.cloud/billing",
           "icon": "si-hetzner",
           "description": "ARM64 8GB VPS hosting production K3s, Traefik, and Headscale control plane",
@@ -29,6 +30,7 @@
         {
           "id": "gcp-hub",
           "name": "GCP Hub",
+          "nameEs": "Nodo central en GCP",
           "sourceHref": "https://console.cloud.google.com/welcome?project=kubelab-hub",
           "icon": "si-googlecloud",
           "description": "e2-small instance running the central Argo CD GitOps management hub",
@@ -42,6 +44,7 @@
         {
           "id": "aws",
           "name": "AWS Standby",
+          "nameEs": "AWS en reserva",
           "sourceHref": "https://console.aws.amazon.com/billing",
           "icon": "si-amazonaws",
           "description": "Cold standby infrastructure for automated disaster recovery exercises",
@@ -55,6 +58,7 @@
         {
           "id": "cloudflare-r2",
           "name": "Cloudflare R2",
+          "brand": true,
           "sourceHref": "https://dash.cloudflare.com/?to=/:account/r2/overview",
           "icon": "si-cloudflare",
           "description": "Zero-egress S3-compatible storage for off-site encrypted backup snapshots",
@@ -64,6 +68,7 @@
         {
           "id": "vault",
           "name": "Knowledge Vault",
+          "nameEs": "Bóveda de conocimiento",
           "sourceHref": "obsidian://vault/knowledge",
           "icon": "si-obsidian",
           "description": "Local Obsidian repository holding architecture ADRs and technical runbooks",
@@ -82,6 +87,7 @@
         {
           "id": "grafana-logs",
           "name": "Grafana Logs",
+          "nameEs": "Registros de Grafana",
           "sourceHref": "https://grafana.kubelab.live/explore",
           "icon": "si-grafana",
           "description": "Loki cluster log exploration, LogQL telemetry, and anomaly classifiers",
@@ -91,6 +97,7 @@
         {
           "id": "argo-sync",
           "name": "Argo CD Sync",
+          "nameEs": "Sincronización de Argo CD",
           "sourceHref": "https://argo.kubelab.live",
           "icon": "si-argo",
           "description": "Declarative GitOps continuous delivery and spoke cluster drift healing",
@@ -100,6 +107,7 @@
         {
           "id": "status-overview",
           "name": "Status Overview",
+          "nameEs": "Resumen de estado",
           "sourceHref": "https://status.kubelab.live",
           "icon": "si-uptimekuma",
           "description": "Live multi-burn-rate SLO monitoring and edge probe health status",
@@ -109,6 +117,7 @@
         {
           "id": "sre-runbooks",
           "name": "SRE Runbooks",
+          "nameEs": "Manuales de operación SRE",
           "sourceHref": "https://github.com/mlorentedev/kubelab/tree/master/docs/runbooks",
           "url": "https://github.com/mlorentedev/kubelab/tree/master/docs/runbooks",
           "icon": "mdi-book-open-page-variant",
@@ -128,6 +137,7 @@
         {
           "id": "gitguardian",
           "name": "GitGuardian",
+          "brand": true,
           "sourceHref": "https://dashboard.gitguardian.com",
           "icon": "mdi-shield-search",
           "description": "Automated secrets detection and leak prevention across Git repositories",
@@ -137,6 +147,7 @@
         {
           "id": "ssl-labs",
           "name": "SSL Labs",
+          "brand": true,
           "sourceHref": "https://www.ssllabs.com/ssltest/analyze.html?d=kubelab.live",
           "url": "https://www.ssllabs.com/ssltest/analyze.html?d=kubelab.live",
           "icon": "mdi-certificate",
@@ -147,6 +158,7 @@
         {
           "id": "headers-kubelab",
           "name": "Headers kubelab",
+          "nameEs": "Cabeceras de kubelab",
           "sourceHref": "https://securityheaders.com/?q=kubelab.live&followRedirects=on",
           "url": "https://securityheaders.com/?q=kubelab.live&followRedirects=on",
           "icon": "mdi-shield-check",
@@ -157,6 +169,7 @@
         {
           "id": "headers-mlorente",
           "name": "Headers mlorente",
+          "nameEs": "Cabeceras de mlorente",
           "sourceHref": "https://securityheaders.com/?q=mlorente.dev&followRedirects=on",
           "url": "https://securityheaders.com/?q=mlorente.dev&followRedirects=on",
           "icon": "mdi-shield-check",
@@ -167,6 +180,7 @@
         {
           "id": "shodan",
           "name": "Shodan Perimeter",
+          "nameEs": "Perímetro en Shodan",
           "sourceHref": "https://www.shodan.io/host/162.55.57.175",
           "url": "https://www.shodan.io/domain/kubelab.live",
           "urlNote": "Sanitized to domain query to conform to ADR-056 §3 zero-addressing doctrine.",
@@ -187,6 +201,7 @@
         {
           "id": "cloudflare-one",
           "name": "Cloudflare One",
+          "brand": true,
           "sourceHref": "https://one.dash.cloudflare.com",
           "icon": "si-cloudflare",
           "description": "Zero Trust Network Access policies, edge DNS filtering, and warp tunnels",
@@ -196,6 +211,7 @@
         {
           "id": "github-kubelab",
           "name": "GitHub kubelab",
+          "brand": true,
           "sourceHref": "https://github.com/mlorentedev/kubelab",
           "url": "https://github.com/mlorentedev/kubelab",
           "icon": "si-github",
@@ -206,6 +222,7 @@
         {
           "id": "docker-hub",
           "name": "Docker Hub",
+          "brand": true,
           "sourceHref": "https://hub.docker.com/u/mlorentedev",
           "url": "https://hub.docker.com/u/mlorentedev",
           "icon": "si-docker",
@@ -216,6 +233,7 @@
         {
           "id": "claude-usage",
           "name": "Claude Usage",
+          "nameEs": "Uso de Claude",
           "sourceHref": "https://claude.ai/settings/usage",
           "icon": "si-anthropic",
           "description": "Inference token consumption analytics and engineering spend tracking",
@@ -234,6 +252,7 @@
         {
           "id": "github-status",
           "name": "GitHub Status",
+          "nameEs": "Estado de GitHub",
           "sourceHref": "https://www.githubstatus.com",
           "url": "https://www.githubstatus.com",
           "icon": "si-github",
@@ -244,6 +263,7 @@
         {
           "id": "cloudflare-status",
           "name": "Cloudflare Status",
+          "nameEs": "Estado de Cloudflare",
           "sourceHref": "https://www.cloudflarestatus.com",
           "url": "https://www.cloudflarestatus.com",
           "icon": "si-cloudflare",
@@ -254,6 +274,7 @@
         {
           "id": "claude-status",
           "name": "Claude Status",
+          "nameEs": "Estado de Claude",
           "sourceHref": "https://status.anthropic.com",
           "url": "https://status.anthropic.com",
           "icon": "si-anthropic",
@@ -273,6 +294,7 @@
         {
           "id": "kubernetes-docs",
           "name": "Kubernetes",
+          "brand": true,
           "sourceHref": "https://kubernetes.io/docs/",
           "url": "https://kubernetes.io/docs/",
           "icon": "si-kubernetes",
@@ -283,6 +305,7 @@
         {
           "id": "k3s-docs",
           "name": "K3s",
+          "brand": true,
           "sourceHref": "https://docs.k3s.io/",
           "url": "https://docs.k3s.io/",
           "icon": "si-k3s",
@@ -293,6 +316,7 @@
         {
           "id": "traefik-docs",
           "name": "Traefik",
+          "brand": true,
           "sourceHref": "https://doc.traefik.io/traefik/",
           "url": "https://doc.traefik.io/traefik/",
           "icon": "si-traefikproxy",
@@ -303,6 +327,7 @@
         {
           "id": "argo-cd-docs",
           "name": "Argo CD",
+          "brand": true,
           "sourceHref": "https://argo-cd.readthedocs.io/",
           "url": "https://argo-cd.readthedocs.io/",
           "icon": "si-argo",
@@ -313,6 +338,7 @@
         {
           "id": "authelia-docs",
           "name": "Authelia",
+          "brand": true,
           "sourceHref": "https://www.authelia.com/configuration/",
           "url": "https://www.authelia.com/configuration/",
           "icon": "mdi-shield-lock",
@@ -323,6 +349,7 @@
         {
           "id": "headscale-docs",
           "name": "Headscale",
+          "brand": true,
           "sourceHref": "https://headscale.net/stable/",
           "url": "https://headscale.net/stable/",
           "icon": "mdi-vpn",

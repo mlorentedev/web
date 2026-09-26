@@ -41,12 +41,13 @@ import { readableNodes } from './lib/audit.mjs';
 const here = dirname(fileURLToPath(import.meta.url));
 const dist = join(here, '..', 'dist');
 
-/**
- * Each page, with how many `platform.json` values it renders while they wait for
- * the exporter. `/lab`, `/lab/idp` and `/lab/idp/architecture` join in the next
- * change; they are listed here as they pass, never before.
- */
-const PAGES = [{ path: 'ai', pending: 0 }];
+/** Each page, with how many `platform.json` values it renders while they wait for the exporter. */
+const PAGES = [
+  { path: 'ai', pending: 0 },
+  { path: 'lab', pending: 37 },
+  { path: 'lab/idp', pending: 0 },
+  { path: 'lab/idp/architecture', pending: 0 },
+];
 
 const exempt = (tag, attributes) =>
   ['pre', 'code', 'svg'].includes(tag) || /\stranslate="no"/.test(attributes) || /\sdata-i18n-pending=/.test(attributes);
