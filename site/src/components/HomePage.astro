@@ -1,0 +1,36 @@
+---
+// Renders the home for one locale, the way ContactPage renders the contact
+// page: `/` and `/es/` were full copies of each other (#142), so every section
+// had to be added twice and the two could drift. Sections are ordered here.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Hero from './Hero.astro';
+import ProjectsSection from './ProjectsSection.astro';
+import IdpStrip from './IdpStrip.astro';
+import LatestNotesSection from './LatestNotesSection.astro';
+import Timeline from './Timeline.astro';
+import ProofSurface from './ProofSurface.astro';
+import CommunitySection from './CommunitySection.astro';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<BaseLayout>
+  <Header />
+  <main id="main-content" class="grow">
+    <Hero />
+    <ProjectsSection lang={lang} />
+    <IdpStrip lang={lang} />
+    <LatestNotesSection lang={lang} />
+    <Timeline lang={lang} />
+    <ProofSurface lang={lang} />
+    <CommunitySection lang={lang} />
+  </main>
+  <Footer />
+</BaseLayout>
