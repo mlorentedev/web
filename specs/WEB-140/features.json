@@ -8,7 +8,7 @@
   },
   {
     "id": "WEB-140-f2",
-    "behavior": "AC2: five home blocks in order, one h1, both locales from one HomePage; the four retired sections gone",
+    "behavior": "AC2: four home blocks in order (hero, story, door, notes), one h1, both locales from one HomePage; the five retired sections gone; no image, SVG or card in story or notes",
     "verification": "cd site && npm run build && node --test tests/home.test.mjs",
     "state": "pending",
     "evidence": ""
@@ -22,8 +22,8 @@
   },
   {
     "id": "WEB-140-f4",
-    "behavior": "AC4: three proof pieces from proofs.ts, every href resolves in both locales, agents states no figure",
-    "verification": "cd site && npm run build && node --test tests/proofs.test.mjs",
+    "behavior": "AC4: the story links /lab and /ai in its locale, every link resolves, every figure is in experience.ts, agents states no figure, 300-450 words",
+    "verification": "cd site && npm run build && node --test tests/bio.test.mjs",
     "state": "pending",
     "evidence": ""
   },
