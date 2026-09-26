@@ -60,15 +60,15 @@ created: "2026-09-24"
 
 ### PR 4 · The door on the home, notes last
 
-- [ ] [AC3] Write failing test: the home's `data-offer` text equals `/contact`'s, and its door `mailto` is identical,
+- [x] [AC3] Write failing test: the home's `data-offer` text equals `/contact`'s, and its door `mailto` is identical,
   in both locales
-- [ ] [AC3] Render the contact markdown entry on the home as block 3, with its H1 mapped to H2 so the page keeps one H1
-- [ ] [AC2] LatestNotes becomes the three latest titles as text links plus a link to `/notes`, at the bottom; the
+- [x] [AC3] Render the contact markdown entry on the home as block 3, with its H1 mapped to H2 so the page keeps one H1
+- [x] [AC2] LatestNotes becomes the three latest titles as text links plus a link to `/notes`, at the bottom; the
   structure test pins the four blocks in order via `data-home-block` attributes, and no image, SVG or card inside the
   story and notes blocks
-- [ ] [P] [AC1] Write `tests/home-first-screen.mjs` (Playwright, the `lab-containment.mjs` harness): at 1280 and
+- [x] [P] [AC1] Write `tests/home-first-screen.mjs` (Playwright, the `lab-containment.mjs` harness): at 1280 and
   400 px, in both locales, the label, the H1 and the door sit inside the first viewport; wire it into `test:browser`
-- [ ] [AC5] Test: no "open to work", "available now", "disponible" or equivalent in either built home or contact page;
+- [x] [AC5] Test: no "open to work", "available now", "disponible" or equivalent in either built home or contact page;
   the only availability text is the `nextStart` line
 
 ## Closing

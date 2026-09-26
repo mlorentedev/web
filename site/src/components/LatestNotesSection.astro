@@ -20,7 +20,7 @@ const notes: CollectionEntry<'notes'>[] = (
   .slice(0, 3);
 ---
 
-<Section>
+<Section data-home-block="notes">
   <SectionHeading label={t('home.latest')} href={translatePath('/notes/')} margin="mb-6" />
     {notes.length > 0 ? (
       <div class="divide-y divide-gray-100">

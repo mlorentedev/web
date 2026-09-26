@@ -1,0 +1,33 @@
+---
+// How the work starts, on the home (WEB-140): the contact page's own markdown
+// entry, rendered again, so the offer and the door here can never disagree with
+// /contact. Its H1 comes out as an H2, since the home already has one.
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import type { Lang } from '../i18n/ui';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+const [entry] = await getCollection(
+  'pages',
+  ({ data }: CollectionEntry<'pages'>) => data.page === 'contact' && data.lang === lang,
+);
+if (!entry) throw new Error(`HomeDoor: no 'contact' page for lang '${lang}' — expected src/content/pages/${lang}-contact.mdx`);
+
+const { Content } = await render(entry);
+---
+
+<Section id="contact" data-home-block="door">
+  <SectionHeading label={t('nav.contact')} href={translatePath('/contact/')} margin="mb-8" />
+  <div class="prose prose-base max-w-3xl prose-p:text-base/6 prose-p:text-ink-700 prose-headings:font-bold prose-headings:text-ink-900 prose-h2:text-2xl/8 prose-h2:mt-0 prose-h2:mb-6 prose-a:text-accent-700 hover:prose-a:text-accent-800">
+    <Content components={{ h1: 'h2' }} />
+  </div>
+</Section>
