@@ -58,7 +58,9 @@ function read(path) {
 
 for (const { path, pending } of PAGES) {
   test(`/es/${path} has no text that reads the same as /${path}`, () => {
-    const en = new Set(readableNodes(read(join(dist, path, 'index.html')), exempt));
+    // The English side is read whole: exempting it too would let a name that lost
+    // its marker on the Spanish page match nothing, and pass.
+    const en = new Set(readableNodes(read(join(dist, path, 'index.html'))));
     const esNodes = readableNodes(read(join(dist, 'es', path, 'index.html')), exempt);
     assert.ok(esNodes.length > 20, `only ${esNodes.length} readable nodes on /es/${path}: is the page empty?`);
 
