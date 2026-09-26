@@ -16,7 +16,7 @@ created: "2026-09-24"
 - [x] `proposal.md` is complete and acceptance criteria are testable (filled with Manu 2026-09-24)
 - [x] No open questions left in `proposal.md` "Risks / open questions" (fates decided; the `proofs.ts` split agreed
   with the WEB-141 session)
-- [ ] One branch per PR from `origin/master`: `feat/web-140-home-page`, `feat/web-140-trim`, `feat/web-140-proof`,
+- [ ] One branch per PR from `origin/master`: `feat/web-140-home-page`, `feat/web-140-trim`, `feat/web-140-story`,
   `feat/web-140-door`
 
 ## Implementation
@@ -31,32 +31,38 @@ created: "2026-09-24"
 - [x] [AC2] Implement `components/HomePage.astro` (the `ContactPage`/`LegalPage` pattern) and reduce both pages to stubs
 - [x] [AC6] `npm run build && npm test` green; `visual-diff.mjs` shows no change on `/` and `/es/`
 
-### PR 2 · Trim: drop the four sections, move "who I am" up
+### PR 2 · Trim: drop the five sections, the bio becomes the story block
 
-- [ ] [AC2] [AC5] Write failing test: the home no longer renders IdpStrip, ProjectsSection, ProofSurface or
-  CommunitySection, and no node/service count or "99.9%" appears in either built home
-- [ ] [AC2] Remove the four sections from `HomePage`; the Timeline (with the bio) moves to second place
-- [ ] Housekeeping: delete the orphaned code: the four components, `data/github.ts`, and every `ui.ts` key left with no consumer.
-  Tell the WEB-141 session before deleting any `idp.*` key (its namespace) and delete only keys with no consumer left
-- [ ] Housekeeping: in the hero, drop the "What I build on it" → `#projects` link, since its target is gone
-- [ ] [AC2] Add the agreed community paragraph (CommunitySection's content moves here) at the end of `content/pages/{en,es}-bio.mdx`; `bio.test` must stay green
+> Amended 2026-09-25: the home is prose. The Timeline goes too, and there is no proof block or `proofs.ts`.
 
-### PR 3 · Proof in three pieces
+- [ ] [AC2] [AC5] Write failing test: the home no longer renders IdpStrip, ProjectsSection, ProofSurface,
+  CommunitySection or Timeline, and no node/service count or "99.9%" appears in either built home
+- [ ] [AC2] Remove the five sections from `HomePage`; the bio renders second, in a `data-home-block="story"` section
+  with `id="story"` (update `bio.test`, which today looks for it inside the Timeline)
+- [ ] Housekeeping: delete the orphaned code: the five components, `data/github.ts`, and every `ui.ts` key left with
+  no consumer. `data/experience.ts` stays (the story's figures are held to it). Tell the WEB-141 session before
+  deleting any `idp.*` key (its namespace) and delete only keys with no consumer left
+- [ ] Housekeeping: in the hero, the "What I build on it" → `#projects` link becomes the link to `#story`
+- [ ] [AC2] Add the agreed community paragraph (CommunitySection's content moves here) at the end of
+  `content/pages/{en,es}-bio.mdx`; `bio.test` must stay green
 
-- [ ] [P] [AC4] Write failing test `tests/proofs.test.mjs`: three entries per locale, every `href` resolves to a built
-  route in both locales, the `agents` entry states no figure, no node/service count in any entry
-- [ ] [AC4] Create `data/proofs.ts` if WEB-141 has not (`teledyne` entry here, from `experience.ts`; `kubelab` and
-  `agents` agreed with the WEB-141 session), and `components/ProofBlock.astro` with `id="proof"`, ending in an
-  "all projects →" link to `/projects`
-- [ ] [AC4] Place it third on the home; the hero's secondary button becomes "see the proof" → `#proof`
+### PR 3 · The story
+
+- [ ] [AC4] Write failing test (in `bio.test.mjs`): the story links `/lab/` and `/ai/` in its own locale, every link in
+  it resolves to a built route, every figure is in `experience.ts`, the agents sentence states no figure, and it has
+  300 to 450 words per locale
+- [ ] [AC4] Draft the story in `content/pages/{en,es}-bio.mdx` from the current bio and `brand-package.md` §3 (the
+  career the Timeline listed, told as prose; the three proofs as linked sentences; `/projects` linked once)
+- [ ] Manu rewrites the draft in the PR before it merges; the tests hold whatever wording he lands on
 
 ### PR 4 · The door on the home, notes last
 
 - [ ] [AC3] Write failing test: the home's `data-offer` text equals `/contact`'s, and its door `mailto` is identical,
   in both locales
-- [ ] [AC3] Render the contact markdown entry on the home as block 4, with its H1 mapped to H2 so the page keeps one H1
-- [ ] [AC2] Move LatestNotes to the bottom, compact; the structure test pins the five blocks in order via
-  `data-home-block` attributes
+- [ ] [AC3] Render the contact markdown entry on the home as block 3, with its H1 mapped to H2 so the page keeps one H1
+- [ ] [AC2] LatestNotes becomes the three latest titles as text links plus a link to `/notes`, at the bottom; the
+  structure test pins the four blocks in order via `data-home-block` attributes, and no image, SVG or card inside the
+  story and notes blocks
 - [ ] [P] [AC1] Write `tests/home-first-screen.mjs` (Playwright, the `lab-containment.mjs` harness): at 1280 and
   400 px, in both locales, the label, the H1 and the door sit inside the first viewport; wire it into `test:browser`
 - [ ] [AC5] Test: no "open to work", "available now", "disponible" or equivalent in either built home or contact page;

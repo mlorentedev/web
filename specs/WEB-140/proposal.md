@@ -24,29 +24,33 @@ door the hero's primary button; this spec covers the rest of the page.
 
 ## What
 
-The home reads as a cover letter, top to bottom (decided with Manu 2026-09-24, from #398):
+The home reads as a cover letter, top to bottom, and a cover letter is prose. Everything visual (diagrams, cards,
+counters, the Timeline) lives on the pages the home links to: `/lab`, `/ai`, `/notes`. (Decided with Manu 2026-09-24,
+from #398; **amended 2026-09-25**: the home tells the story in prose, and the proof cards and the Timeline go.)
 
-1. **Hero:** the label, the H1 unchanged (#247), the door as the primary button (done in web#401), and "see the proof"
-   as the secondary button, scrolling to block 3, in place of "Explore my platform".
-2. **Who I am:** the bio (web#396) and the Timeline move up to second place.
-3. **Proof in three pieces**, each linked: the Teledyne chain (onboarding 120 → 20–30 days) · KubeLab → `/lab` ·
-   agents → `/ai`, rendered from `src/data/proofs.ts` (teledyne entry owned here, kubelab/agents by WEB-141).
-4. **How the work starts:** the home renders the same contact markdown as `/contact` (one project at a time, the door,
+1. **Hero:** the label, the H1 unchanged (#247), the door as the primary button (done in web#401), and a secondary
+   link down to the story (`#story`) in place of "Explore my platform".
+2. **The story:** Manu's bio (web#396) grows into the home's main text: who he is, the career the Timeline used to
+   list (told as prose), and the three proofs as sentences that link to where they can be checked: the Teledyne chain
+   (onboarding 120 → 20–30 days, figures from `data/experience.ts`), the cluster → `/lab`, the agents → `/ai` (no
+   figure until #238). It ends with the community paragraph. 300 to 450 words per locale.
+3. **How the work starts:** the home renders the same contact markdown as `/contact` (one project at a time, the door,
    the ladder from `data/offer.ts`, "not for you if"), so the two can never disagree.
-5. **Latest notes**, small, at the bottom.
+4. **Latest notes:** the three latest titles as text links, and a link to `/notes`. No cards.
 
-The home sections that do not fit (IdpStrip, ProofSurface, Projects, Community) leave the home or fold into block 3;
-which one gets which fate is settled under Risks.
+The home sections that do not fit (IdpStrip, ProofSurface, Projects, Community, Timeline) leave the home; their fate
+is settled under Risks.
 
 ## Out of scope
 
 Things this PR explicitly does NOT include. Forces a sharp boundary and prevents scope creep.
 
-- **`/lab` and `/ai` content**: WEB-141 (#402). The home links to them and renders a one-line summary from
-  `data/proofs.ts`; it does not edit those pages.
+- **`/lab` and `/ai` content**: WEB-141 (#402). The story links to them by route; the home does not edit those
+  pages and does not read `data/proofs.ts` (amended 2026-09-25; that file is WEB-141's if its pages need it).
 - **The ES funnel pages (#342) and `llms.txt` (#128)**, which have their own tickets.
-- **Visual redesign and new copy**: the current style stays, and the words come from `brand-package.md`. This spec
-  reorders and reuses; it does not invent text.
+- **Visual redesign**: the current style stays. The one new text is the story, drafted from the bio and
+  `brand-package.md` §3 (version C, "from silicon to the cloud", continuity, never a career switch) and rewritten by
+  Manu before it merges; the rest reorders and reuses.
 - **The home's `<title>` and meta description** ("Infrastructure for AI agents, from the metal up"): they already fit
   the label, so they stay as they are.
 - **The header nav** keeps "Contact"; the hero's primary button is already the door.
@@ -60,13 +64,17 @@ Failure modes, dependencies, and unknowns to clarify before implementation. If a
 - **IdpStrip leaves the home.** It also breaks brand-package §7 today: "8 Nodes Active" / "35 Services" are banned
   counts (#133/#355), and "99.9% Uptime" is a hand-written string with no data behind it. The KubeLab proof → `/lab`
   replaces it.
-- **ProjectsSection leaves the home.** Eight cards are a portfolio, not a cover letter; KubeLab and Hive are already in
-  the proof block, which ends with an "all projects →" link to `/projects`.
+- **ProjectsSection leaves the home.** Eight cards are a portfolio, not a cover letter; KubeLab and the agents are already
+  proofs in the story, which links `/projects` once for the rest.
 - **ProofSurface leaves the home.** Repo and star counts (14, Hive 8) subtract more than they prove.
 - **CommunitySection leaves the home;** its content becomes the last paragraph of Manu's bio markdown (text agreed:
   ES "Fuera del trabajo participo en Cloud Native Sevilla y en NaN, una comunidad de gente que construye con IA, y doy
   alguna charla cuando puedo. Y remo." / EN "Outside work I'm part of Cloud Native Sevilla and NaN, a community of
   people building with AI, and I give the odd talk when I can. And I row."). No figures, so `bio.test` still holds.
+
+- **The Timeline leaves the home and is deleted (decided with Manu 2026-09-25).** The story tells the career in
+  prose; the detailed record is the CV. `data/experience.ts` stays: it is the source every figure in the story is
+  held to (`bio.test`).
 
 **Must resolve before code:**
 
@@ -74,33 +82,35 @@ Failure modes, dependencies, and unknowns to clarify before implementation. If a
   `HomePage` component, as `/contact/` does since web#401, so they cannot drift.
 - **One H1 on the home.** The contact markdown opens with an H1 ("I take one project at a time."); rendered inside the
   home it must come out as an H2.
-- **`data/proofs.ts` is shared with WEB-141 (#402).** Whoever lands first creates it; `teledyne` is owned here,
-  `kubelab` and `agents` by WEB-141. `agents` is claim-only until #238 settles. No node or service counts.
+- **The proofs are sentences in the story, not a data file (amended 2026-09-25).** `data/proofs.ts` is no longer
+  shared with WEB-141 (#402); the WEB-141 session was told. The `agents` sentence is claim-only until #238 settles.
+  No node or service counts.
 
 **Known, accepted:**
 
-- The hero's "What I build on it" → `#projects` link goes; the secondary button becomes "see the proof" → `#proof`.
-- `/projects` exists in English only, so the Spanish home's "all projects →" lands on an English page.
+- The hero's "What I build on it" → `#projects` link goes; the secondary link goes to `#story`.
+- `/projects` exists in English only; if the story links it, the Spanish home's link lands on an English page.
 - WEB-141 plans to touch `data/portfolio.ts` (#31); the other session announces it before doing so.
-- **No dead code left behind.** Removing the four sections orphans their components, `data/github.ts` (only
+- **No dead code left behind.** Removing the five sections orphans their components, `data/github.ts` (only
   ProofSurface reads it) and their `ui.ts` keys; they are deleted in the same PR. `/projects` keeps working: it renders
   its own grid and does not import them.
-- Work lands as small PRs, one step each: (1) `HomePage` for both locales, (2) drop the four sections + bio paragraph,
-  (3) proof block, (4) the door block on the home.
+- Work lands as small PRs, one step each: (1) `HomePage` for both locales, (2) drop the five sections, the bio
+  becomes the story block, (3) the story itself (the draft Manu rewrites), (4) the door and the notes on the home.
 
 ## Acceptance criteria
 
-Observable outcomes. Each must be testable. (Agreed with Manu 2026-09-24.)
+Observable outcomes. Each must be testable. (Agreed with Manu 2026-09-24; AC2 and AC4 amended 2026-09-25.)
 
 - [ ] **AC1 · First screen.** At 1280 px and at 400 px wide, the label, the H1 and the door are visible without
   scrolling, in both locales (browser check, same harness as `tests/lab-containment.mjs`).
-- [ ] **AC2 · Structure.** The home renders five blocks in order (hero, who I am, proof, how the work starts, latest
-  notes) and exactly one `<h1>`, in both locales, from one `HomePage` component (#142). IdpStrip, ProofSurface,
-  ProjectsSection and CommunitySection no longer render on it.
+- [ ] **AC2 · Structure.** The home renders four blocks in order (hero, story, how the work starts, latest notes) and
+  exactly one `<h1>`, in both locales, from one `HomePage` component (#142). IdpStrip, ProofSurface, ProjectsSection,
+  CommunitySection and Timeline no longer render on it, and the story and notes blocks hold no image, SVG or card.
 - [ ] **AC3 · One source.** The home's "how the work starts" block and `/contact` render the same contact markdown and
   the same `data/offer.ts` figures; a test fails if they diverge.
-- [ ] **AC4 · Proof.** The proof block renders three pieces from `data/proofs.ts`, and every link resolves to an
-  existing route in both locales. The `agents` piece carries no figure until #238 settles.
+- [ ] **AC4 · Proof in the story.** The story links `/lab` and `/ai` in its own locale, and every link in it resolves
+  to a built route; every figure it states is in `data/experience.ts`; the agents sentence carries no figure until
+  #238 settles; it stays between 300 and 450 words per locale.
 - [ ] **AC5 · Honesty.** No "open to work", "available now" or equivalent anywhere; the only availability text is the
   `nextStart` line. No node or service counts and no hand-written uptime on the home.
 - [ ] **AC6 · No regressions.** The SEO alternates, `/lab` JSON-LD, bio facts, contact and retired-labels tests stay
