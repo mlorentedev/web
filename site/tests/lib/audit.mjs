@@ -165,7 +165,10 @@ export function labSection(html, name) {
   return null;
 }
 
-const entities = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+const entities = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+  copy: '©', rarr: '→', larr: '←', middot: '·', mdash: '—', ndash: '–', hellip: '…',
+};
 
 /**
  * Everything on a built page that a person or a search engine reads, as one
@@ -188,11 +191,79 @@ export function readableText(html) {
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/g, ' ')
     .replace(/<[^>]+>/g, ' ');
 
-  return [body, ...attributes]
-    .join(' ')
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
-    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
-    .replace(/&([a-z]+);/gi, (whole, name) => entities[name.toLowerCase()] ?? whole)
+  return decodeEntities([body, ...attributes].join(' '))
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/** Numeric and named entities to the characters a reader sees. */
+export function decodeEntities(text) {
+  return text
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
+    .replace(/&([a-z]+);/gi, (whole, name) => entities[name.toLowerCase()] ?? whole);
+}
+
+const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
+
+/**
+ * `html` with every element `isTarget(tag, attributes)` accepts removed, children
+ * and all. Nesting-aware: an inner element with the same tag name does not end
+ * the removal early, which a lazy regex would.
+ */
+export function withoutElements(html, isTarget) {
+  const open = /<([a-zA-Z][\w-]*)\b([^>]*)>/g;
+  let out = '';
+  let from = 0;
+  let m;
+  while ((m = open.exec(html))) {
+    const [tag, name, attributes] = m;
+    if (!isTarget(name.toLowerCase(), attributes)) continue;
+    out += html.slice(from, m.index);
+    let end = m.index + tag.length;
+    if (!VOID.has(name.toLowerCase()) && !tag.endsWith('/>')) {
+      const same = new RegExp(`<(/?)${name}\\b[^>]*>`, 'gi');
+      same.lastIndex = end;
+      let depth = 1;
+      let t;
+      while (depth > 0 && (t = same.exec(html))) {
+        depth += t[1] ? -1 : t[0].endsWith('/>') ? 0 : 1;
+        end = same.lastIndex;
+      }
+      if (depth > 0) end = html.length;
+    }
+    from = end;
+    open.lastIndex = end;
+  }
+  return out + html.slice(from);
+}
+
+const READABLE_META = /^(description|og:title|og:description|twitter:title|twitter:description)$/;
+
+/**
+ * What a reader reads on a built page, one string per text node or attribute,
+ * for checks that compare copy piece by piece (see `readableText` for one string).
+ *
+ * Kept: text nodes, JSON-LD, `alt`, `aria-label`, `title` and `placeholder`, and
+ * the `<meta>` a search result or a share card shows. Dropped: scripts, styles,
+ * the other `<meta>` values (theme colour, card type), and any element for which
+ * `skip(tag, attributes)` returns true, children included.
+ */
+export function readableNodes(html, skip = () => false) {
+  const meta = [...html.matchAll(/<meta\b[^>]*>/g)]
+    .filter((m) => READABLE_META.test(m[0].match(/\b(?:name|property)="([^"]*)"/)?.[1] ?? ''))
+    .map((m) => m[0].match(/\bcontent="([^"]*)"/)?.[1] ?? '');
+  const kept = withoutElements(
+    html,
+    (tag, attributes) =>
+      tag === 'style' || (tag === 'script' && !attributes.includes('application/ld+json')) || skip(tag, attributes),
+  );
+  const attributes = [...kept.matchAll(/<[^>]*>/g)].flatMap((m) =>
+    [...m[0].matchAll(/\s(?:alt|aria-label|title|placeholder)="([^"]*)"/g)].map((a) => a[1]),
+  );
+  const text = [...kept.matchAll(/>([^<>]+)</g)].map((m) => m[1]);
+
+  return [...text, ...attributes, ...meta]
+    .map((node) => decodeEntities(node).replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
 }
