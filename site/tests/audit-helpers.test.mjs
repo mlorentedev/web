@@ -21,6 +21,7 @@ import {
   colourEscapes,
   labSection,
   offTokenFamilies,
+  readableNodes,
   readableText,
   withoutVariants,
 } from './lib/audit.mjs';
@@ -132,4 +133,18 @@ test('readable text keeps what a reader or a search engine reads, and nothing el
   for (const dropped of ['inline script', 'color:red', 'data only', '<p>']) {
     assert.ok(!text.includes(dropped), `kept "${dropped}", which no reader sees: ${text}`);
   }
+});
+
+test('readable nodes come one per text node, and a skipped element takes its children with it', () => {
+  const html = [
+    '<head><title>Title &amp; more</title><meta name="theme-color" content="#ecfeff">',
+    '<meta property="og:description" content="Share line"><meta name="twitter:card" content="summary">',
+    '<script>const hidden = "inline script";</script></head>',
+    '<body><p>Hola <b>mundo</b></p><img src="a.png" alt="Alt line">',
+    '<div translate="no"><div>nested name</div><span>still skipped</span></div><p>after</p>',
+    '<svg><svg><text>inner</text></svg><text>outer</text></svg><p>end</p></body>',
+  ].join('');
+
+  const nodes = readableNodes(html, (tag, attributes) => tag === 'svg' || /translate="no"/.test(attributes));
+  assert.deepEqual(nodes, ['Title & more', 'Hola', 'mundo', 'after', 'end', 'Alt line', 'Share line']);
 });

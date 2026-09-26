@@ -24,6 +24,14 @@ const badgeColors: Record<string, string> = {
   Verification: 'bg-ok-50 text-ok-700 border-ok-200',
 };
 
+/** The badge as the reader sees it; `badge` itself stays the colour key. */
+const badgeLabel: Record<string, string> = {
+  Isolation: t('ai.pillars.badge.isolation'),
+  Security: t('ai.pillars.badge.security'),
+  Safety: t('ai.pillars.badge.safety'),
+  Verification: t('ai.pillars.badge.verification'),
+};
+
 const pillars = [
   {
     badge: 'Isolation',
@@ -82,7 +90,7 @@ const pillars = [
           <div>
             <div class="flex items-center justify-between gap-2 mb-3">
               <span class:list={['text-xs font-mono px-2.5 py-0.5 rounded-full border font-medium', colorClass]}>
-                {pillar.badge}
+                {badgeLabel[pillar.badge]}
               </span>
             </div>
             <h3 class="text-base font-bold text-ink-900 mb-2">

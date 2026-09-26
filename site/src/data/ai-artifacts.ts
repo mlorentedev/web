@@ -8,7 +8,9 @@
 
 export interface AiArtifact {
   id: string;
+  /** Also the colour key in `AiArtifacts.astro`. */
   badge: string;
+  badgeEs: string;
   title: string;
   titleEs: string;
   description: string;
@@ -36,6 +38,7 @@ export const aiArtifacts: AiArtifact[] = [
   {
     id: 'doctrine',
     badge: 'Doctrine',
+    badgeEs: 'Doctrina',
     title: 'The rules every agent session loads',
     titleEs: 'Las reglas que carga cada sesión de agente',
     description: "The operating rules the dotfiles harness compiles into every agent's instructions: no AI attribution, no auto-merge, and every environment change written as code and verified idempotent.",
@@ -57,6 +60,7 @@ export const aiArtifacts: AiArtifact[] = [
   {
     id: 'reviewer-pool',
     badge: 'Verification',
+    badgeEs: 'Verificación',
     title: 'Which models may sign an adversarial review',
     titleEs: 'Qué modelos pueden firmar una revisión adversarial',
     description: 'An ordered allow-list of reviewer models. None of them is an Anthropic model, because Claude writes nearly every change: the reviewer must not be the implementer.',
@@ -87,6 +91,7 @@ export const aiArtifacts: AiArtifact[] = [
   {
     id: 'review-attestation',
     badge: 'Governance',
+    badgeEs: 'Gobierno',
     title: 'Did a review actually happen?',
     titleEs: '¿Hubo de verdad una revisión?',
     description: 'The gate that decides whether a pull request was reviewed. It never asks who reviewed it, and it tells a reviewer\'s "I could not review" notice apart from a review.',
@@ -111,6 +116,7 @@ export const aiArtifacts: AiArtifact[] = [
   {
     id: 'gitops-delivery',
     badge: 'Architecture',
+    badgeEs: 'Arquitectura',
     title: 'Code in one repo, deployment in another (ADR-053)',
     titleEs: 'El código en un repositorio, el despliegue en otro (ADR-053)',
     description: 'Each product repo builds an immutable sha-tagged image and fires a repository_dispatch to kubelab, which promotes it. Polling the registry was considered and rejected.',

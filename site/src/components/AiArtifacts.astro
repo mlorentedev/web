@@ -39,9 +39,9 @@ const badgeColors: Record<string, string> = {
           <div class="p-6 pb-4">
             <div class="flex items-center justify-between gap-2 mb-3">
               <span class:list={['text-xs font-mono px-2.5 py-0.5 rounded-full border font-medium', colorClass]}>
-                {artifact.badge}
+                {lang === 'es' ? artifact.badgeEs : artifact.badge}
               </span>
-              <span class="text-xs font-mono text-ink-600">
+              <span class="text-xs font-mono text-ink-600" translate="no">
                 {sourceLabel(artifact)}
               </span>
             </div>
@@ -58,6 +58,7 @@ const badgeColors: Record<string, string> = {
               tabindex="0"
               role="region"
               aria-label={sourceLabel(artifact)}
+              translate="no"
               class="rounded-lg bg-panel-950 p-4 border border-panel-800 overflow-x-auto focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent-500"
             >
               <div class="flex items-center justify-between pb-2 mb-2 border-b border-panel-800 text-xs font-mono text-panel-400">
@@ -92,7 +93,7 @@ const badgeColors: Record<string, string> = {
       <div class="text-xs font-mono text-accent-700 font-semibold mb-1">
         {lang === 'es' ? 'ANÁLISIS TÉCNICO EN PROFUNDIDAD' : 'IN-DEPTH TECHNICAL NOTE'}
       </div>
-      <h4 class="text-base sm:text-lg font-bold text-ink-900">
+      <h4 class="text-base sm:text-lg font-bold text-ink-900" lang="en" translate="no">
         Fail-Closed Harnesses for Autonomous Coding Agents
       </h4>
       <p class="text-xs sm:text-sm text-ink-600 mt-1 leading-relaxed sm:leading-5">

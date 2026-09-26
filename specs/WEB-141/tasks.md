@@ -29,8 +29,11 @@ created: "2026-09-24"
 - [x] Replace the four hand-typed snippets with pinned excerpts; the card whose file is the P0–P3 rubric
       becomes `harness/review-attestation.json` (Manu, 2026-09-25)
 - [ ] [P] [AC4] Write a failing test that the Spanish Lab and AI pages carry no English strings (the Lab and AI
-      part of #354)
-- [ ] [AC4] Translate those strings until it passes
+      part of #354). `tests/es-no-english.test.mjs` covers `/es/ai`; the three Lab pages join with their
+      translation
+- [ ] [AC4] Translate those strings until it passes. Done for `/ai` and the shared header and footer; the Lab
+      pages are next. Manu, 2026-09-25: "Lab" stays a name; automation names and descriptive catalog titles are
+      translated; `platform.json` names wait for the exporter (phase 2)
 - [ ] [P] [AC2] Write a failing test that every access label on `/lab` matches a committed, measured access table
       (#292)
 - [ ] [AC2] Replace the "Mesh only" labels with the measured access table (#292)
