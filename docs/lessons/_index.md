@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-56 lessons, one file each, newest first. Numbers are assigned in the order
+57 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 057 | [A quote on a proof page drifts unless it is pinned to a blob](lesson-057-a-quote-on-a-proof-page-drifts-unless-it-is-.md) | 2026-09-25 | `#verification` `#content` `#testing` |
 | 056 | [A component placed in content MDX renders in the page's locale](lesson-056-a-component-placed-in-content-mdx-renders-in.md) | 2026-09-24 | `#astro` `#mdx` `#i18n` |
 | 055 | [A registry login outlives the step that needed it](lesson-055-a-registry-login-outlives-the-step-that-need.md) | 2026-09-23 | `#ci` `#security` `#docker` |
 | 054 | [A push to a merged PR's branch succeeds and lands nowhere](lesson-054-a-push-to-a-merged-pr-s-branch-succeeds-and.md) | 2026-09-23 | `#git` `#pull-requests` `#review` |
