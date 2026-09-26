@@ -59,6 +59,19 @@ test('bilingual parity: every visible field carries both English and Spanish twi
   }
 });
 
+test('every item is either a brand or has a Spanish title, never both', () => {
+  // `name` is pinned to the source, so the Spanish page needs `nameEs` for a title
+  // that describes; `brand` marks the names that stay the same in every locale
+  // (rendered with translate="no"). Neither would let English through unmarked.
+  for (const cat of catalog.categories) {
+    for (const item of cat.items) {
+      const hasEs = Boolean(item.nameEs?.trim());
+      assert.ok(hasEs !== (item.brand === true), `item ${item.id}: needs exactly one of \`nameEs\` or \`brand: true\``);
+      if (hasEs) assert.notEqual(item.nameEs, item.name, `item ${item.id}'s \`nameEs\` is the English name`);
+    }
+  }
+});
+
 test('link boundary: url is present if and only if access is public', () => {
   for (const cat of catalog.categories) {
     for (const item of cat.items) {
@@ -146,7 +159,8 @@ for (const [locale, pagePath, expectedBackPath] of IDP_HTML_PAGES) {
       assert.ok(html.includes(name), `category name "${name}" missing on ${locale} IDP catalog page`);
 
       for (const item of cat.items) {
-        const itemName = item.name.replace(/&/g, '&amp;');
+        const shown = locale === 'es' && item.nameEs ? item.nameEs : item.name;
+        const itemName = shown.replace(/&/g, '&amp;');
         assert.ok(html.includes(itemName), `item name "${itemName}" missing on ${locale} IDP catalog page`);
       }
     }
