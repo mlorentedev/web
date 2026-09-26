@@ -1,5 +1,5 @@
 /**
- * The bio above the Timeline (WEB-137).
+ * The bio: the home's story block (WEB-137; the Timeline it sat above is gone, WEB-140).
  *
  * The bio is hand-edited markdown, so the one thing a test can hold it to is the
  * facts: every figure it states must already be stated in `data/experience.ts`,
@@ -37,14 +37,15 @@ for (const lang of ['en', 'es']) {
 }
 
 for (const [lang, page] of [['en', 'index.html'], ['es', 'es/index.html']]) {
-  test(`[${lang}] the home page renders the bio inside the Timeline section`, () => {
+  test(`[${lang}] the home page renders the bio as its story block`, () => {
     const file = join(distDir, page);
     assert.ok(existsSync(file), `dist/${page} must exist — run the build first`);
     const html = readFileSync(file, 'utf8');
-    const section = html.match(/<section[^>]*data-experience[\s\S]*?<\/section>/)?.[0] ?? '';
+    const section = html.match(/<section[^>]*data-home-block="story"[\s\S]*?<\/section>/)?.[0] ?? '';
+    assert.match(section, /\bid="story"/, `dist/${page}: the story block has no #story anchor for the hero to link`);
     const bio = section.match(/<div[^>]*data-bio[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? '';
     // Any wording passes; an empty block does not. The words are Manu's to change.
     const text = bio.replace(/<[^>]*>/g, '').trim();
-    assert.ok(text.length > 100, `dist/${page}: the Timeline section has no bio, or it rendered empty`);
+    assert.ok(text.length > 100, `dist/${page}: the story block has no bio, or it rendered empty`);
   });
 }
