@@ -23,8 +23,11 @@ Map every acceptance criterion from `proposal.md` to concrete proof (commit hash
 
 Brief log of non-obvious trade-offs or course corrections taken during the work. Routine choices belong in commit messages, not here.
 
--
--
+- **PR 1 (HomePage) is checked by the built HTML, not only by `visual-diff.mjs`.** `dist/index.html` and
+  `dist/es/index.html` are byte-identical before and after. `visual-diff.mjs compare` reports 12 elements
+  (`opacity`, `position`) on `/` and `/es/`, but two captures of the *same* build report the same 12: they are the
+  hero's `animate-pulse` dot and IdpStrip's `animate-ping`, sampled at different frames. Read that count as the
+  noise floor for the home until IdpStrip leaves it (PR 2).
 
 ## Promotion candidates
 
