@@ -1,13 +1,11 @@
 ---
 /**
- * The AI Harness Artifacts & Executable Contracts (WEB-091).
- *
- * Exposes real, verifiable operating contracts, kernel concurrency semaphores,
- * in-stream secret redactors, and adversarial reviewer prompts.
+ * The artifact cards on /ai (WEB-091): each quotes a public file verbatim and
+ * links to it at the commit the quote was taken from (see `data/ai-artifacts.ts`).
  */
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
-import { aiArtifacts } from '../data/ai-artifacts';
+import { aiArtifacts, sourceHref, sourceLabel } from '../data/ai-artifacts';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -44,7 +42,7 @@ const badgeColors: Record<string, string> = {
                 {artifact.badge}
               </span>
               <span class="text-xs font-mono text-ink-600">
-                {artifact.filename}
+                {sourceLabel(artifact)}
               </span>
             </div>
 
@@ -59,14 +57,14 @@ const badgeColors: Record<string, string> = {
             <div
               tabindex="0"
               role="region"
-              aria-label={artifact.filename}
+              aria-label={sourceLabel(artifact)}
               class="rounded-lg bg-panel-950 p-4 border border-panel-800 overflow-x-auto focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-accent-500"
             >
               <div class="flex items-center justify-between pb-2 mb-2 border-b border-panel-800 text-xs font-mono text-panel-400">
-                <span>{artifact.filename}</span>
+                <span>{sourceLabel(artifact)}</span>
                 <span>{artifact.language}</span>
               </div>
-              <pre class="font-mono text-xs text-panel-100 leading-relaxed selection:bg-accent-700 selection:text-white whitespace-pre">{artifact.codeSnippet}</pre>
+              <pre class="font-mono text-xs text-panel-100 leading-relaxed selection:bg-accent-700 selection:text-white whitespace-pre-wrap break-words">{artifact.codeSnippet}</pre>
             </div>
           </div>
 
@@ -75,7 +73,7 @@ const badgeColors: Record<string, string> = {
               {lang === 'es' ? 'Contrato público' : 'Public contract'}
             </span>
             <a
-              href={artifact.gistUrl}
+              href={sourceHref(artifact)}
               target="_blank"
               rel="noopener noreferrer"
               class="text-xs font-semibold text-accent-700 hover:text-accent-800 transition-colors inline-flex items-center gap-1.5"

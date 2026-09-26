@@ -9,7 +9,7 @@
  *   01 / Autonomous Agent Execution Plane (harness diagram)
  *   02 / The Four Pillars of Deterministic Containment (pillars)
  *   03 / Autonomous Fleet & Automations (automations, migrated from lab-ai.json)
- *   04 / Executable Artifacts & Operating Contracts (artifacts)
+ *   04 / The rules, quoted from their files (artifacts)
  *
  * The page ships ZERO client JavaScript (unlike /lab, which carries the probe console).
  */

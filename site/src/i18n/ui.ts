@@ -56,9 +56,9 @@ export const ui = {
     'ai.pillars.p4.i1': 'Cross-model independent diff review',
     'ai.pillars.p4.i2': 'Strict zero auto-merge doctrine',
     'ai.pillars.p4.i3': 'CI regression & mutation suites',
-    'ai.artifacts.heading': 'Executable Artifacts & Operating Contracts',
+    'ai.artifacts.heading': 'The rules, quoted from their files',
     'ai.artifacts.sub':
-      'Inspectable rules, kernel mutex scripts, stream redactors, and adversarial review prompts.',
+      'Four excerpts, each quoted word for word from a public file and linked to the commit it was taken from.',
     'ai.automations.heading': 'Autonomous Fleet & Automations',
     'ai.automations.intro':
       'The agents in production, the protocols they use, the event routers and the telemetry sinks running across the cluster. Most endpoints operate within the mesh boundary — what you see here is the live inventory and execution contracts.',
@@ -566,9 +566,9 @@ export const ui = {
     'ai.pillars.p4.i1': 'Revisión de diffs por modelos independientes',
     'ai.pillars.p4.i2': 'Doctrina estricta de cero auto-merge',
     'ai.pillars.p4.i3': 'Suites de regresión y mutación en CI',
-    'ai.artifacts.heading': 'Artefactos Ejecutables y Contratos Operativos',
+    'ai.artifacts.heading': 'Las reglas, citadas de sus ficheros',
     'ai.artifacts.sub':
-      'Reglas inspeccionables, scripts de mutex de kernel, redactor de secretos y prompts de revisión adversarial.',
+      'Cuatro extractos, cada uno citado palabra por palabra de un fichero público y enlazado a la versión de la que se tomó.',
     'ai.automations.heading': 'Flota Autónoma y Automatizaciones',
     'ai.automations.intro':
       'Los agentes en producción, los protocolos que usan, los enrutadores de eventos y los sumideros de telemetría que funcionan en el clúster. La mayoría opera dentro de la malla — lo que ves aquí es el inventario real y los contratos de acceso.',
