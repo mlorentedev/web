@@ -52,9 +52,9 @@ const PROPERTIES = [
 /**
  * Pin everything a page fetches at runtime, so two captures of one build agree.
  *
- * The Lab's reachability console calls `api.kubelab.live/health` on load and the
- * landing asks the GitHub API for repository counts. Left live, both paint
- * whatever the network answered at that moment: an adversarial review of WEB-022
+ * The Lab's reachability console calls `api.kubelab.live/health` on load (the
+ * landing's GitHub counts went with WEB-140). Left live, it paints whatever the
+ * network answered at that moment: an adversarial review of WEB-022
  * caught two captures of the *same* build differing on `/lab` at 320 px. The
  * console gets the healthy fixture `lab-axe.mjs` uses; every other request that
  * leaves the local server is aborted, which the pages answer with their
