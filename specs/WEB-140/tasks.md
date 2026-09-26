@@ -26,10 +26,10 @@ created: "2026-09-24"
 
 ### PR 1 · One `HomePage` for both locales (pure refactor, same output)
 
-- [ ] [AC2] Write failing test: `pages/index.astro` and `pages/es/index.astro` are stubs that render `HomePage` with
+- [x] [AC2] Write failing test: `pages/index.astro` and `pages/es/index.astro` are stubs that render `HomePage` with
   their `lang`, and each built home has exactly one `<h1>`
-- [ ] [AC2] Implement `components/HomePage.astro` (the `ContactPage`/`LegalPage` pattern) and reduce both pages to stubs
-- [ ] [AC6] `npm run build && npm test` green; `visual-diff.mjs` shows no change on `/` and `/es/`
+- [x] [AC2] Implement `components/HomePage.astro` (the `ContactPage`/`LegalPage` pattern) and reduce both pages to stubs
+- [x] [AC6] `npm run build && npm test` green; `visual-diff.mjs` shows no change on `/` and `/es/`
 
 ### PR 2 · Trim: drop the four sections, move "who I am" up
 
