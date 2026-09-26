@@ -12,16 +12,17 @@
  * the five that decide placement: runtime, architecture, CPU, memory, location.
  * Decided with Manu on 2026-09-01.
  *
- * The ninth node is on standby — powered down, `os` is a dash — and it is
- * rendered rather than filtered, dimmed and labelled. That is the difference
- * between `platform.nodes.length` (9) and `cluster.activeNodes` (8), and it is
+ * The ninth node is a reserve — not provisioned until Terraform recreates it,
+ * `os` is a dash — and it is rendered rather than filtered, dimmed and labelled.
+ * That is the difference between `platform.nodes.length` (9) and the machines
+ * `fleet` counts (8), and it is
  * information: a fleet that retires a node is more credible than one that never
  * had to. A page rendering `activeNodes` rows would hide it, which is why
  * `lab-sections.test.mjs` counts against `nodes.length` and says so.
  */
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
-import { platform, type NodeTopology } from '../data/platform';
+import { platform, withCounts, type NodeTopology } from '../data/platform';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -36,8 +37,8 @@ const t = useTranslations(lang);
 const isEs = lang === 'es';
 
 /**
- * `standby` takes `ink` rather than a status family: a machine deliberately
- * powered down is not a fault, and painting it `warn` would say it is. The
+ * `standby` takes `ink` rather than a status family: a reserve that is
+ * deliberately not provisioned is not a fault, and painting it `warn` would say it is. The
  * status families keep their meaning by not being spent on this.
  */
 const STATUS_DOT: Record<NodeTopology['status'], string> = {
@@ -97,20 +98,16 @@ function specLine(node: NodeTopology): string {
  */
 const STANDBY_ROW = 'bg-ink-50 px-3 -mx-3';
 
-const activeCount = platform.nodes.filter((n) => n.status !== 'standby').length;
 ---
 
 <Section padding="py-10" data-lab-section="infra">
   <SectionHeading number={number} label={t('lab.infra.heading')} margin="mb-3" />
 
-  <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-2">
-    {t('lab.infra.intro')}
+  <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-2" data-count>
+    {withCounts(t('lab.infra.intro'))}
   </p>
-  <p class="text-xs font-mono text-ink-500 mb-8">
-    {t('lab.infra.count')
-      .replace('{n}', String(platform.nodes.length))
-      .replace('{active}', String(activeCount))
-      .replace('{clusters}', String(platform.cluster.kubernetesClusters))}
+  <p class="text-xs font-mono text-ink-500 mb-8" data-count>
+    {withCounts(t('lab.infra.count'))}
   </p>
 
   <ul class="border-t border-ink-100">

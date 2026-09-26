@@ -11,8 +11,6 @@ export interface ClusterInfo {
   kubernetesClusters: number;
   /** Machines that actually run Kubernetes — three of the eight. */
   kubernetesNodes: number;
-  /** Workloads across all three clusters, excluding kube-system. */
-  totalServices: number;
 }
 
 export interface PlatformMetrics {
@@ -99,3 +97,32 @@ export interface PlatformManifest {
 }
 
 export const platform: PlatformManifest = platformData as PlatformManifest;
+
+/**
+ * Every count the Lab states about its machines, derived from `nodes` so no page
+ * holds its own copy (#133, #355). Copy carries the placeholders; `withCounts`
+ * fills them, and the element that renders the result is marked `data-count`
+ * (`tests/lab-counts.test.mjs`).
+ */
+export const fleet = (() => {
+  // A `standby` node is a reserve that exists only while Terraform has it
+  // provisioned (the AWS hub: no instance and no volume, measured 2026-09-25), so
+  // it is counted apart from the machines rather than as one that is switched off.
+  const machines = platform.nodes.filter((n) => n.status !== 'standby');
+  const rented = machines.filter((n) => n.tier === 'cloud');
+  return {
+    n: machines.length,
+    reserve: platform.nodes.length - machines.length,
+    rented: rented.length,
+    providers: new Set(rented.map((n) => n.provider.split(' ')[0])).size,
+    home: machines.length - rented.length,
+    k8s: machines.filter((n) => n.runtime === 'k3s').length,
+  };
+})();
+
+/** `template` with each `{key}` of `fleet` replaced by its count. */
+export function withCounts(template: string): string {
+  return template.replace(/\{(\w+)\}/g, (whole, key: string) =>
+    key in fleet ? String(fleet[key as keyof typeof fleet]) : whole,
+  );
+}

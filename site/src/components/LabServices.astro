@@ -81,10 +81,8 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
   <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-2">
     {t('lab.services.intro')}
   </p>
-  <p class="text-xs font-mono text-ink-500 mb-8">
-    {t('lab.services.count')
-      .replace('{n}', String(platform.services.length))
-      .replace('{total}', String(platform.cluster.totalServices))}
+  <p class="text-xs font-mono text-ink-500 mb-8" data-count>
+    {t('lab.services.count').replace('{n}', String(platform.services.length))}
   </p>
 
   <div

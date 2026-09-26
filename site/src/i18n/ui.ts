@@ -101,7 +101,6 @@ export const ui = {
     'idp.title': 'KubeLab Platform & Engineering Cockpit',
     'idp.description': 'The 24/7 hybrid cloud and bare-metal infrastructure platform powering my autonomous AI agents, edge inference, and GitOps workflows.',
     'idp.story.heading': 'The Engineering Foundry Behind Every Product',
-    'idp.story.p1': 'KubeLab is the operating foundation behind every project, open-source tool, and product showcased across this portfolio (including Pollex, Hive MCP, KubeLab Platform API, and this Astro website). It spans eight machines across Hetzner Cloud (Germany), Google Cloud and a bare-metal homelab in the USA, running three single-node K3s clusters.',
     'idp.pillar.gitops': 'Reproducible GitOps',
     'idp.pillar.privacy': 'Edge AI & Privacy',
     'idp.pillar.privacyDesc': 'Local LLM inference on a Jetson Nano. The prompt never leaves the house.',
@@ -313,7 +312,7 @@ export const ui = {
     'lab.diagram.topology.heading': 'Where everything runs',
     'lab.diagram.flows.heading': 'How a change reaches production',
     'lab.diagram.topology.caption':
-      'Eight of the nine machines — the ninth is powered down, so it is listed above and not drawn here. Three run single-node K3s clusters that do not share a control plane.',
+      'All {n} machines. The reserve on AWS is listed above and not drawn, because it only exists while Terraform has it provisioned. The {k8s} that run K3s each run a single-node cluster, with no shared control plane.',
     'lab.diagram.topology.legend':
       'The resolver, the monitor and the forge sit deliberately outside Kubernetes: each has to keep working while the platform is broken. A WireGuard mesh ties the fleet together with no inbound ports open.',
     'lab.diagram.flows.caption':
@@ -336,7 +335,7 @@ export const ui = {
 
     'lab.story.heading': 'The Engineering Foundry Behind Every Product',
     'lab.story.p1':
-      'KubeLab is the operating foundation behind every project, open-source tool, and product showcased across this portfolio (including Pollex, Hive MCP, KubeLab Platform API, and this Astro website). It spans eight machines across Hetzner Cloud (Germany), Google Cloud and a bare-metal homelab in the USA, running three single-node K3s clusters.',
+      'KubeLab is the operating foundation behind every project, open-source tool, and product showcased across this portfolio (including Pollex, Hive MCP, KubeLab Platform API, and this Astro website). It runs on rented machines at Hetzner Cloud (Germany) and Google Cloud and on a bare-metal homelab in the USA, as independent single-node K3s clusters.',
     'lab.story.p2':
       'Nothing shown here is an isolated mockup or tutorial demo: every workload is built, tested in staging, secured behind Zero-Trust authentication, and operated 24/7 through immutable GitOps pipelines.',
     'lab.pillar.gitops': 'Reproducible GitOps',
@@ -379,7 +378,7 @@ export const ui = {
     'lab.services.heading': 'Services, and who can reach them',
     'lab.services.intro':
       'Three of these answer to anyone. The rest answer only from inside the WireGuard mesh, behind Authelia — there are zero port-forwarding rules on my residential USA network, so for most of this there is no address to expose in the first place.',
-    'lab.services.count': '{n} documented here · {total} running across the three clusters',
+    'lab.services.count': '{n} documented here',
     'lab.services.th.status': 'Status',
     'lab.services.th.service': 'Service',
     'lab.services.th.category': 'Category',
@@ -396,8 +395,8 @@ export const ui = {
 
     'lab.infra.heading': 'The machines underneath',
     'lab.infra.intro':
-      'Nine machines: three rented from a cloud provider, one of those powered down, and six sitting in my house. Only three of them run Kubernetes, and they run three separate single-node clusters rather than one cluster with three nodes — a shared control plane that can take the whole fleet down with it is not a homelab, it is one failure with extra steps.',
-    'lab.infra.count': '{n} machines · {active} powered on · {clusters} independent K3s clusters',
+      '{n} machines: {rented} rented from {providers} cloud providers and {home} sitting in my house, plus {reserve} reserve on AWS that Terraform recreates when it is needed. Only {k8s} of them run Kubernetes, each as its own single-node cluster rather than part of a shared one — a shared control plane that can take the whole fleet down with it is not a homelab, it is one failure with extra steps.',
+    'lab.infra.count': '{n} machines · {k8s} independent K3s clusters · {reserve} reserve',
 
     // Status is prose, not an identifier. `k3s`, `ARM64` and `docker` stay as
     // they are on both locales because they are names; `healthy` and `standby`
@@ -406,7 +405,7 @@ export const ui = {
     'lab.status.healthy': 'healthy',
     'lab.status.warning': 'degraded',
     'lab.status.offline': 'offline',
-    'lab.status.standby': 'standby',
+    'lab.status.standby': 'reserve',
     'lab.status.operational': 'operational',
     'lab.status.degraded': 'degraded',
     'lab.status.maintenance': 'maintenance',
@@ -589,7 +588,6 @@ export const ui = {
     'idp.title': 'Plataforma KubeLab y Cockpit de Ingeniería',
     'idp.description': 'La plataforma híbrida en la nube y bare-metal que opera 24/7 mis agentes de IA autónomos, inferencia edge y flujos GitOps.',
     'idp.story.heading': 'La Fábrica de Ingeniería Detrás de Cada Producto',
-    'idp.story.p1': 'KubeLab es la base operativa sobre la que he construido, probado y desplegado cada proyecto, herramienta open-source y producto de mi portfolio (incluyendo Pollex, Hive MCP Server, la API de KubeLab y esta misma web en Astro). Abarca ocho máquinas entre Hetzner Cloud (Alemania), Google Cloud y un homelab bare-metal en EE.UU., con tres clústeres K3s de un nodo cada uno.',
     'idp.pillar.gitops': 'GitOps Reproducible',
     'idp.pillar.privacy': 'Edge AI y Privacidad',
     'idp.pillar.privacyDesc': 'Inferencia LLM local en una Jetson Nano. El prompt no sale de casa.',
@@ -801,7 +799,7 @@ export const ui = {
     'lab.diagram.topology.heading': 'Dónde corre cada cosa',
     'lab.diagram.flows.heading': 'Cómo llega un cambio a producción',
     'lab.diagram.topology.caption':
-      'Ocho de las nueve máquinas: la novena está apagada, así que aparece en la lista de arriba pero no en el dibujo. Tres ejecutan clústeres K3s de un solo nodo que no comparten plano de control.',
+      'Las {n} máquinas. La reserva en AWS aparece en la lista de arriba pero no en el dibujo, porque solo existe mientras Terraform la tiene aprovisionada. Las {k8s} que ejecutan K3s tienen cada una un clúster de un solo nodo, sin plano de control compartido.',
     'lab.diagram.topology.legend':
       'El resolutor, el monitor y la forja se quedan fuera de Kubernetes a propósito: cada uno tiene que seguir funcionando mientras la plataforma está rota. Una malla WireGuard une la flota sin abrir ningún puerto de entrada.',
     'lab.diagram.flows.caption':
@@ -823,7 +821,7 @@ export const ui = {
 
     'lab.story.heading': 'La Fábrica de Ingeniería Detrás de Cada Producto',
     'lab.story.p1':
-      'KubeLab es la base operativa sobre la que he construido, probado y desplegado cada proyecto, herramienta open-source y producto de mi portfolio (incluyendo Pollex, Hive MCP Server, la API de KubeLab y esta misma web en Astro). Abarca ocho máquinas entre Hetzner Cloud (Alemania), Google Cloud y un homelab bare-metal en EE.UU., con tres clústeres K3s de un nodo cada uno.',
+      'KubeLab es la base operativa sobre la que he construido, probado y desplegado cada proyecto, herramienta open-source y producto de mi portfolio (incluyendo Pollex, Hive MCP Server, la API de KubeLab y esta misma web en Astro). Funciona sobre máquinas alquiladas en Hetzner Cloud (Alemania) y Google Cloud y sobre un homelab bare-metal en EE. UU., como clústeres K3s independientes de un solo nodo.',
     'lab.story.p2':
       'Nada de lo que muestro es una demo aislada de tutorial: cada carga de trabajo se compila en local, se valida en staging, se protege con autenticación Zero-Trust y se opera 24/7 mediante pipelines GitOps inmutables.',
     'lab.pillar.gitops': 'GitOps Reproducible',
@@ -866,7 +864,7 @@ export const ui = {
     'lab.services.heading': 'Servicios, y quién puede llegar a ellos',
     'lab.services.intro':
       'Tres de estos responden a cualquiera. El resto solo responden desde dentro de la malla WireGuard, tras Authelia: no hay una sola regla de port-forwarding en mi red residencial de Estados Unidos, así que para la mayoría no hay ni dirección que exponer.',
-    'lab.services.count': '{n} documentados aquí · {total} corriendo entre los tres clústeres',
+    'lab.services.count': '{n} documentados aquí',
     'lab.services.th.status': 'Estado',
     'lab.services.th.service': 'Servicio',
     'lab.services.th.category': 'Categoría',
@@ -884,8 +882,8 @@ export const ui = {
 
     'lab.infra.heading': 'Las máquinas de debajo',
     'lab.infra.intro':
-      'Nueve máquinas: tres alquiladas a un proveedor cloud, una de ellas apagada, y seis en mi casa. Solo tres ejecutan Kubernetes, y lo hacen como tres clústeres independientes de un nodo en vez de un clúster de tres nodos: un plano de control compartido que puede llevarse por delante toda la flota no es un homelab, es un único punto de fallo con pasos de más.',
-    'lab.infra.count': '{n} máquinas · {active} encendidas · {clusters} clústeres K3s independientes',
+      '{n} máquinas: {rented} alquiladas a {providers} proveedores en la nube y {home} en mi casa, más {reserve} de reserva en AWS que Terraform recrea cuando hace falta. Solo {k8s} ejecutan Kubernetes, cada una como su propio clúster de un solo nodo en vez de formar parte de uno compartido: un plano de control compartido que puede llevarse por delante toda la flota no es un homelab, es un único punto de fallo con pasos de más.',
+    'lab.infra.count': '{n} máquinas · {k8s} clústeres K3s independientes · {reserve} de reserva',
 
     // El estado es prosa, no un identificador. `k3s`, `ARM64` y `docker` se
     // quedan igual en los dos idiomas porque son nombres; `healthy` y `standby`
