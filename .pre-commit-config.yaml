@@ -74,5 +74,6 @@ exclude: |
       \.git/.*|
       node_modules/.*|
       site/node_modules/.*|
-      site/dist/.*
+      site/dist/.*|
+      site/tests/fixtures/ai-artifacts/.*
   )$

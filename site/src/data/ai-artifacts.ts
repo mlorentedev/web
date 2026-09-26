@@ -1,8 +1,9 @@
 /**
- * The AI Harness Artifacts & Protocols (WEB-091).
+ * The artifact cards on /ai (WEB-091): each quotes a public file, verbatim.
  *
- * Real, inspectable execution contracts, OS concurrency primitives,
- * in-stream secret redactors, and adversarial reviewer prompts.
+ * `codeSnippet` is whole lines of the file at `commit`, in runs separated by an
+ * elision line `[…]`. `tests/ai-artifact-excerpts.test.mjs` checks every run
+ * against a pinned copy of that blob, so change `commit` and the fixture together.
  */
 
 export interface AiArtifact {
@@ -13,89 +14,115 @@ export interface AiArtifact {
   description: string;
   descriptionEs: string;
   language: string;
-  filename: string;
+  /** `owner/name` of a public GitHub repository. */
+  repo: string;
+  /** The full commit the snippet was taken from; the link points at it. */
+  commit: string;
+  path: string;
   codeSnippet: string;
-  gistUrl: string;
+}
+
+/** The file as the card names it: repository, then path. */
+export function sourceLabel(artifact: AiArtifact): string {
+  return `${artifact.repo.split('/')[1]}/${artifact.path}`;
+}
+
+/** The permalink to the quoted file at the commit it was quoted from. */
+export function sourceHref(artifact: AiArtifact): string {
+  return `https://github.com/${artifact.repo}/blob/${artifact.commit}/${artifact.path}`;
 }
 
 export const aiArtifacts: AiArtifact[] = [
   {
     id: 'doctrine',
     badge: 'Doctrine',
-    title: 'Harness Non-Negotiables & Standing Orders',
-    titleEs: 'Doctrina del Arnés y Órdenes Permanentes',
-    description: 'Core invariants governing all agents: zero AI attribution, atomic commits under ~300 LOC, forbidden auto-merge, and in-flight documentation.',
-    descriptionEs: 'Invariantes nucleares para todo agente: cero atribución de IA, commits atómicos bajo ~300 LOC, prohibición estricta de auto-merge y documentación al día.',
+    title: 'The rules every agent session loads',
+    titleEs: 'Las reglas que carga cada sesión de agente',
+    description: "The operating rules the dotfiles harness compiles into every agent's instructions: no AI attribution, no auto-merge, and every environment change written as code and verified idempotent.",
+    descriptionEs: 'Las reglas de trabajo que el arnés de dotfiles compila en las instrucciones de cada agente: sin atribución a la IA, sin fusión automática, y todo cambio de entorno escrito como código y comprobado idempotente.',
     language: 'markdown',
-    filename: 'AGENTS.md',
-    codeSnippet: `## Non-negotiable rules (harness-enforced)
-
-- No AI attribution in git history or GitHub messages (commits, PRs, issues).
-- No Co-Authored-By trailers referencing AI agents. All artifacts appear human-authored.
-- English only in durable records (commits, PR titles, code comments).
-- Auto-merge is strictly forbidden in every repository. Merge is a supervised human action.
-- Strict IaC & Idempotence: zero manual operations on remote systems or cloud environments.
-- Atomic PRs: ~300 executable LOC hard cap to maintain human reviewability.
-- In-flight documentation: ADRs and lessons recorded as they happen; debt is fixed or ticketed, never silent.`,
-    gistUrl: 'https://github.com/mlorentedev/web/blob/master/AGENTS.md'
+    repo: 'mlorentedev/dotfiles',
+    commit: '3c2e393e9fdfbc3b3aa89f2e0b40f90cb62aae4f',
+    path: 'AGENTS.md',
+    codeSnippet: `- **No AI attribution** in git history or GitHub messages (commits, PRs, issues).
+- No \`Co-Authored-By\` trailers referencing AI agents.
+- No bot-style emojis or "Generated with" footers.
+- All artifacts must appear human-authored.
+[…]
+- **Auto-merge is forbidden in every repository.** Never run \`gh pr merge --auto\`, never enable "Auto-merge" in the GitHub UI, and keep the repo setting \`allow_auto_merge=false\`. Auto-merge lands a PR the instant CI goes green — bypassing the human review gate in §1.
+[…]
+- **Zero manual operations:** Never perform ad-hoc manual changes on remote systems, servers, or cloud environments.
+- **Strict IaC & Idempotence:** Every configuration or environment change MUST be codified as reproducible IaC (Ansible, Terraform, K8s manifests, dotfiles) and verified idempotent (\`changed=0\` on re-run).`,
   },
   {
     id: 'reviewer-pool',
     badge: 'Verification',
-    title: 'Multi-Model Adversarial Reviewer Pool',
-    titleEs: 'Pool Adversarial Multi-Modelo Anti-Sicofancia',
-    description: 'Enforces independent model families to audit pull request diffs, systematically rejecting sycophantic self-approvals and unverified completion claims.',
-    descriptionEs: 'Fuerza a familias de modelos independientes a auditar diffs de PRs, rechazando auto-aprobaciones complacientes y afirmaciones de cierre sin pruebas.',
+    title: 'Which models may sign an adversarial review',
+    titleEs: 'Qué modelos pueden firmar una revisión adversarial',
+    description: 'An ordered allow-list of reviewer models. None of them is an Anthropic model, because Claude writes nearly every change: the reviewer must not be the implementer.',
+    descriptionEs: 'Una lista ordenada de los modelos que pueden revisar. Ninguno es de Anthropic, porque Claude escribe casi todos los cambios: quien revisa no puede ser quien implementa.',
     language: 'json',
-    filename: 'harness/reviewer-pool.json',
-    codeSnippet: `// Standing rule: an adversarial review never runs on the authoring model family.
-// The reviewer must not be the implementer (anti-sycophancy invariant).
-{
+    repo: 'mlorentedev/kubelab',
+    commit: 'b7d0ae471464c144b604bbe04fe33aef5785a155',
+    path: 'harness/reviewer-pool.json',
+    codeSnippet: `    "Standing rule: an adversarial review never runs on an Anthropic model. The",
+    "reviewer must not be the implementer, and Claude implements nearly every",
+    "change in this repo — BUG-074 was reviewed twice by claude-opus-5 before",
+    "anyone noticed, which is the incident this file exists to prevent.",
+[…]
   "pool": [
     {
       "id": "nan/deepseek-v4-flash",
       "runner": "pi",
       "provider": "nan",
       "model": "deepseek-v4-flash",
-      "role": "primary"
-    }
-  ],
-  "enforce": "independent-family"
-}`,
-    gistUrl: 'https://github.com/mlorentedev/kubelab/blob/master/harness/reviewer-pool.json'
+      "role": "primary",
+[…]
+    {
+      "id": "agy/gemini-3.1-pro-high",
+      "runner": "agy",
+      "model": "gemini-3.1-pro-high",
+      "role": "fallback",`,
   },
   {
-    id: 'priority-scale',
+    id: 'review-attestation',
     badge: 'Governance',
-    title: 'Autonomous Execution Concurrency & Budgeting',
-    titleEs: 'Gobernanza de Concurrencia y Presupuesto de Ejecución',
-    description: 'Strict concurrency scaling and blast-radius budgeting for concurrent autonomous agents, preventing infinite loops and uncontained state mutation.',
-    descriptionEs: 'Límites estrictos de concurrencia y radio de impacto para agentes autónomos concurrentes, evitando bucles descontrolados y mutaciones de estado no contenidas.',
-    language: 'markdown',
-    filename: 'harness/priority-scale.md',
-    codeSnippet: `# Priority Scale & Concurrency Budgeting
-
-1. Blast-radius containment: max 1 active write-worktree per autonomous agent.
-2. Verification gate: zero completion claim without fresh terminal execution logs.
-3. PR triage queue: an open PR is incomplete until every reviewer comment is triaged.
-4. Circuit breaker: halt execution after 3 recursive unverified tool loops.`,
-    gistUrl: 'https://github.com/mlorentedev/kubelab/blob/master/harness/priority-scale.md'
+    title: 'Did a review actually happen?',
+    titleEs: '¿Hubo de verdad una revisión?',
+    description: 'The gate that decides whether a pull request was reviewed. It never asks who reviewed it, and it tells a reviewer\'s "I could not review" notice apart from a review.',
+    descriptionEs: 'La puerta que decide si un cambio fue revisado. No pregunta quién lo revisó, y distingue el aviso de un revisor que no pudo revisar de una revisión.',
+    language: 'json',
+    repo: 'mlorentedev/kubelab',
+    commit: '2b7304a22ea1d9175d172bf06841cd964478ce83',
+    path: 'harness/review-attestation.json',
+    codeSnippet: `    "The gate asks ONE question: did a review actually happen? It never asks who",
+    "performed it or how good it was. A human review attests exactly as well as a",
+    "bot's.",
+[…]
+    {
+      "login": "coderabbitai",
+      "declined_markers": [
+        "rate limited by coderabbit.ai"
+      ],
+      "review_markers": [
+        "No actionable comments were generated in the recent review"
+      ],`,
   },
   {
     id: 'gitops-delivery',
     badge: 'Architecture',
-    title: 'Two-Repo Immutable GitOps Promotion (ADR-053)',
-    titleEs: 'Promoción GitOps Inmutable en Dos Repos (ADR-053)',
-    description: 'Decoupled architecture: code builds immutable sha-digest images dispatched to the platform repo, where Argo CD reconciles staging and prod.',
-    descriptionEs: 'Arquitectura desacoplada: el código compila imágenes sha inmutables hacia el repo de plataforma, donde Argo CD reconcilia staging y prod sin intervención manual.',
+    title: 'Code in one repo, deployment in another (ADR-053)',
+    titleEs: 'El código en un repositorio, el despliegue en otro (ADR-053)',
+    description: 'Each product repo builds an immutable sha-tagged image and fires a repository_dispatch to kubelab, which promotes it. Polling the registry was considered and rejected.',
+    descriptionEs: 'Cada repositorio de producto construye una imagen inmutable etiquetada con su sha y avisa a kubelab con un repository_dispatch; kubelab la promociona. Sondear el registro se valoró y se descartó.',
     language: 'markdown',
-    filename: 'docs/adr/adr-053-platform-product-repos.md',
-    codeSnippet: `# ADR-053: Platform & Product Repos Boundary
-
-- A push to master builds an immutable sha-<short> container image.
-- Image pushed to registry fires a repository_dispatch to mlorentedev/kubelab.
-- Kubelab receiver runs: toolkit deployment promote --env staging --version sha-<short>.
-- Argo CD reconciles drift in <30s. Zero manual kubectl apply in production.`,
-    gistUrl: 'https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-053-platform-product-repos.md'
-  }
+    repo: 'mlorentedev/kubelab',
+    commit: '11389d3cb11950015bd7628a939318b410261aa6',
+    path: 'docs/adr/adr-053-platform-product-repos.md',
+    codeSnippet: `# ADR-053: Platform↔Product Repository Structure & Deployment Topology
+[…]
+2. **Image promotion is push, event-driven — never polling.**
+   - Each product's CI publishes an immutable \`sha-<short>\` image, then fires a **\`repository_dispatch\`** to kubelab, whose workflow runs \`toolkit deployment promote\` (ADR-046).
+   - **Rejected — registry polling** (Argo CD Image Updater *or* an n8n registry poller). It reintroduces exactly what ADR-046 descoped (#692): a pull loop and non-git-honest state; for n8n it would also put a non-critical service on the delivery path (n8n down → no deploys). We control the image producers, so push is strictly better than pull.`,
+  },
 ];

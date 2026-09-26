@@ -1,0 +1,120 @@
+{
+  "$comment": [
+    "Reviewer registry for the review-attestation gate (TOOL-021, #1140).",
+    "",
+    "The gate asks ONE question: did a review actually happen? It never asks who",
+    "performed it or how good it was. A human review attests exactly as well as a",
+    "bot's.",
+    "",
+    "This file exists so that answering that question does not require a code",
+    "change when the reviewer changes. Ported from mlorentedev/dotfiles",
+    "harness/review-attestation.json at 2bac1c5 (GUARD-002, #906), with the",
+    "values below measured against this repository rather than copied.",
+    "",
+    "`declined_markers` are the strings identifying a reviewer's 'I could not",
+    "review' notice. Prefer an HTML comment marker over prose: prose is",
+    "translated, reworded and A/B tested, while the marker is machine output. If",
+    "a vendor changes it, the affected PR reads `pending` instead of `declined` —",
+    "still red, so marker drift degrades the MESSAGE and never the verdict.",
+    "",
+    "`review_markers` identify a reviewer's comment-shaped review output, for a",
+    "reviewer that does not use the reviews API. Empty for a reviewer that files",
+    "proper reviews: an auto-summary comment is not a review and must not attest.",
+    "",
+    "Logins are matched with a trailing `[bot]` stripped and case folded, because",
+    "the two GitHub APIs disagree: GraphQL returns `github-actions`, REST returns",
+    "`github-actions[bot]`. Matching the raw string would make the gate depend on",
+    "which API produced the payload.",
+    "",
+    "Note what is NOT here: any notion of which models may review. That policy",
+    "lives in harness/reviewer-pool.json and governs the SPEC-level adversarial",
+    "review — a different gate with a different purpose, deliberately not merged",
+    "with this one."
+  ],
+  "reviewers": [
+    {
+      "login": "coderabbitai",
+      "declined_markers": [
+        "rate limited by coderabbit.ai"
+      ],
+      "review_markers": [
+        "No actionable comments were generated in the recent review"
+      ],
+      "why": "Per-account PR review limit, reached routinely because parallel sessions drain it. NOT a free-tier problem, and an earlier framing of #1140 said it was: the account is Pro Plus and CodeRabbit's own footer reads 'It's free for OSS'. Measured on #1155, where the notice rendered while `gh pr checks` reported `CodeRabbit  pass`. The marker is the HTML comment CodeRabbit emits around the notice, not its prose. REVIEW MARKER ADDED 2026-08-20 (#1187): CodeRabbit opens a formal review only when it has something to say, so a PR it reviewed and found CLEAN produced no reviews[] entry and read as unreviewed — the gate could attest from CodeRabbit only when CodeRabbit had complaints, which blocks the clean PRs and passes the ones with findings. The marker is its clean-review verdict and NOT its walkthrough: the walkthrough is posted whether or not a review ran, while this string asserts the review happened ('in the recent review'). The original 'CodeRabbit's auto-summary comment is not a review' reasoning stands for the walkthrough and was over-generalised to every comment."
+    },
+    {
+      "login": "chatgpt-codex-connector",
+      "declined_markers": [
+        "You have reached your Codex usage limits for code reviews"
+      ],
+      "review_markers": [],
+      "why": "The second autonomous reviewer on this repository, present on #1153, #1155 and #1156. On #1155 it and CodeRabbit were exhausted SIMULTANEOUSLY — two independent account-wide quotas, correlated because parallel sessions drain both, and neither notice blocked the merge. This entry is the reason #1140's framing had to widen: the defect is not one vendor's status lying, it is that every reviewer configured here fails open. Measured 2026-08-19: Codex emits NO HTML comment marker, so this one is prose against the registry's own preference. Accepted with the consequence stated — if the wording drifts the PR reads `pending` rather than `declined`, which is still red."
+    },
+    {
+      "login": "github-actions",
+      "declined_markers": [],
+      "review_markers": [
+        "## PR Reviewer Guide"
+      ],
+      "why": "PR-Agent (TOOL-021 Part 2) posts as github-actions via GITHUB_TOKEN and publishes through the comments API, not the reviews API — so reviews[] is empty on a PR it genuinely reviewed. Declared ahead of Part 2 landing: the gate must not call this repository's own reviewer unreviewed the day it starts running. The marker is the `review` command's own heading; `## PR Code Suggestions` (the `improve` command) is deliberately NOT here — suggestions are not a review."
+    }
+  ],
+  "triage": {
+    "marker": "## Review triage",
+    "why": "Omitted when this file was ported from dotfiles at 2bac1c5, and the omission was silent in the worst way: `dotf pr triage-queue` could never answer in this repository, replying 'declares no triage.marker' on every invocation. Its exit status is 1 both when work is pending AND when the question cannot be computed, precisely so an unanswerable queue is never mistaken for a clear one — but a check that ALWAYS reports the same thing stops being read, which is how a gate degrades into noise. Measured 2026-08-22 while closing GCP-001's prod handover: the queue had gone unanswerable for the whole life of the registry. The marker is a heading matched at line start, because a disposition recorded in a chat message evaporates and the Definition of Done's Review item then rests on a claim nobody can check."
+  },
+  "escape": {
+    "label": "merged-unreviewed",
+    "section": "## Unreviewed merge rationale",
+    "why": "Both are required, never one. Same shape as the spec gate's skip-sdd escape, chosen because it is already understood here and because it forces the disclosure into the durable record instead of a chat message. Proceeding on an unreviewed PR is allowed; proceeding SILENTLY is not."
+  },
+  "exempt": {
+    "signatures": [
+      {
+        "name": "release-please (api + errors)",
+        "files": [
+          ".release-please-manifest.json",
+          "apps/api/CHANGELOG.md",
+          "apps/api/version.txt",
+          "edge/errors/CHANGELOG.md",
+          "edge/errors/version.txt"
+        ],
+        "why": "A release PR restates commits already on master, each reviewed when it merged. Measured on #767, #806 and #842: exactly these five paths. Verified NOT author-matchable — the author reads `mlorentedev`, a human, because release-please runs under a PAT."
+      },
+      {
+        "name": "release-please (api only)",
+        "files": [
+          ".release-please-manifest.json",
+          "apps/api/CHANGELOG.md",
+          "apps/api/version.txt"
+        ],
+        "why": "release-please opens PER-APP releases, so the file set VARIES and one signature is not enough. Measured on #804, which carried exactly these three. This is where the port had to diverge from upstream: matching is exact set equality in both directions, and upstream's own comment understates that as 'every changed file must appear in the declared set'. Under exact equality a single superset signature exempts #842 and REFUSES #804 — verified before writing this file. Enumerating each real shape keeps the strict semantics rather than relaxing them, and the strictness is the safe direction: adding a third app produces a red PR asking for a new signature, never a silent exemption."
+      },
+      {
+        "name": "release-please (errors only)",
+        "files": [
+          ".release-please-manifest.json",
+          "edge/errors/CHANGELOG.md",
+          "edge/errors/version.txt"
+        ],
+        "why": "Observed 4 times across the full release history, replayed 2026-08-19. An earlier draft of this entry called it unobserved and declared 'by construction' — that was written from a 4-PR sample and the backtest refuted it. Two shapes are deliberately NOT declared: 5 releases of apps/web/* (web moved to its own repo, ADR-053, so the shape is dead) and one 2-file errors release predating version.txt. Both correctly refuse rather than exempt; adding signatures for shapes that can no longer occur would widen the exemption for nothing."
+      },
+      {
+        "name": "staging deploy (single app)",
+        "files": [
+          "infra/config/values/staging.yaml",
+          "infra/k8s/overlays/staging/generated/deployments.yaml"
+        ],
+        "why": "The staging half of ADR-046's promote-then-PR mechanism. `toolkit deployment promote --env staging` writes apps.platform.<app>.version and regenerates the overlay; the config-drift gate (ADR-027) then guarantees the second file byte-for-byte against the generator, so neither line is something a reviewer could act on. Measured 2026-09-04 on five consecutive real PRs — #1560, #1582, #1590, #1601, #1617 — each carrying exactly these two paths and no other. DELIVERY-004 / #1619."
+      },
+      {
+        "name": "prod promote (single app)",
+        "files": [
+          "infra/config/values/prod.yaml",
+          "infra/k8s/overlays/prod/generated/deployments.yaml"
+        ],
+        "why": "The prod half, identical in shape and equally unreviewable. Measured on #1618. Exempting it does NOT weaken the prod gate, because that gate was never a review gate: promote-prod.yml is workflow_dispatch, it refuses any non-semver tag (line 107), and what the operator supplies at that merge is the DECISION TO PROMOTE, not an inspection of two generated lines. ADR-046 D3 already draws exactly this line — staging is Continuous Deployment, prod is Continuous Delivery — so prod loses the reviewer round-trip it never benefited from and keeps the human merge that is its actual control. DELIVERY-004 / #1619."
+      }
+    ]
+  }
+}

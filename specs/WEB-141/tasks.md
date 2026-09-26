@@ -24,6 +24,10 @@ created: "2026-09-24"
 - [x] [P] [AC4] Extend `tests/retired-labels.test.mjs` with the brand package's banned terms, scoped to the
       `lab.*`, `ai.*` and `idp.*` copy in both locales; watch it fail on today's `/ai` title
 - [x] [AC4] Rewrite the `/ai` hero and section copy (`ai.*`) in the site's register until the test passes
+- [x] [P] Write a failing test that every `/ai` artifact card quotes, verbatim, the file it links to at a
+      pinned commit (#407)
+- [x] Replace the four hand-typed snippets with pinned excerpts; the card whose file is the P0–P3 rubric
+      becomes `harness/review-attestation.json` (Manu, 2026-09-25)
 - [ ] [P] [AC4] Write a failing test that the Spanish Lab and AI pages carry no English strings (the Lab and AI
       part of #354)
 - [ ] [AC4] Translate those strings until it passes
