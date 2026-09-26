@@ -13,7 +13,7 @@ import Header from './Header.astro';
 import Footer from './Footer.astro';
 import SectionHeading from './SectionHeading.astro';
 import IdpIcon from './IdpIcon.astro';
-import { idpCatalog, type IdpAccess } from '../data/idp-catalog';
+import { idpCatalog, shownItemName, type IdpAccess } from '../data/idp-catalog';
 import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -113,6 +113,8 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {category.items.map((item) => {
                 const itemDesc = isEs ? item.descriptionEs : item.description;
+                const itemName = shownItemName(item, lang);
+                const nameTranslate = item.brand ? 'no' : undefined;
                 const spend = item.spendBadge ? (isEs ? item.spendBadge.es : item.spendBadge.en) : null;
                 const isPublic = item.access === 'public' && Boolean(item.url);
 
@@ -124,8 +126,8 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
                           <div class="text-ink-700 shrink-0">
                             <IdpIcon name={item.icon} class="w-5 h-5" />
                           </div>
-                          <h3 class="text-sm font-semibold text-ink-900 truncate">
-                            {item.name}
+                          <h3 class="text-sm font-semibold text-ink-900 truncate" translate={nameTranslate}>
+                            {itemName}
                           </h3>
                         </div>
                         {spend && (
@@ -155,7 +157,7 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
                           class="inline-flex items-center gap-1 text-xs font-medium text-accent-700 hover:text-accent-900 transition-colors focus:outline-hidden focus:underline"
                         >
                           <span>{t('idp.action.open')}</span>
-                          <span class="sr-only"> ({item.name})</span>
+                          <span class="sr-only" translate={nameTranslate}> ({itemName})</span>
                           <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                             <polyline points="15 3 21 3 21 9"></polyline>

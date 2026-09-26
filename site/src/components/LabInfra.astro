@@ -121,7 +121,7 @@ const activeCount = platform.nodes.filter((n) => n.status !== 'standby').length;
         class:list={['border-b border-ink-100 py-3', node.status === 'standby' && STANDBY_ROW]}
       >
         <div class="flex items-baseline justify-between gap-3">
-          <span class="font-semibold text-ink-900 text-sm">{node.name}</span>
+          <span class="font-semibold text-ink-900 text-sm" data-i18n-pending="platform">{node.name}</span>
           <span class="flex items-center gap-1.5 shrink-0 font-mono text-xs text-ink-500">
             <span class:list={['h-1.5 w-1.5 rounded-full shrink-0', STATUS_DOT[node.status]]}></span>
             {STATUS_LABEL[node.status]}
@@ -132,7 +132,7 @@ const activeCount = platform.nodes.filter((n) => n.status !== 'standby').length;
           {isEs ? node.roleEs : node.role}
         </p>
 
-        <p class="font-mono text-xs text-ink-500 mt-1">{specLine(node)}</p>
+        <p class="font-mono text-xs text-ink-500 mt-1" data-i18n-pending="platform">{specLine(node)}</p>
       </li>
     ))}
   </ul>

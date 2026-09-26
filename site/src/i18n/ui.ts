@@ -784,7 +784,7 @@ export const ui = {
     // IDP Catalog (KubeLab IDP)
     'idp.catalog.title': 'KubeLab IDP · Catálogo de Control Plane y Herramientas',
     'idp.catalog.description': 'Catálogo operativo público, costes de infraestructura, observabilidad y herramientas de plataforma.',
-    'idp.catalog.eyebrow': 'Internal Developer Platform',
+    'idp.catalog.eyebrow': 'Plataforma interna de desarrollo',
     'idp.catalog.backToLab': 'Volver al Lab de Plataforma',
     'idp.catalog.intro': 'La plataforma de desarrollo interna que da soporte a los agentes autónomos, reconciliación GitOps y cargas edge. Costes cloud transparentes, runbooks de incidentes, postura de seguridad y herramientas core.',
     'idp.catalog.stats': '{categories} dominios operativos · {items} componentes de plataforma · ~19 €/mes gasto cloud',
@@ -802,7 +802,7 @@ export const ui = {
     'idp.nav.architecture': 'Flujos Operativos',
     'idp.arch.title': 'KubeLab IDP · Flujos Operativos y Arquitectura de Petición',
     'idp.arch.description': 'Enrutamiento público de peticiones, WAF perimetral, autenticación forward y pipeline de telemetría.',
-    'idp.arch.eyebrow': 'Internal Developer Platform',
+    'idp.arch.eyebrow': 'Plataforma interna de desarrollo',
     'idp.arch.backToIdp': 'Volver al Catálogo IDP',
     'idp.arch.intro': 'Visualización del ciclo de vida de peticiones en defensa en profundidad: desde el edge Anycast y WAF de Cloudflare, pasando por el ingress Traefik y autenticación forward con Authelia, hasta las cargas de trabajo en contenedores y la telemetría en Loki.',
     'idp.arch.requestPath.heading': 'Ruta de Petición y Defensa en Profundidad',
@@ -817,7 +817,7 @@ export const ui = {
     'idp.arch.source': 'Reconciliado desde mlorentedev/kubelab · arquitectura operativa custom.js · conforme con zero-addressing (ADR-056 §3)',
 
     // Lab teaser (section 08)
-    'lab.idp.heading': 'Catálogo del Internal Developer Platform (IDP)',
+    'lab.idp.heading': 'Catálogo de la plataforma interna de desarrollo (IDP)',
     'lab.idp.intro': 'El cockpit operativo y suite de herramientas: costes reales de infraestructura cloud, runbooks de incidentes, postura de seguridad y dependencias upstream.',
     'lab.idp.cta': 'Explorar catálogo IDP completo',
     'lab.idp.spendLabel': 'Coste Cloud Mensual',
@@ -904,7 +904,7 @@ export const ui = {
     'lab.services.th.category': 'Categoría',
     'lab.services.th.access': 'Acceso',
     'lab.services.th.node': 'Nodo',
-    'lab.services.th.endpoint': 'Endpoint',
+    'lab.services.th.endpoint': 'Dirección',
     'lab.services.th.description': 'Descripción y Stack',
 
     // Un solo nombre por concepto: Servicios e IA y automatizaciones declaran

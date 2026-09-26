@@ -17,7 +17,12 @@ export interface IdpSpendBadge {
 
 export interface IdpItem {
   id: string;
+  /** The source's name, pinned to `bookmarks.yaml`; the page shows `shownItemName`. */
   name: string;
+  /** The Spanish title, for a name that describes rather than names. */
+  nameEs?: string;
+  /** The name is a product's or a repository's, the same in every locale. */
+  brand?: true;
   /**
    * Pinned source link from `bookmarks.yaml`. Preserved verbatim for provenance
    * audits, even when no clickable link is rendered publicly.
@@ -57,3 +62,8 @@ export interface IdpManifest {
 }
 
 export const idpCatalog = idpCatalogData as IdpManifest;
+
+/** The title a card shows in `lang`: a brand keeps its name, anything else is translated. */
+export function shownItemName(item: IdpItem, lang: 'en' | 'es'): string {
+  return lang === 'es' && item.nameEs ? item.nameEs : item.name;
+}
