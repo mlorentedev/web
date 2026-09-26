@@ -57,11 +57,13 @@ interface Props {
   label: string;
   /** One sentence under the heading. */
   caption: string;
+  /** The caption states counts, filled from `fleet`; marks it `data-count`. */
+  counted?: boolean;
   /** What the drawing does not say for itself. */
   legend: string;
 }
 
-const { name, number, label, caption, legend } = Astro.props;
+const { name, number, label, caption, legend, counted = false } = Astro.props;
 
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
@@ -262,7 +264,7 @@ const svg = assertViewerAffordancesGone(
 <Section padding="py-10" data-lab-section={name}>
   <SectionHeading number={number} label={label} margin="mb-3" />
 
-  <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-6">{caption}</p>
+  <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-6" data-count={counted || undefined}>{caption}</p>
 
   <figure class="mb-4">
     {/*

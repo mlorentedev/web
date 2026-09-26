@@ -23,6 +23,7 @@ import LabStory from './LabStory.astro';
 import LabServices from './LabServices.astro';
 import LabInfra from './LabInfra.astro';
 import LabDiagram from './LabDiagram.astro';
+import { withCounts } from '../data/platform';
 import LabSlos from './LabSlos.astro';
 import LabIdpTeaser from './LabIdpTeaser.astro';
 import LabProbe from './LabProbe.astro';
@@ -54,7 +55,8 @@ const t = useTranslations(lang);
       name="topology"
       number="04"
       label={t('lab.diagram.topology.heading')}
-      caption={t('lab.diagram.topology.caption')}
+      caption={withCounts(t('lab.diagram.topology.caption'))}
+      counted
       legend={t('lab.diagram.topology.legend')}
     />
 
