@@ -14,6 +14,9 @@
         {
           "slug": "curator-agent",
           "name": "Curator Agent",
+          "label": "Curator Agent",
+          "labelEs": "Agente curador",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "Neural Hive · Memory & ADR Synthesis",
           "descriptionEs": "Neural Hive · síntesis de memoria y ADR",
           "sourceHref": "https://github.com/mlorentedev/knowledge",
@@ -22,6 +25,9 @@
         {
           "slug": "sre-triage-agent",
           "name": "SRE Triage Agent",
+          "label": "SRE Triage Agent",
+          "labelEs": "Agente de triaje SRE",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "Reactive LogQL & Anomaly Classifier",
           "descriptionEs": "Clasificador reactivo de anomalías sobre LogQL",
           "sourceHref": "https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-064-agentic-observability-and-auto-triage.md",
@@ -31,6 +37,9 @@
         {
           "slug": "gitops-delivery-agent",
           "name": "GitOps Delivery Agent",
+          "label": "GitOps Delivery Agent",
+          "labelEs": "Agente de entrega GitOps",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "Automated Release Attestation & Promotion",
           "descriptionEs": "Atestación y promoción de releases automatizadas",
           "sourceHref": "https://argo.kubelab.live",
@@ -46,6 +55,9 @@
         {
           "slug": "spec-driven-dev",
           "name": "Spec-Driven Dev",
+          "label": "Spec-Driven Dev",
+          "labelEs": "Desarrollo guiado por especificaciones",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "Formal RFCs, Threat Models & Archive Gates",
           "descriptionEs": "RFC formales, modelos de amenaza y puertas de archivado",
           "sourceHref": "https://github.com/mlorentedev/knowledge/blob/master/00_meta/patterns/pattern-spec-driven-development.md",
@@ -78,6 +90,9 @@
         {
           "slug": "zero-plaintext-secrets",
           "name": "Zero Plaintext Secrets",
+          "label": "Zero Plaintext Secrets",
+          "labelEs": "Ningún secreto en claro",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "Age / SOPS Cryption & In-Memory Injection",
           "descriptionEs": "Cifrado Age/SOPS e inyección en memoria",
           "sourceHref": "https://github.com/mlorentedev/kubelab/blob/master/docs/adr/adr-038-sops-age-encryption-for-secrets.md",
@@ -95,6 +110,9 @@
         {
           "slug": "sre-incident-auto-triage",
           "name": "SRE Incident Auto-Triage",
+          "label": "SRE Incident Auto-Triage",
+          "labelEs": "Triaje automático de incidentes SRE",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "Alertmanager Webhook -> Log Slicing -> Slack",
           "descriptionEs": "Webhook de Alertmanager → corte de logs → Slack",
           "sourceHref": "https://n8n.kubelab.live",
@@ -103,6 +121,9 @@
         {
           "slug": "secret-expiry-r2-backup",
           "name": "Secret Expiry & R2 Backup",
+          "label": "Secret Expiry & R2 Backup",
+          "labelEs": "Caducidad de secretos y copia en R2",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "Proactive Backup & Credential Rotator",
           "descriptionEs": "Copia proactiva y rotación de credenciales",
           "sourceHref": "https://status.kubelab.live",
@@ -111,6 +132,9 @@
         {
           "slug": "spoke-reconciliation",
           "name": "Spoke Reconciliation",
+          "label": "Spoke Reconciliation",
+          "labelEs": "Reconciliación de los clústeres satélite",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "K8s Spoke Topology Drift Healing",
           "descriptionEs": "Corrección de deriva en la topología de spokes K8s",
           "sourceHref": "https://argo.kubelab.live",
@@ -126,6 +150,9 @@
         {
           "slug": "loki-telemetry-api",
           "name": "Loki Telemetry API",
+          "label": "Loki Telemetry API",
+          "labelEs": "API de telemetría de Loki",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "LogQL Cluster Telemetry & Tracebacks",
           "descriptionEs": "Telemetría del clúster y trazas con LogQL",
           "sourceHref": "https://grafana.kubelab.live/explore",
@@ -134,6 +161,9 @@
         {
           "slug": "health-slo-monitor",
           "name": "Health & SLO Monitor",
+          "label": "Health & SLO Monitor",
+          "labelEs": "Monitor de salud y SLO",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "Live Multi-Burn-Rate SLO Engine",
           "descriptionEs": "Motor de SLO multi-burn-rate en vivo",
           "sourceHref": "https://status.kubelab.live",
@@ -142,6 +172,9 @@
         {
           "slug": "codebase-activity",
           "name": "Codebase Activity",
+          "label": "Codebase Activity",
+          "labelEs": "Actividad del código",
+          "labelNote": "The source names it in English only; the Spanish page shows a translation (WEB-141, AC4).",
           "description": "L0 Infrastructure Codebase",
           "descriptionEs": "Código de la infraestructura L0",
           "sourceHref": "https://github.com/mlorentedev/kubelab",

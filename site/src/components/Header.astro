@@ -6,8 +6,9 @@ const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-const navItems: { label: string; href: string }[] = [
-  { label: t('nav.lab'), href: translatePath('/lab/') },
+// `name`: the label is a name in every locale, so it is marked `translate="no"`.
+const navItems: { label: string; href: string; name?: boolean }[] = [
+  { label: t('nav.lab'), href: translatePath('/lab/'), name: true },
   { label: t('nav.ai'), href: translatePath('/ai/') },
   { label: t('nav.notes'), href: translatePath('/notes/') },
   { label: t('nav.contact'), href: translatePath('/contact/') },
@@ -25,7 +26,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
 <header class="bg-accent-50 text-ink-700 sticky top-0 w-full border-b border-accent-100 z-50">
   <nav class="px-3 sm:px-4 py-3 flex items-center justify-between">
     <span class="text-xl font-extrabold">
-      <a href={translatePath('/')} class="no-underline hover:text-accent-700 transition-colors duration-200 focus:outline-hidden focus:text-accent-700">
+      <a href={translatePath('/')} translate="no" class="no-underline hover:text-accent-700 transition-colors duration-200 focus:outline-hidden focus:text-accent-700">
         Manu Lorente
       </a>
     </span>
@@ -35,6 +36,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
         <img
           src="/images/me-2.webp"
           alt="Manu Lorente"
+          translate="no"
           width="96"
           height="125"
           class="w-12 h-auto rounded-full border-[1.5px] border-white shadow-lg"
@@ -48,6 +50,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
       {navItems.map((item) => (
         <a
           href={item.href}
+          translate={item.name ? 'no' : undefined}
           class:list={[
             'hover:text-accent-700 focus:outline-hidden focus:text-accent-700 transition-colors duration-200 text-sm',
             currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))

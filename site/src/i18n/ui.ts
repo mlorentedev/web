@@ -18,6 +18,7 @@ export const ui = {
     'nav.contact': 'Contact',
     'nav.toggle': 'Toggle menu',
     'nav.skipToContent': 'Skip to content',
+    'footer.email': 'Email',
 
     // AI Section
     // A section name, not a second label: the label is the home eyebrow (WEB-137).
@@ -30,6 +31,14 @@ export const ui = {
       'Task dispatch, knowledge retrieval via FastMCP, sandboxed worktree execution, and adversarial review.',
     'ai.diagram.legend':
       'Every agent operation runs within an isolated Git worktree. Destructive actions trigger a synchronous HITL gate. PRs are audited by an independent model family before reaching human review.',
+    'ai.hero.pill.attribution': 'Zero AI Attribution',
+    'ai.hero.pill.flock': 'Kernel flock',
+    'ai.hero.pill.worktrees': 'Ephemeral Worktrees',
+    'ai.hero.pill.redactor': 'Stream Redactor',
+    'ai.pillars.badge.isolation': 'Isolation',
+    'ai.pillars.badge.security': 'Security',
+    'ai.pillars.badge.safety': 'Safety',
+    'ai.pillars.badge.verification': 'Verification',
     'ai.pillars.heading': 'Four rules, each with a mechanism behind it',
     'ai.pillars.sub': 'None of them relies on the model behaving well: each one is a lock, a filter, a limit or a review.',
     'ai.pillars.p1.title': 'OS Concurrency & Worktree Sandboxing',
@@ -529,6 +538,7 @@ export const ui = {
     'nav.contact': 'Contacto',
     'nav.toggle': 'Abrir menú',
     'nav.skipToContent': 'Saltar al contenido',
+    'footer.email': 'Correo electrónico',
 
     // AI Section
     'ai.hero.eyebrow': 'Cómo trabajo con agentes de IA',
@@ -540,6 +550,14 @@ export const ui = {
       'Despacho de tareas, recuperación de conocimiento vía FastMCP, ejecución aislada en worktrees y revisión adversarial.',
     'ai.diagram.legend':
       'Cada operación del agente corre en un Git worktree aislado. Las acciones destructivas activan una puerta HITL sincrónica. Las PRs son auditadas por una familia de modelos independiente antes de la revisión humana.',
+    'ai.hero.pill.attribution': 'Sin atribución a la IA',
+    'ai.hero.pill.flock': 'Bloqueo con flock',
+    'ai.hero.pill.worktrees': 'Copias de trabajo efímeras',
+    'ai.hero.pill.redactor': 'Redactor de secretos',
+    'ai.pillars.badge.isolation': 'Aislamiento',
+    'ai.pillars.badge.security': 'Seguridad',
+    'ai.pillars.badge.safety': 'Salvaguardas',
+    'ai.pillars.badge.verification': 'Verificación',
     'ai.pillars.heading': 'Cuatro reglas, cada una con un mecanismo detrás',
     'ai.pillars.sub': 'Ninguna depende de que el modelo se porte bien: cada una es un cerrojo, un filtro, un límite o una revisión.',
     'ai.pillars.p1.title': 'Aislamiento y Concurrencia a Nivel de OS',
