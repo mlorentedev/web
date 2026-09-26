@@ -35,15 +35,17 @@ created: "2026-09-24"
 
 > Amended 2026-09-25: the home is prose. The Timeline goes too, and there is no proof block or `proofs.ts`.
 
-- [ ] [AC2] [AC5] Write failing test: the home no longer renders IdpStrip, ProjectsSection, ProofSurface,
+- [x] [AC2] [AC5] Write failing test: the home no longer renders IdpStrip, ProjectsSection, ProofSurface,
   CommunitySection or Timeline, and no node/service count or "99.9%" appears in either built home
-- [ ] [AC2] Remove the five sections from `HomePage`; the bio renders second, in a `data-home-block="story"` section
+- [x] [AC2] Remove the five sections from `HomePage`; the bio renders second, in a `data-home-block="story"` section
   with `id="story"` (update `bio.test`, which today looks for it inside the Timeline)
-- [ ] Housekeeping: delete the orphaned code: the five components, `data/github.ts`, and every `ui.ts` key left with
+- [x] Housekeeping: delete the orphaned code: the five components, `data/github.ts`, and every `ui.ts` key left with
   no consumer. `data/experience.ts` stays (the story's figures are held to it). Tell the WEB-141 session before
   deleting any `idp.*` key (its namespace) and delete only keys with no consumer left
-- [ ] Housekeeping: in the hero, the "What I build on it" → `#projects` link becomes the link to `#story`
-- [ ] [AC2] Add the agreed community paragraph (CommunitySection's content moves here) at the end of
+- [x] Housekeeping: in the hero, the "What I build on it" → `#projects` link goes (its target is gone). The link to
+  `#story` needs new wording, so it lands with the story in PR 3. The subtitle's "The homelab below is the proof" is
+  removed here: nothing is below it any more
+- [x] [AC2] Add the agreed community paragraph (CommunitySection's content moves here) at the end of
   `content/pages/{en,es}-bio.mdx`; `bio.test` must stay green
 
 ### PR 3 · The story
@@ -52,7 +54,8 @@ created: "2026-09-24"
   it resolves to a built route, every figure is in `experience.ts`, the agents sentence states no figure, and it has
   300 to 450 words per locale
 - [ ] [AC4] Draft the story in `content/pages/{en,es}-bio.mdx` from the current bio and `brand-package.md` §3 (the
-  career the Timeline listed, told as prose; the three proofs as linked sentences; `/projects` linked once)
+  career the Timeline listed, told as prose; the three proofs as linked sentences; `/projects` linked once), and the
+  hero's secondary link to `#story` in place of "Explore my platform"
 - [ ] Manu rewrites the draft in the PR before it merges; the tests hold whatever wording he lands on
 
 ### PR 4 · The door on the home, notes last

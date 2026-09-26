@@ -1,10 +1,10 @@
-import type { Lang } from '../i18n/ui';
 
 /**
- * Experience timeline for the landing "My path / Mi camino" section (WEB-012).
- * Condensed from the canonical CV (the `resume` project's `data/cv.yml`) —
- * one headline per role, metric-first. Keep it short: the landing is a spine,
- * not the full CV. Bilingual, same shape as `portfolio.ts`.
+ * Career facts, condensed from the canonical CV (the `resume` project's
+ * `data/cv.yml`): one headline per role, metric-first. Nothing renders this list
+ * any more (the Timeline left the home, WEB-140); it is the source every figure
+ * in the home's story is held to (`tests/bio.test.mjs`). A new figure goes here
+ * first, next to the role it belongs to. Bilingual, same shape as `portfolio.ts`.
  */
 
 /** Per-language copy for a role. */
@@ -27,32 +27,6 @@ export interface Experience {
   location: { en: string; es: string };
   en: RoleContent;
   es: RoleContent;
-}
-
-/** A timeline entry flattened to one language + a rendered period string. */
-export interface LocalizedExperience extends RoleContent {
-  period: string;
-  company: string;
-  location: string;
-}
-
-/**
- * Flatten an entry to the given language. `presentLabel` localizes an ongoing
- * role's end ("Present" / "Actualidad") — pass `t('experience.present')`.
- */
-export function localizeExperience(
-  entry: Experience,
-  lang: Lang,
-  presentLabel: string,
-): LocalizedExperience {
-  const content = entry[lang] ?? entry.en;
-  return {
-    period: `${entry.start} — ${entry.end ?? presentLabel}`,
-    company: entry.company,
-    location: entry.location[lang] ?? entry.location.en,
-    role: content.role,
-    highlight: content.highlight,
-  };
 }
 
 export const experience: Experience[] = [

@@ -88,7 +88,7 @@ export const ui = {
     'hero.eyebrow': 'Engineer from Silicon to Cloud',
     'hero.title': 'The infrastructure under the agents, not the prompts on top',
     'hero.subtitle':
-      'Almost everyone building for AI agents arrives from the application side. I arrive from the metal — Kubernetes on hardware I own, mesh, split DNS, GitOps that reconciles in under thirty seconds. That platform is where my own agents now run, under a harness with hard limits. The homelab below is the proof. The agent platform is what I am building on it.',
+      'Almost everyone building for AI agents arrives from the application side. I arrive from the metal — Kubernetes on hardware I own, mesh, split DNS, GitOps that reconciles in under thirty seconds. That platform is where my own agents now run, under a harness with hard limits. The agent platform is what I am building on it.',
     // The door (WEB-137): the one way in, the same button on the hero and on
     // /contact/. The mail it opens is the written filter, three lines.
     'door.cta': 'Tell me what has to work',
@@ -96,18 +96,10 @@ export const ui = {
     'door.body': "What has to work:\nWhat's already in production:\nWhen you need it:\n",
     'door.busy': 'Currently on a project; the next one starts in {month}.',
     'hero.explorePlatform': 'Explore my platform',
-    'hero.whatIBuild': 'What I build on it',
 
     // Cockpit (WEB-157 / PORT-03)
-    'idp.heading': 'Platform telemetry',
-    'idp.k3s': 'K3s Operational · GitOps Synced (ArgoCD)',
-    'idp.edge': 'Jetson Nano · Qwen 2.5 1.5B, CPU inference',
-    'idp.hive': 'Hive MCP Active (Context RAG)',
-    'idp.uptime': '99.9% Uptime (90d)',
-    'idp.cta': 'Explore the platform →',
     'idp.title': 'KubeLab Platform & Engineering Cockpit',
     'idp.description': 'The 24/7 hybrid cloud and bare-metal infrastructure platform powering my autonomous AI agents, edge inference, and GitOps workflows.',
-    'idp.overview': 'Infrastructure telemetry across Hetzner Cloud, on-prem bare-metal K3s, and NVIDIA Jetson edge inference. Figures are recorded at build time.',
     'idp.story.heading': 'The Engineering Foundry Behind Every Product',
     'idp.story.p1': 'KubeLab is the operating foundation behind every project, open-source tool, and product showcased across this portfolio (including Pollex, Hive MCP, KubeLab Platform API, and this Astro website). It spans eight machines across Hetzner Cloud (Germany), Google Cloud and a bare-metal homelab in the USA, running three single-node K3s clusters.',
     'idp.pillar.gitops': 'Reproducible GitOps',
@@ -425,7 +417,6 @@ export const ui = {
 
     // Home sections
     'home.stack': 'What I work with',
-    'home.projects': 'What I build on it',
 
     // Projects
     'projects.viewProject': 'View project',
@@ -439,17 +430,10 @@ export const ui = {
 
     // Experience timeline (WEB-012)
     'home.experience': 'My path',
-    'experience.present': 'Present',
-    'home.community': 'Community & background',
     'home.latest': 'Latest notes',
     'home.allNotes': 'All notes',
 
     // GitHub proof surface (WEB-019)
-    'proof.heading': 'Open source',
-    'proof.repos': 'public repos',
-    'proof.stars': 'stars · GitHub',
-    'proof.hive': 'stars · Hive',
-    'proof.languages': 'Shipped in',
 
     // Newsletter (keys exist for type safety — EN landing has no newsletter)
     'newsletter.placeholder': 'you@email.com',
@@ -594,24 +578,16 @@ export const ui = {
     'hero.eyebrow': 'Ingeniero del silicio a la nube',
     'hero.title': 'La infraestructura de debajo de los agentes, no los prompts de encima',
     'hero.subtitle':
-      'Casi todo el que construye para agentes de IA llega desde el lado de la aplicación. Yo llego desde el metal — Kubernetes sobre hardware que es mío, malla, DNS partido, GitOps que reconcilia en menos de treinta segundos. Ahí es donde corren ahora mis propios agentes, bajo un harness con límites duros. El homelab de abajo es la prueba. La plataforma de agentes es lo que estoy construyendo encima.',
+      'Casi todo el que construye para agentes de IA llega desde el lado de la aplicación. Yo llego desde el metal — Kubernetes sobre hardware que es mío, malla, DNS partido, GitOps que reconcilia en menos de treinta segundos. Ahí es donde corren ahora mis propios agentes, bajo un harness con límites duros. La plataforma de agentes es lo que estoy construyendo encima.',
     'door.cta': 'Cuéntame qué tiene que funcionar',
     'door.subject': 'Qué tiene que funcionar',
     'door.body': 'Qué tiene que funcionar:\nQué hay ya en producción:\nPara cuándo lo necesitas:\n',
     'door.busy': 'Ahora mismo en un proyecto; el siguiente arranca en {month}.',
     'hero.explorePlatform': 'Explora mi plataforma',
-    'hero.whatIBuild': 'Lo que construyo encima',
 
     // Cockpit (WEB-157 / PORT-03)
-    'idp.heading': 'Telemetría de plataforma',
-    'idp.k3s': 'K3s Operativo · GitOps Sincronizado (ArgoCD)',
-    'idp.edge': 'Jetson Nano · Qwen 2.5 1.5B, inferencia en CPU',
-    'idp.hive': 'Hive MCP Activo (RAG Contextual)',
-    'idp.uptime': '99.9% Disponibilidad (90d)',
-    'idp.cta': 'Explorar la plataforma →',
     'idp.title': 'Plataforma KubeLab y Cockpit de Ingeniería',
     'idp.description': 'La plataforma híbrida en la nube y bare-metal que opera 24/7 mis agentes de IA autónomos, inferencia edge y flujos GitOps.',
-    'idp.overview': 'Telemetría de infraestructura en Hetzner Cloud, K3s bare-metal on-prem e inferencia edge con NVIDIA Jetson. Las cifras se registran en el build.',
     'idp.story.heading': 'La Fábrica de Ingeniería Detrás de Cada Producto',
     'idp.story.p1': 'KubeLab es la base operativa sobre la que he construido, probado y desplegado cada proyecto, herramienta open-source y producto de mi portfolio (incluyendo Pollex, Hive MCP Server, la API de KubeLab y esta misma web en Astro). Abarca ocho máquinas entre Hetzner Cloud (Alemania), Google Cloud y un homelab bare-metal en EE.UU., con tres clústeres K3s de un nodo cada uno.',
     'idp.pillar.gitops': 'GitOps Reproducible',
@@ -929,7 +905,6 @@ export const ui = {
 
     // Home sections
     'home.stack': 'Con qué trabajo',
-    'home.projects': 'Lo que construyo encima',
 
     // Projects
     'projects.viewProject': 'Ver proyecto',
@@ -943,17 +918,10 @@ export const ui = {
 
     // Experience timeline (WEB-012)
     'home.experience': 'Mi camino',
-    'experience.present': 'Actualidad',
-    'home.community': 'Comunidad y más',
     'home.latest': 'Últimas notas',
     'home.allNotes': 'Todas las notas',
 
     // GitHub proof surface (WEB-019)
-    'proof.heading': 'Código abierto',
-    'proof.repos': 'repos públicos',
-    'proof.stars': 'estrellas · GitHub',
-    'proof.hive': 'estrellas · Hive',
-    'proof.languages': 'Construido en',
 
     // Newsletter (ES only — EN keys exist for type safety)
     'newsletter.placeholder': 'tu@email.com',

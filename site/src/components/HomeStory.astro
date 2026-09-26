@@ -1,0 +1,29 @@
+---
+// The home's story (WEB-140): the bio, told as prose, where the Timeline used
+// to list roles. It lives in `content/pages/<lang>-bio.mdx` so it is edited as
+// markdown, and every figure in it must already be in `data/experience.ts`
+// (`bio.test`). The hero links here through `#story`.
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const [bio] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'bio' && data.lang === lang);
+if (!bio) throw new Error(`HomeStory: no bio for "${lang}" — expected src/content/pages/${lang}-bio.mdx with page: bio`);
+const { Content: Bio } = await render(bio);
+---
+
+<Section id="story" data-home-block="story">
+  <SectionHeading label={t('home.experience')} margin="mb-8" />
+  <div data-bio class="prose prose-base max-w-3xl prose-p:text-ink-700 prose-p:leading-relaxed prose-a:text-accent-700 hover:prose-a:text-accent-800">
+    <Bio />
+  </div>
+</Section>

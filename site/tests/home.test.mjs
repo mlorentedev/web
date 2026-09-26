@@ -51,3 +51,42 @@ for (const { lang, page, importPath, built } of homes) {
     assert.equal(h1s.length, 1, `dist/${built} has ${h1s.length} <h1> elements`);
   });
 }
+
+// ── The home is prose (amended 2026-09-25) ─────────────────────────────────
+//
+// The visual sections live on the pages the story links to. Each one is named
+// by the marker it rendered, so a section that comes back under any heading is
+// still caught. Counts of nodes or services and a hand-written uptime are
+// banned copy (brand-package §7, #133/#355).
+
+const retired = [
+  { name: 'IdpStrip', marker: /\bdata-idp-strip\b/ },
+  { name: 'ProjectsSection', marker: /\bid="projects"/ },
+  { name: 'ProofSurface', marker: /\bdata-proof\b/ },
+  { name: 'Timeline', marker: /\bdata-experience\b|\bdata-role\b/ },
+];
+
+const homePageSrc = readFileSync(join(siteRoot, 'src/components/HomePage.astro'), 'utf8');
+
+test('HomePage imports none of the five retired sections', () => {
+  const imported = ['IdpStrip', 'ProjectsSection', 'ProofSurface', 'CommunitySection', 'Timeline']
+    .filter((name) => new RegExp(`import ${name}\\b`).test(homePageSrc));
+  assert.deepEqual(imported, [], `HomePage still imports: ${imported.join(', ')}`);
+});
+
+for (const { lang, built } of homes) {
+  test(`[${lang}] the built home renders none of the retired sections`, () => {
+    const html = dist(built);
+    assert.match(html, /data-home-block="story"/, `dist/${built} has no story block to stand in for them`);
+    const found = retired.filter(({ marker }) => marker.test(html)).map(({ name }) => name);
+    assert.deepEqual(found, [], `dist/${built} still renders: ${found.join(', ')}`);
+  });
+
+  test(`[${lang}] the built home states no node or service count and no uptime`, () => {
+    const main = dist(built).match(/<main[\s\S]*<\/main>/)?.[0] ?? '';
+    const text = main.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+    assert.ok(text.length > 500, `dist/${built}: <main> rendered almost nothing`);
+    const counts = text.match(/\b\d+\s+(?:active\s+|activos?\s+)?(?:nodes?|services?|nodos?|servicios?)\b|99[.,]9\s*%/gi) ?? [];
+    assert.deepEqual(counts, [], `dist/${built} states: ${counts.join(', ')}`);
+  });
+}
