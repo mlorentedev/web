@@ -49,3 +49,61 @@ for (const [lang, page] of [['en', 'index.html'], ['es', 'es/index.html']]) {
     assert.ok(text.length > 100, `dist/${page}: the story block has no bio, or it rendered empty`);
   });
 }
+
+// ── The story carries the proofs (WEB-140, AC4) ────────────────────────────
+//
+// The home is prose, so each proof is a sentence with a link to where it can be
+// checked. The words stay Manu's; these tests hold the links, the length and
+// the one figure that is not settled yet (#238).
+
+const homes = [
+  { lang: 'en', page: 'index.html', prefix: '' },
+  { lang: 'es', page: 'es/index.html', prefix: '/es' },
+];
+
+/** The rendered story block of a built home. */
+function story(page) {
+  const file = join(distDir, page);
+  assert.ok(existsSync(file), `dist/${page} must exist — run the build first`);
+  const html = readFileSync(file, 'utf8');
+  return html.match(/<section[^>]*data-home-block="story"[\s\S]*?<\/section>/)?.[0] ?? '';
+}
+
+/** Where a site-relative href lands in `dist/`. */
+function builtRoute(href) {
+  const path = href.split('#')[0];
+  return join(distDir, path.endsWith('/') ? `${path}index.html` : path);
+}
+
+for (const { lang, page, prefix } of homes) {
+  test(`[${lang}] the story links the Lab and the AI page in its own locale`, () => {
+    const hrefs = [...story(page).matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+    assert.ok(hrefs.includes(`${prefix}/lab/`), `the ${lang} story does not link ${prefix}/lab/`);
+    assert.ok(hrefs.includes(`${prefix}/ai/`), `the ${lang} story does not link ${prefix}/ai/`);
+  });
+
+  test(`[${lang}] every site link in the story resolves to a built page`, () => {
+    const internal = [...story(page).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]);
+    assert.ok(internal.length > 0, `the ${lang} story links nothing on the site`);
+    const broken = internal.filter((href) => !existsSync(builtRoute(href)));
+    assert.deepEqual(broken, [], `links with no built page: ${broken.join(', ')}`);
+  });
+
+  test(`[${lang}] the sentence that links the agents states no figure (#238)`, () => {
+    const paragraph = story(page).match(/<p>(?:(?!<\/p>)[\s\S])*?href="[^"]*\/ai\/"[\s\S]*?<\/p>/)?.[0] ?? '';
+    assert.ok(paragraph, `the ${lang} story has no paragraph linking /ai/`);
+    const linkText = paragraph.match(/href="[^"]*\/ai\/"[^>]*>([^<]+)</)?.[1] ?? '';
+    const sentence = paragraph.replace(/<[^>]*>/g, '').split(/(?<=[.!?])\s+/).find((s) => s.includes(linkText)) ?? '';
+    assert.ok(sentence, `no sentence around the /ai/ link "${linkText}"`);
+    assert.doesNotMatch(sentence, /\d/, `the agents sentence states a figure: "${sentence}"`);
+  });
+
+  test(`[${lang}] the story is 300 to 450 words`, () => {
+    const words = bioBody(lang)
+      .replace(/\]\([^)]*\)/g, ']')
+      .replace(/[[\]*_#>]/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean).length;
+    assert.ok(words >= 300 && words <= 450, `the ${lang} story is ${words} words`);
+  });
+}

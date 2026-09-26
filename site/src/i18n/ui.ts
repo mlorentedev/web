@@ -95,7 +95,7 @@ export const ui = {
     'door.subject': 'What has to work',
     'door.body': "What has to work:\nWhat's already in production:\nWhen you need it:\n",
     'door.busy': 'Currently on a project; the next one starts in {month}.',
-    'hero.explorePlatform': 'Explore my platform',
+    'hero.story': 'Read my story',
 
     // Cockpit (WEB-157 / PORT-03)
     'idp.title': 'KubeLab Platform & Engineering Cockpit',
@@ -583,7 +583,7 @@ export const ui = {
     'door.subject': 'Qué tiene que funcionar',
     'door.body': 'Qué tiene que funcionar:\nQué hay ya en producción:\nPara cuándo lo necesitas:\n',
     'door.busy': 'Ahora mismo en un proyecto; el siguiente arranca en {month}.',
-    'hero.explorePlatform': 'Explora mi plataforma',
+    'hero.story': 'Lee mi historia',
 
     // Cockpit (WEB-157 / PORT-03)
     'idp.title': 'Plataforma KubeLab y Cockpit de Ingeniería',
