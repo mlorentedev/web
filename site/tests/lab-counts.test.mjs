@@ -37,6 +37,8 @@ const WORD = String.raw`(?:one|two|three|four|five|six|seven|eight|nine|ten|elev
 const counted = (number) => new RegExp(String.raw`(?<![\p{L}\d])${number}(?:\s+[\p{L}\d-]+){0,3}?\s+${NOUN}(?![\p{L}])`, 'giu');
 const DIGITS = counted(String.raw`\d+\+?`);
 const WORDS = counted(WORD);
+/** "Three of these answer to anyone" names no noun and still states a total (#426 review). */
+const PARTITIVE = new RegExp(String.raw`(?<![\p{L}])${WORD}\s+(?:of\s+(?:these|them|those)|de\s+(?:estos|estas|ellos|ellas|esos|esas))(?![\p{L}])`, 'giu');
 
 const quoted = (tag) => ['pre', 'code', 'svg'].includes(tag);
 
@@ -55,6 +57,7 @@ for (const path of PAGES) {
     const hits = [
       ...outside.flatMap((node) => [...node.matchAll(DIGITS)].map((m) => `typed digit: "${m[0]}" in "${node}"`)),
       ...everywhere.flatMap((node) => [...node.matchAll(WORDS)].map((m) => `spelled count: "${m[0]}" in "${node}"`)),
+      ...everywhere.flatMap((node) => [...node.matchAll(PARTITIVE)].map((m) => `spelled count: "${m[0]}" in "${node}"`)),
     ];
     assert.deepEqual(hits, [], `/${path}:\n  ${hits.join('\n  ')}`);
   });

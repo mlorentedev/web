@@ -7,6 +7,12 @@
  * a catalogue that lists a service without saying who can reach it is a list of
  * names.
  *
+ * The access and the endpoint come from `service-access.json`, the table
+ * measured from outside the mesh (#292), never from `platform.json`. Every host
+ * with a public DNS record links, the gated ones too: Manu decided on
+ * 2026-09-26 that the table is also his way around the lab, so a visitor who
+ * follows the Grafana link meets Authelia, which is what the badge says.
+ *
  * ## Static, and that is a requirement rather than a preference
  *
  * `proposal.md` Out of scope: "This spec delivers layer 0: **static at build,
@@ -20,13 +26,14 @@
  * The access boundary is deliberately **not** painted in `ok`/`warn`/`danger`.
  * Those are reserved for real status, by the mapping decided on #251: a private
  * service is not a degraded one, it is simply not addressed to the reader.
- * `public` takes `accent` because it is a link you can follow; `mesh` takes the
- * neutral `panel`. Status keeps the status families.
+ * `public` takes `accent` because it is a link you can follow; the gates and
+ * `mesh` take the neutral `panel`. Status keeps the status families.
  */
 import ServiceIcon from './ServiceIcon.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { platform, type PlatformService } from '../data/platform';
+import { accessFor, serviceAccess, type ServiceAccess } from '../data/service-access';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -60,6 +67,22 @@ const grouped = CATEGORY_ORDER.map((category) => ({
   services: platform.services.filter((s) => s.category === category),
 })).filter((group) => group.services.length > 0);
 
+const ACCESS_LABEL: Record<ServiceAccess, string> = {
+  public: t('lab.access.public'),
+  authelia: t('lab.access.authelia'),
+  'app-login': t('lab.access.appLogin'),
+  mesh: t('lab.access.mesh'),
+};
+
+/** How many rows each access has, counted from the table, never typed (#426 review). */
+const tally = (Object.keys(ACCESS_LABEL) as ServiceAccess[])
+  .map((access) => ({ access, n: serviceAccess.services.filter((row) => row.access === access).length }))
+  .filter(({ n }) => n > 0);
+
+const measuredOn = new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: 'UTC' }).format(
+  new Date(`${serviceAccess.measured}T00:00:00Z`),
+);
+
 /** Real status, in the status families. Access lives elsewhere, on purpose. */
 const STATUS_DOT: Record<PlatformService['status'], string> = {
   operational: 'bg-ok-500',
@@ -81,8 +104,26 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
   <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-2">
     {t('lab.services.intro')}
   </p>
-  <p class="text-xs font-mono text-ink-500 mb-8" data-count>
+  <p class="text-xs font-mono text-ink-500 mb-1" data-count>
     {t('lab.services.count').replace('{n}', String(platform.services.length))}
+  </p>
+  <ul class="flex flex-wrap gap-2 mb-2" data-access-tally>
+    {tally.map(({ access, n }) => (
+      <li
+        data-access={access}
+        data-count
+        class:list={[
+          'px-1.5 py-0.5 rounded text-xs font-semibold border',
+          access === 'public'
+            ? 'bg-accent-50 text-accent-800 border-accent-200'
+            : 'bg-panel-100 text-panel-700 border-panel-200',
+        ]}
+      >{`${ACCESS_LABEL[access]} `}<span class="font-mono">{n}</span></li>
+    ))}
+  </ul>
+  <p class="text-xs text-ink-500 mb-8">
+    {t('lab.services.measured')}{' '}
+    <time datetime={serviceAccess.measured}>{measuredOn}</time>.
   </p>
 
   <div
@@ -129,11 +170,11 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
               // {group.label}
             </th>
           </tr>
-          {group.services.map((svc) => (
+          {group.services.map((svc) => ({ svc, access: accessFor(svc.slug) })).map(({ svc, access }) => (
             <tr
               data-service-row={svc.env}
               data-service-slug={svc.slug}
-              data-access={svc.isPublic ? 'public' : 'mesh'}
+              data-access={access.access}
               class="hover:bg-ink-50/80 transition-colors"
             >
               <td class="py-2.5 px-3 text-center whitespace-nowrap">
@@ -157,15 +198,15 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
               </td>
 
               <td class="py-2.5 px-3 whitespace-nowrap">
-                {svc.isPublic ? (
-                  <span class="inline-block px-1.5 py-0.5 rounded text-xs font-semibold bg-accent-50 text-accent-800 border border-accent-200">
-                    {t('lab.access.public')}
-                  </span>
-                ) : (
-                  <span class="inline-block px-1.5 py-0.5 rounded text-xs font-semibold bg-panel-100 text-panel-700 border border-panel-200">
-                    {t('lab.access.mesh')}
-                  </span>
-                )}
+                <span
+                  data-access-badge
+                  class:list={[
+                    'inline-block px-1.5 py-0.5 rounded text-xs font-semibold border',
+                    access.access === 'public'
+                      ? 'bg-accent-50 text-accent-800 border-accent-200'
+                      : 'bg-panel-100 text-panel-700 border-panel-200',
+                  ]}
+                >{ACCESS_LABEL[access.access]}</span>
               </td>
 
               <td class="py-2.5 px-3 whitespace-nowrap">
@@ -175,14 +216,14 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
               </td>
 
               <td class="py-2.5 px-3 whitespace-nowrap font-mono text-xs">
-                {svc.url ? (
+                {access.url ? (
                   <a
-                    href={svc.url}
+                    href={access.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="text-accent-700 hover:text-accent-900 font-semibold hover:underline inline-flex items-center gap-1"
                   >
-                    <span translate="no">{svc.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                    <span translate="no">{access.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
                     <span aria-hidden="true">&#8599;</span>
                   </a>
                 ) : (

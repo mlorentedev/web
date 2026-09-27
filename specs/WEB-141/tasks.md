@@ -35,9 +35,14 @@ created: "2026-09-24"
       the Lab pages). Diagrams stay English-only pending #354 AC3; 37 `platform.json` values on `/lab` wait for
       the exporter (phase 2). Manu, 2026-09-25: "Lab" stays a name; automation names and descriptive catalog titles are
       translated; `platform.json` names wait for the exporter (phase 2)
-- [ ] [P] [AC2] Write a failing test that every access label on `/lab` matches a committed, measured access table
-      (#292)
-- [ ] [AC2] Replace the "Mesh only" labels with the measured access table (#292)
+- [x] [P] [AC2] Write a failing test that every access label on `/lab` matches a committed, measured access table
+      (#292). `tests/service-access.test.mjs` and the access assertions in `lab-sections.test.mjs`; the rules are
+      `tests/lib/access.mjs`, re-measured live by `npm run test:access` (weekly, `access-check.yml`)
+- [x] [AC2] Replace the "Mesh only" labels with the measured access table (#292). Manu, 2026-09-26: the access is
+      measured by a test against committed data, not at build time; every host with public DNS links, the gated
+      ones too, because the table is also his way around the lab (a deliberate exception to ADR-059's
+      "platform-internal" and to AC3's no-redirect rule, which stays scoped to `/lab/idp` cards); `LabProbe` and
+      #280 follow in their own PR
 - [x] [P] [AC2] Write a failing test that no count on `/lab`, `/ai` or `/lab/idp` is typed into copy rather than
       read from `platform.json` (#133, #355). `tests/lab-counts.test.mjs`, #423; `tests/lab-figures.test.mjs` does
       the same for percentages, durations and money (#417)

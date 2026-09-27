@@ -1,0 +1,38 @@
+---
+name: Access check
+
+# Re-measures the Lab's access table (`site/src/data/service-access.json`)
+# against the live hosts, from a runner that is not on the mesh (#292).
+#
+# The page renders the committed table and the build never touches the network,
+# so this is what keeps the table true. The "Mesh only" labels it replaced were
+# wrong about four services for weeks because nothing re-checked them. Weekly,
+# and on demand after a change to an ingress or a gate.
+#
+# A red run means a row no longer matches what a visitor meets: change the row
+# (and `measured`) or change the service.
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  access:
+    name: Access
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+
+      # Node built-ins only: no install step.
+      - name: Re-measure every row
+        working-directory: site
+        run: npm run test:access

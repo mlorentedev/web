@@ -199,7 +199,6 @@
       "categoryEs": "IA e Inferencia",
       "description": "On-device LLM text polish running local Qwen 1.5B with zero cloud telemetry.",
       "descriptionEs": "Corrección de texto LLM en edge con Qwen 1.5B local sin telemetría en la nube.",
-      "url": "https://mlorentedev.github.io/pollex/",
       "node": "jetson",
       "env": "prod",
       "tech": [
@@ -208,7 +207,6 @@
         "TensorRT",
         "K3s"
       ],
-      "isPublic": true,
       "status": "operational"
     },
     {
@@ -218,7 +216,6 @@
       "categoryEs": "IA e Inferencia",
       "description": "AST-based chunker and MCP memory layer for multi-agent workflows.",
       "descriptionEs": "Fragmentador basado en AST y capa de memoria MCP para flujos multi-agente.",
-      "url": "https://mlorentedev.github.io/hive/",
       "node": "vps",
       "env": "prod",
       "tech": [
@@ -227,7 +224,6 @@
         "Tree-sitter",
         "SQLite FTS5"
       ],
-      "isPublic": true,
       "status": "operational"
     },
     {
@@ -245,7 +241,6 @@
         "C++",
         "Bare-metal"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -255,7 +250,6 @@
       "categoryEs": "Gateway Principal",
       "description": "High-throughput Go API, Token-Bucket rate limiting and platform telemetry.",
       "descriptionEs": "API en Go de alto rendimiento, rate limiting por token bucket y telemetría de plataforma.",
-      "url": "https://api.kubelab.live",
       "healthEndpoint": "https://api.kubelab.live/health",
       "node": "vps",
       "env": "prod",
@@ -265,7 +259,6 @@
         "ArgoCD",
         "Kubernetes"
       ],
-      "isPublic": true,
       "status": "operational"
     },
     {
@@ -283,7 +276,6 @@
         "Let's Encrypt",
         "CrowdSec"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -301,7 +293,6 @@
         "Tailscale",
         "SQLite"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -319,7 +310,6 @@
         "TOTP",
         "Duo"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -337,7 +327,6 @@
         "Kustomize",
         "Helm"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -355,7 +344,6 @@
         "PostgreSQL",
         "SSH"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -373,7 +361,6 @@
         "Loki",
         "Glances"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -391,7 +378,6 @@
         "Go",
         "S3 Storage"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -409,7 +395,6 @@
         "SQLite",
         "Docker"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -427,7 +412,6 @@
         "S3 API",
         "K3s"
       ],
-      "isPublic": false,
       "status": "operational"
     },
     {
@@ -445,7 +429,6 @@
         "Go",
         "DNSSEC"
       ],
-      "isPublic": false,
       "status": "operational"
     }
   ],
