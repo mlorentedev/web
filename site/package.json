@@ -12,7 +12,8 @@
     "test:audit": "node --test tests/lab-audit.test.mjs",
     "test:browser": "node tests/lab-containment.mjs && node tests/home-first-screen.mjs",
     "test:a11y": "node tests/lab-axe.mjs",
-    "test:access": "node --test tests/access.live.mjs"
+    "test:access": "node --test tests/access.live.mjs",
+    "test:links": "node --test tests/catalog.live.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",

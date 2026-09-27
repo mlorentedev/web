@@ -80,7 +80,8 @@
           "icon": "si-grafana",
           "description": "Loki cluster log exploration, LogQL telemetry, and anomaly classifiers",
           "descriptionEs": "Exploración de logs de cluster en Loki, telemetría LogQL y clasificadores de anomalías",
-          "access": "mesh"
+          "access": "platform",
+          "service": "grafana"
         },
         {
           "id": "argo-sync",
@@ -90,7 +91,8 @@
           "icon": "si-argo",
           "description": "Declarative GitOps continuous delivery and spoke cluster drift healing",
           "descriptionEs": "Entrega continua declarativa GitOps y corrección de drift en clusters spoke",
-          "access": "mesh"
+          "access": "platform",
+          "service": "argocd"
         },
         {
           "id": "status-overview",
@@ -100,7 +102,8 @@
           "icon": "si-uptimekuma",
           "description": "Live multi-burn-rate SLO monitoring and edge probe health status",
           "descriptionEs": "Monitorización de SLOs multi-burn-rate en vivo y estado de sondas de salud perimetrales",
-          "access": "mesh"
+          "access": "platform",
+          "service": "uptime-kuma"
         },
         {
           "id": "sre-runbooks",
@@ -137,21 +140,10 @@
           "name": "SSL Labs",
           "brand": true,
           "sourceHref": "https://www.ssllabs.com/ssltest/analyze.html?d=kubelab.live",
-          "url": "https://www.ssllabs.com/ssltest/analyze.html?d=kubelab.live",
+          "url": "https://www.ssllabs.com/ssltest/analyze.html?d=mlorente.dev",
           "icon": "mdi-certificate",
           "description": "Qualys SSL Labs public A+ TLS rating and cipher configuration audit",
           "descriptionEs": "Auditoría pública de calificación TLS A+ y configuración de cifrado en Qualys SSL Labs",
-          "access": "public"
-        },
-        {
-          "id": "headers-kubelab",
-          "name": "Headers kubelab",
-          "nameEs": "Cabeceras de kubelab",
-          "sourceHref": "https://securityheaders.com/?q=kubelab.live&followRedirects=on",
-          "url": "https://securityheaders.com/?q=kubelab.live&followRedirects=on",
-          "icon": "mdi-shield-check",
-          "description": "SecurityHeaders.com automated CSP, HSTS, and frame restriction verification",
-          "descriptionEs": "Verificación automatizada de CSP, HSTS y restricciones de frame en SecurityHeaders.com",
           "access": "public"
         },
         {
@@ -170,7 +162,7 @@
           "name": "Shodan Perimeter",
           "nameEs": "Perímetro en Shodan",
           "sourceHref": "https://www.shodan.io/host/162.55.57.175",
-          "url": "https://www.shodan.io/domain/kubelab.live",
+          "url": "https://www.shodan.io/domain/mlorente.dev",
           "urlNote": "Sanitized to domain query to conform to ADR-056 §3 zero-addressing doctrine.",
           "icon": "mdi-magnify-scan",
           "description": "External port visibility and attack surface verification for the production VPS",
@@ -264,7 +256,7 @@
           "name": "Claude Status",
           "nameEs": "Estado de Claude",
           "sourceHref": "https://status.anthropic.com",
-          "url": "https://status.anthropic.com",
+          "url": "https://status.claude.com/",
           "icon": "si-anthropic",
           "description": "Inference API latency, error rates, and platform incident reports",
           "descriptionEs": "Latencia de API de inferencia, tasas de error e informes de incidentes",
@@ -284,7 +276,7 @@
           "name": "Kubernetes",
           "brand": true,
           "sourceHref": "https://kubernetes.io/docs/",
-          "url": "https://kubernetes.io/docs/",
+          "url": "https://kubernetes.io/docs/home/",
           "icon": "si-kubernetes",
           "description": "Core container scheduling, networking, and declarative API primitives",
           "descriptionEs": "Primitivas de planificación de contenedores, red y APIs declarativas",
@@ -317,7 +309,7 @@
           "name": "Argo CD",
           "brand": true,
           "sourceHref": "https://argo-cd.readthedocs.io/",
-          "url": "https://argo-cd.readthedocs.io/",
+          "url": "https://argo-cd.readthedocs.io/en/stable/",
           "icon": "si-argo",
           "description": "GitOps operator pattern and multi-cluster application controller guides",
           "descriptionEs": "Patrón operador GitOps y guías de controlador de aplicaciones multi-cluster",

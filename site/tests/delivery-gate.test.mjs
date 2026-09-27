@@ -192,7 +192,7 @@ test('every test script in package.json runs in the shared suite', () => {
   // runs in its own workflow instead: it measures the live hosts (#292), so on
   // a pull request it would fail on the cluster's state rather than the change.
   const { scripts } = JSON.parse(readFileSync(join(here, '../package.json'), 'utf8'));
-  const elsewhere = { 'test:access': 'access-check.yml' };
+  const elsewhere = { 'test:access': 'access-check.yml', 'test:links': 'access-check.yml' };
   const excluded = new Set(['test:audit', ...Object.keys(elsewhere)]);
   assert.match(scripts['test:audit'], /tests\/lab-audit\.test\.mjs$/, 'test:audit is excluded only while npm test covers it');
   for (const [script, file] of Object.entries(elsewhere)) {

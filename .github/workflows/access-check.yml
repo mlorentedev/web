@@ -2,7 +2,8 @@
 name: Access check
 
 # Re-measures the Lab's access table (`site/src/data/service-access.json`)
-# against the live hosts, from a runner that is not on the mesh (#292).
+# against the live hosts, from a runner that is not on the mesh (#292), and
+# checks that no /lab/idp catalog link redirects.
 #
 # The page renders the committed table and the build never touches the network,
 # so this is what keeps the table true. The "Mesh only" labels it replaced were
@@ -36,3 +37,9 @@ jobs:
       - name: Re-measure every row
         working-directory: site
         run: npm run test:access
+
+      # The /lab/idp catalog: no card opens a redirect (WEB-141 AC3).
+      - name: Check every catalog link
+        if: ${{ !cancelled() }}
+        working-directory: site
+        run: npm run test:links

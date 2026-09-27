@@ -21,6 +21,20 @@ const fixturePath = join(here, 'fixtures/bookmarks.yaml');
 const fixtureContent = readFileSync(fixturePath, 'utf8');
 const catalog = JSON.parse(readFileSync(join(siteRoot, 'src/data/idp-catalog.json'), 'utf8'));
 const idpCatalogTs = readFileSync(join(siteRoot, 'src/data/idp-catalog.ts'), 'utf8');
+const accessTable = JSON.parse(readFileSync(join(siteRoot, 'src/data/service-access.json'), 'utf8'));
+const items = catalog.categories.flatMap((cat) => cat.items);
+
+/** The Services table's words for each measured access (#292): a platform card reuses them. */
+const MEASURED_LABEL = {
+  en: { public: 'Public', authelia: 'Behind Authelia', 'app-login': 'Own login', mesh: 'Mesh only' },
+  es: { public: 'Público', authelia: 'Tras Authelia', 'app-login': 'Login propio', mesh: 'Solo malla' },
+};
+
+/** A kubelab.live host, or kubelab.live as the thing a scanner is asked about. */
+function targetsKubelab(url) {
+  const { hostname, search } = new URL(url);
+  return /(^|\.)kubelab\.live$/.test(hostname) || /(^|[=.])kubelab\.live(\b|$)/.test(decodeURIComponent(search));
+}
 
 test('the fixture sha256 matches the manifest provenance declaration', () => {
   const hash = createHash('sha256').update(fixtureContent).digest('hex');
@@ -102,6 +116,45 @@ test('link safety: no public url references private mesh domains, local schemes,
   }
 });
 
+/**
+ * WEB-141 AC3: no card targets `kubelab.live`, which ADR-059 keeps platform
+ * internal. Measured 2026-09-27: SSL Labs, securityheaders and Shodan were all
+ * pointed at it, so the catalog's perimeter scans audited a domain the site does
+ * not serve. They scan `mlorente.dev` now. Redirects are checked live, weekly
+ * (`catalog.live.mjs`), because only a request can see them.
+ */
+test('AC3: no card url targets kubelab.live, as its host or as the thing it asks about', () => {
+  const offenders = items.filter((item) => item.url && targetsKubelab(item.url)).map((i) => `${i.id}: ${i.url}`);
+  assert.deepEqual(offenders, []);
+});
+
+test('targetsKubelab: hosts and scanner queries count, a lookalike does not', () => {
+  assert.ok(targetsKubelab('https://grafana.kubelab.live/explore'));
+  assert.ok(targetsKubelab('https://www.ssllabs.com/ssltest/analyze.html?d=kubelab.live'));
+  assert.ok(targetsKubelab('https://securityheaders.com/?q=kubelab.live&followRedirects=on'));
+  assert.ok(!targetsKubelab('https://www.ssllabs.com/ssltest/analyze.html?d=mlorente.dev'));
+  assert.ok(!targetsKubelab('https://notkubelab.live.example.com/'));
+});
+
+/**
+ * A card for a platform service takes its access from the measured table, not
+ * from its own field: the triage cards said "Tailscale Mesh" for Grafana (behind
+ * Authelia), Argo CD (its own login) and Status (public), measured 2026-09-26.
+ */
+test('AC2: a platform card names a measured service, and no card claims mesh on its own', () => {
+  for (const item of items) {
+    assert.notEqual(item.access, 'mesh', `${item.id}: "mesh" is the access table's to say`);
+    if (item.access === 'platform') {
+      assert.ok(
+        accessTable.services.some((row) => row.slug === item.service),
+        `${item.id}: service "${item.service}" has no row in service-access.json`,
+      );
+    } else {
+      assert.equal(item.service, undefined, `${item.id}: only a platform card names a service`);
+    }
+  }
+});
+
 test('source fidelity: every item sourceHref is present in the source fixture', () => {
   for (const cat of catalog.categories) {
     for (const item of cat.items) {
@@ -161,12 +214,42 @@ for (const [locale, pagePath, expectedBackPath] of IDP_HTML_PAGES) {
     }
   });
 
+  test(`[${locale}] a platform card's badge is the measured access, in the Services table's words`, () => {
+    const html = readFileSync(pagePath, 'utf8');
+    const wrong = items
+      .filter((item) => item.access === 'platform')
+      .map((item) => {
+        const card = html.match(new RegExp(`<article[^>]*data-idp-item="${item.id}"[^>]*>([\\s\\S]*?)</article>`))?.[1];
+        if (!card) return `${item.id}: no card`;
+        const badge = card.match(/<span[^>]*data-idp-access[^>]*>([^<]*)</)?.[1]?.trim();
+        const measured = accessTable.services.find((row) => row.slug === item.service).access;
+        const expected = MEASURED_LABEL[locale][measured];
+        return badge === expected ? null : `${item.id}: badge "${badge}", measured "${expected}"`;
+      })
+      .filter(Boolean);
+    assert.ok(items.some((item) => item.access === 'platform'), 'no platform card: the check would pass vacuously');
+    assert.deepEqual(wrong, []);
+  });
+
+  test(`[${locale}] every card that does not open says why`, () => {
+    const html = readFileSync(pagePath, 'utf8');
+    const cards = [...html.matchAll(/<article[^>]*data-idp-item="([^"]+)"[^>]*>([\s\S]*?)<\/article>/g)];
+    assert.equal(cards.length, items.length, 'one card per catalog item');
+    const silent = cards
+      .filter(([, , body]) => !/<a\b[^>]*href="https:/.test(body))
+      .filter(([, , body]) => !(body.match(/data-idp-why[^>]*>([\s\S]*?)<\/(?:span|a)>/)?.[1] ?? '').replace(/<[^>]+>/g, '').trim())
+      .map(([, id]) => id);
+    assert.deepEqual(silent, [], 'cards with no link and no reason');
+  });
+
   test(`[${locale}] IDP catalog page respects link safety and security headers`, () => {
     const html = readFileSync(pagePath, 'utf8');
 
     // No private schemes or staging domains in the entire HTML
     assert.ok(!html.includes('obsidian://'), `obsidian:// leaked into ${locale} IDP page`);
     assert.ok(!html.includes('.staging.kubelab.live'), `staging mesh domain leaked into ${locale} IDP page`);
+    const kubelabHrefs = [...html.matchAll(/href="(https?:[^"]*)"/g)].map((m) => m[1].replace(/&amp;/g, '&')).filter(targetsKubelab);
+    assert.deepEqual(kubelabHrefs, [], `links targeting kubelab.live on ${locale} IDP page`);
 
     // All external links have rel="noopener noreferrer"
     const externalLinks = [...html.matchAll(/<a\b[^>]*href="https?:\/\/[^"]*"[^>]*>/g)];
