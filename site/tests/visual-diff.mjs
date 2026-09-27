@@ -58,7 +58,10 @@ const PROPERTIES = [
  * reachability console still fetched live; that console was retired in #280.
  */
 async function pinNetwork(page, base) {
-  await page.route('**/*', (route) => (route.request().url().startsWith(base) ? route.continue() : route.abort()));
+  const origin = new URL(base).origin;
+  await page.route('**/*', (route) =>
+    new URL(route.request().url()).origin === origin ? route.continue() : route.abort(),
+  );
 }
 
 /** Load a page and let it settle: fonts in and runtime requests answered. */

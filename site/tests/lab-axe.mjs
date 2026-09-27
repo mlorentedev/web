@@ -111,7 +111,9 @@ for (const path of PATHS) {
     const elsewhere = [];
     await page.route('**', (route) => {
       const url = route.request().url();
-      if (url.startsWith(BASE) || url.startsWith('data:')) return route.continue();
+      // Origins, not a string prefix: `startsWith` lets `:43210` through for a
+      // base on `:4321`, and `lab.example.other.invalid` for `lab.example`.
+      if (url.startsWith('data:') || new URL(url).origin === new URL(BASE).origin) return route.continue();
       elsewhere.push(url);
       return route.abort();
     });
