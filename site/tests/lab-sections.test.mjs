@@ -70,22 +70,6 @@ const ACCESS_LABEL = {
 /** Sections rebuilt so far. IDP catalog teaser added in WEB-096; the SLO section removed in #417. */
 const REBUILT = ['story', 'services', 'infra', 'topology', 'flows', 'idp'];
 
-/**
- * The one section that is deliberately not static, kept apart from `REBUILT`
- * so the no-JavaScript assertion below stays exact rather than being loosened.
- *
- * ADR-056 §4.3 decided the reachability console: a visitor asks the platform
- * from their own browser instead of trusting the page. The proposal's "zero JS"
- * line filed it under ADR-056 layers 2–3 and sent it to #40 / #120 — neither of
- * which is about it (#40 is the RAG/interactive-CV epic, #120 merges two metric
- * bands). An ADR outranks a spec's scoping note, so the console stays and AC5's
- * wording is amended instead.
- */
-const INTERACTIVE = ['probe'];
-
-/** Services carrying a real health endpoint — the console's targets, from data. */
-const PROBE_TARGETS = platform.services.filter((s) => s.healthEndpoint);
-
 /** The two that embed a generated diagram, and the IR each comes from. */
 const DIAGRAMS = ['topology', 'flows'];
 
@@ -155,7 +139,7 @@ for (const { locale, html } of built) {
   // ------------------------------------------------------------------ presence
 
   test(`[${locale}] every rebuilt section is on the page, with its eyebrow`, () => {
-    for (const name of [...REBUILT, ...INTERACTIVE]) {
+    for (const name of REBUILT) {
       const body = labSection(html, name);
       assert.ok(body, `no <section data-lab-section="${name}"> on the built page`);
       assert.match(
@@ -490,54 +474,21 @@ for (const { locale, html } of built) {
     }
   });
 
-  test(`[${locale}] the page ships exactly one script, and it is the console`, () => {
-    // AC5 no longer claims "zero JS" — it never was true, and pretending it was
-    // is how the console survived five PRs without anyone checking what it
-    // measured. What is enforceable is the count: one island, named, and the
-    // day a second appears this fails rather than the claim quietly rotting.
+  test(`[${locale}] the page ships no script at all`, () => {
+    // The reachability console was the one script, and #280 retired it: four
+    // green dots and a latency are indistinguishable from hard-coded spans to a
+    // reader, and it went red whenever the on-demand nodes were down, which is
+    // their normal state (ADR-028). What the page claims about reachability now
+    // comes from the measured access table, whose failure turns CI red, not the
+    // page. The day a script comes back, this fails instead of the claim rotting.
     const scripts = [...html.matchAll(/<script\b[^>]*>/g)].map((m) => m[0]);
-
-    assert.equal(
-      scripts.length,
-      1,
-      `${scripts.length} <script> tags on the page, expected exactly 1 (the reachability console):\n  ${scripts.join('\n  ')}`,
-    );
-
-    // Whether Astro inlines that script or emits it as a `src` is a bundler
-    // decision — it inlines this one today because it is small — so pinning
-    // either would be testing the build, not the page. What must hold is that
-    // the one script belongs to the console.
-    assert.match(html, /\bdata-lab-probe\b/, 'the one script on the page is not the console');
+    assert.deepEqual(scripts, [], `<script> tags on the page:\n  ${scripts.join('\n  ')}`);
     assert.deepEqual(
       [...html.matchAll(/<astro-island\b/g)].map(() => '<astro-island>'),
       [],
-      'a hydrated Astro island reached the page — the console is a plain script, not a framework component',
+      'a hydrated Astro island reached the page',
     );
-  });
-
-  test(`[${locale}] the console probes exactly the services with a real health endpoint`, () => {
-    const body = labSection(html, 'probe');
-    assert.ok(body, 'no probe section');
-
-    const rows = [...body.matchAll(/\bdata-probe-target="([^"]*)"/g)].map((m) => decodeEntities(m[1]));
-
-    assert.deepEqual(
-      rows.sort(),
-      PROBE_TARGETS.map((s) => s.healthEndpoint).sort(),
-      'the console targets are not the manifest\'s health endpoints — hard-coded targets are how it ' +
-        'came to be pinging two GitHub Pages docs sites and calling that proof of a Jetson Nano',
-    );
-
-    // A health endpoint equal to the service root is not a health endpoint. That
-    // was true of all three "public" services until this PR, which is why the
-    // field could not be used to select anything.
-    for (const s of PROBE_TARGETS) {
-      assert.notEqual(
-        new URL(s.healthEndpoint).pathname,
-        '/',
-        `${s.slug}: healthEndpoint is the service root, so it says nothing the root does not`,
-      );
-    }
+    assert.doesNotMatch(html, /\bdata-lab-probe\b/, 'the reachability console is still on the page');
   });
 
   test(`[${locale}] status is rendered as words this locale uses`, () => {

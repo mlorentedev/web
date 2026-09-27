@@ -346,24 +346,6 @@ export const ui = {
     'lab.pillar.memory': 'Agent memory',
     'lab.pillar.memoryDesc': 'Hive MCP AST RAG serving AI agents only the context a task needs.',
 
-
-    // The reachability console (ADR-056 §4.3). It reads the API's own health
-    // report rather than pinging it, so the strings describe a read.
-    'lab.probe.heading': 'Check it yourself',
-    'lab.probe.sub': 'Runs in your browser, against the live API.',
-    'lab.probe.intro':
-      'Every figure above was measured on the date at the foot of this page. This one is not: your browser asks the platform API directly and prints what it answers — its own view of each subsystem, and its own clock beside yours.',
-    'lab.probe.btn': 'Run again',
-    'lab.probe.ready': 'ready',
-    'lab.probe.running': 'asking…',
-    'lab.probe.asking': 'asking',
-    'lab.probe.failed': 'no answer',
-    'lab.probe.healthy': 'healthy',
-    'lab.probe.degraded': 'degraded',
-    'lab.probe.serverClock': 'server · you',
-    'lab.probe.roundTrip': 'round trip',
-    'lab.probe.summary': '{n}/{m} healthy',
-
     'lab.services.heading': 'Services, and who can reach them',
     'lab.services.intro':
       'Each row says who can reach the service, measured from outside the mesh. Only the mesh-only ones stay off the internet: there are zero port-forwarding rules on my residential USA network, so for those there is no address to expose in the first place.',
@@ -818,24 +800,6 @@ export const ui = {
     'lab.pillar.privacyDesc': 'Inferencia LLM local en una Jetson Nano. El prompt no sale de casa.',
     'lab.pillar.memory': 'Memoria de los agentes',
     'lab.pillar.memoryDesc': 'RAG AST en Hive MCP que da a los agentes solo el contexto que necesita cada tarea.',
-
-
-    // La consola de alcanzabilidad (ADR-056 §4.3). Lee el informe de salud de la
-    // propia API en vez de hacerle ping, así que las cadenas describen una lectura.
-    'lab.probe.heading': 'Compruébalo tú mismo',
-    'lab.probe.sub': 'Corre en tu navegador, contra la API en vivo.',
-    'lab.probe.intro':
-      'Todas las cifras de arriba se midieron en la fecha que aparece al pie de esta página. Esta no: tu navegador le pregunta directamente a la API de la plataforma e imprime lo que responde — su propia visión de cada subsistema, y su reloj junto al tuyo.',
-    'lab.probe.btn': 'Repetir',
-    'lab.probe.ready': 'listo',
-    'lab.probe.running': 'preguntando…',
-    'lab.probe.asking': 'preguntando',
-    'lab.probe.failed': 'sin respuesta',
-    'lab.probe.healthy': 'sano',
-    'lab.probe.degraded': 'degradado',
-    'lab.probe.serverClock': 'servidor · tú',
-    'lab.probe.roundTrip': 'ida y vuelta',
-    'lab.probe.summary': '{n}/{m} sanos',
 
     'lab.services.heading': 'Servicios, y quién puede llegar a ellos',
     'lab.services.intro':

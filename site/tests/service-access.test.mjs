@@ -54,6 +54,7 @@ test('platform.json no longer carries its own access claim', () => {
   for (const service of platform.services) {
     assert.equal(service.isPublic, undefined, `${service.slug}: isPublic is the table's job now`);
     assert.equal(service.url, undefined, `${service.slug}: the URL lives in the access table`);
+    assert.equal(service.healthEndpoint, undefined, `${service.slug}: nothing probes it since the console was retired (#280)`);
   }
 });
 

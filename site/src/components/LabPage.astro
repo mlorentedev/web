@@ -10,10 +10,9 @@
  * The numbering is the page's spine — `SectionHeading` prints `[ NN / label ]`
  * and the order below is the only place it is decided.
  *
- * One section is not static: `LabProbe` carries the reachability console that
- * ADR-056 §4.3 decided. AC5's original "zero JS" wording was never true of this
- * page and is amended in `proposal.md` rather than defended; what the tests
- * enforce instead is that there is exactly **one** script and it is that one.
+ * Every section is static and the page ships no script. The reachability
+ * console that ADR-056 §4.3 decided was retired in #280; what the page says
+ * about who can reach what comes from the measured access table in Services.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
@@ -25,7 +24,6 @@ import LabInfra from './LabInfra.astro';
 import LabDiagram from './LabDiagram.astro';
 import { withCounts } from '../data/platform';
 import LabIdpTeaser from './LabIdpTeaser.astro';
-import LabProbe from './LabProbe.astro';
 import LabProvenance from './LabProvenance.astro';
 import LabAiBridge from './LabAiBridge.astro';
 import { getLocale, useTranslations } from '../i18n/utils';
@@ -69,9 +67,7 @@ const t = useTranslations(lang);
 
     <LabIdpTeaser number="06" />
 
-    <LabProbe number="07" />
-
-    <LabAiBridge number="08" lang={lang} />
+    <LabAiBridge number="07" lang={lang} />
 
     <LabProvenance />
   </main>

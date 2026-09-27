@@ -17,7 +17,7 @@
  *   1. `nested-interactive` (2) — archify emits every component `<g>` as
  *      `tabindex="0" role="button" aria-pressed="false"`, a real control in
  *      archify's own viewer, which ships the script that drives it. This page
- *      ships exactly one script and it is the console, so the built page
+ *      shipped none of archify's script, so the built page
  *      carried **17 buttons that press nothing** — and because they sit inside
  *      `role="img"`, which marks its subtree presentational, their labels were
  *      never announced while `tabindex` kept every one in the tab order.
@@ -47,13 +47,13 @@
  * HTTP status is checked, and `passes` must be non-empty: a page axe never
  * looked at cannot have passed 40 rules.
  *
- * **It pins the console's response.** The reachability console fetches
- * `api.kubelab.live/health` on load and paints `ok-400` rows on success,
- * `warn-400` on failure — different colours, so a contrast verdict computed
- * against the live API would depend on whether Manu's VPS is up, and CI has no
- * business asking. The route is fulfilled from a fixture and the page is
- * audited **twice, once healthy and once degraded**, so both colour paths are
- * covered and neither depends on the network.
+ * **It proves the page asks nothing of the network.** Until #280 the page
+ * carried a reachability console that fetched `api.kubelab.live/health` on
+ * load, so this check stubbed that route and audited every page twice, healthy
+ * and degraded. The console is gone and the page ships no script. Any request
+ * to another origin now fails the run: a verdict that depends on whether
+ * Manu's VPS is up is not a verdict CI should give, and a request nobody
+ * expected is the first sign a script has come back.
  *
  * ## The one `incomplete` is honest and is not suppressed
  *
@@ -100,94 +100,73 @@ const PATHS = [
  */
 const WIDTHS = [320, 1440];
 
-/**
- * The two states the console can paint, fulfilled locally.
- *
- * `component` values are the API's real ones; the point of the fixture is
- * determinism, not fiction. `degraded` flips one check so the `warn-400` branch
- * is audited too — the branch a live-API run would only reach on a bad day.
- */
-const HEALTH = {
-  healthy: {
-    status: 'healthy',
-    timestamp: '2026-09-01T12:00:00.000Z',
-    checks: [
-      { component: 'database', status: 'healthy' },
-      { component: 'cache', status: 'healthy' },
-      { component: 'beehiiv', status: 'healthy' },
-      { component: 'runtime', status: 'healthy' },
-    ],
-  },
-  degraded: {
-    status: 'degraded',
-    timestamp: '2026-09-01T12:00:00.000Z',
-    checks: [
-      { component: 'database', status: 'down' },
-      { component: 'cache', status: 'healthy' },
-      { component: 'beehiiv', status: 'healthy' },
-      { component: 'runtime', status: 'healthy' },
-    ],
-  },
-};
-
 const { url: BASE, server } = await labBaseUrl();
 const browser = await chromium.launch();
 let failures = 0;
 
 for (const path of PATHS) {
   for (const width of WIDTHS) {
-    for (const [state, body] of Object.entries(HEALTH)) {
-      const label = `${path} @ ${width}px [${state}]`;
-      const page = await browser.newPage({ viewport: { width, height: 900 } });
-      await page.route('**/health', (route) =>
-        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) }),
-      );
+    const label = `${path} @ ${width}px`;
+    const page = await browser.newPage({ viewport: { width, height: 900 } });
+    const elsewhere = [];
+    await page.route('**', (route) => {
+      const url = route.request().url();
+      // Origins, not a string prefix: `startsWith` lets `:43210` through for a
+      // base on `:4321`, and `lab.example.other.invalid` for `lab.example`.
+      if (url.startsWith('data:') || new URL(url).origin === new URL(BASE).origin) return route.continue();
+      elsewhere.push(url);
+      return route.abort();
+    });
 
-      let results;
-      try {
-        const response = await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle' });
-        if (!response?.ok()) throw new Error(`HTTP ${response?.status()}`);
+    let results;
+    try {
+      const response = await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle' });
+      if (!response?.ok()) throw new Error(`HTTP ${response?.status()}`);
 
-        await page.addScriptTag({ path: AXE_BUNDLE });
-        results = await page.evaluate(async () => await window.axe.run(document));
-      } catch (error) {
-        console.error(`✗ ${label} — ${error.message}`);
-        failures++;
-        await page.close();
-        continue;
-      }
-
-      // A page that never loaded and a bundle that never injected both report
-      // zero violations. `passes` is what tells the two apart from a clean page.
-      if (results.passes.length === 0) {
-        console.error(
-          `✗ ${label} — axe reported 0 passes as well as 0 violations, ` +
-            `which means it did not audit anything. Treating this as a failure.`,
-        );
-        failures++;
-        await page.close();
-        continue;
-      }
-
-      if (results.violations.length > 0) {
-        failures++;
-        console.error(`✗ ${label} — ${results.violations.length} violation(s):`);
-        for (const v of results.violations) {
-          console.error(`    ${v.impact?.toUpperCase()} ${v.id}: ${v.help} (${v.nodes.length} node(s))`);
-          for (const node of v.nodes.slice(0, 3)) {
-            console.error(`      ${node.target.join(' ')}`);
-            console.error(`      ${(node.failureSummary ?? '').split('\n').join(' | ')}`);
-          }
-          console.error(`      → ${v.helpUrl}`);
-        }
-      } else {
-        console.log(
-          `✓ ${label} — 0 violations, ${results.passes.length} rules passed, ` +
-            `${results.incomplete.reduce((n, r) => n + r.nodes.length, 0)} result(s) axe could not decide`,
-        );
-      }
+      await page.addScriptTag({ path: AXE_BUNDLE });
+      results = await page.evaluate(async () => await window.axe.run(document));
+    } catch (error) {
+      console.error(`✗ ${label} — ${error.message}`);
+      failures++;
       await page.close();
+      continue;
     }
+
+    if (elsewhere.length > 0) {
+      console.error(`✗ ${label} — requests to another origin:\n    ${elsewhere.join('\n    ')}`);
+      failures++;
+    }
+
+    // A page that never loaded and a bundle that never injected both report
+    // zero violations. `passes` is what tells the two apart from a clean page.
+    if (results.passes.length === 0) {
+      console.error(
+        `✗ ${label} — axe reported 0 passes as well as 0 violations, ` +
+          `which means it did not audit anything. Treating this as a failure.`,
+      );
+      failures++;
+      await page.close();
+      continue;
+    }
+
+    if (results.violations.length > 0) {
+      failures++;
+      console.error(`✗ ${label} — ${results.violations.length} violation(s):`);
+      for (const v of results.violations) {
+        console.error(`    ${v.impact?.toUpperCase()} ${v.id}: ${v.help} (${v.nodes.length} node(s))`);
+        for (const node of v.nodes.slice(0, 3)) {
+          console.error(`      ${node.target.join(' ')}`);
+          console.error(`      ${(node.failureSummary ?? '').split('\n').join(' | ')}`);
+        }
+        console.error(`      → ${v.helpUrl}`);
+      }
+    } else {
+      console.log(
+        `✓ ${label} — 0 violations, ${results.passes.length} rules passed, ` +
+          `${results.incomplete.reduce((n, r) => n + r.nodes.length, 0)} result(s) axe could not decide`,
+      );
+    }
+    await page.close();
   }
 }
 
@@ -198,4 +177,4 @@ if (failures > 0) {
   console.error(`\n${failures} check(s) failed.`);
   process.exit(1);
 }
-console.log('\n0 axe violations at 320 and 1440 on both locales, in both console states.');
+console.log('\n0 axe violations and no request to another origin, at 320 and 1440 on both locales.');

@@ -52,56 +52,24 @@ const PROPERTIES = [
 /**
  * Pin everything a page fetches at runtime, so two captures of one build agree.
  *
- * The Lab's reachability console calls `api.kubelab.live/health` on load (the
- * landing's GitHub counts went with WEB-140). Left live, it paints whatever the
- * network answered at that moment: an adversarial review of WEB-022
- * caught two captures of the *same* build differing on `/lab` at 320 px. The
- * console gets the healthy fixture `lab-axe.mjs` uses; every other request that
- * leaves the local server is aborted, which the pages answer with their
- * committed fallbacks.
+ * Every request that leaves the local server is aborted, which the pages answer
+ * with their committed fallbacks. An adversarial review of WEB-022 caught two
+ * captures of the *same* build differing on `/lab` at 320 px while the Lab's
+ * reachability console still fetched live; that console was retired in #280.
  */
 async function pinNetwork(page, base) {
-  const healthy = {
-    status: 'healthy',
-    timestamp: '2026-09-01T12:00:00.000Z',
-    checks: [
-      { component: 'database', status: 'healthy' },
-      { component: 'cache', status: 'healthy' },
-      { component: 'beehiiv', status: 'healthy' },
-      { component: 'runtime', status: 'healthy' },
-    ],
-  };
-  await page.route('**/*', (route) => {
-    const url = route.request().url();
-    if (url.startsWith(base)) return route.continue();
-    if (/\/health(\?|$)/.test(url)) {
-      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(healthy) });
-    }
-    return route.abort();
-  });
+  const origin = new URL(base).origin;
+  await page.route('**/*', (route) =>
+    new URL(route.request().url()).origin === origin ? route.continue() : route.abort(),
+  );
 }
 
-/**
- * Load a page and let it settle: fonts in, runtime requests answered, and the
- * Lab console's two live readings, the visitor's clock and the round-trip
- * time, replaced with fixed text. Those change on every load by design, and
- * with the network pinned they were the last thing making two captures of one
- * build differ (137 to 1,016 px on the Lab pages, measured).
- */
+/** Load a page and let it settle: fonts in and runtime requests answered. */
 async function settle(page, url) {
   await page.goto(url, { waitUntil: 'networkidle' });
-  const pinned = await page.evaluate(async () => {
+  await page.evaluate(async () => {
     await document.fonts.ready;
-    const live = document.querySelectorAll('[data-probe-clock], [data-probe-latency]');
-    for (const el of live) el.textContent = '(live value)';
-    return { consoles: document.querySelectorAll('[data-probe-target]').length, live: live.length };
   });
-  // If the console's markup is renamed, the readings stop being pinned and two
-  // captures drift again, which is how this was first found. Say so here, not
-  // as an unexplained pixel diff later.
-  if (pinned.consoles > 0 && pinned.live === 0) {
-    throw new Error(`${url}: the Lab console is on the page but no [data-probe-clock]/[data-probe-latency] was found to pin; update settle()`);
-  }
 }
 
 /** Every built page's URL path, from the files in `dist/`. */
