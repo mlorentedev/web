@@ -13,6 +13,8 @@ import Header from './Header.astro';
 import Footer from './Footer.astro';
 import SectionHeading from './SectionHeading.astro';
 import IdpIcon from './IdpIcon.astro';
+import SpendFigure from './SpendFigure.astro';
+import { cloudSpend, formatSpendMonth, spendFor, totalMethod, totalSpend } from '../data/cloud-spend';
 import { idpCatalog, shownItemName, type IdpAccess } from '../data/idp-catalog';
 import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
@@ -75,6 +77,9 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
           {t('idp.catalog.stats')
             .replace('{categories}', String(idpCatalog.categories.length))
             .replace('{items}', String(totalItems))}
+          {` · ${t('idp.catalog.spendLabel')} `}
+          <SpendFigure amount={totalSpend} method={totalMethod} date={cloudSpend.month} lang={lang} />
+          {` (${t('spend.basis').replace('{month}', formatSpendMonth(lang))})`}
         </span>
       </div>
 
@@ -115,7 +120,7 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
                 const itemDesc = isEs ? item.descriptionEs : item.description;
                 const itemName = shownItemName(item, lang);
                 const nameTranslate = item.brand ? 'no' : undefined;
-                const spend = item.spendBadge ? (isEs ? item.spendBadge.es : item.spendBadge.en) : null;
+                const spend = spendFor(item.id);
                 const isPublic = item.access === 'public' && Boolean(item.url);
 
                 return (
@@ -132,7 +137,7 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
                         </div>
                         {spend && (
                           <span class="shrink-0 text-xs font-mono font-medium px-2 py-0.5 rounded bg-panel-200 text-panel-800 border border-panel-300">
-                            {spend}
+                            <SpendFigure amount={spend.amount} method={spend.method} date={spend.measured} lang={lang} />{t('spend.perMonth')}
                           </span>
                         )}
                       </div>

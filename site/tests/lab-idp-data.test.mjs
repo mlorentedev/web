@@ -50,11 +50,6 @@ test('bilingual parity: every visible field carries both English and Spanish twi
       assert.ok(item.description?.trim(), `item ${item.id} missing description`);
       assert.ok(item.descriptionEs?.trim(), `item ${item.id} missing descriptionEs`);
       assert.ok(item.icon?.trim(), `item ${item.id} missing icon`);
-
-      if (item.spendBadge) {
-        assert.ok(item.spendBadge.en?.trim(), `item ${item.id} spendBadge missing en`);
-        assert.ok(item.spendBadge.es?.trim(), `item ${item.id} spendBadge missing es`);
-      }
     }
   }
 });

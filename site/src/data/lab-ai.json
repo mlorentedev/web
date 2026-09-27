@@ -69,8 +69,8 @@
           "label": "Review gates",
           "labelEs": "Puertas de revisión",
           "labelNote": "The source's name is in the register the brand package bans (WEB-141, AC4).",
-          "description": "dotf pr triage-queue & 100% Mutation Kill",
-          "descriptionEs": "dotf pr triage-queue y 100 % de mutantes muertos",
+          "description": "dotf pr triage-queue & mutation testing",
+          "descriptionEs": "dotf pr triage-queue y pruebas de mutación",
           "sourceHref": "https://github.com/mlorentedev/kubelab/pulls",
           "access": "public",
           "url": "https://github.com/mlorentedev/kubelab/pulls"

@@ -10,11 +10,6 @@ import idpCatalogData from './idp-catalog.json';
  */
 export type IdpAccess = 'public' | 'mesh' | 'auth' | 'local';
 
-export interface IdpSpendBadge {
-  en: string;
-  es: string;
-}
-
 export interface IdpItem {
   id: string;
   /** The source's name, pinned to `bookmarks.yaml`; the page shows `shownItemName`. */
@@ -39,7 +34,6 @@ export interface IdpItem {
   description: string;
   descriptionEs: string;
   access: IdpAccess;
-  spendBadge?: IdpSpendBadge;
 }
 
 export interface IdpCategory {

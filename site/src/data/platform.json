@@ -5,18 +5,9 @@
     "name": "KubeLab Hybrid Cloud & Edge Platform",
     "version": "K3s v1.34.4+k3s1",
     "gitops": "Argo CD v3.4.1 · 2 applications synced",
-    "uptime": "99.9% (90d, Uptime Kuma)",
     "activeNodes": 8,
     "kubernetesClusters": 3,
     "kubernetesNodes": 3
-  },
-  "metrics": {
-    "inferenceLatency": "not measured",
-    "contextReduction": "67–82%",
-    "reconciliationTime": "<30s",
-    "edgeArchitecture": "Tailscale mesh (Headscale)",
-    "uptimeScore": "99.9%",
-    "gitopsSyncLoop": "<30s Drift Loop"
   },
   "nodes": [
     {
@@ -34,7 +25,7 @@
       "ram": "7.5 GB",
       "storage": "75 GB NVMe",
       "os": "Ubuntu 24.04 LTS",
-      "location": "Falkenstein (Germany)",
+      "location": "Nuremberg (Germany)",
       "status": "healthy",
       "runtime": "k3s",
       "runtimeRole": "Production K3s cluster (single node)"
@@ -165,8 +156,8 @@
       "tier": "homelab",
       "role": "Telemetry & Uptime Kuma",
       "roleEs": "Telemetría y Uptime Kuma",
-      "summary": "Independent out-of-band synthetic monitoring with Uptime Kuma 90-day SLA",
-      "summaryEs": "Monitor sintético out-of-band independiente con SLA a 90 días en Uptime Kuma",
+      "summary": "Independent out-of-band synthetic monitoring with Uptime Kuma",
+      "summaryEs": "Monitor sintético out-of-band independiente con Uptime Kuma",
       "environment": "Infrastructure",
       "provider": "Bare Metal SBC",
       "arch": "ARM64",
@@ -408,8 +399,8 @@
       "name": "Uptime Kuma Probes",
       "category": "Observability",
       "categoryEs": "Observabilidad",
-      "description": "Independent synthetic HTTP and ICMP health monitor with 90-day SLA history tracking.",
-      "descriptionEs": "Monitor sintético independiente HTTP/ICMP con registro histórico de SLA a 90 días.",
+      "description": "Independent synthetic HTTP and ICMP health monitor with an uptime history.",
+      "descriptionEs": "Monitor sintético independiente HTTP/ICMP con historial de disponibilidad.",
       "node": "rpi3",
       "env": "common",
       "tech": [

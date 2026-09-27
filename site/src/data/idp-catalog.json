@@ -15,17 +15,13 @@
       "items": [
         {
           "id": "hetzner",
-          "name": "Hetzner CX22",
+          "name": "Hetzner CAX21",
           "brand": true,
           "sourceHref": "https://console.hetzner.cloud/billing",
           "icon": "si-hetzner",
           "description": "ARM64 8GB VPS hosting production K3s, Traefik, and Headscale control plane",
           "descriptionEs": "VPS ARM64 8GB alojando K3s de producción, Traefik y el plano de control Headscale",
-          "access": "auth",
-          "spendBadge": {
-            "en": "~9€/mo",
-            "es": "~9 €/mes"
-          }
+          "access": "auth"
         },
         {
           "id": "gcp-hub",
@@ -35,11 +31,7 @@
           "icon": "si-googlecloud",
           "description": "e2-small instance running the central Argo CD GitOps management hub",
           "descriptionEs": "Instancia e2-small con el hub de gestión centralizado Argo CD GitOps",
-          "access": "auth",
-          "spendBadge": {
-            "en": "~$6/mo",
-            "es": "~$6/mes"
-          }
+          "access": "auth"
         },
         {
           "id": "aws",
@@ -49,11 +41,7 @@
           "icon": "si-amazonaws",
           "description": "Cold standby infrastructure for automated disaster recovery exercises",
           "descriptionEs": "Infraestructura de reserva en frío para ejercicios automatizados de recuperación",
-          "access": "auth",
-          "spendBadge": {
-            "en": "~$4/mo",
-            "es": "~$4/mes"
-          }
+          "access": "auth"
         },
         {
           "id": "cloudflare-r2",

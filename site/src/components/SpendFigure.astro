@@ -1,0 +1,20 @@
+---
+/**
+ * One amount from `cloud-spend.json`, in the slot `tests/lab-figures.test.mjs`
+ * accepts a measurement in: it says how the amount was obtained and when.
+ */
+import { formatSpend } from '../data/cloud-spend';
+
+interface Props {
+  amount: number;
+  method: string;
+  /** ISO date or month the amount belongs to. */
+  date: string;
+  lang: string;
+  class?: string;
+}
+
+const { amount, method, date, lang, class: className } = Astro.props;
+---
+
+<span data-figure data-method={method} data-date={date} class={className}>{formatSpend(amount, lang)}</span>
