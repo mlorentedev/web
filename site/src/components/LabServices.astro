@@ -74,6 +74,11 @@ const ACCESS_LABEL: Record<ServiceAccess, string> = {
   mesh: t('lab.access.mesh'),
 };
 
+/** How many rows each access has, counted from the table, never typed (#426 review). */
+const tally = (Object.keys(ACCESS_LABEL) as ServiceAccess[])
+  .map((access) => ({ access, n: serviceAccess.services.filter((row) => row.access === access).length }))
+  .filter(({ n }) => n > 0);
+
 const measuredOn = new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: 'UTC' }).format(
   new Date(`${serviceAccess.measured}T00:00:00Z`),
 );
@@ -102,6 +107,20 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
   <p class="text-xs font-mono text-ink-500 mb-1" data-count>
     {t('lab.services.count').replace('{n}', String(platform.services.length))}
   </p>
+  <ul class="flex flex-wrap gap-2 mb-2" data-access-tally>
+    {tally.map(({ access, n }) => (
+      <li
+        data-access={access}
+        data-count
+        class:list={[
+          'px-1.5 py-0.5 rounded text-xs font-semibold border',
+          access === 'public'
+            ? 'bg-accent-50 text-accent-800 border-accent-200'
+            : 'bg-panel-100 text-panel-700 border-panel-200',
+        ]}
+      >{`${ACCESS_LABEL[access]} `}<span class="font-mono">{n}</span></li>
+    ))}
+  </ul>
   <p class="text-xs text-ink-500 mb-8">
     {t('lab.services.measured')}{' '}
     <time datetime={serviceAccess.measured}>{measuredOn}</time>.

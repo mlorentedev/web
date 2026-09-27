@@ -52,6 +52,8 @@ import {
   offTokenFamilies,
 } from './lib/audit.mjs';
 
+import { ACCESS } from './lib/access.mjs';
+
 const here = dirname(fileURLToPath(import.meta.url));
 const siteRoot = join(here, '..');
 const require = createRequire(import.meta.url);
@@ -250,6 +252,25 @@ for (const { locale, html } of built) {
   test(`[${locale}] the section says when the access was measured`, () => {
     const body = labSection(html, 'services');
     assert.match(body, new RegExp(`<time[^>]*datetime="${accessTable.measured}"`), 'no <time> with the measurement date');
+  });
+
+  /**
+   * The intro said "Three of these answer to anyone. The rest answer only from
+   * inside the WireGuard mesh, behind Authelia" after the table below it had
+   * measured four public services and eight reachable ones (#426 review). A
+   * total typed into prose drifts from the rows; the tally is counted from them.
+   */
+  test(`[${locale}] the access tally counts the table's rows`, () => {
+    const body = labSection(html, 'services');
+    const tally = body.match(/<ul[^>]*\sdata-access-tally\b[^>]*>([\s\S]*?)<\/ul>/)?.[1];
+    assert.ok(tally, 'no data-access-tally list in the services section');
+    const shown = [...tally.matchAll(/<li[^>]*\sdata-access="([^"]+)"[^>]*>([\s\S]*?)<\/li>/g)].map(
+      ([, access, text]) => [access, text.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()],
+    );
+    const expected = ACCESS.map((access) => [access, accessTable.services.filter((r) => r.access === access).length])
+      .filter(([, n]) => n > 0)
+      .map(([access, n]) => [access, `${ACCESS_LABEL[locale][access]} ${n}`]);
+    assert.deepEqual(shown, expected);
   });
 
   // ----------------------------------------------------------------- bilingual

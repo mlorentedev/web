@@ -366,7 +366,7 @@ export const ui = {
 
     'lab.services.heading': 'Services, and who can reach them',
     'lab.services.intro':
-      'Three of these answer to anyone. The rest answer only from inside the WireGuard mesh, behind Authelia — there are zero port-forwarding rules on my residential USA network, so for most of this there is no address to expose in the first place.',
+      'Each row says who can reach the service, measured from outside the mesh. Only the mesh-only ones stay off the internet: there are zero port-forwarding rules on my residential USA network, so for those there is no address to expose in the first place.',
     'lab.services.count': '{n} documented here',
     'lab.services.th.status': 'Status',
     'lab.services.th.service': 'Service',
@@ -839,7 +839,7 @@ export const ui = {
 
     'lab.services.heading': 'Servicios, y quién puede llegar a ellos',
     'lab.services.intro':
-      'Tres de estos responden a cualquiera. El resto solo responden desde dentro de la malla WireGuard, tras Authelia: no hay una sola regla de port-forwarding en mi red residencial de Estados Unidos, así que para la mayoría no hay ni dirección que exponer.',
+      'Cada fila dice quién puede llegar al servicio, medido desde fuera de la malla. Solo los de la malla quedan fuera de internet: no hay una sola regla de port-forwarding en mi red residencial de Estados Unidos, así que para esos no hay ni dirección que exponer.',
     'lab.services.count': '{n} documentados aquí',
     'lab.services.th.status': 'Estado',
     'lab.services.th.service': 'Servicio',
