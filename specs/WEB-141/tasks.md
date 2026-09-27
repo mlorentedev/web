@@ -43,6 +43,10 @@ created: "2026-09-24"
       ones too, because the table is also his way around the lab (a deliberate exception to ADR-059's
       "platform-internal" and to AC3's no-redirect rule, which stays scoped to `/lab/idp` cards); `LabProbe` and
       #280 follow in their own PR
+- [x] [AC2] Retire the reachability console (#280). Manu, 2026-09-27: nothing replaces it; the measured access
+      table is the reachability claim. `/lab` ships zero `<script>` (`lab-sections.test.mjs`), `healthEndpoint` is
+      gone from `platform.json`, `lab-axe.mjs` fails on any request to another origin instead of stubbing
+      `/health`, and ADR-056 §4 has its second amendment
 - [x] [P] [AC2] Write a failing test that no count on `/lab`, `/ai` or `/lab/idp` is typed into copy rather than
       read from `platform.json` (#133, #355). `tests/lab-counts.test.mjs`, #423; `tests/lab-figures.test.mjs` does
       the same for percentages, durations and money (#417)

@@ -1,6 +1,6 @@
 # ADR-056: Decoupled Live Platform Cockpit Architecture & Telemetry Contract
 
-- **Status:** Accepted — **§4.2/§4.3 amended 2026-09-01** (the `no-cors` premise expired; see the amendment in Decision §4); **§1 amended 2026-09-05** (every component name and route in §1 is stale, and indicator 2 was false; see the amendment in Decision §1)
+- **Status:** Accepted — **§4.2/§4.3 amended 2026-09-01** (the `no-cors` premise expired; see the amendment in Decision §4), **and retired 2026-09-27** (the console is gone, #280; second amendment in §4); **§1 amended 2026-09-05** (every component name and route in §1 is stale, and indicator 2 was false; see the amendment in Decision §1)
 - **Date:** 2026-08-23
 - **Deciders:** Manu Lorente
 - **Extends / refines:** ADR-053 (platform/product repo split), ADR-054 (same-origin API base)
@@ -219,6 +219,36 @@ keeps the manifest from drifting back.
 > Evidence: `specs/WEB-080/verification.md` § PR6 and § PR7;
 > `site/src/components/LabProbe.astro`; `site/tests/lab-axe.mjs`, which stubs this
 > endpoint so CI never depends on whether the VPS is answering.
+
+> **Amended a second time 2026-09-27 (#280). Points 2 and 3 no longer ship at
+> all: the reachability console is retired, and `/lab` carries no script.** The
+> first amendment stands as a record of what the console measured and why it was
+> repaired; nothing in it turned out to be wrong.
+>
+> **Why retire a console that told the truth.** Manu's question settled it:
+> *does it do anything for a recruiter or a client?* Four green dots and a
+> latency are indistinguishable, to a reader, from four hard-coded spans. It was
+> the only script on a page whose argument is "static, generated,
+> provenance-stamped". And it failed in the wrong direction: the on-demand nodes
+> are correctly down most of the week (ADR-028), and a red console on a
+> portfolio page reads as "his stuff is broken", not "this reading is live".
+>
+> **What carries §4.3's principle now.** The claim the console was earning, who
+> can reach what, measured and not asserted, is carried by the Services access
+> table (#292): committed data measured from outside the mesh, dated on the page,
+> and re-measured weekly by `access-check.yml`, whose failure turns CI red
+> rather than the page. That keeps the rule #280 set for any replacement: it
+> fails honestly, and "measured and fine" and "could not measure" do not produce
+> the same output.
+>
+> **Point 1 is now the whole of §4.** The build does not touch the network either;
+> the access table is read from the repository.
+>
+> Evidence: `site/tests/lab-sections.test.mjs` asserts zero `<script>` and no
+> hydrated island on `/lab`. `site/tests/lab-axe.mjs` no longer stubs `/health`,
+> and it fails the run on any request to another origin.
+> `site/src/data/platform.json` has no `healthEndpoint`, asserted in
+> `service-access.test.mjs`.
 
 ---
 

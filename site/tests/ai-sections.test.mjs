@@ -11,7 +11,7 @@
  *   03 / Autonomous Fleet & Automations (automations, migrated from lab-ai.json)
  *   04 / The rules, quoted from their files (artifacts)
  *
- * The page ships ZERO client JavaScript (unlike /lab, which carries the probe console).
+ * The page ships ZERO client JavaScript, like /lab since its probe console was retired (#280).
  */
 
 import assert from 'node:assert/strict';

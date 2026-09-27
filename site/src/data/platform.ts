@@ -41,7 +41,6 @@ export interface PlatformService {
   categoryEs: string;
   description: string;
   descriptionEs: string;
-  healthEndpoint?: string;
   node: string;
   env: 'common' | 'prod' | 'staging' | 'Production' | 'Staging' | 'Both' | 'Edge';
   tech: string[];

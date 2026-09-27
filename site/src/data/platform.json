@@ -250,7 +250,6 @@
       "categoryEs": "Gateway Principal",
       "description": "High-throughput Go API, Token-Bucket rate limiting and platform telemetry.",
       "descriptionEs": "API en Go de alto rendimiento, rate limiting por token bucket y telemetría de plataforma.",
-      "healthEndpoint": "https://api.kubelab.live/health",
       "node": "vps",
       "env": "prod",
       "tech": [
