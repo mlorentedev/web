@@ -32,16 +32,23 @@ export function isInternalAddress(address) {
 /**
  * @param {object} seen
  * @param {string[]} seen.addresses  A records from a public resolver.
- * @param {{status: number, location?: string}} [seen.root]  The root, redirects not followed.
+ * @param {{status: number, url: string, location?: string}} [seen.root]  The root as requested, redirects not followed.
  * @param {number} [seen.probeStatus]  The status of the row's probe path, when it has one.
  * @param {number} [expectedProbe]  The status the row says its probe path answers.
- * @returns {'public' | 'authelia' | 'app-login' | 'mesh' | 'unreachable'}
+ * @returns {'public' | 'authelia' | 'app-login' | 'mesh' | 'unreachable' | 'elsewhere'}
+ *
+ * `elsewhere` is a redirect to a host that is neither the service's own nor
+ * Authelia: a gate the table has no word for (an OAuth proxy, a moved service).
+ * It matches no row on purpose, so the weekly check goes red and a person looks
+ * instead of it passing as `public` (#426 review).
  */
 export function classify({ addresses, root, probeStatus }, expectedProbe) {
   if (addresses.length === 0 || addresses.every(isInternalAddress)) return 'mesh';
   if (!root) return 'unreachable';
   if (root.status >= 300 && root.status < 400 && root.location) {
-    if (new URL(root.location, 'https://x.invalid').host === AUTHELIA_HOST) return 'authelia';
+    const host = new URL(root.location, root.url).host;
+    if (host === AUTHELIA_HOST) return 'authelia';
+    if (host !== new URL(root.url).host) return 'elsewhere';
   }
   if (expectedProbe !== undefined && probeStatus === expectedProbe) return 'app-login';
   return root.status < 400 ? 'public' : 'unreachable';

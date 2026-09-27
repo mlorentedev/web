@@ -72,15 +72,17 @@ test('isInternalAddress: CGNAT and private ranges are internal, a public address
 
 test('classify: the responses recorded on 2026-09-26', () => {
   const cases = [
-    ['grafana: 302 to the portal', { addresses: PUBLIC, root: { status: 302, location: 'https://auth.kubelab.live/?rd=x' } }, undefined, 'authelia'],
+    ['grafana: 302 to the portal', { addresses: PUBLIC, root: { status: 302, url: 'https://grafana.kubelab.live/', location: 'https://auth.kubelab.live/?rd=x' } }, undefined, 'authelia'],
     ['argocd: 200 page, API 401', { addresses: PUBLIC, root: { status: 200 }, probeStatus: 401 }, 401, 'app-login'],
     ['gitea: explore redirects to its own login', { addresses: PUBLIC, root: { status: 200 }, probeStatus: 303 }, 303, 'app-login'],
-    ['status: redirect to its own dashboard', { addresses: PUBLIC, root: { status: 302, location: 'https://status.kubelab.live/dashboard' } }, undefined, 'public'],
+    ['status: redirect to its own dashboard', { addresses: PUBLIC, root: { status: 302, url: 'https://status.kubelab.live/', location: 'https://status.kubelab.live/dashboard' } }, undefined, 'public'],
     ['pollex: GitHub Pages 200', { addresses: ['185.199.108.153'], root: { status: 200 } }, undefined, 'public'],
     ['loki: no public A record', { addresses: [] }, undefined, 'mesh'],
     ['pihole: a CGNAT address in public DNS', { addresses: ['100.64.0.11'], root: { status: 403 } }, undefined, 'mesh'],
     ['argocd with the gate gone: probe answers 200', { addresses: PUBLIC, root: { status: 200 }, probeStatus: 200 }, 401, 'public'],
     ['a public host that errors', { addresses: PUBLIC, root: { status: 502 } }, undefined, 'unreachable'],
+    ['a gate in front that sends visitors to another login', { addresses: PUBLIC, root: { status: 302, url: 'https://grafana.kubelab.live/', location: 'https://login.example.com/oauth' } }, undefined, 'elsewhere'],
+    ['a relative redirect stays on its own host', { addresses: PUBLIC, root: { status: 302, url: 'https://status.kubelab.live/', location: '/dashboard' } }, undefined, 'public'],
   ];
   for (const [name, seen, expectedProbe, expected] of cases) {
     assert.equal(classify(seen, expectedProbe), expected, name);

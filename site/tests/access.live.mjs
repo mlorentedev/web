@@ -50,7 +50,7 @@ async function addresses(host) {
 async function get(url) {
   try {
     const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(10_000) });
-    return { status: response.status, location: response.headers.get('location') ?? undefined };
+    return { status: response.status, url, location: response.headers.get('location') ?? undefined };
   } catch {
     return undefined;
   }
