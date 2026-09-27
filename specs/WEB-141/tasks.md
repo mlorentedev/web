@@ -38,10 +38,12 @@ created: "2026-09-24"
 - [ ] [P] [AC2] Write a failing test that every access label on `/lab` matches a committed, measured access table
       (#292)
 - [ ] [AC2] Replace the "Mesh only" labels with the measured access table (#292)
-- [ ] [P] [AC2] Write a failing test that no count on `/lab`, `/ai` or `/lab/idp` is typed into copy rather than
-      read from `platform.json` (#133, #355)
-- [ ] [AC2] Source or remove every hand-written count; remove each `platform.json` metric that has no method
-      until phase 2 supplies it (#340)
+- [x] [P] [AC2] Write a failing test that no count on `/lab`, `/ai` or `/lab/idp` is typed into copy rather than
+      read from `platform.json` (#133, #355). `tests/lab-counts.test.mjs`, #423; `tests/lab-figures.test.mjs` does
+      the same for percentages, durations and money (#417)
+- [x] [AC2] Source or remove every hand-written count; remove each `platform.json` metric that has no method
+      until phase 2 supplies it (#340). Counts in #423; the SLO section, "<30s", "67–82%" and the `metrics` block
+      removed, and the spend read from `cloud-spend.json` (#417)
 - [ ] [P] [AC3] Write a failing test that no catalog card targets `kubelab.live` or any other redirecting URL
 - [ ] [AC3] Point the perimeter scanners at the domain that serves the site; internal cards say why they do not
       open (until phase 3)

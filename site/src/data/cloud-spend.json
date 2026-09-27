@@ -1,0 +1,33 @@
+{
+  "currency": "USD",
+  "month": "2026-09",
+  "providers": [
+    {
+      "id": "hetzner",
+      "provider": "Hetzner Cloud",
+      "resource": "CAX21, nbg1",
+      "amount": 15.59,
+      "basis": "list-price",
+      "method": "Hetzner API list price: 12.49 server + 20% backups + 0.60 primary IPv4",
+      "measured": "2026-09-25"
+    },
+    {
+      "id": "gcp-hub",
+      "provider": "Google Cloud",
+      "resource": "e2-small spot, europe-west4, 12 GB pd-balanced, external IP",
+      "amount": 9.51,
+      "basis": "list-price",
+      "method": "Google Cloud price catalog, europe-west4",
+      "measured": "2026-09-25"
+    },
+    {
+      "id": "aws",
+      "provider": "AWS",
+      "resource": "Reserve, not provisioned",
+      "amount": 0,
+      "basis": "billed",
+      "method": "AWS Cost Explorer, month to date",
+      "measured": "2026-09-25"
+    }
+  ]
+}

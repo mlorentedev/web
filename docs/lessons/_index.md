@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-57 lessons, one file each, newest first. Numbers are assigned in the order
+58 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 058 | [Astro drops the line break between an expression and the next node](lesson-058-astro-drops-the-line-break-between-an-expres.md) | 2026-09-26 | `#astro` `#templates` `#copy` |
 | 057 | [A quote on a proof page drifts unless it is pinned to a blob](lesson-057-a-quote-on-a-proof-page-drifts-unless-it-is-.md) | 2026-09-25 | `#verification` `#content` `#testing` |
 | 056 | [A component placed in content MDX renders in the page's locale](lesson-056-a-component-placed-in-content-mdx-renders-in.md) | 2026-09-24 | `#astro` `#mdx` `#i18n` |
 | 055 | [A registry login outlives the step that needed it](lesson-055-a-registry-login-outlives-the-step-that-need.md) | 2026-09-23 | `#ci` `#security` `#docker` |

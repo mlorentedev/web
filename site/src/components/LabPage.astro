@@ -24,7 +24,6 @@ import LabServices from './LabServices.astro';
 import LabInfra from './LabInfra.astro';
 import LabDiagram from './LabDiagram.astro';
 import { withCounts } from '../data/platform';
-import LabSlos from './LabSlos.astro';
 import LabIdpTeaser from './LabIdpTeaser.astro';
 import LabProbe from './LabProbe.astro';
 import LabProvenance from './LabProvenance.astro';
@@ -68,13 +67,11 @@ const t = useTranslations(lang);
       legend={t('lab.diagram.flows.legend')}
     />
 
-    <LabSlos number="06" />
+    <LabIdpTeaser number="06" />
 
-    <LabIdpTeaser number="07" />
+    <LabProbe number="07" />
 
-    <LabProbe number="08" />
-
-    <LabAiBridge number="09" lang={lang} />
+    <LabAiBridge number="08" lang={lang} />
 
     <LabProvenance />
   </main>

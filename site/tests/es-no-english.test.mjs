@@ -44,7 +44,7 @@ const dist = join(here, '..', 'dist');
 /** Each page, with how many `platform.json` values it renders while they wait for the exporter. */
 const PAGES = [
   { path: 'ai', pending: 0 },
-  { path: 'lab', pending: 37 },
+  { path: 'lab', pending: 33 },
   { path: 'lab/idp', pending: 0 },
   { path: 'lab/idp/architecture', pending: 0 },
 ];

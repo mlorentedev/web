@@ -57,8 +57,8 @@ const siteRoot = join(here, '..');
 const require = createRequire(import.meta.url);
 const platform = require('../src/data/platform.json');
 
-/** Sections rebuilt so far. IDP catalog teaser added in WEB-096. */
-const REBUILT = ['story', 'services', 'infra', 'topology', 'flows', 'slos', 'idp'];
+/** Sections rebuilt so far. IDP catalog teaser added in WEB-096; the SLO section removed in #417. */
+const REBUILT = ['story', 'services', 'infra', 'topology', 'flows', 'idp'];
 
 /**
  * The one section that is deliberately not static, kept apart from `REBUILT`

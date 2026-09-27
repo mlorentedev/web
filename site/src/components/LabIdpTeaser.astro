@@ -7,6 +7,8 @@
  */
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
+import SpendFigure from './SpendFigure.astro';
+import { cloudSpend, formatSpendMonth, totalMethod, totalSpend } from '../data/cloud-spend';
 import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
 interface Props {
@@ -35,11 +37,15 @@ const translatePath = useTranslatedPath(lang);
           <span class="block text-xs font-mono uppercase tracking-wider text-ink-500 mb-0.5">
             {t('lab.idp.spendLabel')}
           </span>
-          <span class="text-base font-bold font-mono text-ink-900">
-            {t('lab.idp.spendValue')}
-          </span>
-          <span class="text-xs text-ink-500 ml-1.5 font-mono" translate="no">
-            ({t('lab.idp.spendDate')})
+          <SpendFigure
+            amount={totalSpend}
+            method={totalMethod}
+            date={cloudSpend.month}
+            lang={lang}
+            class="text-base font-bold font-mono text-ink-900"
+          />
+          <span class="text-xs text-ink-500 ml-1.5 font-mono">
+            ({t('spend.basis').replace('{month}', formatSpendMonth(lang))})
           </span>
         </div>
 

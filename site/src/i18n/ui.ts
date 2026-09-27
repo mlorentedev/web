@@ -266,7 +266,8 @@ export const ui = {
     'idp.catalog.eyebrow': 'Internal Developer Platform',
     'idp.catalog.backToLab': 'Back to Platform Lab',
     'idp.catalog.intro': 'The internal developer platform powering autonomous agents, GitOps reconciliation, and edge workloads. Transparent cloud spend, incident runbooks, security posture, and core tooling.',
-    'idp.catalog.stats': '{categories} operational domains · {items} platform components · ~19€/mo cloud spend',
+    'idp.catalog.stats': '{categories} operational domains · {items} platform components',
+    'idp.catalog.spendLabel': 'monthly cloud spend',
     'idp.catalog.source': 'Reconciled from {repo} · commit {commit}',
     'idp.access.public': 'Public',
     'idp.access.mesh': 'Tailscale Mesh',
@@ -300,8 +301,8 @@ export const ui = {
     'lab.idp.intro': 'The operational cockpit and tooling suite: live cloud infrastructure spend, incident runbooks, security posture, and upstream dependencies.',
     'lab.idp.cta': 'Explore full IDP catalog',
     'lab.idp.spendLabel': 'Monthly Cloud Spend',
-    'lab.idp.spendValue': '~19 €/mo',
-    'lab.idp.spendDate': 'Hetzner + GCP + AWS',
+    'spend.basis': '{month}, from list prices and bills',
+    'spend.perMonth': '/mo',
     'lab.idp.categoriesLabel': 'Operational Domains',
     'lab.idp.categoriesValue': 'Ops · Triage · Security · Tools · Status · Docs',
 
@@ -339,24 +340,12 @@ export const ui = {
     'lab.story.p2':
       'Nothing shown here is an isolated mockup or tutorial demo: every workload is built, tested in staging, secured behind Zero-Trust authentication, and operated 24/7 through immutable GitOps pipelines.',
     'lab.pillar.gitops': 'Reproducible GitOps',
-    'lab.pillar.gitopsDesc': 'Infrastructure as code with Ansible, Terraform and K3s. Argo CD reconciles drift in <30s.',
+    'lab.pillar.gitopsDesc': 'Infrastructure as code with Ansible, Terraform and K3s. Argo CD reconciles the clusters against Git.',
     'lab.pillar.privacy': 'Edge AI & Privacy',
     'lab.pillar.privacyDesc': 'Local LLM inference on a Jetson Nano. The prompt never leaves the house.',
     'lab.pillar.memory': 'Agent memory',
-    'lab.pillar.memoryDesc': 'Hive MCP AST RAG serving AI agents with 67–82% prompt context reduction.',
+    'lab.pillar.memoryDesc': 'Hive MCP AST RAG serving AI agents only the context a task needs.',
 
-    'lab.slos.heading': 'Service Level Objectives (SLOs) & Reliability',
-    'lab.slos.sub':
-      '90-day synthetic telemetry, latency bounds, and automated GitOps recovery targets monitored via Uptime Kuma.',
-    'lab.slos.slaTarget': '90-Day SLA Target: 99.5%',
-    'lab.slos.platformAvailability': '90-Day Platform Availability (Uptime Kuma)',
-    'lab.slos.snapshot': 'Build-time snapshot from Uptime Kuma — not a live feed.',
-    'lab.slos.availability': 'Availability SLO',
-    'lab.slos.driftLoop': 'GitOps Drift Loop',
-    'lab.slos.edgeInference': 'Edge inference',
-    'lab.slos.target995': 'Target ≥ 99.5%',
-    'lab.slos.target60s': 'Target < 60s',
-    'lab.slos.target50s': 'Target < 5.0s',
 
     // The reachability console (ADR-056 §4.3). It reads the API's own health
     // report rather than pinging it, so the strings describe a read.
@@ -421,11 +410,6 @@ export const ui = {
     'projects.viewProject': 'View project',
 
     // Credibility band (WEB-012)
-    'credibility.heading': 'By the numbers',
-    'credibility.services': 'services · homelab',
-    'credibility.tokens': 'fewer tokens · Hive',
-    'credibility.projects': 'projects shipped',
-    'credibility.notes': 'field notes',
 
     // Experience timeline (WEB-012)
     'home.experience': 'My path',
@@ -753,7 +737,8 @@ export const ui = {
     'idp.catalog.eyebrow': 'Plataforma interna de desarrollo',
     'idp.catalog.backToLab': 'Volver al Lab de Plataforma',
     'idp.catalog.intro': 'La plataforma de desarrollo interna que da soporte a los agentes autónomos, reconciliación GitOps y cargas edge. Costes cloud transparentes, runbooks de incidentes, postura de seguridad y herramientas core.',
-    'idp.catalog.stats': '{categories} dominios operativos · {items} componentes de plataforma · ~19 €/mes gasto cloud',
+    'idp.catalog.stats': '{categories} dominios operativos · {items} componentes de plataforma',
+    'idp.catalog.spendLabel': 'gasto cloud mensual',
     'idp.catalog.source': 'Reconciliado desde {repo} · commit {commit}',
     'idp.access.public': 'Público',
     'idp.access.mesh': 'Malla Tailscale',
@@ -787,8 +772,8 @@ export const ui = {
     'lab.idp.intro': 'El cockpit operativo y suite de herramientas: costes reales de infraestructura cloud, runbooks de incidentes, postura de seguridad y dependencias upstream.',
     'lab.idp.cta': 'Explorar catálogo IDP completo',
     'lab.idp.spendLabel': 'Coste Cloud Mensual',
-    'lab.idp.spendValue': '~19 €/mes',
-    'lab.idp.spendDate': 'Hetzner + GCP + AWS',
+    'spend.basis': '{month}, según precios de lista y facturas',
+    'spend.perMonth': '/mes',
     'lab.idp.categoriesLabel': 'Dominios Operativos',
     'lab.idp.categoriesValue': 'Ops · Triage · Seguridad · Herramientas · Estado · Docs',
 
@@ -825,24 +810,12 @@ export const ui = {
     'lab.story.p2':
       'Nada de lo que muestro es una demo aislada de tutorial: cada carga de trabajo se compila en local, se valida en staging, se protege con autenticación Zero-Trust y se opera 24/7 mediante pipelines GitOps inmutables.',
     'lab.pillar.gitops': 'GitOps Reproducible',
-    'lab.pillar.gitopsDesc': 'Infraestructura como código con Ansible, Terraform y K3s. Argo CD reconcilia el estado en <30s.',
+    'lab.pillar.gitopsDesc': 'Infraestructura como código con Ansible, Terraform y K3s. Argo CD reconcilia los clústeres con Git.',
     'lab.pillar.privacy': 'Edge AI y Privacidad',
     'lab.pillar.privacyDesc': 'Inferencia LLM local en una Jetson Nano. El prompt no sale de casa.',
     'lab.pillar.memory': 'Memoria de los agentes',
-    'lab.pillar.memoryDesc': 'RAG AST en Hive MCP que abastece a los agentes con un ahorro de contexto del 67% al 82%.',
+    'lab.pillar.memoryDesc': 'RAG AST en Hive MCP que da a los agentes solo el contexto que necesita cada tarea.',
 
-    'lab.slos.heading': 'Objetivos de Nivel de Servicio (SLOs) y Confiabilidad',
-    'lab.slos.sub':
-      'Telemetría sintética a 90 días, cotas de latencia y recuperación automática GitOps monitorizados con Uptime Kuma.',
-    'lab.slos.slaTarget': 'Objetivo SLA a 90 días: 99.5%',
-    'lab.slos.platformAvailability': 'Disponibilidad de Plataforma a 90 Días (Uptime Kuma)',
-    'lab.slos.snapshot': 'Snapshot tomado en el build desde Uptime Kuma — no es un feed en vivo.',
-    'lab.slos.availability': 'SLO de Disponibilidad',
-    'lab.slos.driftLoop': 'Bucle de Sync GitOps',
-    'lab.slos.edgeInference': 'Inferencia edge',
-    'lab.slos.target995': 'Objetivo ≥ 99.5%',
-    'lab.slos.target60s': 'Objetivo < 60s',
-    'lab.slos.target50s': 'Objetivo < 5.0s',
 
     // La consola de alcanzabilidad (ADR-056 §4.3). Lee el informe de salud de la
     // propia API en vez de hacerle ping, así que las cadenas describen una lectura.
@@ -908,11 +881,6 @@ export const ui = {
     'projects.viewProject': 'Ver proyecto',
 
     // Credibility band (WEB-012)
-    'credibility.heading': 'En números',
-    'credibility.services': 'servicios · homelab',
-    'credibility.tokens': 'menos tokens · Hive',
-    'credibility.projects': 'proyectos publicados',
-    'credibility.notes': 'notas de campo',
 
     // Experience timeline (WEB-012)
     'home.experience': 'Mi camino',

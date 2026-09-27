@@ -4,22 +4,12 @@ export interface ClusterInfo {
   name: string;
   version: string;
   gitops: string;
-  uptime: string;
   /** Machines in the fleet, Kubernetes or not. */
   activeNodes: number;
   /** Independent single-node K3s clusters: production, staging, Argo CD hub. */
   kubernetesClusters: number;
   /** Machines that actually run Kubernetes — three of the eight. */
   kubernetesNodes: number;
-}
-
-export interface PlatformMetrics {
-  inferenceLatency: string;
-  contextReduction: string;
-  reconciliationTime: string;
-  edgeArchitecture: string;
-  uptimeScore: string;
-  gitopsSyncLoop: string;
 }
 
 export interface NodeTopology {
@@ -90,7 +80,6 @@ export interface PlatformManifest {
   generated_at: string;
   source_commit: string;
   cluster: ClusterInfo;
-  metrics: PlatformMetrics;
   nodes: NodeTopology[];
   services: PlatformService[];
   diagrams: ArchitectureDiagram[];
