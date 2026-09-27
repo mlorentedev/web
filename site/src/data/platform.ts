@@ -41,13 +41,10 @@ export interface PlatformService {
   categoryEs: string;
   description: string;
   descriptionEs: string;
-  /** Public services only — internal endpoints are not shipped to the client. */
-  url?: string;
   healthEndpoint?: string;
   node: string;
   env: 'common' | 'prod' | 'staging' | 'Production' | 'Staging' | 'Both' | 'Edge';
   tech: string[];
-  isPublic: boolean;
   status: 'operational' | 'degraded' | 'maintenance';
 }
 

@@ -380,6 +380,9 @@ export const ui = {
     // boundary, so the strings live above either section rather than twice.
     'lab.access.public': 'Public',
     'lab.access.mesh': 'Mesh only',
+    'lab.access.authelia': 'Behind Authelia',
+    'lab.access.appLogin': 'Own login',
+    'lab.services.measured': 'Access measured from outside the mesh on',
     'lab.access.private': 'Private repo',
 
     'lab.infra.heading': 'The machines underneath',
@@ -851,6 +854,9 @@ export const ui = {
     // secciones en vez de estar duplicadas.
     'lab.access.public': 'Público',
     'lab.access.mesh': 'Solo malla',
+    'lab.access.authelia': 'Tras Authelia',
+    'lab.access.appLogin': 'Login propio',
+    'lab.services.measured': 'Acceso medido desde fuera de la malla el',
     'lab.access.private': 'Repo privado',
 
     'lab.infra.heading': 'Las máquinas de debajo',

@@ -56,6 +56,14 @@ const here = dirname(fileURLToPath(import.meta.url));
 const siteRoot = join(here, '..');
 const require = createRequire(import.meta.url);
 const platform = require('../src/data/platform.json');
+const accessTable = require('../src/data/service-access.json');
+const accessOf = (slug) => accessTable.services.find((row) => row.slug === slug);
+
+/** The badge each access renders, per locale: the words are part of the contract (#292). */
+const ACCESS_LABEL = {
+  en: { public: 'Public', authelia: 'Behind Authelia', 'app-login': 'Own login', mesh: 'Mesh only' },
+  es: { public: 'Público', authelia: 'Tras Authelia', 'app-login': 'Login propio', mesh: 'Solo malla' },
+};
 
 /** Sections rebuilt so far. IDP catalog teaser added in WEB-096; the SLO section removed in #417. */
 const REBUILT = ['story', 'services', 'infra', 'topology', 'flows', 'idp'];
@@ -202,9 +210,10 @@ for (const { locale, html } of built) {
     const body = labSection(html, 'services');
     assert.ok(body, 'no services section');
 
-    const rows = [...body.matchAll(/<[^>]*\bdata-service-slug="([^"]*)"[^>]*>/g)].map((m) => ({
+    const rows = [...body.matchAll(/<tr[^>]*\bdata-service-slug="([^"]*)"[^>]*>([\s\S]*?)<\/tr>/g)].map((m) => ({
       slug: m[1],
       access: [...m[0].matchAll(/\bdata-access="([^"]*)"/g)].map((a) => a[1]),
+      badge: decodeEntities(m[2].match(/<span[^>]*\bdata-access-badge\b[^>]*>([^<]*)</)?.[1]?.trim() ?? ''),
     }));
 
     assert.deepEqual(
@@ -214,28 +223,33 @@ for (const { locale, html } of built) {
     );
 
     const wrong = rows
-      .map(({ slug, access }) => {
-        const service = platform.services.find((s) => s.slug === slug);
-        const expected = service.isPublic ? 'public' : 'mesh';
+      .map(({ slug, access, badge }) => {
+        const expected = accessOf(slug)?.access;
         if (access.length !== 1) return `${slug}: ${access.length} data-access attributes, expected exactly 1`;
-        if (access[0] !== expected) return `${slug}: says "${access[0]}", manifest says "${expected}"`;
+        if (access[0] !== expected) return `${slug}: says "${access[0]}", the measured table says "${expected}"`;
+        if (badge !== ACCESS_LABEL[locale][expected]) return `${slug}: badge reads "${badge}", not "${ACCESS_LABEL[locale][expected]}"`;
         return null;
       })
       .filter(Boolean);
 
-    assert.deepEqual(wrong, [], 'a service names an access boundary its manifest entry does not support');
+    assert.deepEqual(wrong, [], 'a service names an access boundary the measured access table does not support');
   });
 
-  test(`[${locale}] a service is marked public exactly when it has a URL to reach`, () => {
-    // These two agree in the manifest today (3 and 3, the same three). Asserting
-    // it here means a service that gains `isPublic` without an address — or an
-    // address without the flag — fails on the page rather than shipping a
-    // boundary claim nobody can act on.
-    const mismatched = platform.services
-      .filter((s) => Boolean(s.isPublic) !== Boolean(s.url))
-      .map((s) => s.slug);
+  test(`[${locale}] a service links to its endpoint exactly when the access table has one`, () => {
+    const body = labSection(html, 'services');
+    const wrong = accessTable.services
+      .map(({ slug, url }) => {
+        const row = body.match(new RegExp(`<tr[^>]*data-service-slug="${slug}"[^>]*>([\\s\\S]*?)</tr>`))?.[1] ?? '';
+        const hrefs = [...row.matchAll(/<a\b[^>]*\bhref="([^"]*)"/g)].map((m) => decodeEntities(m[1]));
+        return JSON.stringify(hrefs) === JSON.stringify(url ? [url] : []) ? null : `${slug}: links ${JSON.stringify(hrefs)}`;
+      })
+      .filter(Boolean);
+    assert.deepEqual(wrong, [], 'a row links somewhere the access table does not say');
+  });
 
-    assert.deepEqual(mismatched, [], 'services whose `isPublic` and `url` disagree');
+  test(`[${locale}] the section says when the access was measured`, () => {
+    const body = labSection(html, 'services');
+    assert.match(body, new RegExp(`<time[^>]*datetime="${accessTable.measured}"`), 'no <time> with the measurement date');
   });
 
   // ----------------------------------------------------------------- bilingual
@@ -498,8 +512,8 @@ for (const { locale, html } of built) {
     // field could not be used to select anything.
     for (const s of PROBE_TARGETS) {
       assert.notEqual(
-        s.healthEndpoint,
-        s.url,
+        new URL(s.healthEndpoint).pathname,
+        '/',
         `${s.slug}: healthEndpoint is the service root, so it says nothing the root does not`,
       );
     }

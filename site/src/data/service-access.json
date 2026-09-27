@@ -1,0 +1,40 @@
+{
+  "measured": "2026-09-26",
+  "method": "Public DNS from 1.1.1.1, then an HTTPS request to the service root without following redirects, and to the probe path where one is given. Mesh is decided by DNS alone: no public A record, or only CGNAT or private addresses. Re-run with `npm run test:access`.",
+  "services": [
+    { "slug": "pollex", "access": "public", "url": "https://mlorentedev.github.io/pollex/" },
+    { "slug": "hive", "access": "public", "url": "https://mlorentedev.github.io/hive/" },
+    { "slug": "ollama", "access": "mesh" },
+    { "slug": "kubelab-api", "access": "public", "url": "https://api.kubelab.live/health" },
+    { "slug": "traefik", "access": "authelia", "url": "https://traefik.kubelab.live/" },
+    {
+      "slug": "headscale",
+      "access": "app-login",
+      "url": "https://vpn.kubelab.live/",
+      "probe": { "path": "/api/v1/node", "status": 401 }
+    },
+    {
+      "slug": "authelia",
+      "access": "app-login",
+      "url": "https://auth.kubelab.live/",
+      "probe": { "path": "/api/user/info", "status": 403 }
+    },
+    {
+      "slug": "argocd",
+      "access": "app-login",
+      "url": "https://argo.kubelab.live/",
+      "probe": { "path": "/api/v1/applications", "status": 401 }
+    },
+    {
+      "slug": "gitea",
+      "access": "app-login",
+      "url": "https://gitea.kubelab.live/",
+      "probe": { "path": "/explore/repos", "status": 303 }
+    },
+    { "slug": "grafana", "access": "authelia", "url": "https://grafana.kubelab.live/" },
+    { "slug": "loki", "access": "mesh" },
+    { "slug": "uptime-kuma", "access": "public", "url": "https://status.kubelab.live/" },
+    { "slug": "minio", "access": "mesh" },
+    { "slug": "coredns", "access": "mesh" }
+  ]
+}

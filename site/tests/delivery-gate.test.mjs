@@ -188,10 +188,16 @@ test('every test script in package.json runs in the shared suite', () => {
   // #343 AC4. `npm test` alone does not run the browser or a11y suites, so a
   // script added to package.json and not to test.yml would pass locally, pass
   // CI, and check nothing. `test:audit` is the one deliberate exclusion: it is
-  // `lab-audit.test.mjs`, which `npm test`'s glob already runs.
+  // `lab-audit.test.mjs`, which `npm test`'s glob already runs. `test:access`
+  // runs in its own workflow instead: it measures the live hosts (#292), so on
+  // a pull request it would fail on the cluster's state rather than the change.
   const { scripts } = JSON.parse(readFileSync(join(here, '../package.json'), 'utf8'));
-  const excluded = new Set(['test:audit']);
+  const elsewhere = { 'test:access': 'access-check.yml' };
+  const excluded = new Set(['test:audit', ...Object.keys(elsewhere)]);
   assert.match(scripts['test:audit'], /tests\/lab-audit\.test\.mjs$/, 'test:audit is excluded only while npm test covers it');
+  for (const [script, file] of Object.entries(elsewhere)) {
+    assert.match(workflow(file), new RegExp(`^ +run: npm run ${script}\\s*$`, 'm'), `${file} never runs \`npm run ${script}\``);
+  }
 
   const expected = Object.keys(scripts).filter((s) => /^test(:|$)/.test(s) && !excluded.has(s));
   assert.ok(expected.length >= 3, 'expected at least test, test:browser and test:a11y');
