@@ -35,10 +35,10 @@ const PAGES = ['lab', 'ai', 'lab/idp', 'lab/idp/architecture'].flatMap((path) =>
 /** The pages that publish the spend, which must therefore hold at least one figure. */
 const SPEND_PAGES = ['lab', 'es/lab', 'lab/idp', 'es/lab/idp'];
 
-const UNIT = String.raw`(?:%|€|\$|USD|EUR|ms|s|secs?|seconds?|segundos?|min|minutes?|minutos?|h|hours?|horas?|d|days?|días?|weeks?|semanas?)`;
+const UNIT = String.raw`(?:%|€|US\$|\$|USD|EUR|ms|s|secs?|seconds?|segundos?|min|minutes?|minutos?|h|hours?|horas?|d|days?|días?|weeks?|semanas?)`;
 /**
  * A number with a unit, a comparator optional: "<30s", "67–82%", "100 %",
- * "90-Day", "~$6", "15,59 US$". A digit glued to a letter ("K3s", "K8s") is a
+ * "90-Day", "~$6", "15,59 US$", "19 US$". A digit glued to a letter ("K3s", "K8s") is a
  * name, not a measurement, so the number may not follow a letter.
  */
 const FIGURE = new RegExp(
@@ -72,6 +72,16 @@ function month(date, locale) {
     new Date(Date.UTC(year, number - 1, 1)),
   );
 }
+
+test('FIGURE catches each form a figure is typed in, and no product name', () => {
+  const caught = (text) => [...text.matchAll(FIGURE)].map((m) => m[0]);
+  for (const typed of ['<30s', '67–82%', '100 %', '90-Day', '90d', '90 días', '~$6', '$25.10', '~9€', '15,59 US$', '< 5.0s']) {
+    assert.deepEqual(caught(`x ${typed} y`), [typed], `"${typed}" is not caught`);
+  }
+  for (const name of ['K3s', 'K8s', 'k3s', 'Neoverse-N1', 'v1.34.4']) {
+    assert.deepEqual(caught(`x ${name} y`), [], `"${name}" is a name, not a figure`);
+  }
+});
 
 for (const path of PAGES) {
   test(`/${path}: no measurement typed into copy`, () => {
