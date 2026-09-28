@@ -18,7 +18,9 @@ status page (301 to `status.claude.com`), the Kubernetes docs (301 to `/docs/hom
 the Argo CD docs (302 to `/en/stable/`). A browser follows a redirect without a word, so
 clicking a card proves nothing, and neither does any check built on `fetch` with its
 default `redirect: 'follow'`. A redirect is the first sign that a target has moved; the
-next step is usually a 404. A second trap sat on the other side: securityheaders.com
+next step is usually a 404. It is the blindness of
+[lesson 025](lesson-025-curl-il-reports-200-for-every-gated-host.md), where following a
+redirect turned a login wall into a 200. A second trap sat on the other side: securityheaders.com
 answers 403 to any client that is not a browser, so a check that demanded 200 would have
 failed a link that works.
 
