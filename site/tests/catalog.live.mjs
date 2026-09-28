@@ -16,7 +16,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import test from 'node:test';
+import test, { describe } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -27,14 +27,18 @@ test('the catalog has linked cards to check', () => {
   assert.ok(linked.length > 0);
 });
 
-for (const item of linked) {
-  test(`${item.id} opens without a redirect`, async () => {
-    const response = await fetch(item.url, {
-      redirect: 'manual',
-      headers: { 'user-agent': 'Mozilla/5.0 (mlorente.dev catalog check)' },
-      signal: AbortSignal.timeout(20_000),
+// Serially, every card at its 20 s timeout would outlast the job's 5 minutes, which
+// `test:access` shares (CodeRabbit on #431); six at a time bounds it near 60 s.
+describe('every linked card', { concurrency: 6 }, () => {
+  for (const item of linked) {
+    test(`${item.id} opens without a redirect`, async () => {
+      const response = await fetch(item.url, {
+        redirect: 'manual',
+        headers: { 'user-agent': 'Mozilla/5.0 (mlorente.dev catalog check)' },
+        signal: AbortSignal.timeout(20_000),
+      });
+      const { status } = response;
+      assert.ok(status < 300 || status >= 400, `${item.url} answers ${status} → ${response.headers.get('location')}`);
     });
-    const { status } = response;
-    assert.ok(status < 300 || status >= 400, `${item.url} answers ${status} → ${response.headers.get('location')}`);
-  });
-}
+  }
+});

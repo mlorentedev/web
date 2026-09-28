@@ -30,10 +30,14 @@ const MEASURED_LABEL = {
   es: { public: 'Público', authelia: 'Tras Authelia', 'app-login': 'Login propio', mesh: 'Solo malla' },
 };
 
-/** A kubelab.live host, or kubelab.live as the thing a scanner is asked about. */
+/**
+ * A kubelab.live host, or kubelab.live as the thing a scanner is asked about: every DNS-shaped
+ * token of the decoded query counts, so a nested URL or a name in capitals is caught too.
+ */
 function targetsKubelab(url) {
   const { hostname, search } = new URL(url);
-  return /(^|\.)kubelab\.live$/.test(hostname) || /(^|[=.])kubelab\.live(\b|$)/.test(decodeURIComponent(search));
+  const named = decodeURIComponent(search).toLowerCase().match(/[a-z0-9.-]+/g) ?? [];
+  return [hostname, ...named].some((name) => /(^|\.)kubelab\.live$/.test(name.replace(/\.$/, '')));
 }
 
 test('the fixture sha256 matches the manifest provenance declaration', () => {
@@ -134,6 +138,12 @@ test('targetsKubelab: hosts and scanner queries count, a lookalike does not', ()
   assert.ok(targetsKubelab('https://securityheaders.com/?q=kubelab.live&followRedirects=on'));
   assert.ok(!targetsKubelab('https://www.ssllabs.com/ssltest/analyze.html?d=mlorente.dev'));
   assert.ok(!targetsKubelab('https://notkubelab.live.example.com/'));
+  // A scanner asked about a whole URL, or in capitals, still targets kubelab.live (CodeRabbit on #431).
+  assert.ok(targetsKubelab('https://scanner.example/?d=https%3A%2F%2Fkubelab.live'));
+  assert.ok(targetsKubelab('https://scanner.example/?d=https%3A%2F%2Fauth.kubelab.live%2Flogin'));
+  assert.ok(targetsKubelab('https://www.ssllabs.com/ssltest/analyze.html?d=KUBELAB.LIVE'));
+  assert.ok(targetsKubelab('https://www.ssllabs.com/ssltest/analyze.html?d=kubelab.live.'));
+  assert.ok(!targetsKubelab('https://scanner.example/?d=https%3A%2F%2Fnotkubelab.live'));
 });
 
 /**
