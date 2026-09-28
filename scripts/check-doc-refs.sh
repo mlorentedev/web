@@ -23,10 +23,12 @@ while IFS= read -r line; do
   [ -n "$line" ] || continue
   loc="${line%%:*}"; rest="${line#*:}"; lineno="${rest%%:*}"; text="${rest#*:}"
   # Every path on the line, not only the first. Not `path`: zsh ties that name to $PATH.
+  # The boundary character is never a letter, so stripping one non-'d' drops it.
   while IFS= read -r ref; do
     [ -e "$ref" ] || missing+="  $loc:$lineno $ref"$'\n'
   done < <(printf '%s\n' "$text" \
-    | perl -ne 'while (m{(?:^|[^/A-Za-z0-9_.-])(docs/(?:adr|lessons|runbooks|troubleshooting)/[A-Za-z0-9._-]+\.md)}g) { print "$1\n" }')
+    | grep -oE '(^|[^/A-Za-z0-9_.-])docs/(adr|lessons|runbooks|troubleshooting)/[A-Za-z0-9._-]+\.md' \
+    | sed -E 's/^[^d]//')
 done <<< "$refs"
 
 if [ -n "$missing" ]; then
