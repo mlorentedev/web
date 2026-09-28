@@ -15,7 +15,7 @@ name: Bitácora status — In Progress on assign
 # Canonical IDs (re-list: gh project field-list 1 --owner mlorentedev --format json):
 #   Project  PVT_kwHOAM7xJs4BZ6GY
 #   Status   PVTSSF_lAHOAM7xJs4BZ6GYzhU1dtI   (option "In Progress" = 6c133cc8)
-# Full reference: docs/runbooks/guide-bitacora-setup.md §2 / §5 / §7.
+# Full reference: vault 00_meta/runbooks/bitacora-project-setup.md §2 / §5 / §7.
 
 on:
   issues:
@@ -28,16 +28,12 @@ jobs:
     # Never resurrect a closed issue's status when it is (re)assigned.
     if: github.event.issue.state == 'open'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Move assigned issue to In Progress
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
-          # Needs project + repo scope, so GITHUB_TOKEN cannot serve: the board
-          # is a user-level Project v2 outside this repository, and this script
-          # updates an item's Status field, which is GraphQL-only. Draws on the
-          # account's shared rate limit — see #256 and the note in
-          # add-to-project.yml.
-          github-token: ${{ secrets.BITACORA_PAT }}
+          github-token: ${{ secrets.BITACORA_PAT }}   # needs project + repo scope
           script: |
             const projectId = 'PVT_kwHOAM7xJs4BZ6GY';
             const statusFieldId = 'PVTSSF_lAHOAM7xJs4BZ6GYzhU1dtI';
