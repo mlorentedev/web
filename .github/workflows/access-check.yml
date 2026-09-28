@@ -10,8 +10,10 @@ name: Access check
 # wrong about four services for weeks because nothing re-checked them. Weekly,
 # and on demand after a change to an ingress or a gate.
 #
-# A red run means a row no longer matches what a visitor meets: change the row
-# (and `measured`) or change the service.
+# A red "Re-measure every row" step means a row no longer matches what a visitor meets:
+# change the row (and `measured`) or change the service. A red "Check every
+# catalog link" step names the card and where its redirect lands: point the
+# card's `url` in `site/src/data/idp-catalog.json` there.
 
 on:
   schedule:
