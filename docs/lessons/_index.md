@@ -14,6 +14,7 @@ lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 062 | [A doc moved out of a repo leaves every copied comment pointing at nothing](lesson-062-a-doc-moved-out-of-a-repo-leaves-every-copie.md) | 2026-09-27 | `#docs` `#ci` `#hygiene` |
 | 063 | [A drafted claim about the author's career is a question, not a fact](lesson-063-a-drafted-claim-about-the-author-s-career-is.md) | 2026-09-27 | `#content` `#copy` `#verification` |
 | 060 | [A link that redirects still works, so only a check that refuses redirects can see it](lesson-060-a-link-that-redirects-still-works-so-only-a-.md) | 2026-09-27 | `#testing` `#links` |
 | 059 | [A reachability check run from the tailnet cannot see the mesh boundary](lesson-059-a-reachability-check-run-from-the-tailnet-ca.md) | 2026-09-26 | `#networking` `#testing` `#lab` |

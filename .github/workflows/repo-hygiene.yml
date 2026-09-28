@@ -1,7 +1,8 @@
 name: Repo hygiene
 
-# Two guards that need no toolchain: lesson numbering/index integrity and
-# SHA-pinned actions. Both scripts run under bash and zsh and print what failed.
+# Three guards that need no toolchain: lesson numbering/index integrity,
+# SHA-pinned actions, and docs paths that exist. All three run under bash and
+# zsh and print what failed.
 
 on:
   pull_request:
@@ -23,3 +24,5 @@ jobs:
         run: bash scripts/check-lessons.sh
       - name: Actions pinned to commit SHAs
         run: bash scripts/check-actions-pinned.sh
+      - name: Docs paths named in the repo exist
+        run: bash scripts/check-doc-refs.sh

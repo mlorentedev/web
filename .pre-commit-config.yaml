@@ -70,6 +70,16 @@ repos:
         pass_filenames: false
         files: ^docs/lessons/
 
+  # Docs paths named in .github/, scripts/, docs/ and the root docs exist (scripts/check-doc-refs.sh)
+  - repo: local
+    hooks:
+      - id: check-doc-refs
+        name: check-doc-refs
+        language: script
+        entry: scripts/check-doc-refs.sh
+        pass_filenames: false
+        files: ^(\.github/|scripts/|docs/|AGENTS\.md$|README\.md$|Makefile$)
+
 # Files to exclude
 exclude: |
   (?x)^(
