@@ -18,7 +18,10 @@ export interface ProjectContent {
 export interface Project {
   en: ProjectContent;
   es: ProjectContent;
-  /** Live demo / project page — preferred target for the card's "View project" link. */
+  /**
+   * Live demo / project page — preferred target for the card's "View project" link.
+   * A site path (`/lab`) is localized and opens in the same tab.
+   */
   url?: string;
   /** Source repository — fallback link target when `url` is absent. */
   github?: string;
@@ -66,6 +69,8 @@ export const projects: Project[] = [
       description:
         'Quería entender cómo funcionan de verdad las plataformas, no solo pulsar botones en un K8s gestionado. Así que construí una desde cero. Ocho máquinas, tres clústeres K3s de un nodo, malla VPN, SSO y observabilidad completa. Todo IaC, nada manual.',
     },
+    // The Lab shows and measures the platform; kubelab.live is platform-internal (ADR-059, #31).
+    url: '/lab',
     github: 'https://github.com/mlorentedev/kubelab',
     tags: ['Kubernetes', 'Go', 'Python', 'Terraform', 'Ansible'],
     featured: true,

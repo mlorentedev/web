@@ -63,8 +63,9 @@ created: "2026-09-24"
 - [ ] [P] [AC1] Create `src/data/proofs.ts` (`kubelab`, `agents`; `teledyne` belongs to WEB-140) with a failing
       test for the four fields and for every `href` resolving in both locales
 - [ ] [AC1] [AC9] Render the proof block at the top of `/lab` and `/ai`, with the date each result was measured
-- [ ] [P] Housekeeping (#31): the KubeLab project card links to `/lab`. `portfolio.ts` is shared with the home,
-      so tell the WEB-140 session before merging
+- [x] [P] Housekeeping (#31): the KubeLab project card links to `/lab`. `portfolio.ts` is shared with the home,
+      so tell the WEB-140 session before merging. Told 2026-09-27: the home does not import `portfolio.ts`, and
+      #418 does not touch it. `ProjectCard` localizes a site path and keeps it in the tab (`tests/projects.test.mjs`)
 - [ ] [AC7] Full suite green before each phase-1 PR merges (`npm test`, `lab-containment.mjs`, `lab-axe.mjs`)
 
 ### Phase 2 — producers and measured figures (kubelab, then web)

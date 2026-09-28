@@ -14,20 +14,20 @@ const { project, lang } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-// Preferred link: the live/demo URL, falling back to the source repo.
-const link = project.url ?? project.github;
+// Preferred link: the live/demo URL, falling back to the source repo. A site path
+// (`/lab`) stays in the tab and in the reader's locale; only a link that leaves the
+// site opens a new tab (#31).
+const target = project.url ?? project.github;
+const internal = target?.startsWith('/') ?? false;
+const link = target && internal ? translatePath(target) : target;
+const newTab = internal ? {} : { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
 <div class="border border-ink-200 bg-white rounded-lg p-5 hover:border-accent-700 transition-colors flex flex-col shadow-xs">
   <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
     <h3 class="font-bold text-ink-900 text-lg leading-snug text-balance">
       {link ? (
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-accent-700 transition-colors"
-        >
+        <a href={link} {...newTab} class="hover:text-accent-700 transition-colors">
           {project.title}
         </a>
       ) : (
@@ -56,8 +56,7 @@ const link = project.url ?? project.github;
     {link && (
       <a
         href={link}
-        target="_blank"
-        rel="noopener noreferrer"
+        {...newTab}
         class="ml-auto text-xs font-mono font-medium text-accent-700 hover:text-accent-900 hover:underline whitespace-nowrap"
       >
         {t('projects.viewProject')} &rarr;
