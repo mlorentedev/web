@@ -9,13 +9,14 @@ tags: [web, lessons, index]
 
 # Lessons
 
-61 lessons, one file each, newest first. Numbers are assigned in the order
+63 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
-| 062 | [A doc moved out of a repo leaves every copied comment pointing at nothing](lesson-062-a-doc-moved-out-of-a-repo-leaves-every-copie.md) | 2026-09-27 | `#docs` `#ci` `#hygiene` |
 | 063 | [A drafted claim about the author's career is a question, not a fact](lesson-063-a-drafted-claim-about-the-author-s-career-is.md) | 2026-09-27 | `#content` `#copy` `#verification` |
+| 062 | [A doc moved out of a repo leaves every copied comment pointing at nothing](lesson-062-a-doc-moved-out-of-a-repo-leaves-every-copie.md) | 2026-09-27 | `#docs` `#ci` `#hygiene` |
+| 061 | [A test that bans typed counts only catches the phrasings it lists](lesson-061-a-test-that-bans-typed-counts-only-catches-t.md) | 2026-09-26 | `#testing` `#copy` `#lab` |
 | 060 | [A link that redirects still works, so only a check that refuses redirects can see it](lesson-060-a-link-that-redirects-still-works-so-only-a-.md) | 2026-09-27 | `#testing` `#links` |
 | 059 | [A reachability check run from the tailnet cannot see the mesh boundary](lesson-059-a-reachability-check-run-from-the-tailnet-ca.md) | 2026-09-26 | `#networking` `#testing` `#lab` |
 | 058 | [Astro drops the line break between an expression and the next node](lesson-058-astro-drops-the-line-break-between-an-expres.md) | 2026-09-26 | `#astro` `#templates` `#copy` |

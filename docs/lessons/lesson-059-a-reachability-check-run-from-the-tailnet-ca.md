@@ -24,7 +24,9 @@ runner off the mesh would have disagreed every week.
 HTTP request: no A record from `1.1.1.1`, or only CGNAT (100.64.0.0/10), RFC 1918,
 loopback or link-local addresses. HTTP only classifies hosts that resolve publicly
 (`authelia` when the root redirects to `auth.kubelab.live`; `app-login` when the row's
-probe path answers its recorded status; otherwise `public`). The weekly check runs on a
+probe path answers its recorded status; otherwise `public`). A redirect to any other
+host is `elsewhere`, which matches no row, so the check goes red instead of passing a gate
+it has no word for as `public` (PR-Agent on #426, `7f040cf`). The weekly check runs on a
 GitHub runner, which is off the mesh. A pure unit test pins each rule to the responses
 recorded on 2026-09-26, the Pi-hole case included.
 
