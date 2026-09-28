@@ -8,7 +8,13 @@ import idpCatalogData from './idp-catalog.json';
  * `3f85fe5ae6f09404727c930da7017a671c95074c` and preserved as
  * `tests/fixtures/bookmarks.yaml` for offline CI verification.
  */
-export type IdpAccess = 'public' | 'mesh' | 'auth' | 'local';
+/**
+ * `platform` is a KubeLab service: its access is not this file's to say. The
+ * card names the service and takes the access measured in `service-access.json`
+ * (#292), which is how the triage cards stopped claiming "Tailscale Mesh" for
+ * services that are behind Authelia, behind their own login, or public.
+ */
+export type IdpAccess = 'public' | 'platform' | 'auth' | 'local';
 
 export interface IdpItem {
   id: string;
@@ -34,6 +40,8 @@ export interface IdpItem {
   description: string;
   descriptionEs: string;
   access: IdpAccess;
+  /** The `service-access.json` slug, for a `platform` card only. */
+  service?: string;
 }
 
 export interface IdpCategory {

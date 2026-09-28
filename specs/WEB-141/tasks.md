@@ -53,9 +53,13 @@ created: "2026-09-24"
 - [x] [AC2] Source or remove every hand-written count; remove each `platform.json` metric that has no method
       until phase 2 supplies it (#340). Counts in #423; the SLO section, "<30s", "67–82%" and the `metrics` block
       removed, and the spend read from `cloud-spend.json` (#417)
-- [ ] [P] [AC3] Write a failing test that no catalog card targets `kubelab.live` or any other redirecting URL
-- [ ] [AC3] Point the perimeter scanners at the domain that serves the site; internal cards say why they do not
-      open (until phase 3)
+- [x] [P] [AC3] Write a failing test that no catalog card targets `kubelab.live` or any other redirecting URL.
+      `tests/lab-idp-data.test.mjs` (host or decoded query, offline); redirects are live-only, so
+      `tests/catalog.live.mjs` (`npm run test:links`) fails on any 3xx and runs weekly in `access-check.yml` (#429)
+- [x] [AC3] Point the perimeter scanners at the domain that serves the site; internal cards say why they do not
+      open (until phase 3). SSL Labs and Shodan scan `mlorente.dev`; the kubelab.live securityheaders card is gone
+      (Manu, 2026-09-27); triage cards carry the measured access from `service-access.json` and link to
+      `/lab#services` (#429)
 - [ ] [P] [AC1] Create `src/data/proofs.ts` (`kubelab`, `agents`; `teledyne` belongs to WEB-140) with a failing
       test for the four fields and for every `href` resolving in both locales
 - [ ] [AC1] [AC9] Render the proof block at the top of `/lab` and `/ai`, with the date each result was measured

@@ -270,11 +270,12 @@ export const ui = {
     'idp.catalog.spendLabel': 'monthly cloud spend',
     'idp.catalog.source': 'Reconciled from {repo} · commit {commit}',
     'idp.access.public': 'Public',
-    'idp.access.mesh': 'Tailscale Mesh',
     'idp.access.auth': 'IAM Auth',
     'idp.access.local': 'Local Vault',
     'idp.action.open': 'Open resource',
-    'idp.action.internal': 'Internal resource',
+    'idp.why.auth': 'Needs my account on the provider',
+    'idp.why.local': 'A local vault on my laptop',
+    'idp.why.platform': 'Linked from Services on the Lab',
 
     // IDP Architecture
     'idp.nav.sections': 'IDP Sections',
@@ -726,11 +727,12 @@ export const ui = {
     'idp.catalog.spendLabel': 'gasto cloud mensual',
     'idp.catalog.source': 'Reconciliado desde {repo} · commit {commit}',
     'idp.access.public': 'Público',
-    'idp.access.mesh': 'Malla Tailscale',
     'idp.access.auth': 'Autenticado (IAM)',
     'idp.access.local': 'Bóveda local',
     'idp.action.open': 'Abrir recurso',
-    'idp.action.internal': 'Recurso interno',
+    'idp.why.auth': 'Requiere mi cuenta en el proveedor',
+    'idp.why.local': 'Una bóveda local en mi portátil',
+    'idp.why.platform': 'Enlazado desde Servicios en el Lab',
 
     // IDP Architecture
     'idp.nav.sections': 'Secciones del IDP',

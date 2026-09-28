@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-59 lessons, one file each, newest first. Numbers are assigned in the order
+60 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 060 | [A link that redirects still works, so only a check that refuses redirects can see it](lesson-060-a-link-that-redirects-still-works-so-only-a-.md) | 2026-09-27 | `#testing` `#links` |
 | 059 | [A reachability check run from the tailnet cannot see the mesh boundary](lesson-059-a-reachability-check-run-from-the-tailnet-ca.md) | 2026-09-26 | `#networking` `#testing` `#lab` |
 | 058 | [Astro drops the line break between an expression and the next node](lesson-058-astro-drops-the-line-break-between-an-expres.md) | 2026-09-26 | `#astro` `#templates` `#copy` |
 | 057 | [A quote on a proof page drifts unless it is pinned to a blob](lesson-057-a-quote-on-a-proof-page-drifts-unless-it-is-.md) | 2026-09-25 | `#verification` `#content` `#testing` |

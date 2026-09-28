@@ -15,7 +15,8 @@ import SectionHeading from './SectionHeading.astro';
 import IdpIcon from './IdpIcon.astro';
 import SpendFigure from './SpendFigure.astro';
 import { cloudSpend, formatSpendMonth, spendFor, totalMethod, totalSpend } from '../data/cloud-spend';
-import { idpCatalog, shownItemName, type IdpAccess } from '../data/idp-catalog';
+import { idpCatalog, shownItemName, type IdpAccess, type IdpItem } from '../data/idp-catalog';
+import { accessFor, type ServiceAccess } from '../data/service-access';
 import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -25,18 +26,29 @@ const isEs = lang === 'es';
 
 const totalItems = idpCatalog.categories.reduce((acc, cat) => acc + cat.items.length, 0);
 
-const ACCESS_LABEL: Record<IdpAccess, string> = {
+type ShownAccess = Exclude<IdpAccess, 'platform'> | ServiceAccess;
+
+/**
+ * A platform card shows the access measured for its service, in the words the
+ * Services table on `/lab` uses for it, so the two pages cannot disagree.
+ */
+const ACCESS_LABEL: Record<ShownAccess, string> = {
   public: t('idp.access.public'),
-  mesh: t('idp.access.mesh'),
   auth: t('idp.access.auth'),
   local: t('idp.access.local'),
+  authelia: t('lab.access.authelia'),
+  'app-login': t('lab.access.appLogin'),
+  mesh: t('lab.access.mesh'),
 };
 
-const ACCESS_BADGE: Record<IdpAccess, string> = {
-  public: 'bg-accent-50 text-accent-800 border-accent-200',
-  mesh: 'bg-panel-100 text-panel-700 border-panel-200',
-  auth: 'bg-panel-100 text-panel-700 border-panel-200',
-  local: 'bg-panel-100 text-panel-700 border-panel-200',
+const shownAccess = (item: IdpItem): ShownAccess =>
+  item.access === 'platform' ? accessFor(item.service ?? '').access : item.access;
+
+/** Why a card has no link (WEB-141 AC3), until phase 3 gives the internal ones a capture. */
+const WHY: Record<Exclude<IdpAccess, 'public'>, string> = {
+  auth: t('idp.why.auth'),
+  local: t('idp.why.local'),
+  platform: t('idp.why.platform'),
 };
 ---
 
@@ -124,7 +136,7 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
                 const isPublic = item.access === 'public' && Boolean(item.url);
 
                 return (
-                  <article class="flex flex-col justify-between p-4 rounded-lg bg-panel-50 border border-panel-200 hover:border-panel-300 transition-colors">
+                  <article data-idp-item={item.id} class="flex flex-col justify-between p-4 rounded-lg bg-panel-50 border border-panel-200 hover:border-panel-300 transition-colors">
                     <div>
                       <div class="flex items-start justify-between gap-3 mb-2.5">
                         <div class="flex items-center gap-2.5 min-w-0">
@@ -147,12 +159,12 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
                     </div>
 
                     <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-panel-200/60 mt-auto">
-                      <span class:list={[
+                      <span data-idp-access class:list={[
                         'text-xs font-mono px-2 py-0.5 rounded border uppercase tracking-wider',
-                        ACCESS_BADGE[item.access]
-                      ]}>
-                        {ACCESS_LABEL[item.access]}
-                      </span>
+                        shownAccess(item) === 'public'
+                          ? 'bg-accent-50 text-accent-800 border-accent-200'
+                          : 'bg-panel-100 text-panel-700 border-panel-200',
+                      ]}>{ACCESS_LABEL[shownAccess(item)]}</span>
 
                       {isPublic ? (
                         <a
@@ -170,9 +182,15 @@ const ACCESS_BADGE: Record<IdpAccess, string> = {
                           </svg>
                         </a>
                       ) : (
-                        <span class="text-xs font-mono text-panel-700">
-                          {t('idp.action.internal')}
-                        </span>
+                        item.access === 'platform' ? (
+                          <a
+                            data-idp-why
+                            href={`${translatePath('/lab')}#services`}
+                            class="text-xs font-mono text-panel-700 underline decoration-panel-300 hover:text-accent-700 focus:outline-hidden focus:text-accent-700"
+                          >{WHY.platform}</a>
+                        ) : (
+                          <span data-idp-why class="text-xs font-mono text-panel-700">{WHY[item.access as 'auth' | 'local']}</span>
+                        )
                       )}
                     </div>
                   </article>
