@@ -4,6 +4,7 @@
 # 2. Every lesson file is listed in its _index.md and every indexed file exists.
 # 3. When lessons live in category directories, docs/lessons/_index.md (the root index the
 #    pointer stub links) must still exist.
+# 4. The root index's "N lessons" counter matches the files, and its rows run newest first.
 # Lessons may live flat in docs/lessons/ or one level down in category directories
 # (docs/lessons/<category>/ with a per-category _index.md); both layouts are checked.
 # Portable: bash and zsh, GNU and BSD find (no -printf), filenames compared as literal
@@ -72,6 +73,28 @@ done < <(find "$LESSONS_DIR" -maxdepth 1 -type d -print0)
 if [ "$total" -gt 0 ] && [ ! -f "$LESSONS_DIR/_index.md" ]; then
   echo "check-lessons: docs/lessons/_index.md is missing (the canonical index the pointer stub links)"
   rc=1
+fi
+
+# --- 4. the root index's counter and row order, when it has them ---
+# Parallel lesson PRs all edit the same opening line and first rows, and each resolves
+# the conflict by hand; two merges on 2026-09-27 left "61 lessons" over 62 files, with
+# 062 listed above 063. Neither broke a link, so checks 1-3 stayed green.
+root_index="$LESSONS_DIR/_index.md"
+if [ "$total" -gt 0 ] && [ -f "$root_index" ]; then
+  stated="$(grep -m1 -oE '^[0-9]+ lessons,' "$root_index" | grep -oE '^[0-9]+' || true)"
+  if [ -n "$stated" ] && [ "$stated" -ne "$total" ]; then
+    echo "check-lessons: ${root_index#"$ROOT"/} says $stated lessons, found $total"
+    rc=1
+  fi
+  prev=""
+  while IFS= read -r n; do
+    n=$((10#$n))
+    if [ -n "$prev" ] && [ "$n" -ge "$prev" ]; then
+      echo "check-lessons: ${root_index#"$ROOT"/} rows are newest first, but $n follows $prev"
+      rc=1
+    fi
+    prev="$n"
+  done < <(grep -oE '^\| *[0-9]+ *\|' "$root_index" | grep -oE '[0-9]+')
 fi
 
 [ "$rc" -eq 0 ] && echo "check-lessons: OK ($total lessons)"
