@@ -168,3 +168,11 @@ for (const { lang, built } of homes) {
     });
   }
 }
+
+for (const { lang, built } of homes) {
+  test(`[${lang}] the hero links down to the story`, () => {
+    const hero = dist(built).match(/<main[\s\S]*?<h1[\s\S]*?(?=<section)/)?.[0] ?? '';
+    assert.ok(hero, `dist/${built}: no hero before the first section`);
+    assert.match(hero, /href="#story"/, `dist/${built}: the hero has no link to #story`);
+  });
+}

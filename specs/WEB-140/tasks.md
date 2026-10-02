@@ -50,10 +50,10 @@ created: "2026-09-24"
 
 ### PR 3 · The story
 
-- [ ] [AC4] Write failing test (in `bio.test.mjs`): the story links `/lab/` and `/ai/` in its own locale, every link in
+- [x] [AC4] Write failing test (in `bio.test.mjs`): the story links `/lab/` and `/ai/` in its own locale, every link in
   it resolves to a built route, every figure is in `experience.ts`, the agents sentence states no figure, and it has
   300 to 450 words per locale
-- [ ] [AC4] Draft the story in `content/pages/{en,es}-bio.mdx` from the current bio and `brand-package.md` §3 (the
+- [x] [AC4] Draft the story in `content/pages/{en,es}-bio.mdx` from the current bio and `brand-package.md` §3 (the
   career the Timeline listed, told as prose; the three proofs as linked sentences; `/projects` linked once), and the
   hero's secondary link to `#story` in place of "Explore my platform"
 - [ ] Manu rewrites the draft in the PR before it merges; the tests hold whatever wording he lands on
