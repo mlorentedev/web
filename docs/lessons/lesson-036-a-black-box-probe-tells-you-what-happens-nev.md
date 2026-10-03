@@ -67,6 +67,15 @@ So WEB-105's check became *measured == declared* rather than merely *render what
 was measured* — a build that fails when the cluster and its stated policy
 disagree. That is only possible because the declaration exists as a file.
 
+> **Superseded, 2026-09-27.** That was the plan while scoping, and it did not ship.
+> The cross-check against kubelab's declared Authelia policy was dropped: the policy is
+> kubelab's to keep, and the web's claim is covered by measurement alone. What runs is
+> [`site/tests/service-access.test.mjs`](../../site/tests/service-access.test.mjs), which
+> checks the committed measured table offline, and `access.live.mjs`, which
+> [`access-check.yml`](../../.github/workflows/access-check.yml) runs weekly against the
+> live hosts. Nothing compares measured access with the declared policy. The rule below
+> still stands; only this consequence of it was retired.
+
 The probing was not wasted: it found `wiki.kubelab.live` still granted `bypass`
 while returning `NXDOMAIN`, dead policy for a host removed months ago
 (`kubelab#1581`). Measurement is what caught that. Measurement plus the
