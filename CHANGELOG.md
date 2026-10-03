@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.16.0](https://github.com/mlorentedev/web/compare/v1.15.1...v1.16.0) (2026-10-03)
+
+
+### Features
+
+* **contact:** one door and an offer ladder with a single source for its figures ([#401](https://github.com/mlorentedev/web/issues/401)) ([02e65d7](https://github.com/mlorentedev/web/commit/02e65d7f7626bcbb044a0a261720921e013f1084))
+* **copy:** open My path with a short bio, kept as editable markdown ([#396](https://github.com/mlorentedev/web/issues/396)) ([3e10f95](https://github.com/mlorentedev/web/commit/3e10f9502ae7ba8a05a779c07b584ef00145e6ad)), closes [#390](https://github.com/mlorentedev/web/issues/390)
+* **copy:** say Engineer from Silicon to Cloud as the one label ([#392](https://github.com/mlorentedev/web/issues/392)) ([86b4faf](https://github.com/mlorentedev/web/commit/86b4faf8ffc2513fe3839e504c692972562fa4e3)), closes [#390](https://github.com/mlorentedev/web/issues/390)
+* **home:** drop the five visual sections and make the bio the story block ([#416](https://github.com/mlorentedev/web/issues/416)) ([fa4ee79](https://github.com/mlorentedev/web/commit/fa4ee790ee6ba84c6f2b9c90005e808dc72678f6))
+* **home:** render the contact markdown on the home as its door block ([#419](https://github.com/mlorentedev/web/issues/419)) ([93bd8df](https://github.com/mlorentedev/web/commit/93bd8df536d33d3a95edc3e474ebdd046acad96f))
+
+
+### Bug Fixes
+
+* **ai:** quote each artifact card's file verbatim, pinned to a commit ([#411](https://github.com/mlorentedev/web/issues/411)) ([eddf911](https://github.com/mlorentedev/web/commit/eddf9113f715cca180687066422c9bba796ea755))
+* **ci:** check the lessons index counter and row order ([#438](https://github.com/mlorentedev/web/issues/438)) ([ea190f5](https://github.com/mlorentedev/web/commit/ea190f5768e7ff3c4c309687b7d7c750e0571724))
+* **ci:** move PR-Agent off the retired mimo-v2.5 model ([#444](https://github.com/mlorentedev/web/issues/444)) ([b4b4af7](https://github.com/mlorentedev/web/commit/b4b4af769f9c64b50b0bd1af86fb2ec2f02e4c52))
+* **copy:** drop the banned register from the Lab and AI proof pages ([#409](https://github.com/mlorentedev/web/issues/409)) ([5c934e5](https://github.com/mlorentedev/web/commit/5c934e59a98a54353794aaba804b9035e95b736a))
+* **copy:** give /lab a section name instead of a label of its own ([#404](https://github.com/mlorentedev/web/issues/404)) ([d110dd8](https://github.com/mlorentedev/web/commit/d110dd8231a2286ce52c33aa84ecaef4b169edb2))
+* **copy:** land the bio's review fixes and hardware wording that missed [#396](https://github.com/mlorentedev/web/issues/396) ([#399](https://github.com/mlorentedev/web/issues/399)) ([26ae565](https://github.com/mlorentedev/web/commit/26ae56548b6c9683ce8546a8efc25d28127e701d))
+* **diagrams:** name mermaid SVGs by their source, not a random id ([#395](https://github.com/mlorentedev/web/issues/395)) ([b0b09de](https://github.com/mlorentedev/web/commit/b0b09de1eeb5410163d34c15626914a8beab9731))
+* **i18n:** the Spanish AI page carries no English text ([#414](https://github.com/mlorentedev/web/issues/414)) ([669cf96](https://github.com/mlorentedev/web/commit/669cf964ed51b814f92b4739606dd6f55d8837d7))
+* **i18n:** the Spanish Lab pages carry no English text ([#415](https://github.com/mlorentedev/web/issues/415)) ([e45001f](https://github.com/mlorentedev/web/commit/e45001f1ff66645734de0222e45b03613cb664e2))
+* **lab:** derive every machine and cluster count from platform.json ([#423](https://github.com/mlorentedev/web/issues/423)) ([120fc80](https://github.com/mlorentedev/web/commit/120fc80154160a430b4d060740c73b8e41957290))
+* **lab:** point the IDP catalog at final URLs and its measured access ([#431](https://github.com/mlorentedev/web/issues/431)) ([7686d31](https://github.com/mlorentedev/web/commit/7686d318283db7f373e7de4a78ca6146b9b0d13f))
+* **lab:** render each service's access from a measured table, re-checked weekly ([#426](https://github.com/mlorentedev/web/issues/426)) ([0c8b19a](https://github.com/mlorentedev/web/commit/0c8b19a03100a018676f7043672a3b742e6144c4))
+* **lab:** render every measured figure from data with its method and date ([#425](https://github.com/mlorentedev/web/issues/425)) ([84db21d](https://github.com/mlorentedev/web/commit/84db21d0d407e53073cc4a0e5db3d76946007035))
+* **lab:** retire the reachability console so the page ships no script ([#428](https://github.com/mlorentedev/web/issues/428)) ([751eecd](https://github.com/mlorentedev/web/commit/751eecd8e272dbe9cbe90cd32624aee0d4421643))
+* **projects:** the KubeLab card opens the Lab, in the reader's locale and tab ([#437](https://github.com/mlorentedev/web/issues/437)) ([4ed34f6](https://github.com/mlorentedev/web/commit/4ed34f697b6cc4d4bb53fedb462b05b429315451))
+
 ## [1.15.1](https://github.com/mlorentedev/web/compare/v1.15.0...v1.15.1) (2026-09-23)
 
 
