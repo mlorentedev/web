@@ -84,7 +84,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI__KEY: ${{ secrets.NAN_API_KEY }}
           OPENAI__API_BASE: https://api.nan.builders/v1
-          CONFIG__MODEL: "openai/mimo-v2.5"
+          CONFIG__MODEL: "openai/mimo-v2.6-flash"
           CONFIG__FALLBACK_MODELS: '["openai/deepseek-v4-flash"]'
           CONFIG__CUSTOM_MODEL_MAX_TOKENS: 200000
           CONFIG__MAX_MODEL_TOKENS: 200000
