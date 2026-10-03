@@ -2,7 +2,7 @@
 # Backed by NaN cluster inference with zero per-hour account quota limits.
 
 [config]
-model = "openai/mimo-v2.5"
+model = "openai/mimo-v2.6-flash"
 fallback_models = ["openai/deepseek-v4-flash"]
 model_weak = "openai/qwen3.6"
 
