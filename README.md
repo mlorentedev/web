@@ -25,6 +25,22 @@ real API **host** for local development (host only — the call sites add `/api/
 PUBLIC_API_URL=https://api.staging.kubelab.live npm run dev
 ```
 
+### On a fresh clone
+
+Run these once on a new machine, from the repo root:
+
+```bash
+pre-commit install                  # lint, secrets, lessons index and doc refs before each commit
+cd site
+nvm use                             # Node version pinned in .nvmrc
+npm ci
+npm run build && npm test           # the tests read dist/, so build first
+```
+
+Everything the repo ignores is regenerated, not lost: `site/public/beoe/` by the
+build, `.agents/` (third-party agent skills) by `npx skills add` from the committed
+`skills-lock.json`, and `.claude/` by the dotfiles harness deploy.
+
 ## Project structure
 
 ```text
