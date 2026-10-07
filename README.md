@@ -25,6 +25,23 @@ real API **host** for local development (host only — the call sites add `/api/
 PUBLIC_API_URL=https://api.staging.kubelab.live npm run dev
 ```
 
+### On a fresh clone
+
+Run these once on a new machine, from the repo root. They assume `nvm` and
+`pre-commit` are already on the `PATH` (for example `pipx install pre-commit`):
+
+```bash
+pre-commit install                  # lint, secrets, lessons index and doc refs before each commit
+cd site
+nvm install                         # latest 22.x, as CI resolves .nvmrc; an older 22 fails one test
+npm ci
+npm run build && npm test           # the tests read dist/, so build first
+```
+
+These ignored directories are regenerated, not copied: `site/public/beoe/` by the
+build, `.agents/` (third-party agent skills) by `npx skills add` from the committed
+`skills-lock.json`, and `.claude/` by the dotfiles harness deploy.
+
 ## Project structure
 
 ```text
