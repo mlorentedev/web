@@ -37,7 +37,7 @@ npm ci
 npm run build && npm test           # the tests read dist/, so build first
 ```
 
-Everything the repo ignores is regenerated, not lost: `site/public/beoe/` by the
+These ignored directories are regenerated, not copied: `site/public/beoe/` by the
 build, `.agents/` (third-party agent skills) by `npx skills add` from the committed
 `skills-lock.json`, and `.claude/` by the dotfiles harness deploy.
 
