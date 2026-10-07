@@ -27,7 +27,8 @@ PUBLIC_API_URL=https://api.staging.kubelab.live npm run dev
 
 ### On a fresh clone
 
-Run these once on a new machine, from the repo root:
+Run these once on a new machine, from the repo root. They assume `nvm` and
+`pre-commit` are already on the `PATH` (for example `pipx install pre-commit`):
 
 ```bash
 pre-commit install                  # lint, secrets, lessons index and doc refs before each commit
