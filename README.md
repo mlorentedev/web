@@ -33,7 +33,7 @@ Run these once on a new machine, from the repo root. They assume `nvm` and
 ```bash
 pre-commit install                  # lint, secrets, lessons index and doc refs before each commit
 cd site
-nvm use                             # Node version pinned in .nvmrc
+nvm install                         # latest 22.x, as CI resolves .nvmrc; an older 22 fails one test
 npm ci
 npm run build && npm test           # the tests read dist/, so build first
 ```
