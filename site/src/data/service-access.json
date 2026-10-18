@@ -33,7 +33,7 @@
     },
     { "slug": "grafana", "access": "authelia", "url": "https://grafana.kubelab.live/" },
     { "slug": "loki", "access": "mesh" },
-    { "slug": "uptime-kuma", "access": "public", "url": "https://status.kubelab.live/" },
+    { "slug": "uptime-kuma", "access": "authelia", "url": "https://status.kubelab.live/" },
     { "slug": "minio", "access": "mesh" },
     { "slug": "coredns", "access": "mesh" }
   ]
