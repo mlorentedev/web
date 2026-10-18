@@ -1,5 +1,5 @@
 ---
-tags: [spec, verification, templates]
+tags: [spec, verification]
 created: "2026-10-17"
 ---
 
@@ -7,36 +7,41 @@ created: "2026-10-17"
 
 ## Evidence
 
-Map every acceptance criterion from `proposal.md` to concrete proof (commit hash, test name, or observed behavior).
-
-- [ ] Criterion 1 -> commit `<hash>` / test `<name>`
-- [ ] Criterion 2 -> commit `<hash>` / test `<name>`
-- [ ] Criterion 3 -> commit `<hash>` / test `<name>`
+- [x] AC1 (structure) -> `tests/home.test.mjs`: "the home's blocks come in order after the hero: story, skills, door,
+  notes" and "the story, the skills and the notes are text"; `tests/skills.test.mjs`: "lists 11 items, each with
+  exactly one link". Red before `HomeSkills` rendered, green after.
+- [x] AC2 (one source) -> `tests/skills.test.mjs`: "both locales list the same proofs, in the same order", "site links
+  in the skills block stay in their own locale"; both render `src/data/skills.ts`.
+- [x] AC3 (proof) -> `tests/skills.test.mjs`: "every site link ... lands on a built page or an anchor on the home",
+  "every external proof is public". Every external link answered 200 on 2026-10-17 (curl, by hand: CI tests run
+  offline).
+- [x] AC4 (honest copy) -> `tests/skills.test.mjs`: "no banned term and no unsourced figure", using the shared
+  `tests/lib/banned.mjs`.
 
 ## Test status
 
-- Test suite: `<command> -> <output / coverage %>`
-- Manual smoke test: what was exercised, what was observed
-- No regressions in existing test suite: yes / no (if no, document)
+- `cd site && npm run build && npm test` -> 319/319 pass. `npm run test:browser` -> the first screen still holds the
+  label, the H1 and the door at 1280 and 400 px, both locales (WEB-140 AC1).
+- Manual: screenshots of the ES block at 1280 and 400 px; one item per line, each proof link after its item.
 
 ## Decisions made during implementation
 
-Brief log of non-obvious trade-offs or course corrections taken during the work. Routine choices belong in commit messages, not here.
-
--
--
+- **WEB-140 AC2 amended** in `specs/WEB-140/proposal.md`: five blocks (hero, story, skills, door, notes).
+- **The AWS item links the story (`#story`)**, not an external artifact: its figure's only source is the CV, already
+  quoted in the story. The link says so ("in the story"). Noted on the issue.
+- **Link text names the artifact** (ADR, runbook, PyPI, benchmark, MSc/BSc thesis), so a reader knows a thesis link
+  proves part of a line (FPGA, EMVA 1288), not all of it.
+- **The figure rule matches whole numbers only** (`\b\d+\b`), so "K3s" is not a figure; "1288" is exempt by name.
+- **The banned register moved to `tests/lib/banned.mjs`**, shared with `retired-labels.test.mjs` instead of copied.
 
 ## Promotion candidates
 
-Answer each line `yes: <path>`, naming the file you promoted, or `no: <reason>`. `dotf spec archive` refuses a line left unanswered, a `no` without a reason, and a `yes` whose file does not exist; a `00_meta/` path is looked up in the vault.
-
-- [ ] Lesson for the repo's `docs/lessons/`? <yes: path / no: reason>
-- [ ] ADR-worthy decision for the repo's `docs/adr/adr-XXX.md`? <yes: path / no: reason>
-- [ ] New pattern candidate for `00_meta/patterns/`? Only if this recurs in >1 project. <yes: path / no: reason>
+- [ ] Lesson for `docs/lessons/`? no: nothing non-obvious beyond what the spec records.
+- [ ] ADR? no: a content block inside a decided page structure.
+- [ ] Pattern for `00_meta/patterns/`? no: single project.
 
 ## Archive checklist
 
 - [ ] `proposal.md` frontmatter set to `status: archived`
 - [ ] Folder moved: `specs/WEB-158/` -> `specs/archive/WEB-158/`
-- [ ] Bitácora board ticket for this spec moved to Done / closed with PR link (ADR-018)
-- [ ] Promotions above executed (if any)
+- [ ] Issue closed with the PR link (ADR-018)

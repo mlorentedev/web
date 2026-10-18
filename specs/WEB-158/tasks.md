@@ -15,22 +15,22 @@ created: "2026-10-17"
 
 ## Implementation
 
-- [ ] Refactor: move the §7 `banned` patterns from `tests/retired-labels.test.mjs` to `tests/lib/banned.mjs` and
+- [x] Refactor: move the §7 `banned` patterns from `tests/retired-labels.test.mjs` to `tests/lib/banned.mjs` and
   import them back, so the skills test reuses the same list. `npm test` unchanged.
-- [ ] [AC1] Write failing test in `tests/home.test.mjs`: blocks in order `story, skills, door, notes`; the skills block
+- [x] [AC1] Write failing test in `tests/home.test.mjs`: blocks in order `story, skills, door, notes`; the skills block
   is text only. Run: FAIL (no skills block).
-- [ ] [AC2] [AC3] [AC4] Write failing `tests/skills.test.mjs`: eleven `<li>` per locale, one link each, same targets
+- [x] [AC2] [AC3] [AC4] Write failing `tests/skills.test.mjs`: eleven `<li>` per locale, one link each, same targets
   across locales, site links resolve, external links on the allowlist and never private repos, no banned family, no
   figure outside `experience.ts`. Run: FAIL.
-- [ ] [AC2] Add `src/data/skills.ts` (bilingual items with one `href` each) and `components/HomeSkills.astro`; add the
+- [x] [AC2] Add `src/data/skills.ts` (bilingual items with one `href` each) and `components/HomeSkills.astro`; add the
   `home.skills` key to `i18n/ui.ts` in both locales.
-- [ ] [AC1] Render `HomeSkills` in `HomePage.astro` between `HomeStory` and `HomeDoor`. Run `npm run build && npm test`:
+- [x] [AC1] Render `HomeSkills` in `HomePage.astro` between `HomeStory` and `HomeDoor`. Run `npm run build && npm test`:
   PASS.
-- [ ] [AC1] `npm run test:browser`: the first screen still holds the label, the H1 and the door (WEB-140 AC1).
+- [x] [AC1] `npm run test:browser`: the first screen still holds the label, the H1 and the door (WEB-140 AC1).
 
 ## Closing
 
-- [ ] Every acceptance criterion covered by a test
-- [ ] `features.json` entries with a non-vacuous verification command
-- [ ] `verification.md` filled in; WEB-140 AC2 amendment noted there
+- [x] Every acceptance criterion covered by a test
+- [x] `features.json` entries with a non-vacuous verification command
+- [x] `verification.md` filled in; WEB-140 AC2 amendment noted there
 - [ ] PR opened referencing this spec folder

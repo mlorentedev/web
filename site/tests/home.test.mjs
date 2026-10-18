@@ -134,16 +134,16 @@ for (const { lang, built } of homes) {
 // ── Structure (WEB-140, AC2) ───────────────────────────────────────────────
 
 for (const { lang, built } of homes) {
-  test(`[${lang}] the home's blocks come in order after the hero: story, door, notes`, () => {
+  test(`[${lang}] the home's blocks come in order after the hero: story, skills, door, notes`, () => {
     const html = dist(built);
     const afterTitle = html.slice(html.indexOf('</h1>'));
     const blocks = [...afterTitle.matchAll(/data-home-block="([^"]+)"/g)].map((m) => m[1]);
-    assert.deepEqual(blocks, ['story', 'door', 'notes']);
+    assert.deepEqual(blocks, ['story', 'skills', 'door', 'notes']);
   });
 
-  test(`[${lang}] the story and the notes are text: no image, svg or card`, () => {
+  test(`[${lang}] the story, the skills and the notes are text: no image, svg or card`, () => {
     const html = dist(built);
-    for (const name of ['story', 'notes']) {
+    for (const name of ['story', 'skills', 'notes']) {
       const section = html.match(new RegExp(`<section[^>]*data-home-block="${name}"[\\s\\S]*?</section>`))?.[0] ?? '';
       assert.ok(section, `dist/${built} has no ${name} block`);
       assert.doesNotMatch(section, /<img\b|<svg\b|<picture\b|data-card\b|\bcard\b/, `dist/${built}: the ${name} block is not plain text`);
