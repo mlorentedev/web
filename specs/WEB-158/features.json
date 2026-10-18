@@ -1,0 +1,30 @@
+[
+  {
+    "id": "WEB-158-f1",
+    "behavior": "Both built homes render story, skills, door, notes in order; the skills block holds eleven items and no image, SVG or card",
+    "verification": "cd site && npm run build && node --test tests/home.test.mjs tests/skills.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-158-f2",
+    "behavior": "/ and /es/ render the same items with the same link targets from src/data/skills.ts",
+    "verification": "cd site && npm run build && node --test tests/skills.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-158-f3",
+    "behavior": "Every item has one link; site links resolve; external links only to public owners, never a private repo",
+    "verification": "cd site && npm run build && node --test tests/skills.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-158-f4",
+    "behavior": "No banned word family in the block; every figure is in data/experience.ts",
+    "verification": "cd site && npm run build && node --test tests/skills.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  }
+]

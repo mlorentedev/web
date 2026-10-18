@@ -399,6 +399,7 @@ export const ui = {
 
     // Experience timeline (WEB-012)
     'home.experience': 'My path',
+    'home.skills': 'What I do',
     'home.latest': 'Latest notes',
     'home.allNotes': 'All notes',
 
@@ -856,6 +857,7 @@ export const ui = {
 
     // Experience timeline (WEB-012)
     'home.experience': 'Mi camino',
+    'home.skills': 'Qué hago',
     'home.latest': 'Últimas notas',
     'home.allNotes': 'Todas las notas',
 

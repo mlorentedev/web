@@ -1,0 +1,42 @@
+---
+// The home's skills list (WEB-158): what Manu does, one item per line, like the
+// jobs painted on a contractor's door, each linking where it can be checked.
+// Text only, like the story above it. The items live in `data/skills.ts`, so
+// both locales list the same ones.
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { skillsFor } from '../data/skills';
+import type { Lang } from '../i18n/ui';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+// Site paths take the locale prefix; anchors and external proofs do not.
+const link = (href: string) => (href.startsWith('/') ? translatePath(href) : href);
+---
+
+<Section id="skills" data-home-block="skills">
+  <SectionHeading label={t('home.skills')} margin="mb-6" />
+  <ul data-skills class="max-w-3xl space-y-2">
+    {skillsFor(lang).map(({ href, label, proof }) => (
+      <li data-skill class="flex gap-2 text-base text-ink-700 leading-relaxed">
+        <span aria-hidden="true" class="text-accent-700">&rsaquo;</span>
+        <span>
+          {label}{' '}
+          <a
+            href={link(href)}
+            class="text-sm text-gray-500 underline decoration-gray-300 hover:text-accent-800 transition-colors"
+          >
+            {proof}
+          </a>
+        </span>
+      </li>
+    ))}
+  </ul>
+</Section>
