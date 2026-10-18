@@ -95,6 +95,7 @@ test('classify: the responses recorded on 2026-09-26', () => {
     ['pihole: a CGNAT address in public DNS', { addresses: ['100.64.0.11'], root: { status: 403 } }, undefined, 'mesh'],
     ['argocd with the gate gone: probe answers 200', { addresses: PUBLIC, root: { status: 200 }, probeStatus: 200 }, 401, 'public'],
     ['a public host that errors', { addresses: PUBLIC, root: { status: 502 } }, undefined, 'unreachable'],
+    ['a public host that gives no response (timeout, refused)', { addresses: PUBLIC }, undefined, 'silent'],
     ['a gate in front that sends visitors to another login', { addresses: PUBLIC, root: { status: 302, url: 'https://grafana.kubelab.live/', location: 'https://login.example.com/oauth' } }, undefined, 'elsewhere'],
     ['a relative redirect stays on its own host', { addresses: PUBLIC, root: { status: 302, url: 'https://status.kubelab.live/', location: '/dashboard' } }, undefined, 'public'],
   ];
@@ -103,13 +104,15 @@ test('classify: the responses recorded on 2026-09-26', () => {
   }
 });
 
-test('matches: an on-demand row also accepts a host that does not answer, and nothing else', () => {
+test('matches: an on-demand row also accepts a host that gives no response, and nothing else', () => {
   const awake = { slug: 'gitea', access: 'app-login', onDemand: true };
   const always = { slug: 'argocd', access: 'app-login' };
   assert.ok(matches('app-login', awake), 'awake and asking for credentials');
-  assert.ok(matches('unreachable', awake), 'asleep');
+  assert.ok(matches('silent', awake), 'asleep: no response at all');
+  assert.ok(!matches('unreachable', awake), 'awake and answering with an error is an outage, not sleep');
   assert.ok(!matches('public', awake), 'the gate is gone: that is a change, not sleep');
   assert.ok(!matches('elsewhere', awake), 'a different gate is a change, not sleep');
   assert.ok(matches('app-login', always));
-  assert.ok(!matches('unreachable', always), 'an always-on service that does not answer is down');
+  assert.ok(!matches('silent', always), 'an always-on service that does not answer is down');
+  assert.ok(!matches('unreachable', always), 'an always-on service that answers with an error is down');
 });

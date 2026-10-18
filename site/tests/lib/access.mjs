@@ -35,7 +35,11 @@ export function isInternalAddress(address) {
  * @param {{status: number, url: string, location?: string}} [seen.root]  The root as requested, redirects not followed.
  * @param {number} [seen.probeStatus]  The status of the row's probe path, when it has one.
  * @param {number} [expectedProbe]  The status the row says its probe path answers.
- * @returns {'public' | 'authelia' | 'app-login' | 'mesh' | 'unreachable' | 'elsewhere'}
+ * @returns {'public' | 'authelia' | 'app-login' | 'mesh' | 'unreachable' | 'silent' | 'elsewhere'}
+ *
+ * `silent` is no response at all (a timeout, a refused connection): what a
+ * sleeping host gives. `unreachable` is a host that answered with an error. Only
+ * the first can be sleep, so `matches` tells them apart (#469 review).
  *
  * `elsewhere` is a redirect to a host that is neither the service's own nor
  * Authelia: a gate the table has no word for (an OAuth proxy, a moved service).
@@ -44,7 +48,7 @@ export function isInternalAddress(address) {
  */
 export function classify({ addresses, root, probeStatus }, expectedProbe) {
   if (addresses.length === 0 || addresses.every(isInternalAddress)) return 'mesh';
-  if (!root) return 'unreachable';
+  if (!root) return 'silent';
   if (root.status >= 300 && root.status < 400 && root.location) {
     const host = new URL(root.location, root.url).host;
     if (host === AUTHELIA_HOST) return 'authelia';
@@ -57,14 +61,14 @@ export function classify({ addresses, root, probeStatus }, expectedProbe) {
 /**
  * Whether a live measurement still supports a row of the table.
  *
- * A row on an on-demand host (ADR-028) also passes when the host does not
- * answer: a sleeping machine gives no response, which is not a change of who
- * can reach the service. Any other answer still has to match, so a gate that
- * disappears or moves fails as before.
+ * A row on an on-demand host (ADR-028) also passes when the host gives no
+ * response at all: a sleeping machine is `silent`, which is not a change of who
+ * can reach the service. Any answer still has to match, so an awake host that
+ * serves an error, or a gate that disappears or moves, fails as before.
  *
  * @param {string} measured  What `classify` returned.
  * @param {{access: string, onDemand?: true}} row
  */
 export function matches(measured, row) {
-  return measured === row.access || (row.onDemand === true && measured === 'unreachable');
+  return measured === row.access || (row.onDemand === true && measured === 'silent');
 }

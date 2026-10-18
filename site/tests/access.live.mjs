@@ -70,7 +70,7 @@ for (const row of table.services) {
       if (row.probe) seen.probeStatus = (await get(new URL(row.probe.path, row.url)))?.status;
     }
     const measured = classify(seen, row.probe?.status);
-    if (measured !== row.access) t.diagnostic(`${host}: measured "${measured}"; the row is on demand, so its host may be asleep`);
+    if (measured !== row.access && matches(measured, row)) t.diagnostic(`${host}: no response; the row is on demand, so its host is taken to be asleep`);
     assert.ok(matches(measured, row), `${host}: measured "${measured}", the row says "${row.access}", from ${JSON.stringify(seen)}`);
   });
 }
