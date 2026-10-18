@@ -35,6 +35,7 @@ pre-commit install                  # lint, secrets, lessons index and doc refs 
 cd site
 nvm install                         # latest 22.x, as CI resolves .nvmrc; an older 22 fails one test
 npm ci
+npx playwright install chromium     # the build renders the notes' diagrams in a headless browser
 npm run build && npm test           # the tests read dist/, so build first
 ```
 
