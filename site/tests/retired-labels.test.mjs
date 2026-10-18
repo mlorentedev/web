@@ -23,6 +23,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { readableText } from './lib/audit.mjs';
+import { banned } from './lib/banned.mjs';
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const srcDir = join(siteRoot, 'src');
@@ -54,31 +55,6 @@ test('no retired label is left anywhere under src/', () => {
   assert.deepEqual(hits, [], `retired labels still in the source:\n${hits.join('\n')}`);
 });
 
-/**
- * The brand package's banned register (vault `brand-package.md` §7), as patterns
- * in both languages. §7 names phrases; the pages carried their relatives
- * ("Zero-Debt Doctrine", "100% IaC", "deterministic containment"), so each entry
- * bans the word family, and the true technical uses were reworded rather than
- * excused.
- *
- * Certifications match the singular adjective only: "certificados TLS" is a TLS
- * certificate, not a credential Manu holds. §7 items a pattern cannot judge stay
- * out: France (only wrong when customer-facing), the em-dash as a tic (the page
- * title uses one as a separator), and node or service counts, which WEB-141
- * checks against `platform.json` instead.
- */
-const banned = [
-  /\bdeterminist\w*/i,
-  /\bstochastic\b|\bestoc[aá]stic[oa]s?\b/i,
-  /\bswarms?\b|\benjambres?\b/i,
-  /\bsovereign\w*|\bsoberan[oíia]\w*/i,
-  /\bzero\W{0,3}(technical\s+)?debt\b|\bcero\s+deuda\b|\bdeuda\s+t[eé]cnica\s+cero\b/i,
-  /\b100\s?%\s*(IaC|automat\w*)/i,
-  /\bcertified\b|\bcertificad[oa]\b|\bCKAD?\b|Terraform Associate|Solutions Architect/i,
-  /service-as-a-software/i,
-  /weekly readers|lectores semanales/i,
-  /legacy C\+\+/i,
-];
 
 const proofPages = ['lab', 'ai', 'lab/idp', 'lab/idp/architecture'].flatMap((route) => [
   `${route}/index.html`,
