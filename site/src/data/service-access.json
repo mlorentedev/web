@@ -4,7 +4,6 @@
   "services": [
     { "slug": "pollex", "access": "public", "url": "https://mlorentedev.github.io/pollex/" },
     { "slug": "hive", "access": "public", "url": "https://mlorentedev.github.io/hive/" },
-    { "slug": "ollama", "access": "mesh" },
     { "slug": "kubelab-api", "access": "public", "url": "https://api.kubelab.live/health" },
     { "slug": "traefik", "access": "authelia", "url": "https://traefik.kubelab.live/" },
     {

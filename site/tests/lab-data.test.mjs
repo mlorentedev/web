@@ -169,3 +169,21 @@ for (const name of collections) {
     assert.deepEqual(gaps, [], `missing or empty translated fields:\n  ${gaps.join('\n  ')}`);
   });
 }
+
+// --- Nodes and services agree ----------------------------------------------
+//
+// A service's tech tags and its node's runtime are typed in different places,
+// and nothing held them to each other: Pollex was tagged K3s on a Jetson whose
+// own entry says systemd, no Kubernetes (#457). A Kubernetes tag is only true
+// on a node that runs Kubernetes.
+
+test('no service claims Kubernetes on a node that does not run it', () => {
+  const runtime = new Map(manifest.nodes.map((node) => [node.id, node.runtime]));
+  const onKubernetes = manifest.services.filter((s) => s.tech.some((t) => /^(K3s|Kubernetes)$/.test(t)));
+  assert.ok(onKubernetes.length > 0, 'no service carries a Kubernetes tag — nothing is being checked');
+
+  const wrong = onKubernetes
+    .filter((s) => runtime.get(s.node) !== 'k3s')
+    .map((s) => `${s.slug} on ${s.node} (${runtime.get(s.node)})`);
+  assert.deepEqual(wrong, [], `services tagged K3s/Kubernetes on a node without it: ${wrong.join(', ')}`);
+});

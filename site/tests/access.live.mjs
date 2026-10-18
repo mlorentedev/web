@@ -32,7 +32,6 @@ resolver.setServers(['1.1.1.1']);
  * ingress rules and service names.
  */
 const MESH_HOSTS = {
-  ollama: 'ollama.kubelab.live',
   loki: 'loki.kubelab.live',
   minio: 'minio.kubelab.live',
   coredns: 'pihole.kubelab.live',

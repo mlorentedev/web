@@ -96,19 +96,19 @@
       "tier": "homelab",
       "role": "Edge AI GPU Inference Node",
       "roleEs": "Nodo de Inferencia GPU Edge AI",
-      "summary": "Hardware-accelerated CUDA edge inference running local Qwen 1.5B with 0% data leaks",
-      "summaryEs": "Inferencia GPU edge con CUDA corriendo Qwen 1.5B local sin fuga de datos",
+      "summary": "GPU inference with llama.cpp on CUDA: a local Qwen 2.5 1.5B serving Pollex",
+      "summaryEs": "Inferencia en GPU con llama.cpp sobre CUDA: un Qwen 2.5 1.5B local al servicio de Pollex",
       "environment": "Edge AI",
       "provider": "Bare Metal Edge",
       "arch": "ARM64",
-      "cpu": "4c Cortex-A57 (128 Maxwell CUDA cores, unused)",
+      "cpu": "4c Cortex-A57 · 128-core Maxwell GPU",
       "ram": "3.9 GB LPDDR4",
       "storage": "230 GB",
       "os": "Linux4Tegra (Ubuntu 18.04)",
       "location": "Edge Hardware (USA)",
       "status": "healthy",
       "runtime": "systemd",
-      "runtimeRole": "Edge inference host: Ollama, no Kubernetes"
+      "runtimeRole": "Edge inference host: llama.cpp, no Kubernetes"
     },
     {
       "id": "beelink",
@@ -197,15 +197,14 @@
       "name": "Pollex Edge AI",
       "category": "AI & Inference",
       "categoryEs": "IA e Inferencia",
-      "description": "On-device LLM text polish running local Qwen 1.5B with zero cloud telemetry.",
-      "descriptionEs": "Corrección de texto LLM en edge con Qwen 1.5B local sin telemetría en la nube.",
+      "description": "English text polish on a local Qwen 2.5 1.5B, served by llama.cpp on the GPU, with an optional cloud fallback.",
+      "descriptionEs": "Corrección de textos en inglés con un Qwen 2.5 1.5B local, servido por llama.cpp en la GPU, con respaldo opcional en la nube.",
       "node": "jetson",
       "env": "prod",
       "tech": [
         "Go",
-        "CUDA",
-        "TensorRT",
-        "K3s"
+        "llama.cpp",
+        "CUDA"
       ],
       "status": "operational"
     },
@@ -223,23 +222,6 @@
         "FastMCP",
         "Tree-sitter",
         "SQLite FTS5"
-      ],
-      "status": "operational"
-    },
-    {
-      "slug": "ollama",
-      "name": "Ollama Local Engine",
-      "category": "AI & Inference",
-      "categoryEs": "IA e Inferencia",
-      "description": "Bare-metal local LLM inference cluster running Mistral and DeepSeek models.",
-      "descriptionEs": "Clúster bare-metal de inferencia LLM local corriendo modelos Mistral y DeepSeek.",
-      "node": "jetson",
-      "env": "prod",
-      "tech": [
-        "Ollama",
-        "Go",
-        "C++",
-        "Bare-metal"
       ],
       "status": "operational"
     },
