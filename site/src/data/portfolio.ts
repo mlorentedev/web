@@ -168,15 +168,15 @@ export const projects: Project[] = [
   {
     en: {
       title: 'kasa-provisioner',
-      metric: '20 plugs, bulk-provisioned',
+      metric: 'No vendor cloud',
       description:
-        'Configuring 20 smart plugs one by one through a phone app is painful. This scans the network, updates firmware, and sets schedules in bulk.',
+        'Setting up smart plugs through the vendor\'s phone app ties them to its cloud. This provisions a factory-fresh plug onto your WiFi, finds the plugs on the LAN and switches them locally, over both TP-Link protocols.',
     },
     es: {
       title: 'kasa-provisioner',
-      metric: '20 enchufes en bloque',
+      metric: 'Sin la nube del fabricante',
       description:
-        'Configurar 20 enchufes inteligentes uno a uno desde una app del móvil es un suplicio. Esto escanea la red, actualiza el firmware y programa horarios en bloque.',
+        'Configurar enchufes inteligentes desde la app del fabricante los ata a su nube. Esto da de alta un enchufe recién sacado de la caja en tu WiFi, encuentra los enchufes de la red local y los controla en local, con los dos protocolos de TP-Link.',
     },
     github: 'https://github.com/mlorentedev/kasa-provisioner',
     tags: ['Python', 'IoT', 'Networking'],
