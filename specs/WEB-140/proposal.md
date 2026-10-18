@@ -106,6 +106,8 @@ Observable outcomes. Each must be testable. (Agreed with Manu 2026-09-24; AC2 an
 - [ ] **AC2 · Structure.** The home renders four blocks in order (hero, story, how the work starts, latest notes) and
   exactly one `<h1>`, in both locales, from one `HomePage` component (#142). IdpStrip, ProofSurface, ProjectsSection,
   CommunitySection and Timeline no longer render on it, and the story and notes blocks hold no image, SVG or card.
+  *Amended 2026-10-17 (WEB-158, decided with Manu):* a skills list joins between the story and how the work starts,
+  so the home renders five blocks; it is text only, like the story and the notes.
 - [ ] **AC3 · One source.** The home's "how the work starts" block and `/contact` render the same contact markdown and
   the same `data/offer.ts` figures; a test fails if they diverge.
 - [ ] **AC4 · Proof in the story.** The story links `/lab` and `/ai` in its own locale, and every link in it resolves
