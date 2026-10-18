@@ -221,6 +221,17 @@ for (const { locale, html } of built) {
     assert.deepEqual(wrong, [], 'a service names an access boundary the measured access table does not support');
   });
 
+  test(`[${locale}] a service on an on-demand host says so, and no other does`, () => {
+    const body = labSection(html, 'services');
+    const marked = [...body.matchAll(/<tr[^>]*\bdata-service-slug="([^"]*)"[^>]*>([\s\S]*?)<\/tr>/g)]
+      .filter((m) => /\bdata-on-demand\b/.test(m[2]))
+      .map((m) => m[1])
+      .sort();
+    const expected = accessTable.services.filter((row) => row.onDemand).map((row) => row.slug).sort();
+    assert.ok(expected.length > 0, 'the access table marks no row on demand');
+    assert.deepEqual(marked, expected);
+  });
+
   test(`[${locale}] a service links to its endpoint exactly when the access table has one`, () => {
     const body = labSection(html, 'services');
     const wrong = accessTable.services

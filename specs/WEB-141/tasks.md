@@ -43,6 +43,8 @@ created: "2026-09-24"
       ones too, because the table is also his way around the lab (a deliberate exception to ADR-059's
       "platform-internal" and to AC3's no-redirect rule, which stays scoped to `/lab/idp` cards); `LabProbe` and
       #280 follow in their own PR
+      2026-10-18: a row on an on-demand host (ADR-028) carries `onDemand`; the weekly check accepts no answer for
+      it and nothing else, after three red runs on the sleeping Beelink (lesson-064)
 - [x] [AC2] Retire the reachability console (#280). Manu, 2026-09-27: nothing replaces it; the measured access
       table is the reachability claim. `/lab` ships zero `<script>` (`lab-sections.test.mjs`), `healthEndpoint` is
       gone from `platform.json`, `lab-axe.mjs` fails on any request to another origin instead of stubbing

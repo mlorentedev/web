@@ -372,6 +372,8 @@ export const ui = {
     'lab.access.mesh': 'Mesh only',
     'lab.access.authelia': 'Behind Authelia',
     'lab.access.appLogin': 'Own login',
+    'lab.access.onDemand': 'On demand',
+    'lab.access.onDemandHint': 'Its machine is switched on only when needed. While it sleeps, the service does not answer.',
     'lab.services.measured': 'Access measured from outside the mesh on',
     'lab.access.private': 'Private repo',
 
@@ -837,6 +839,8 @@ export const ui = {
     'lab.access.mesh': 'Solo malla',
     'lab.access.authelia': 'Tras Authelia',
     'lab.access.appLogin': 'Login propio',
+    'lab.access.onDemand': 'Bajo demanda',
+    'lab.access.onDemandHint': 'Su máquina solo se enciende cuando hace falta. Mientras duerme, el servicio no responde.',
     'lab.services.measured': 'Acceso medido desde fuera de la malla el',
     'lab.access.private': 'Repo privado',
 

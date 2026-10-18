@@ -16,7 +16,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { classify } from './lib/access.mjs';
+import { classify, matches } from './lib/access.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const table = JSON.parse(readFileSync(join(here, '..', 'src/data/service-access.json'), 'utf8'));
@@ -63,7 +63,7 @@ test('every mesh service in the table has a probe host here', () => {
 });
 
 for (const row of table.services) {
-  test(`${row.slug} is still "${row.access}"`, async () => {
+  test(`${row.slug} is still "${row.access}"${row.onDemand ? ' (on demand)' : ''}`, async (t) => {
     const host = row.url ? new URL(row.url).host : MESH_HOSTS[row.slug];
     const seen = { addresses: await addresses(host) };
     if (row.url) {
@@ -71,6 +71,7 @@ for (const row of table.services) {
       if (row.probe) seen.probeStatus = (await get(new URL(row.probe.path, row.url)))?.status;
     }
     const measured = classify(seen, row.probe?.status);
-    assert.equal(measured, row.access, `${host}: measured "${measured}" from ${JSON.stringify(seen)}`);
+    if (measured !== row.access) t.diagnostic(`${host}: measured "${measured}"; the row is on demand, so its host may be asleep`);
+    assert.ok(matches(measured, row), `${host}: measured "${measured}", the row says "${row.access}", from ${JSON.stringify(seen)}`);
   });
 }
