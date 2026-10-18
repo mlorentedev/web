@@ -33,4 +33,4 @@ created: "2026-10-17"
 - [x] Every acceptance criterion covered by a test
 - [x] `features.json` entries with a non-vacuous verification command
 - [x] `verification.md` filled in; WEB-140 AC2 amendment noted there
-- [ ] PR opened referencing this spec folder
+- [x] PR opened referencing this spec folder

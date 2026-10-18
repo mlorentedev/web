@@ -29,13 +29,14 @@ created: "2026-10-17"
 - **WEB-140 AC2 amended** in `specs/WEB-140/proposal.md`: five blocks (hero, story, skills, door, notes).
 - **The AWS item links the story (`#story`)**, not an external artifact: its figure's only source is the CV, and the
   story quotes it ("a platform on Kubernetes and AWS … the infrastructure bill fell by 80%", both locales). The link
-  says so ("in the story"). Noted on the issue. The story gained that sentence in #418; this branch was cut before
-  #418 merged, so a build of the branch alone shows the older story (see the review round below).
+  says so ("in the story"). Noted on the issue. The story gained that sentence in #418. The feature branch reviewed
+  in round 1 (`1d24217`) was cut before #418 merged, so its build showed the older story; `master` and this
+  follow-up branch include #418, and both built homes carry the sentence.
 - **Link text names the artifact** (ADR, runbook, PyPI, benchmark, MSc/BSc thesis), so a reader knows a thesis link
   proves part of a line (FPGA, EMVA 1288), not all of it.
 - **The figure rule compares whole tokens** (`tests/lib/figures.mjs`, shared with `bio.test.mjs`): a figure is a digit
-  run not touching a letter, so "K3s" is not one, and it is sourced only if `data/experience.ts` states the same
-  token. "1288" is exempt by name. The first version extracted whole numbers but compared them as substrings of the
+  run not preceded by a letter, so "K3s" is not one but "80K" is, and it is sourced only if `data/experience.ts`
+  states the same token. "1288" is exempt by name. The first version extracted whole numbers but compared them as substrings of the
   file, which the review broke with "4%" (F2).
 - **`data/experience.ts` is a figure ledger, not a rendered page.** Nothing imports it since WEB-140 dropped the
   Timeline; it records each career figure next to its role, from the CV, and the tests hold the copy to it. A
@@ -62,6 +63,22 @@ created: "2026-10-17"
   as written.
 - **Anglicisms in the ES copy** ("harness", "review", "benchmark", "self-hosted", "edge") -> declined, decision: trade
   anglicisms are accepted on `/es`; only a whole English string is a defect.
+
+## Review round 2 (2026-10-18, `nan/deepseek-v4-flash`, PASS at `bc9ccdc`)
+
+`review.md` holds the round; round 1 moved to `review-round1.md`. Each finding:
+
+- **M1, the branch-base sentence above was stale** -> applied: it now names the round-1 commit and says `master`
+  includes #418.
+- **M2, a letter suffix hid a figure** (`80K`, `1990s` extracted nothing) -> applied: only a letter *before* the
+  digits marks a name. `tests/figures.test.mjs` has the case.
+- **M3, AC4 names the list "in `retired-labels.test.mjs`"**, which now imports it from `tests/lib/banned.mjs` ->
+  declined: the proposal is contract and closed by this verdict, and the pointer still leads to the list through
+  that file's import.
+- **M4, the "PR opened" box** -> applied: ticked; #461 merged.
+- **M5, repeated link text** -> declined, as in round 1.
+- **M6, whose call the ES anglicisms are** -> Manu's: he set the rule that trade anglicisms are fine on `/es` and
+  only a whole English string is a defect. The note above records it.
 
 ## Promotion candidates
 
