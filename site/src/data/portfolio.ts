@@ -96,15 +96,15 @@ export const projects: Project[] = [
   {
     en: {
       title: 'Pollex',
-      metric: '6.4 s median, on-device',
+      metric: '6.4 s median, one user',
       description:
-        'Cloud LLM APIs see everything you type. Pollex polishes your English on a $99 Jetson Nano — grammar, coherence, wording. A measured median of 6.4 seconds per request, with zero cloud dependencies.',
+        'Cloud LLM APIs see everything you type. Pollex polishes your English on a $99 Jetson Nano — grammar, coherence, wording. A measured median of 6.4 seconds per request with one user; time grows with the text, about 16 seconds for 350 characters. A cloud engine is optional.',
     },
     es: {
       title: 'Pollex',
-      metric: 'Mediana de 6,4 s, en local',
+      metric: 'Mediana de 6,4 s, un usuario',
       description:
-        'Las APIs de LLM en la nube ven todo lo que escribes. Pollex pule tu inglés en una Jetson Nano de 99 $: gramática, coherencia y redacción. Una mediana medida de 6,4 segundos por petición, sin depender de la nube.',
+        'Las APIs de LLM en la nube ven todo lo que escribes. Pollex pule tu inglés en una Jetson Nano de 99 $: gramática, coherencia y redacción. Una mediana medida de 6,4 segundos por petición con un solo usuario; el tiempo crece con el texto, unos 16 segundos para 350 caracteres. El motor en la nube es opcional.',
     },
     url: 'https://mlorentedev.github.io/pollex/',
     github: 'https://github.com/mlorentedev/pollex',
