@@ -56,7 +56,8 @@ created: "2026-09-24"
 - [x] [AC4] Draft the story in `content/pages/{en,es}-bio.mdx` from the current bio and `brand-package.md` §3 (the
   career the Timeline listed, told as prose; the three proofs as linked sentences; `/projects` linked once), and the
   hero's secondary link to `#story` in place of "Explore my platform"
-- [ ] Manu rewrites the draft in the PR before it merges; the tests hold whatever wording he lands on
+- [x] Manu confirms the draft's five claims about him (2026-10-17) and the copy is corrected to his answers; the
+  tests hold whatever wording he lands on
 
 ### PR 4 · The door on the home, notes last
 

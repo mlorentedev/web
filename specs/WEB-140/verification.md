@@ -29,6 +29,12 @@ Brief log of non-obvious trade-offs or course corrections taken during the work.
   hero's `animate-pulse` dot and IdpStrip's `animate-ping`, sampled at different frames. Read that count as the
   noise floor for the home until IdpStrip leaves it (PR 2).
 
+- **PR 3 (the story) corrects the draft to the author's answers instead of rewriting it.** Manu answered the five
+  claims flagged on the PR on 2026-10-17: the Seville 15+ h/week and the Shenzhen role stand as drafted; field
+  application engineering is *part of* the job he does today, not the whole of it; the integration bottleneck is told
+  without a duration ("weeks" had no source); and the role since 2019 is worked between Spain and the US, which is
+  what `experience.ts` already says. Only those sentences changed, so no unconfirmed claim entered the copy.
+
 ## Promotion candidates
 
 Before archiving, flag what (if anything) should be promoted to the vault. If all three are "no", archive in repo is the only persistence.
