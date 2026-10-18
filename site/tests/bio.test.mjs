@@ -93,6 +93,8 @@ for (const { lang, page, prefix } of homes) {
     const paragraph = story(page).match(/<p>(?:(?!<\/p>)[\s\S])*?href="[^"]*\/ai\/"[\s\S]*?<\/p>/)?.[0] ?? '';
     assert.ok(paragraph, `the ${lang} story has no paragraph linking /ai/`);
     const linkText = paragraph.match(/href="[^"]*\/ai\/"[^>]*>([^<]+)</)?.[1] ?? '';
+    // An empty link text would match the paragraph's first sentence and check the wrong one.
+    assert.ok(linkText, `the ${lang} /ai/ link has no plain text to find its sentence by`);
     const sentence = paragraph.replace(/<[^>]*>/g, '').split(/(?<=[.!?])\s+/).find((s) => s.includes(linkText)) ?? '';
     assert.ok(sentence, `no sentence around the /ai/ link "${linkText}"`);
     assert.doesNotMatch(sentence, /\d/, `the agents sentence states a figure: "${sentence}"`);
