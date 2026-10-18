@@ -64,11 +64,14 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
       {hasAlternates && otherLangs.map(([l, label]) => (
         <a
           href={switchLangUrl(Astro.url, l as keyof typeof languages)}
-          aria-label={label}
+          aria-label={`${label} ${l.toUpperCase()}`}
           class="text-xs text-ink-500 hover:text-accent-700 focus:outline-hidden focus:text-accent-700 transition-colors uppercase tracking-wide"
         >
           {/* The code below sm — the full name does not fit a 320px viewport
-              once the nav carries four items. */}
+              once the nav carries four items. The accessible name carries both
+              the name and the code, so whichever one is on screen is part of it
+              (WCAG 2.5.3, axe label-content-name-mismatch). No brackets around
+              the code: axe 4.14 matches whole words, and "(ES)" is not "es". */}
           <span class="sm:hidden" aria-hidden="true">{l}</span>
           <span class="hidden sm:inline">{label}</span>
         </a>
