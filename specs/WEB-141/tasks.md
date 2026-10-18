@@ -60,13 +60,19 @@ created: "2026-09-24"
       open (until phase 3). SSL Labs and Shodan scan `mlorente.dev`; the kubelab.live securityheaders card is gone
       (Manu, 2026-09-27); triage cards carry the measured access from `service-access.json` and link to
       `/lab#services` (#429)
-- [ ] [P] [AC1] Create `src/data/proofs.ts` (`kubelab`, `agents`; `teledyne` belongs to WEB-140) with a failing
-      test for the four fields and for every `href` resolving in both locales
-- [ ] [AC1] [AC9] Render the proof block at the top of `/lab` and `/ai`, with the date each result was measured
+- [x] [P] [AC1] Create `src/data/proofs.ts` (`kubelab`, `agents`; `teledyne` belongs to WEB-140) with a failing
+      test for the four fields and for every `href` resolving in both locales. `tests/proofs.test.mjs`; the copy
+      is drafted from Manu's own sources (kubelab ADR-067, hive README, dotfiles lesson-205, site copy) and approved
+      by him, 2026-10-18. The KubeLab result is the measured access table, read from `service-access.json`; the
+      `agents` result waits for WEB-093 (#238) and says so in a `pending` line
+- [x] [AC1] [AC9] Render the proof block at the top of `/lab` and `/ai`, with the date each result was measured.
+      `ProofBlock.astro`, an unnumbered `<article>` under the hero (every `<section>` on `/lab` carries a numbered
+      eyebrow, `lab-audit.test.mjs`); the result is the block's only `data-figure`, with the month beside it
 - [x] [P] Housekeeping (#31): the KubeLab project card links to `/lab`. `portfolio.ts` is shared with the home,
       so tell the WEB-140 session before merging. Told 2026-09-27: the home does not import `portfolio.ts`, and
       #418 does not touch it. `ProjectCard` localizes a site path and keeps it in the tab (`tests/projects.test.mjs`)
-- [ ] [AC7] Full suite green before each phase-1 PR merges (`npm test`, `lab-containment.mjs`, `lab-axe.mjs`)
+- [x] [AC7] Full suite green before each phase-1 PR merges (`npm test`, `lab-containment.mjs`, `lab-axe.mjs`).
+      Run on the last phase-1 PR (the proofs), 2026-10-18
 
 ### Phase 2 — producers and measured figures (kubelab, then web)
 

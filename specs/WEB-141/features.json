@@ -7,5 +7,5 @@
   {"id": "WEB-141-f6", "behavior": "AC6 (gated): the chat answers from public content only, switches off at the spend cap with a message, and its CTA points at the door", "verification": "cd site && node --test tests/chat.test.mjs", "state": "pending", "evidence": ""},
   {"id": "WEB-141-f7", "behavior": "AC7: the /lab JSON-LD invariant, the alternates test and the WEB-080 suite stay green", "verification": "cd site && npm run build && npm test && node tests/lab-containment.mjs", "state": "pending", "evidence": ""},
   {"id": "WEB-141-f8", "behavior": "AC8: captures have alt text and lazy loading; pages stay within the weight budget; axe passes", "verification": "cd site && npm run build && node --test tests/lab-weight.test.mjs && node tests/lab-axe.mjs", "state": "pending", "evidence": ""},
-  {"id": "WEB-141-f9", "behavior": "AC9: every figure and capture shows when it was measured or taken", "verification": "cd site && npm run build && node --test tests/lab-dates.test.mjs", "state": "pending", "evidence": ""}
+  {"id": "WEB-141-f9", "behavior": "AC9: every figure and capture shows when it was measured or taken", "verification": "cd site && npm run build && node --test tests/proofs.test.mjs tests/lab-figures.test.mjs", "state": "pending", "evidence": ""}
 ]

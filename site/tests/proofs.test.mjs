@@ -89,3 +89,70 @@ for (const id of IDS) {
     }
   });
 }
+
+// ------------------------------------------------------------------ rendered
+
+/** Undo what Astro escapes in text and attributes. */
+const decode = (s) =>
+  s.replace(/&#39;|&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+
+function month(date, lang) {
+  const [year, number] = date.split('-').map(Number);
+  return new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
+    new Date(Date.UTC(year, number - 1, 1)),
+  );
+}
+
+/** The text of the element carrying `data-proof-field="<field>"`, and its attributes. */
+function field(block, name) {
+  const match = block.match(new RegExp(`<([a-z]+)\\b([^>]*\\sdata-proof-field="${name}"[^>]*)>([^<]*)<`));
+  return match && { attributes: match[2], text: decode(match[3].trim()) };
+}
+
+for (const [page, id] of [
+  ['lab', 'kubelab'],
+  ['ai', 'agents'],
+]) {
+  for (const lang of LOCALES) {
+    const path = lang === 'es' ? `es/${page}` : page;
+    const proof = proofs[id];
+
+    test(`/${path}: opens with the ${id} proof, right under the hero`, () => {
+      const html = readFileSync(built(`/${page}`, lang), 'utf8');
+      const main = html.slice(html.indexOf('<main'));
+      const sections = [...main.matchAll(/<section\b([^>]*)>/g)];
+      assert.match(sections[0]?.[1] ?? '', /\sdata-(?:lab|ai)-section="hero"/, 'the hero is not the first section');
+      const proof = main.search(new RegExp(`<article\\b[^>]*\\sdata-proof="${id}"`));
+      assert.ok(proof > sections[0].index, `the ${id} proof is not after the hero`);
+      assert.ok(proof < sections[1].index, `the ${id} proof is not before the first numbered section`);
+      assert.equal([...main.matchAll(/\sdata-proof=/g)].length, 1, 'the page carries more than one proof');
+    });
+
+    test(`/${path}: the ${id} proof shows its four answers in ${lang}`, () => {
+      const html = readFileSync(built(`/${page}`, lang), 'utf8');
+      const block = html.match(new RegExp(`<article\\b[^>]*\\sdata-proof="${id}"[\\s\\S]*?</article>`))?.[0];
+      assert.ok(block, `no ${id} proof on /${path}`);
+
+      assert.equal(field(block, 'problem')?.text, proof.problem[lang]);
+      assert.equal(field(block, 'constraint')?.text, proof.constraint[lang]);
+
+      const verify = field(block, 'verify');
+      assert.equal(verify?.text, proof.verify.label[lang]);
+      const localized = lang === 'es' ? `/es${proof.verify.href}` : proof.verify.href;
+      assert.match(verify.attributes, new RegExp(`\\shref="${localized}"`), `the link does not open ${localized}`);
+
+      if (proof.result) {
+        const result = field(block, 'result');
+        assert.equal(result?.text, proof.result.text[lang]);
+        assert.equal(decode(result.attributes.match(/\sdata-method="([^"]*)"/)?.[1] ?? ''), proof.result.method);
+        assert.match(result.attributes, new RegExp(`\\sdata-date="${proof.result.measured}"`));
+        assert.match(result.attributes, /\sdata-figure\b/, 'the result is a figure and must say so');
+        const shown = month(proof.result.measured, lang);
+        assert.ok(decode(block).includes(shown), `the proof does not say when it was measured ("${shown}")`);
+      } else {
+        assert.equal(field(block, 'pending')?.text, proof.pending[lang]);
+        assert.doesNotMatch(block, /\sdata-figure\b/, 'a proof waiting for its result carries no figure');
+      }
+    });
+  }
+}

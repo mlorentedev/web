@@ -330,6 +330,13 @@ export const ui = {
     // positioning options were produced and then lost. Restructuring the markup
     // does not need that answer; rewriting the sentences does.
     // A section name, not a second label: the label is the home eyebrow (WEB-137).
+    'proof.heading': 'The proof',
+    'proof.problem': 'Whose problem',
+    'proof.constraint': 'The constraint',
+    'proof.result': 'Measured result',
+    'proof.verify': 'Where to verify',
+    'proof.measured': 'Measured in',
+
     'lab.hero.eyebrow': 'Where my AI agents run',
     'lab.hero.title': 'KubeLab Platform & Engineering Cockpit',
     'lab.hero.description':
@@ -787,6 +794,13 @@ export const ui = {
     // bloqueada por #182, cuyas tres opciones de posicionamiento se produjeron y
     // se perdieron. Reestructurar el markup no necesita esa respuesta; reescribir
     // las frases sí.
+    'proof.heading': 'La prueba',
+    'proof.problem': 'De quién era el problema',
+    'proof.constraint': 'Qué lo limitaba',
+    'proof.result': 'Resultado medido',
+    'proof.verify': 'Dónde comprobarlo',
+    'proof.measured': 'Medido en',
+
     'lab.hero.eyebrow': 'Donde corren mis agentes de IA',
     'lab.hero.title': 'Plataforma KubeLab y Cockpit de Ingeniería',
     'lab.hero.description':
