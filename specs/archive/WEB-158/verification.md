@@ -88,6 +88,6 @@ created: "2026-10-17"
 
 ## Archive checklist
 
-- [ ] `proposal.md` frontmatter set to `status: archived`
-- [ ] Folder moved: `specs/WEB-158/` -> `specs/archive/WEB-158/`
+- [x] `proposal.md` frontmatter set to `status: archived`
+- [x] Folder moved: `specs/WEB-158/` -> `specs/archive/WEB-158/`
 - [ ] Issue closed with the PR link (ADR-018)
