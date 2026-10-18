@@ -391,6 +391,7 @@ export const ui = {
 
     // Home sections
     'home.stack': 'What I work with',
+    'home.skills': 'What I do',
 
     // Projects
     'projects.viewProject': 'View project',
@@ -399,7 +400,6 @@ export const ui = {
 
     // Experience timeline (WEB-012)
     'home.experience': 'My path',
-    'home.skills': 'What I do',
     'home.latest': 'Latest notes',
     'home.allNotes': 'All notes',
 
@@ -849,6 +849,7 @@ export const ui = {
 
     // Home sections
     'home.stack': 'Con qué trabajo',
+    'home.skills': 'Qué hago',
 
     // Projects
     'projects.viewProject': 'Ver proyecto',
@@ -857,7 +858,6 @@ export const ui = {
 
     // Experience timeline (WEB-012)
     'home.experience': 'Mi camino',
-    'home.skills': 'Qué hago',
     'home.latest': 'Últimas notas',
     'home.allNotes': 'Todas las notas',
 

@@ -17,10 +17,11 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import { banned } from './lib/banned.mjs';
+import { figures, sourcedFigures } from './lib/figures.mjs';
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = join(siteRoot, 'dist');
-const experienceSrc = readFileSync(join(siteRoot, 'src/data/experience.ts'), 'utf8');
+const sourced = sourcedFigures(siteRoot);
 
 const homes = [
   { lang: 'en', built: 'index.html', prefix: '' },
@@ -105,8 +106,7 @@ for (const { lang, built: page, prefix } of homes) {
     assert.ok(words.length > 200, `dist/${page}: the skills block rendered almost nothing`);
     const hits = banned.flatMap((pattern) => words.match(new RegExp(pattern.source, 'gi')) ?? []);
     assert.deepEqual(hits, [], `banned terms in the skills block: ${hits.join(', ')}`);
-    const figures = (words.match(/\b\d+(?:[–-]\d+)?\b/g) ?? []).filter((f) => !notFigures.has(f));
-    const unsourced = figures.filter((f) => !experienceSrc.includes(f));
+    const unsourced = figures(words).filter((f) => !notFigures.has(f) && !sourced.has(f));
     assert.deepEqual(unsourced, [], `figures with no source in experience.ts: ${unsourced.join(', ')}`);
   });
 }

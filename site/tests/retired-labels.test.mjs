@@ -55,7 +55,6 @@ test('no retired label is left anywhere under src/', () => {
   assert.deepEqual(hits, [], `retired labels still in the source:\n${hits.join('\n')}`);
 });
 
-
 const proofPages = ['lab', 'ai', 'lab/idp', 'lab/idp/architecture'].flatMap((route) => [
   `${route}/index.html`,
   `es/${route}/index.html`,

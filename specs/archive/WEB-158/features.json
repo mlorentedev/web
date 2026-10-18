@@ -3,28 +3,28 @@
     "id": "WEB-158-f1",
     "behavior": "Both built homes render story, skills, door, notes in order; the skills block holds eleven items and no image, SVG or card",
     "verification": "cd site && npm run build && node --test tests/home.test.mjs tests/skills.test.mjs",
-    "state": "pending",
-    "evidence": ""
+    "state": "verified",
+    "evidence": "2026-10-18, fix/web-158-review on master ca5b8e5: home.test.mjs and skills.test.mjs green (332/332); removing <HomeSkills /> turns the order, text-only and skills tests red (review round 1, M1)."
   },
   {
     "id": "WEB-158-f2",
     "behavior": "/ and /es/ render the same items with the same link targets from src/data/skills.ts",
     "verification": "cd site && npm run build && node --test tests/skills.test.mjs",
-    "state": "pending",
-    "evidence": ""
+    "state": "verified",
+    "evidence": "2026-10-18: skills.test.mjs green in both locales; /lab -> /nope and #story -> #storyy are caught (review round 1, M2/M3)."
   },
   {
     "id": "WEB-158-f3",
     "behavior": "Every item has one link; site links resolve; external links only to public owners, never a private repo",
     "verification": "cd site && npm run build && node --test tests/skills.test.mjs",
-    "state": "pending",
-    "evidence": ""
+    "state": "verified",
+    "evidence": "2026-10-18: skills.test.mjs green; a private-repo href is caught (review round 1, M4); all 8 external proofs answered 200 by curl -L."
   },
   {
     "id": "WEB-158-f4",
     "behavior": "No banned word family in the block; every figure is in data/experience.ts",
     "verification": "cd site && npm run build && node --test tests/skills.test.mjs",
-    "state": "pending",
-    "evidence": ""
+    "state": "verified",
+    "evidence": "2026-10-18: skills.test.mjs green; \"Deterministic\" is caught (M5); after the whole-token fix \"cut by 4%\" fails and \"cut by 80%\" passes."
   }
 ]

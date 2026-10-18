@@ -13,10 +13,12 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { figures, sourcedFigures } from './lib/figures.mjs';
+
 const here = dirname(fileURLToPath(import.meta.url));
 const siteRoot = join(here, '..');
 const distDir = join(siteRoot, 'dist');
-const experienceSrc = readFileSync(join(siteRoot, 'src/data/experience.ts'), 'utf8');
+const sourced = sourcedFigures(siteRoot);
 
 /** The markdown body of a bio, without its frontmatter. */
 function bioBody(lang) {
@@ -24,14 +26,9 @@ function bioBody(lang) {
   return raw.replace(/^---[\s\S]*?---/, '');
 }
 
-/** Figures as written: `2015`, `120`, `20–30`. A range counts as one figure. */
-function figures(text) {
-  return text.match(/\d+(?:[–-]\d+)?/g) ?? [];
-}
-
 for (const lang of ['en', 'es']) {
   test(`[${lang}] every figure in the bio is already in experience.ts`, () => {
-    const unsourced = figures(bioBody(lang)).filter((f) => !experienceSrc.includes(f));
+    const unsourced = figures(bioBody(lang)).filter((f) => !sourced.has(f));
     assert.deepEqual(unsourced, [], `figures with no source in experience.ts: ${unsourced.join(', ')}`);
   });
 }
