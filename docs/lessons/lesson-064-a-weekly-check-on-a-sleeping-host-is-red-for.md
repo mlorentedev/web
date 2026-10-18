@@ -23,12 +23,15 @@ service, and the check failed on its schedule rather than on any change. Nobody 
 three red runs, and the page kept claiming that a weekly check stood behind the table.
 
 **Solution**: The table gained an `onDemand` mark for a row on such a host. `access` stays
-what a visitor meets while the host is up. `matches()` in `site/tests/lib/access.mjs` also
-accepts `unreachable` for that row and nothing else, so a gate that disappears or moves
-still fails. `/lab` shows the row as on demand. The full live check passed on 2026-10-18
+what a visitor meets while the host is up. `classify()` in `site/tests/lib/access.mjs` now
+tells `silent` (no response at all, which is what a sleeping host gives) apart from
+`unreachable` (an answer with an error). `matches()` accepts only `silent` for that row. An
+awake host that serves an error, or a gate that disappears or moves, still fails. PR-Agent
+found that the first version accepted `unreachable` and would have hidden an awake outage. `/lab` shows the row as on demand. The full live check passed on 2026-10-18
 (15 of 15), and `measured` moved to that date.
 
 **Rule**: Before a page cites a scheduled check, read its last runs, not its definition.
 When a scheduled check fails on the same row every time, first ask whether the schedule
 can ever meet the thing it checks. If the check can never pass, it is measuring the
-calendar. Model the real state in the data and keep it failing on everything else.
+calendar. Model the real state in the data, accept exactly the signal that state produces, and keep
+failing on everything else.

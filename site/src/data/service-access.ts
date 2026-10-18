@@ -18,7 +18,7 @@ export interface ServiceAccessRow {
   probe?: { path: string; status: number };
   /**
    * The host is powered on only when needed (ADR-028). `access` is what a
-   * visitor meets while it is up; while it sleeps the service does not answer.
+   * visitor meets while it is up; while it sleeps the service gives no response.
    */
   onDemand?: true;
 }
