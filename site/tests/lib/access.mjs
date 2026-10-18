@@ -53,3 +53,18 @@ export function classify({ addresses, root, probeStatus }, expectedProbe) {
   if (expectedProbe !== undefined && probeStatus === expectedProbe) return 'app-login';
   return root.status < 400 ? 'public' : 'unreachable';
 }
+
+/**
+ * Whether a live measurement still supports a row of the table.
+ *
+ * A row on an on-demand host (ADR-028) also passes when the host does not
+ * answer: a sleeping machine gives no response, which is not a change of who
+ * can reach the service. Any other answer still has to match, so a gate that
+ * disappears or moves fails as before.
+ *
+ * @param {string} measured  What `classify` returned.
+ * @param {{access: string, onDemand?: true}} row
+ */
+export function matches(measured, row) {
+  return measured === row.access || (row.onDemand === true && measured === 'unreachable');
+}

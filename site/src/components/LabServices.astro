@@ -207,6 +207,13 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
                       : 'bg-panel-100 text-panel-700 border-panel-200',
                   ]}
                 >{ACCESS_LABEL[access.access]}</span>
+                {access.onDemand && (
+                  <span
+                    data-on-demand
+                    class="ml-1 inline-block px-1.5 py-0.5 rounded text-xs font-medium border bg-panel-50 text-panel-700 border-panel-200"
+                    title={t('lab.access.onDemandHint')}
+                  >{t('lab.access.onDemand')}</span>
+                )}
               </td>
 
               <td class="py-2.5 px-3 whitespace-nowrap">

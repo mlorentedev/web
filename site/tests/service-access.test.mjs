@@ -9,6 +9,12 @@
  *
  * ADR-056 §3: only a service that resolves in public DNS ships a `url`, so a
  * `mesh` row has none and every other row has one.
+ *
+ * A row on a host that is powered on only when needed (ADR-028) says so with
+ * `onDemand`. Its access is what a visitor meets while the host is up, and the
+ * weekly check also accepts no answer at all, because a sleeping host gives
+ * none. Without that, the check is red every week the host sleeps through it,
+ * and a check that is always red teaches everyone to ignore it.
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -16,7 +22,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { ACCESS, classify, isInternalAddress } from './lib/access.mjs';
+import { ACCESS, classify, isInternalAddress, matches } from './lib/access.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const data = (file) => JSON.parse(readFileSync(join(here, '..', 'src/data', file), 'utf8'));
@@ -40,6 +46,13 @@ test('every row has a known access, and a URL exactly when it is not mesh', () =
     assert.ok(ACCESS.includes(row.access), `${row.slug}: unknown access "${row.access}"`);
     if (row.access === 'mesh') assert.equal(row.url, undefined, `${row.slug}: a mesh service ships no URL (ADR-056 §3)`);
     else assert.match(row.url ?? '', /^https:\/\//, `${row.slug}: a reachable service needs an https URL`);
+  }
+});
+
+test('only a reachable row can be on demand, and onDemand is either true or absent', () => {
+  for (const row of table.services.filter((r) => 'onDemand' in r)) {
+    assert.equal(row.onDemand, true, `${row.slug}: onDemand is true or absent`);
+    assert.notEqual(row.access, 'mesh', `${row.slug}: a mesh row is never probed, so it cannot be on demand`);
   }
 });
 
@@ -88,4 +101,15 @@ test('classify: the responses recorded on 2026-09-26', () => {
   for (const [name, seen, expectedProbe, expected] of cases) {
     assert.equal(classify(seen, expectedProbe), expected, name);
   }
+});
+
+test('matches: an on-demand row also accepts a host that does not answer, and nothing else', () => {
+  const awake = { slug: 'gitea', access: 'app-login', onDemand: true };
+  const always = { slug: 'argocd', access: 'app-login' };
+  assert.ok(matches('app-login', awake), 'awake and asking for credentials');
+  assert.ok(matches('unreachable', awake), 'asleep');
+  assert.ok(!matches('public', awake), 'the gate is gone: that is a change, not sleep');
+  assert.ok(!matches('elsewhere', awake), 'a different gate is a change, not sleep');
+  assert.ok(matches('app-login', always));
+  assert.ok(!matches('unreachable', always), 'an always-on service that does not answer is down');
 });

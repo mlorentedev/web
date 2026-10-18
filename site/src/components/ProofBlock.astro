@@ -1,0 +1,93 @@
+---
+/**
+ * The proof that opens `/lab` and `/ai` (WEB-141 AC1, AC9).
+ *
+ * Four answers from `data/proofs.ts`: whose problem, what constraint, the
+ * measured result, and where to verify it. It sits right under the hero and is
+ * unnumbered, so the `[ NN / label ]` spine of each page keeps its numbers. That
+ * is why it is an `<article>`: every `<section>` on `/lab` carries a numbered
+ * eyebrow (`lab-audit.test.mjs`).
+ *
+ * The result is the only slot that may carry a measurement, so it is the only
+ * `data-figure` here: a text-only leaf with its method and date, and the month
+ * printed beside it in the page's locale (`lab-figures.test.mjs`). While a proof
+ * has no result, the slot says why instead of disappearing.
+ *
+ * Static, no script: `/lab` ships none (`lab-sections.test.mjs`).
+ */
+import { proofs, type ProofId } from '../data/proofs';
+import { getLocale, useTranslatedPath, useTranslations } from '../i18n/utils';
+
+interface Props {
+  id: ProofId;
+}
+
+const { id } = Astro.props;
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const localize = useTranslatedPath(lang);
+const proof = proofs[id];
+
+/** Month and year in the page's locale, as `lab-figures.test.mjs` looks for it. */
+function month(date: string): string {
+  const [year, number] = date.split('-').map(Number);
+  return new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
+    new Date(Date.UTC(year, number - 1, 1)),
+  );
+}
+
+const term = 'text-xs font-medium text-ink-500 tracking-wider uppercase';
+const detail = 'mt-1 text-ink-700 leading-relaxed';
+---
+
+<article class="max-w-6xl mx-auto px-4 pb-10" data-proof={id} aria-labelledby={`proof-${id}`}>
+  <div class="rounded-lg border border-panel-200 bg-panel-50 p-5 sm:p-6">
+    <h2 id={`proof-${id}`} class="text-sm font-medium text-accent-700 tracking-wider uppercase">
+      {t('proof.heading')}
+    </h2>
+
+    <dl class="mt-4 grid gap-5 sm:grid-cols-2">
+      <div>
+        <dt class={term}>{t('proof.problem')}</dt>
+        <dd class={detail} data-proof-field="problem">{proof.problem[lang]}</dd>
+      </div>
+      <div>
+        <dt class={term}>{t('proof.constraint')}</dt>
+        <dd class={detail} data-proof-field="constraint">{proof.constraint[lang]}</dd>
+      </div>
+      <div>
+        <dt class={term}>{t('proof.result')}</dt>
+        {
+          proof.result ? (
+            <>
+              <dd
+                class={detail}
+                data-proof-field="result"
+                data-figure
+                data-method={proof.result.method}
+                data-date={proof.result.measured}
+              >
+                {proof.result.text[lang]}
+              </dd>
+              <dd class="mt-1 text-sm text-ink-500">
+                {t('proof.measured')} <time datetime={proof.result.measured}>{month(proof.result.measured)}</time>
+              </dd>
+            </>
+          ) : (
+            <dd class={detail} data-proof-field="pending">{proof.pending?.[lang]}</dd>
+          )
+        }
+      </div>
+      <div>
+        <dt class={term}>{t('proof.verify')}</dt>
+        <dd class={detail}>
+          <a
+            href={localize(proof.verify.href)}
+            class="text-accent-700 underline underline-offset-2 hover:text-accent-800"
+            data-proof-field="verify">{proof.verify.label[lang]}</a
+          >
+        </dd>
+      </div>
+    </dl>
+  </div>
+</article>

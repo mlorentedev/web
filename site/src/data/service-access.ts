@@ -16,6 +16,11 @@ export interface ServiceAccessRow {
   url?: string;
   /** The path whose status shows an `app-login` service asking for credentials. */
   probe?: { path: string; status: number };
+  /**
+   * The host is powered on only when needed (ADR-028). `access` is what a
+   * visitor meets while it is up; while it sleeps the service does not answer.
+   */
+  onDemand?: true;
 }
 
 export interface ServiceAccessTable {

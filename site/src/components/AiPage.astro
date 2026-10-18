@@ -12,6 +12,7 @@ import LabDiagram from './LabDiagram.astro';
 import AiPillars from './AiPillars.astro';
 import AiAutomations from './AiAutomations.astro';
 import AiArtifacts from './AiArtifacts.astro';
+import ProofBlock from './ProofBlock.astro';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -26,6 +27,8 @@ const t = useTranslations(lang);
 
   <main id="main-content" class="grow pb-16">
     <AiHero />
+
+    <ProofBlock id="agents" />
 
     <LabDiagram
       name="harness"
