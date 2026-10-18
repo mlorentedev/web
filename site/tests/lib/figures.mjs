@@ -15,11 +15,12 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
- * Figures as written: `2015`, `120`, `20–30`. A range counts as one figure, and
- * digits inside a name (`K3s`, `S3`) are not a figure.
+ * Figures as written: `2015`, `120`, `20–30`. A range counts as one figure.
+ * Digits after a letter belong to a name (`K3s`, `S3`) and are not a figure;
+ * digits before one still are (`80K`, `1990s`), so a suffix cannot hide a figure.
  */
 export function figures(text) {
-  return text.match(/(?<![\p{L}\d])\d+(?:[–-]\d+)?(?![\p{L}\d])/gu) ?? [];
+  return text.match(/(?<![\p{L}\d])\d+(?:[–-]\d+)?/gu) ?? [];
 }
 
 /** Every figure `data/experience.ts` states, as whole tokens. */

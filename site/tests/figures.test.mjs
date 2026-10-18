@@ -17,6 +17,10 @@ test('digits inside a name are not a figure', () => {
   assert.deepEqual(figures('K3s, S3 and EC2 cost 80%'), ['80']);
 });
 
+test('a letter after a figure does not hide it', () => {
+  assert.deepEqual(figures('cut by 80K in the 1990s'), ['80', '1990']);
+});
+
 test('a figure that only occurs inside a longer number is not sourced by it', () => {
   const sourced = new Set(figures('2014–2019, onboarding 120 days, −80%'));
   assert.ok(sourced.has('80') && sourced.has('120'));
