@@ -74,12 +74,12 @@ created: "2026-09-24"
 
 ## Closing
 
-- [ ] Every acceptance criterion from `proposal.md` is covered by at least one test
-- [ ] Every acceptance criterion has a matching entry in `features.json` (see below) with a non-vacuous verification command
-- [ ] Type checks pass
+- [x] Every acceptance criterion from `proposal.md` is covered by at least one test
+- [x] Every acceptance criterion has a matching entry in `features.json` (see below) with a non-vacuous verification command
+- [x] Type checks pass
 - [ ] Lint passes
 - [ ] No unrelated changes in the diff (no scope creep)
-- [ ] `verification.md` filled in
+- [x] `verification.md` filled in
 - [ ] PR opened referencing this spec folder
 
 ## Machine-readable features
