@@ -49,17 +49,31 @@ Brief log of non-obvious trade-offs or course corrections taken during the work.
   without a duration ("weeks" had no source); and the role since 2019 is worked between Spain and the US, which is
   what `experience.ts` already says. Only those sentences changed, so no unconfirmed claim entered the copy.
 
+## Review dispositions
+
+Review `review.md` (nan/glm5.3-flash, PASS-WITH-GAPS, at `c841b05`). The contract set is closed by the verdict, so
+the stale `tasks.md` rows are dispositioned here, not ticked.
+
+- **Finding 1, stale closing rows in `tasks.md`.** Declined as edits. "Lint passes": there is no lint script in
+  `site/package.json`; lint is the pre-commit hooks, which ran in CI on every WEB-140 PR. "PR opened referencing
+  this spec folder" and "One branch per PR": the work landed as #410, #416, #418, #419, #461 and #467, each from its
+  own branch. "No unrelated changes": true of WEB-140's own changes; the launcher's base also carries WEB-141,
+  WEB-158 and CI work, each with its own spec or review.
+- **Finding 2, promotion candidates unanswered.** Applied below (answered with Manu on 2026-10-19).
+- **Finding 3, the ES story links the EN-only `/projects/`.** Ticketed as #474 (WEB-162): pin it with a test, or
+  localize the page.
+- **Finding 4, AC1 samples two widths.** Declined: sampling fixed viewports is the accepted trade for layout tests,
+  and the reviewer marked it SPECULATIVE and not gating.
+
 ## Promotion candidates
 
-Before archiving, flag what (if anything) should be promoted to the vault. If all three are "no", archive in repo is the only persistence.
-
-- [ ] Lesson for the repo's `docs/lessons/`? <yes / no - one line of what>
-- [ ] ADR-worthy decision for the repo's `docs/adr/adr-XXX.md`? <yes / no - one line of what>
-- [ ] New pattern candidate for `00_meta/patterns/`? Only if this recurs in >1 project. <yes / no - one line>
+- [x] Lesson for `docs/lessons/`? no: the non-obvious lesson this spec produced, that a drafted claim about the author is a question, is already lesson 063.
+- [x] ADR? no: a content and positioning decision inside the site, recorded in this spec and in the vault's `brand-package.md`; no architecture changes.
+- [x] Pattern for `00_meta/patterns/`? no: single project; nothing recurs in another repo.
 
 ## Archive checklist
 
-- [ ] `proposal.md` frontmatter set to `status: archived`
-- [ ] Folder moved: `specs/WEB-140/` -> `specs/archive/WEB-140/`
+- [x] `proposal.md` frontmatter set to `status: archived`
+- [x] Folder moved: `specs/WEB-140/` -> `specs/archive/WEB-140/`
 - [ ] Bitácora board ticket for this spec moved to Done / closed with PR link (ADR-018)
-- [ ] Promotions above executed (if any)
+- [x] Promotions above executed (if any): none to execute, all three are "no"
