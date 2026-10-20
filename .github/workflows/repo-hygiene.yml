@@ -1,8 +1,8 @@
 name: Repo hygiene
 
-# Three guards that need no toolchain: lesson numbering/index integrity,
-# SHA-pinned actions, and docs paths that exist. All three run under bash and
-# zsh and print what failed.
+# Four guards that need no toolchain: lesson numbering/index integrity,
+# SHA-pinned actions, docs paths that exist, and the AGENTS.md stack majors.
+# All four run under bash and zsh and print what failed.
 
 on:
   pull_request:
@@ -26,3 +26,5 @@ jobs:
         run: bash scripts/check-actions-pinned.sh
       - name: Docs paths named in the repo exist
         run: bash scripts/check-doc-refs.sh
+      - name: AGENTS.md stack majors match package.json
+        run: bash scripts/check-agents-stack.sh

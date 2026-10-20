@@ -12,12 +12,11 @@ static site built to a Docker image and deployed through the **kubelab** platfor
 
 ## Tech stack
 
-- **Framework:** Astro 5 (static output) — islands architecture, zero JS by default.
-  Staying on Astro 5 until the deliberate **Astro 7** migration (WEB-022, #7). The hold
-  keeps 8 Astro advisories open — none is patched on the 5.x line — accepted only because
-  `output: 'static'` leaves them unreachable. **Adding an SSR adapter voids that and makes
-  WEB-022 a prerequisite.**
-- **Styling:** Tailwind CSS 3 + `@tailwindcss/typography`.
+- **Framework:** Astro 7 (`output: 'static'`) — islands architecture, zero JS by default.
+- **Styling:** Tailwind CSS 4 as a Vite plugin (`@tailwindcss/vite`) + `@tailwindcss/typography`.
+  Configured in CSS (`site/src/styles/tailwind.css`); `site/tailwind.config.mjs` holds only
+  the `.prose` customisation.
+- The majors above are checked against `site/package.json` by `scripts/check-agents-stack.sh`.
 - **Content:** MDX (`@astrojs/mdx`); sitemap (`@astrojs/sitemap`).
 - **Node:** pinned in `.nvmrc`. **Source root:** `site/`.
 - **Image:** Docker → Docker Hub `mlorentedev/kubelab-web`.

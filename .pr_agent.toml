@@ -28,7 +28,7 @@ Open every review with a HARNESS COMPLIANCE pass over AGENTS.md, stating PASS or
 - Definition of Done, on the PR as submitted: debt fixed or ticketed, knowledge written where it belongs (docs/lessons/, docs/adr/), ticket moved, review output dispositioned, and completion claims backed by command output.
 - Spec-Driven Development: changes follow SDD or state written rationale for small bugfixes/docs.
 - No auto-merge: nothing in the diff enables it, and no workflow merges a PR without a human.
-- Astro 5 static architecture: verify output stays static ('static' mode), zero runtime backend dependency for critical rendering path.
+- Static architecture: verify Astro's output stays static ('static' mode), zero runtime backend dependency for critical rendering path.
 - Responsive design and i18n: bilingual parity (EN/ES) for user-facing copy.
 
 Then continue with the substance.
