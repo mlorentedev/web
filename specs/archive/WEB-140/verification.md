@@ -65,6 +65,27 @@ the stale `tasks.md` rows are dispositioned here, not ticked.
 - **Finding 4, AC1 samples two widths.** Declined: sampling fixed viewports is the accepted trade for layout tests,
   and the reviewer marked it SPECULATIVE and not gating.
 
+- **Archive PR review, `features.json` WEB-140-f2 names four blocks.** Declined as an edit: `features.json` is in
+  the contract the review signed, and changing it would leave `review.md` attesting a different file. The behavior
+  text predates the WEB-158 amendment (2026-10-17). Its command runs the whole `home.test.mjs`, which asserts the
+  amended order (story, skills, door, notes), and the evidence records that test passing.
+- **Archive PR review, WEB-140-f5's `honesty` filter skips the count and uptime tests.** Declined as an edit, for the
+  same reason. The two "states no node or service count and no uptime" tests run under WEB-140-f2's command (the whole
+  `home.test.mjs`, 23/23), so the feature list as a whole still fails on a count or uptime regression.
+
+## Issue criteria to spec criteria
+
+The issue (#398) lists five criteria; the spec refined them into six (AC2 and AC4 amended 2026-09-25, AC2 again on
+2026-10-17). Where each issue criterion is proven:
+
+| Issue | Spec | Feature |
+|---|---|---|
+| AC1 first screen | AC1 | WEB-140-f1 |
+| AC2 one source with `/contact` | AC3 | WEB-140-f3 |
+| AC3 no availability claim but `nextStart` | AC5 | WEB-140-f5 |
+| AC4 SEO alternates, `/lab` JSON-LD, numbering tests green | AC6 | WEB-140-f6 |
+| AC5 `index.astro` and `es/index.astro` not byte-identical (#142) | AC2 (one `HomePage`, both pages stubs) | WEB-140-f2 |
+
 ## Promotion candidates
 
 - [x] Lesson for `docs/lessons/`? no: the non-obvious lesson this spec produced, that a drafted claim about the author is a question, is already lesson 063.
