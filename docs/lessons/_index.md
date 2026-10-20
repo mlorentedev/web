@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-64 lessons, one file each, newest first. Numbers are assigned in the order
+65 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 065 | [A version written into a reviewer's rules passes the old stack after an upgrade](lesson-065-a-version-written-into-a-reviewer-s-rules-pa.md) | 2026-10-19 | `#review` `#agents` `#docs` |
 | 064 | [A weekly check on a sleeping host is red for the schedule, not the service](lesson-064-a-weekly-check-on-a-sleeping-host-is-red-for.md) | 2026-10-18 | `#testing` `#ci` `#lab` |
 | 063 | [A drafted claim about the author's career is a question, not a fact](lesson-063-a-drafted-claim-about-the-author-s-career-is.md) | 2026-09-27 | `#content` `#copy` `#verification` |
 | 062 | [A doc moved out of a repo leaves every copied comment pointing at nothing](lesson-062-a-doc-moved-out-of-a-repo-leaves-every-copie.md) | 2026-09-27 | `#docs` `#ci` `#hygiene` |
