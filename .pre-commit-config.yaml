@@ -80,6 +80,16 @@ repos:
         pass_filenames: false
         files: ^(\.github/|scripts/|docs/|AGENTS\.md$|README\.md$|Makefile$)
 
+  # The Astro and Tailwind CSS majors in AGENTS.md match site/package.json (scripts/check-agents-stack.sh)
+  - repo: local
+    hooks:
+      - id: check-agents-stack
+        name: check-agents-stack
+        language: script
+        entry: scripts/check-agents-stack.sh
+        pass_filenames: false
+        files: ^(AGENTS\.md|site/package\.json|scripts/check-agents-stack\.sh)$
+
 # Files to exclude
 exclude: |
   (?x)^(
