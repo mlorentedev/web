@@ -36,6 +36,13 @@
  * and `sha-a76e8fa` share all eleven `rootfs.diff_ids`, which is how the
  * `last-modified` question above was answered at all. A per-build timestamp
  * destroys that property permanently in exchange for a field nobody queries.
+ *
+ * `commit` (WEB-150, `#435`) is an input, so it keeps a build of one commit
+ * reproducible. Its expected value comes from `EXPECTED_COMMIT`, which
+ * test.yml sets to the sha the image was tagged with when it tests a shipped
+ * image. Unset, a `SITE_COMMIT` exported in the shell is what the build was
+ * given; with neither, the tree is an untagged build and must say `"local"`
+ * rather than any sha at all. CI's runner job sets neither.
  */
 
 import assert from 'node:assert/strict';
@@ -51,6 +58,13 @@ const dist = join(siteRoot, 'dist');
 
 /** The SSOT: what release-please bumps, read fresh rather than hardcoded. */
 const expected = readFileSync(join(repoRoot, 'version.txt'), 'utf8').trim();
+
+/**
+ * What the tree must state as `commit`: the tagged sha test.yml passes, else
+ * what a local shell gave the build, else "local" for an untagged build.
+ */
+const expectedCommit =
+  process.env.EXPECTED_COMMIT?.trim() || process.env.SITE_COMMIT?.trim() || 'local';
 
 const read = (...parts) => readFileSync(join(dist, ...parts), 'utf8');
 
@@ -78,9 +92,17 @@ test('dist/ carries the version at a machine-readable path', () => {
     'the served version disagrees with version.txt',
   );
 
+  assert.equal(
+    payload.commit,
+    expectedCommit,
+    expectedCommit === 'local'
+      ? 'an untagged build must state "commit": "local", not a sha it was never tagged with'
+      : 'the served commit is not the one the image tag names',
+  );
+
   assert.deepEqual(
     Object.keys(payload).sort(),
-    ['version'],
+    ['commit', 'version'],
     'the payload grew a field. Adding one is a decision, not a detail: see the ' +
       'header on built_at and reproducibility',
   );
@@ -117,6 +139,10 @@ for (const [locale, page] of [
         'It belongs in BaseLayout so every page inherits it once.',
     );
     assert.equal(found[0][1], expected, `${page} states a different release than version.txt`);
+
+    const commits = [...html.matchAll(/<meta\s+name="commit"\s+content="([^"]*)"/g)];
+    assert.equal(commits.length, 1, `expected exactly one <meta name="commit"> in ${page}`);
+    assert.equal(commits[0][1], expectedCommit, `${page} states a different commit than the build was tagged with`);
   });
 }
 

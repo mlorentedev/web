@@ -82,6 +82,11 @@ COPY --chown=node:node site/ ./
 # or the site would keep serving the previous release's number.
 COPY --chown=node:node version.txt /version.txt
 
+# The commit this image is tagged with, minus `sha-` (WEB-150). release.yml
+# passes it; a build without it states `"commit": "local"`. Declared here, last,
+# because its value changes on every commit: anything above it stays cached.
+ARG SITE_COMMIT
+
 RUN npm run build
 
 # ---------- Runtime Stage — Nginx static serving ----------

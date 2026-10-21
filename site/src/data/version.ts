@@ -62,3 +62,33 @@ function readVersion(): string {
 }
 
 export const SITE_VERSION = readVersion();
+
+/**
+ * The commit this build came from (WEB-150, `#435`): the 7-hex short sha the
+ * staging image is tagged with, minus `sha-`. Between two releases every
+ * staging deploy states the same `SITE_VERSION`, so this is the only field
+ * that tells one staging deploy from the next.
+ *
+ * It arrives as the `SITE_COMMIT` build arg from `release.yml`, never from
+ * `git`: the image build has no `.git`, and the value has to be the one the
+ * tag names, not one recomputed from a checkout that might differ. An input
+ * rather than a timestamp, so two builds of one commit stay byte-identical.
+ *
+ * Absent or empty means a build nobody tagged (a local `npm run build`, a PR
+ * validation image), and it says so as `"local"` instead of inventing a sha.
+ * Anything else that is not a short sha fails the build, for the reason
+ * `readVersion` throws: a plausible wrong answer is the expensive outcome.
+ */
+function readCommit(): string {
+  const commit = process.env.SITE_COMMIT?.trim();
+  if (!commit) return 'local';
+  if (!/^[0-9a-f]{7}$/.test(commit)) {
+    throw new Error(
+      `SITE_COMMIT is "${commit}", which is not a 7-hex short sha. It must equal ` +
+        'the image tag minus "sha-", which release.yml computes as ${GITHUB_SHA::7}.',
+    );
+  }
+  return commit;
+}
+
+export const SITE_COMMIT = readCommit();

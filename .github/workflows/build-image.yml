@@ -7,6 +7,10 @@ name: Build Image
 #   - release.yml       -> tag=sha-<short>, push on master (staging; the same
 #                          digest is re-tagged to the semver release for prod)
 #   - pr-validation.yml -> tag=pr-<n>,      no push        (Dockerfile validation)
+#
+# `commit` becomes the `SITE_COMMIT` build arg, which the site states as
+# `commit` in /version.json (WEB-150). release.yml passes the tag minus `sha-`;
+# pr-validation.yml passes nothing, and the image then says "local".
 
 on:
   workflow_call:
@@ -15,6 +19,10 @@ on:
         description: Image tag to build (e.g. sha-abc1234 or 1.2.3)
         type: string
         required: true
+      commit:
+        description: Short sha the site states as `commit` (empty = "local", for untagged builds)
+        type: string
+        default: ''
       push:
         description: Push to Docker Hub (false = PR validation build only)
         type: boolean
@@ -93,6 +101,8 @@ jobs:
           platforms: ${{ inputs.platforms }}
           push: ${{ inputs.push }}
           tags: ${{ env.IMAGE }}:${{ inputs.tag }}
+          build-args: |
+            SITE_COMMIT=${{ inputs.commit }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           labels: |
