@@ -40,8 +40,9 @@
  * `commit` (WEB-150, `#435`) is an input, so it keeps a build of one commit
  * reproducible. Its expected value comes from `EXPECTED_COMMIT`, which
  * test.yml sets to the sha the image was tagged with when it tests a shipped
- * image. Unset, the tree under test is a runner or local build, and it must
- * say `"local"` rather than any sha at all.
+ * image. Unset, a `SITE_COMMIT` exported in the shell is what the build was
+ * given; with neither, the tree is an untagged build and must say `"local"`
+ * rather than any sha at all. CI's runner job sets neither.
  */
 
 import assert from 'node:assert/strict';
@@ -58,8 +59,12 @@ const dist = join(siteRoot, 'dist');
 /** The SSOT: what release-please bumps, read fresh rather than hardcoded. */
 const expected = readFileSync(join(repoRoot, 'version.txt'), 'utf8').trim();
 
-/** What the tree must state as `commit`: the tagged sha, or "local" for an untagged build. */
-const expectedCommit = process.env.EXPECTED_COMMIT?.trim() || 'local';
+/**
+ * What the tree must state as `commit`: the tagged sha test.yml passes, else
+ * what a local shell gave the build, else "local" for an untagged build.
+ */
+const expectedCommit =
+  process.env.EXPECTED_COMMIT?.trim() || process.env.SITE_COMMIT?.trim() || 'local';
 
 const read = (...parts) => readFileSync(join(dist, ...parts), 'utf8');
 
