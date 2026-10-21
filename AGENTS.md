@@ -31,8 +31,8 @@ static site built to a Docker image and deployed through the **kubelab** platfor
   manifest PR in kubelab.
 - `kubelab.yaml` at the root is web's product contract (kubelab ADR-067): port,
   health path, hostnames, auth and secrets. kubelab reads it at each image's commit
-  and refuses what its registry does not allow, so a new hostname, auth level or
-  secret lands in kubelab first.
+  and refuses what kubelab does not allow. A new hostname, auth level or secret:
+  allow it in kubelab first, then edit it here.
 
 ## Inner loop
 
