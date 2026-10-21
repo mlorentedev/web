@@ -43,14 +43,14 @@ run in staging as those exact bytes. Prod ships something staging never validate
    source commit is a documented traceability best practice, and per-environment
    schemes (sha for continuous, semver for releases) are standard. release-please
    remains the single source of the semver line.
-2. **Prod = clean `X.Y.Z`, produced by re-tagging the validated staging digest**
+2. **Prod = clean `X.Y.Z`, produced by re-tagging the release commit's `sha-<short>` digest**
    (`docker buildx imagetools create -t …:X.Y.Z …:sha-<short>`) — **not a
    rebuild.** The image Argo CD runs in prod is the same image as the release
    commit's staging tag (artifact identity). It is not a claim that staging ran
    those bytes first; see the amendment below.
 3. **kubelab's GitOps manifests are unchanged.** They reference the image by its
    immutable tag in git per environment; prod's `:X.Y.Z` now resolves to the
-   staging-validated digest.
+   release commit's `sha-<short>` digest.
 
 > **Amended 2026-10-21 (WEB-109). Point 2 and the first Positive consequence
 > used to say prod runs "the exact bytes validated in staging". That sentence
@@ -58,9 +58,10 @@ run in staging as those exact bytes. Prod ships something staging never validate
 >
 > **Artifact identity — decided here, and delivered.** Prod's `X.Y.Z` is a
 > re-tag of the release commit's own `sha-<short>` digest, never a rebuild (see
-> Implementation). Since `#376`, the suite also runs on the tree that digest
-> serves before anything is dispatched, so the digest is validated by CI before
-> either environment receives it.
+> Implementation). Since `#376`, `release.yml`'s `test-image` job also runs the
+> suite on the tree that digest serves, and both `dispatch-staging` and
+> `promote-prod` need it, so the digest is validated by CI before either
+> environment receives it.
 >
 > **Execution order — not decided here.** Whether staging *ran* that digest
 > before prod is governed by kubelab's ADR-046 (one PR per update, a human gate
@@ -94,8 +95,8 @@ run in staging as those exact bytes. Prod ships something staging never validate
 The "professional" substance is the **promotion model and immutability**, not the
 tag string:
 
-- **Build once, never rebuild between environments** — the exact digest that
-  passed staging is promoted to prod. This is the gold standard; it is precisely
+- **Build once, never rebuild between environments** — the exact digest built
+  for the release commit is promoted to prod. This is the gold standard; it is precisely
   what the current rebuild violates.
 - **An image tag committed to git per environment is canonical GitOps, not
   hardcoding.** Git is the declarative SSOT of desired state; Argo CD reconciles
