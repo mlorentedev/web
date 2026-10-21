@@ -31,13 +31,24 @@ const jobs = (text) => {
   if (from === -1) return [];
   const out = [];
   for (const line of lines.slice(from + 1)) {
-    if (/^\S/.test(line)) break;
-    const key = line.match(/^ {2}([A-Za-z0-9_-]+):\s*$/);
+    if (/^[^\s#]/.test(line)) break;
+    const key = line.match(/^ {2}([A-Za-z0-9_-]+):\s*(#.*)?$/);
     if (key) out.push([key[1], []]);
     else if (out.length) out.at(-1)[1].push(line);
   }
   return out.map(([name, body]) => [name, body.join('\n')]);
 };
+
+for (const file of files) {
+  // A job id the parser misses folds its body into the previous job, where its
+  // `timeout-minutes` would hide the gap. Every job has exactly one `runs-on:`
+  // or `uses:`, so the count of those must equal the count of jobs found.
+  test(`${file}: every job is parsed as its own job`, () => {
+    const found = jobs(readFileSync(join(dir, file), 'utf8'));
+    const executors = found.map(([, body]) => (body.match(/^ {4}(runs-on|uses):/gm) ?? []).length);
+    assert.deepEqual(executors, found.map(() => 1), `jobs: ${found.map(([n]) => n).join(', ')}`);
+  });
+}
 
 test('the parser finds the jobs these workflows declare', () => {
   const release = jobs(readFileSync(join(dir, 'release.yml'), 'utf8')).map(([n]) => n);
