@@ -45,6 +45,7 @@ for (const file of files) {
   // or `uses:`, so the count of those must equal the count of jobs found.
   test(`${file}: every job is parsed as its own job`, () => {
     const found = jobs(readFileSync(join(dir, file), 'utf8'));
+    assert.ok(found.length > 0, 'no jobs parsed, so the timeout check below would pass on nothing');
     const executors = found.map(([, body]) => (body.match(/^ {4}(runs-on|uses):/gm) ?? []).length);
     assert.deepEqual(executors, found.map(() => 1), `jobs: ${found.map(([n]) => n).join(', ')}`);
   });
