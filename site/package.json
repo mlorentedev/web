@@ -2,12 +2,16 @@
   "name": "mlorente.dev",
   "type": "module",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=22.18"
+  },
   "scripts": {
     "dev": "astro dev",
     "diagrams": "node scripts/diagrams.mjs generate",
     "prebuild": "node scripts/diagrams.mjs verify",
     "build": "astro check && astro build",
     "preview": "astro preview",
+    "pretest": "node scripts/check-node.mjs",
     "test": "node --test \"tests/*.test.mjs\"",
     "test:audit": "node --test tests/lab-audit.test.mjs",
     "test:browser": "node tests/lab-containment.mjs && node tests/home-first-screen.mjs",

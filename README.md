@@ -33,7 +33,7 @@ Run these once on a new machine, from the repo root. They assume `nvm` and
 ```bash
 pre-commit install                  # lint, secrets, lessons index and doc refs before each commit
 cd site
-nvm install                         # latest 22.x, as CI resolves .nvmrc; an older 22 fails one test
+nvm install                         # latest 22.x, as CI resolves .nvmrc; `npm test` refuses Node below 22.18
 npm ci
 npx playwright install --with-deps chromium   # the build renders the notes' diagrams in a headless browser; on Linux this needs sudo for its system libraries
 npm run build && npm test           # the tests read dist/, so build first
