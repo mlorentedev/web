@@ -1,6 +1,6 @@
 # ADR-055: SemVer releases + build-once / promote-by-digest delivery
 
-- **Status:** Accepted
+- **Status:** Accepted — **amended 2026-10-21** (WEB-109: "validated in staging" meant artifact identity, not execution order; see the amendment after the Decision)
 - **Date:** 2026-06-25
 - **Deciders:** Manu Lorente
 - **Extends / refines:** ADR-046 (prod tracks semver), ADR-053 (two-repo flow)
@@ -45,11 +45,49 @@ run in staging as those exact bytes. Prod ships something staging never validate
    remains the single source of the semver line.
 2. **Prod = clean `X.Y.Z`, produced by re-tagging the validated staging digest**
    (`docker buildx imagetools create -t …:X.Y.Z …:sha-<short>`) — **not a
-   rebuild.** The bytes Argo CD runs in prod are the exact bytes validated in
-   staging.
+   rebuild.** The image Argo CD runs in prod is the same image as the release
+   commit's staging tag (artifact identity). It is not a claim that staging ran
+   those bytes first; see the amendment below.
 3. **kubelab's GitOps manifests are unchanged.** They reference the image by its
    immutable tag in git per environment; prod's `:X.Y.Z` now resolves to the
    staging-validated digest.
+
+> **Amended 2026-10-21 (WEB-109). Point 2 and the first Positive consequence
+> used to say prod runs "the exact bytes validated in staging". That sentence
+> describes two different guarantees, and this ADR decided only one of them.**
+>
+> **Artifact identity — decided here, and delivered.** Prod's `X.Y.Z` is a
+> re-tag of the release commit's own `sha-<short>` digest, never a rebuild (see
+> Implementation). Since `#376`, the suite also runs on the tree that digest
+> serves before anything is dispatched, so the digest is validated by CI before
+> either environment receives it.
+>
+> **Execution order — not decided here.** Whether staging *ran* that digest
+> before prod is governed by kubelab's ADR-046 (one PR per update, a human gate
+> on both lanes) and ADR-037 (staging is a mutable test bed whose deploy PR may
+> be declined). Under them prod may legitimately be ahead of staging, and that
+> is not drift. It is the normal shape of an automated release: kubelab's
+> `promote-prod` runs about 2 s after the release dispatch, while the staging
+> deploy PR for the same commit waits for a merge.
+>
+> Measured on the 1.13.0 promotion (2026-09-04):
+>
+> ```
+> prod    1.13.0        = sha-a76e8fa = sha256:c1b8ccb0…   merged 03:37
+> staging sha-69c0d4c                 = sha256:47d5da40…   still pinned
+> kubelab#1617 "deploy web sha-a76e8fa"                    OPEN
+> ```
+>
+> Identity held (`1.13.0` == `latest` == `sha-a76e8fa`, one manifest). Order
+> did not, and nothing here says it must.
+>
+> **Rejected non-check: `digest(X.Y.Z)` against the digest of the `sha-*` tag
+> the staging overlay pins.** Proposed in mlorentedev/kubelab#1585 from the old
+> sentence. Run against the promotion above it compares `c1b8ccb0` with
+> `47d5da40` and refuses a promotion this ADR calls correct, and it would refuse
+> on every automated release. The check that matches this ADR compares
+> `digest(X.Y.Z)` with `digest(sha-<release commit>)`. See
+> [lesson-038](../lessons/lesson-038-a-guard-proposed-in-a-ticket-is-a-hypothesis.md).
 
 ## Why this is the professional baseline (and why the manifest tag is NOT an antipattern)
 
@@ -80,7 +118,9 @@ specific threat model (e.g. a shared registry where tags could be force-repushed
 ## Consequences
 
 **Positive**
-- Fixes the rebuild defect: prod runs the staging-validated bytes.
+- Fixes the rebuild defect: prod runs the same image as the release commit's
+  staging tag, never a rebuild. Staging need not have run it first (see the
+  amendment after the Decision).
 - Minimal blast radius — only web's `release.yml` changes (build → re-tag);
   kubelab is untouched; prod manifests stay readable (`:1.2.0`).
 - One version engine (release-please); no next-version prediction.
