@@ -16,10 +16,12 @@ Only the page is evidence of the delivery.
 
 ## Why the version endpoint is not enough
 
-`/version.json` and `<meta name="version">` name the last **release**, not the commit. On
-2026-09-27 staging and prod both answered `1.15.1`, while staging ran `sha-751eecd`, eight
-commits later. Until WEB-150 (#435) adds the commit, read which commit is deployed from
-kubelab (step 3). Check the change itself by content (step 4).
+`version` in `/version.json` and `<meta name="version">` name the last **release**, not
+the commit. On 2026-09-27 staging and prod both answered `1.15.1`, while staging ran
+`sha-751eecd`, eight commits later. Since WEB-150 (#435) the endpoint also states
+`commit`, the tag minus `sha-`, so the served build can be compared with the one the
+kubelab overlay pins (step 3). A commit proves which build runs, not that the change
+renders, so check the change itself by content (step 4).
 
 ## Steps
 
@@ -43,11 +45,15 @@ kubelab (step 3). Check the change itself by content (step 4).
 
    Manu merges it. An agent does not. Argo CD then syncs staging.
 
-3. **The overlay names the commit.** After the merge:
+3. **The overlay names the commit, and staging serves it.** After the merge, the overlay
+   says what should run and the endpoint says what does. Once Argo has synced, `commit`
+   must equal the overlay's tag minus `sha-`. A build that says `"local"` was never
+   tagged, so here it is a failure:
 
    ```bash
    gh api repos/mlorentedev/kubelab/contents/infra/config/values/staging.yaml \
      --jq .content | base64 -d | grep -A12 '^    web:' | grep 'version:'
+   curl -s "https://staging.mlorente.dev/version.json?$(date +%s)"
    ```
 
 4. **The page shows what only this change has.** Pick a marker that the previous

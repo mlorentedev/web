@@ -2,7 +2,7 @@
 import '../styles/tailwind.css';
 import '../styles/global.css';
 import { site } from '../data/site';
-import { SITE_VERSION } from '../data/version';
+import { SITE_COMMIT, SITE_VERSION } from '../data/version';
 import { languages, defaultLang } from '../i18n/ui';
 import { getLocale, useTranslations, switchLangUrl } from '../i18n/utils';
 
@@ -96,6 +96,9 @@ const schemaGraph = {
     {/* Which release produced this page (WEB-106). Here rather than on one
         page, so every URL answers it and neither locale can drift. */}
     <meta name="version" content={SITE_VERSION} />
+    {/* Which build (WEB-150). Its own tag, so `version` keeps meaning the
+        release and stays the bare semver the prod image is tagged with. */}
+    <meta name="commit" content={SITE_COMMIT} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="preload" href="/fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin />

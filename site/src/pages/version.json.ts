@@ -6,19 +6,25 @@
  * half is `<meta name="version">`, which BaseLayout renders on every page in
  * both locales.
  *
- * The payload has exactly one field. `built_at` was suggested on the issue and
- * is rejected: a timestamp makes the build non-reproducible, and reproducibility
- * is what let us explain a confusing `last-modified` on 2026-09-04 — the images
- * for `sha-69c0d4c` and `sha-a76e8fa` share all eleven `rootfs.diff_ids`, so
- * their identical `dist/` was provable rather than assumed. A per-build
- * timestamp trades that permanently for a field nothing queries. `commit` was
- * also considered and deferred: it needs a build-arg through `build-image.yml`,
- * and it answers a different question from "which release is live".
+ * The payload has two fields. `version` answers "which release is live", and
+ * `commit` (WEB-150, `#435`) answers "which build is live": between releases
+ * staging and prod state the same version, so on staging the commit is the
+ * question. kubelab's staging verification compares it with the tag the
+ * overlay pins (kubelab#1478).
+ *
+ * `built_at` was suggested on the issue and is rejected: a timestamp makes the
+ * build non-reproducible, and reproducibility is what let us explain a
+ * confusing `last-modified` on 2026-09-04. A per-build timestamp trades that
+ * permanently for a field nothing queries. `commit` is an input, not a clock,
+ * so two builds of one commit stay byte-identical. What it does give up is
+ * identity ACROSS commits: before it, `sha-69c0d4c` and `sha-a76e8fa` shared
+ * all eleven `rootfs.diff_ids`; now each commit's `dist/` differs in this file
+ * and in the `<meta name="commit">` of every page.
  */
 
 import type { APIRoute } from 'astro';
 
-import { SITE_VERSION } from '../data/version';
+import { SITE_COMMIT, SITE_VERSION } from '../data/version';
 
 /**
  * `output: 'static'` prerenders this to `dist/version.json` and keeps only the
@@ -29,4 +35,4 @@ import { SITE_VERSION } from '../data/version';
  * confidently-wrong reply this endpoint exists to replace.
  */
 export const GET: APIRoute = () =>
-  new Response(`${JSON.stringify({ version: SITE_VERSION })}\n`);
+  new Response(`${JSON.stringify({ version: SITE_VERSION, commit: SITE_COMMIT })}\n`);

@@ -81,9 +81,14 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sha_tag: ${{ steps.meta.outputs.sha_tag }}
+      commit: ${{ steps.meta.outputs.commit }}
     steps:
+      # One computation for both: the image's /version.json states `commit`,
+      # and it must be the tag minus `sha-` by construction (WEB-150).
       - id: meta
-        run: echo "sha_tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "commit=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          echo "sha_tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
   # The same suite a pull request runs (test.yml), run again on the merge
   # commit. A PR's checks ran against its own head, and `strict: false` lets it
@@ -107,6 +112,7 @@ jobs:
     uses: ./.github/workflows/build-image.yml
     with:
       tag: ${{ needs.meta.outputs.sha_tag }}
+      commit: ${{ needs.meta.outputs.commit }}
       push: true
       platforms: linux/amd64,linux/arm64
     secrets:
@@ -121,12 +127,13 @@ jobs:
   # `promote-prod` does not go through `dispatch-staging`.
   test-image:
     name: Test shipped image
-    needs: [build]
+    needs: [meta, build]
     permissions:
       contents: read
     uses: ./.github/workflows/test.yml
     with:
       image: docker.io/mlorentedev/kubelab-web@${{ needs.build.outputs.digest }}
+      commit: ${{ needs.meta.outputs.commit }}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

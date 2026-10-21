@@ -36,6 +36,10 @@ on:
         description: Test the tree this image serves (`<name>@sha256:<digest>`) instead of a runner build
         type: string
         default: ''
+      commit:
+        description: The short sha the tested tree must state as `commit` (empty = "local")
+        type: string
+        default: ''
     secrets:
       DOCKERHUB_USERNAME:
         required: false
@@ -111,8 +115,12 @@ jobs:
         if: always() && inputs.image != ''
         run: docker logout docker.io
 
+      # EXPECTED_COMMIT lets site-version.test.mjs assert the shipped tree
+      # states the commit its tag names, not merely some short sha (WEB-150).
       - name: Test
         working-directory: site
+        env:
+          EXPECTED_COMMIT: ${{ inputs.commit }}
         run: npm test
 
       # WEB-080 AC2, enabled with PR4 — before it there was no generated SVG on
