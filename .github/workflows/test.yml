@@ -28,6 +28,10 @@ name: Test
 # about a minute, before the multi-platform image build spends five, and leaves
 # no `sha-<short>` behind. Only on the master push are there two builds, and the
 # second run is the one that answers for what ships.
+#
+# `commit` is what the tree must state as `commit` in /version.json (WEB-150).
+# release.yml passes its tag's sha to the image run, so that run proves the
+# shipped bytes name their own tag. Empty means "local", the runner build.
 
 on:
   workflow_call:
