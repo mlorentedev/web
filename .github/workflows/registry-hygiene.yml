@@ -36,6 +36,8 @@ jobs:
   audit:
     name: Every release has an image
     runs-on: ubuntu-latest
+    # Reads tags from Docker Hub: 6 s on average, 9 s at worst over 10 runs.
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
@@ -53,6 +55,9 @@ jobs:
   prune:
     name: Prune orphaned sha tags
     runs-on: ubuntu-latest
+    # 13 s on average, 40 s at worst over 10 runs; it deletes one tag per
+    # request, so it grows with the backlog of orphaned tags.
+    timeout-minutes: 10
     # Independent of the audit: a missing release image is a reason to look, not
     # a reason to let the registry keep growing.
     steps:
