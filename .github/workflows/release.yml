@@ -22,9 +22,9 @@ name: Release & Deploy
 # Pull-request validation (Dockerfile build, no push) lives in pr-validation.yml.
 #
 # Required secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN (build/push/re-tag);
-# KUBELAB_DISPATCH_TOKEN (kubelab contents:write — the dispatch).
-# Optional: RELEASE_PLEASE_PAT — so the release PR triggers pull_request checks;
-# falls back to GITHUB_TOKEN.
+# KUBELAB_DISPATCH_TOKEN (kubelab contents:write — the dispatch);
+# RELEASE_PLEASE_PAT, so the release PR triggers pull_request checks. Without it
+# the Release Please job fails (WEB-117); build and staging do not depend on it.
 
 on:
   push:
@@ -46,6 +46,21 @@ jobs:
       release_created: ${{ steps.gate.outputs.created }}
       version: ${{ steps.gate.outputs.version }}
     steps:
+      # It used to fall back to GITHUB_TOKEN, which opens the release PR with no
+      # checks, so a rotated or deleted PAT showed only as checks that never
+      # appeared. Same cure as pr-agent.yml's credential step (#337).
+      - name: Fail if the release PAT is not set
+        env:
+          HAS_RELEASE_PLEASE_PAT: ${{ secrets.RELEASE_PLEASE_PAT != '' }}
+        run: |
+          if [ "${HAS_RELEASE_PLEASE_PAT}" != "true" ]; then
+            echo "::error::RELEASE_PLEASE_PAT is not set in this repository's Actions secrets," \
+              "so the release PR would open with no checks."
+            echo "::error::Remedy: set it with \`gh secret set RELEASE_PLEASE_PAT --repo ${GITHUB_REPOSITORY}\`." \
+              "Replacing this PAT with a GitHub App is mlorentedev/dotfiles#2836."
+            exit 1
+          fi
+
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
         id: release
         with:
@@ -62,22 +77,22 @@ jobs:
           # master while every other job in this workflow went green — the same
           # invisible shape as #172. Recovered with
           # `POST /actions/runs/{id}/rerun-failed-jobs`. See #256.
-          token: ${{ secrets.RELEASE_PLEASE_PAT || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_PAT }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      # Normalize outputs. Manifest mode keys them by package path ('.--version',
-      # '.--release_created'); simple mode exposes them top-level. Parse with a
-      # fallback so an output-format change can never silently skip the publish.
+      # Normalize outputs: manifest mode keys them by package path
+      # ('.--version', '.--release_created'), simple mode at top level. An
+      # output-format change fails this step instead of reading as "no release"
+      # and skipping promote-prod green (WEB-117; the script says why).
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          sparse-checkout: scripts/release-gate.sh
+          sparse-checkout-cone-mode: false
       - id: gate
         env:
           OUTPUTS: ${{ toJSON(steps.release.outputs) }}
-        run: |
-          echo "$OUTPUTS"
-          created=$(jq -r '.["release_created"] // .[".--release_created"] // "false"' <<<"$OUTPUTS")
-          version=$(jq -r '.["version"] // .[".--version"] // ""' <<<"$OUTPUTS")
-          echo "created=$created" >> "$GITHUB_OUTPUT"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+        run: scripts/release-gate.sh
 
   meta:
     name: Compute tag
