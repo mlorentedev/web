@@ -17,7 +17,7 @@
 
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -73,7 +73,7 @@ test('unparseable outputs fail', () => {
 
 const run = (outputs) => {
   const out = join(mkdtempSync(join(tmpdir(), 'gate-')), 'out');
-  execFileSync('touch', [out]);
+  writeFileSync(out, '');
   try {
     execFileSync(process.execPath, [script], {
       env: { ...process.env, OUTPUTS: JSON.stringify(outputs), GITHUB_OUTPUT: out },
@@ -88,6 +88,15 @@ const run = (outputs) => {
 test('the CLI writes created and version to GITHUB_OUTPUT', () => {
   assert.deepEqual(run(release), { code: 0, written: 'created=true\nversion=1.16.0\n' });
   assert.deepEqual(run(noRelease), { code: 0, written: 'created=false\nversion=\n' });
+});
+
+test('the CLI fails with an annotation, not a stack trace, without GITHUB_OUTPUT', () => {
+  const env = { ...process.env, OUTPUTS: JSON.stringify(release) };
+  delete env.GITHUB_OUTPUT;
+  assert.throws(
+    () => execFileSync(process.execPath, [script], { env, stdio: 'pipe' }),
+    (e) => e.status === 1 && /^::error::GITHUB_OUTPUT is not set/m.test(String(e.stderr)) && !/ERR_INVALID_ARG_TYPE/.test(String(e.stderr)),
+  );
 });
 
 test('the CLI exits 1 and writes nothing when the outputs are unreadable', () => {

@@ -59,7 +59,9 @@ export function decide(raw) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const result = decide(process.env.OUTPUTS ?? '');
+  const result = process.env.GITHUB_OUTPUT
+    ? decide(process.env.OUTPUTS ?? '')
+    : fail('GITHUB_OUTPUT is not set, so the gate has nowhere to write its decision.');
   if (!result.ok) {
     console.error(`::error::${result.message}`);
     process.exit(1);
