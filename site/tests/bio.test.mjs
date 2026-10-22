@@ -106,3 +106,25 @@ for (const { lang, page, prefix } of homes) {
     assert.ok(words >= 300 && words <= 450, `the ${lang} story is ${words} words`);
   });
 }
+
+// ── The one cross-locale link (WEB-162) ────────────────────────────────────
+//
+// `/projects` was never localized, so the Spanish story links the English page.
+// That is accepted (WEB-140), and this pins the acceptance: every other site
+// link in the Spanish story stays in `/es/`, and the day `/es/projects/` is
+// built the test fails until the story links it instead.
+
+const crossLocale = ['/projects/'];
+
+test('[es] the story leaves /es/ only for /projects/, which has no Spanish page yet', () => {
+  const internal = [...story('es/index.html').matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]);
+  assert.ok(internal.length > 0, 'the es story links nothing on the site');
+  const outside = internal.filter((href) => !href.startsWith('/es/'));
+  assert.deepEqual(outside, crossLocale, `es story links outside /es/: ${outside.join(', ')}`);
+  for (const href of crossLocale) {
+    assert.ok(
+      !existsSync(builtRoute(`/es${href}`)),
+      `/es${href} now exists: link it from the Spanish story, drop it from crossLocale, and cover the pair in the SEO alternates test`,
+    );
+  }
+});
