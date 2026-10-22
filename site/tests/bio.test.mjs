@@ -106,3 +106,40 @@ for (const { lang, page, prefix } of homes) {
     assert.ok(words >= 300 && words <= 450, `the ${lang} story is ${words} words`);
   });
 }
+
+// ── The one cross-locale link (WEB-162) ────────────────────────────────────
+//
+// `/projects` was never localized, so the Spanish story links the English page.
+// That is accepted (WEB-140), and this pins the acceptance. Two checks, and the
+// second does not read the allow-list, so emptying the list cannot switch it off:
+//
+//   - every site link in the Spanish story outside `/es/` is in `crossLocale`,
+//     and every entry there is still linked, so the list cannot go stale;
+//   - no link leaves `/es/` for a page that has a Spanish twin. The day
+//     `/es/projects/` is built, this fails until the story links it.
+
+const crossLocale = ['/projects/'];
+
+/** Site links in the Spanish story that leave `/es/`, without repeats. */
+function linksOutsideEs() {
+  const internal = [...story('es/index.html').matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]);
+  assert.ok(internal.length > 0, 'the es story links nothing on the site');
+  return [...new Set(internal.filter((href) => !href.startsWith('/es/')))];
+}
+
+test('[es] the story leaves /es/ only for /projects/, which has no Spanish page yet', () => {
+  const outside = linksOutsideEs();
+  const unlisted = outside.filter((href) => !crossLocale.includes(href));
+  assert.deepEqual(unlisted, [], `es story links outside /es/ that are not accepted: ${unlisted.join(', ')}`);
+  const stale = crossLocale.filter((href) => !outside.includes(href));
+  assert.deepEqual(stale, [], `crossLocale lists links the es story no longer has: ${stale.join(', ')}`);
+});
+
+test('[es] the story never links an English page that has a Spanish twin', () => {
+  const twinned = linksOutsideEs().filter((href) => existsSync(builtRoute(`/es${href}`)));
+  assert.deepEqual(
+    twinned,
+    [],
+    `Spanish pages now exist for ${twinned.join(', ')}: link them from the Spanish story, drop them from crossLocale, and cover each pair in the SEO alternates test`,
+  );
+});
