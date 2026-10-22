@@ -43,12 +43,17 @@ test('the lockfile path the stage reads resolves to a version', () => {
 });
 
 test('the libraries stay cached across source edits: install-deps comes before npm ci and the sources', () => {
-  const at = (needle) => {
-    const i = dockerfile.indexOf(needle);
-    assert.notEqual(i, -1, `Dockerfile has no ${needle}`);
+  // Instructions only: the header comment mentions `npm ci` before any of them.
+  const code = dockerfile
+    .split('\n')
+    .filter((l) => !l.trimStart().startsWith('#'))
+    .join('\n');
+  const at = (pattern) => {
+    const i = code.search(pattern);
+    assert.notEqual(i, -1, `Dockerfile has no ${pattern}`);
     return i;
   };
-  const deps = at('install-deps chromium');
-  assert.ok(deps < at('npm ci --include=dev'), 'install-deps must precede npm ci');
-  assert.ok(deps < at('COPY --chown=node:node site/ ./'), 'install-deps must precede the source COPY');
+  const deps = at(/install-deps chromium/);
+  assert.ok(deps < at(/\bnpm ci\b/), 'install-deps must precede npm ci');
+  assert.ok(deps < at(/^COPY .*\bsite\/ /m), 'install-deps must precede the source COPY');
 });

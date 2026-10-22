@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-65 lessons, one file each, newest first. Numbers are assigned in the order
+66 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 066 | [A version read from the lockfile in its own stage keeps the cache a pinned literal bought](lesson-066-a-version-read-from-the-lockfile-in-its-own-.md) | 2026-10-22 | `#docker` `#dependencies` `#ci` |
 | 065 | [A version written into a reviewer's rules passes the old stack after an upgrade](lesson-065-a-version-written-into-a-reviewer-s-rules-pa.md) | 2026-10-19 | `#review` `#agents` `#docs` |
 | 064 | [A weekly check on a sleeping host is red for the schedule, not the service](lesson-064-a-weekly-check-on-a-sleeping-host-is-red-for.md) | 2026-10-18 | `#testing` `#ci` `#lab` |
 | 063 | [A drafted claim about the author's career is a question, not a fact](lesson-063-a-drafted-claim-about-the-author-s-career-is.md) | 2026-09-27 | `#content` `#copy` `#verification` |
