@@ -412,57 +412,5 @@
       ],
       "status": "operational"
     }
-  ],
-  "diagrams": [
-    {
-      "id": "topology",
-      "title": "Platform Infrastructure Topology",
-      "titleEs": "Topología de Infraestructura de la Plataforma",
-      "category": "Topology & Network",
-      "categoryEs": "Topología y Red",
-      "description": "Hybrid cloud and on-premises bare-metal node architecture interconnected via encrypted Tailscale WireGuard mesh.",
-      "descriptionEs": "Arquitectura híbrida cloud y bare-metal on-premise interconectada por malla WireGuard cifrada.",
-      "mermaid": "flowchart TB\n    subgraph internet[\"Public Internet & Ingress\"]\n        CF[\"Cloudflare DNS<br/>proxied: api.kubelab.live · direct: mlorente.dev\"]\n    end\n    subgraph alwayson[\"Always-on Cloud Infrastructure\"]\n        VPS[\"Hetzner Cloud VPS · ARM64 Neoverse-N1, 7.5GB<br/>Prod K3s: Traefik, API (Go), Web (Astro),<br/>Grafana, Loki, Authelia, CrowdSec, MinIO<br/>+ Headscale Mesh Coordinator\"]\n        GCP[\"gcp1 · GCP e2-small<br/>Argo CD GitOps Hub (ADR-063)\"]\n        AWS[\"aws1 · AWS t4g.small<br/>Standby, powered down\"]\n        RPI3[\"RPi3 · Uptime Kuma<br/>Independent external monitor\"]\n    end\n    subgraph homelab[\"On-Demand Homelab\"]\n        RPI4[\"RPi4 Gateway<br/>Pi-hole + CoreDNS (Split DNS)\"]\n        ACE1[\"ace1 · Intel N95, 11.5GB<br/>Staging K3s, single node\"]\n        ACE2[\"ace2 · Intel N95, 11.5GB<br/>Dev node: agent workspaces\"]\n        BEE[\"Beelink · Intel N95, 7.5GB<br/>Gitea forge, CI runner, MinIO\"]\n        JET[\"Jetson Nano · 3.9GB<br/>Pollex Edge AI (Qwen 2.5 1.5B, CPU)\"]\n    end\n    CF --> VPS\n    GCP -- \"Argo CD Sync · WireGuard\" --> VPS\n    GCP -- \"Argo CD Sync · WireGuard\" --> ACE1\n    VPS -. \"Headscale Mesh\" .- RPI4\n    RPI4 --- ACE1\n    RPI4 --- ACE2\n    RPI4 --- BEE\n    RPI4 --- JET\n    VPS -. Mesh .- RPI3\n    VPS -. Mesh .- GCP\n    AWS -.-> GCP"
-    },
-    {
-      "id": "gitops",
-      "title": "GitOps Edge-to-Cloud Delivery Pipeline",
-      "titleEs": "Pipeline de Entrega GitOps Edge-to-Cloud",
-      "category": "Delivery & CI/CD",
-      "categoryEs": "Entrega y CI/CD",
-      "description": "Build-once, promote-by-digest delivery promoting verified container bytes from staging to production.",
-      "descriptionEs": "Flujo build-once/promote-by-digest que promueve bytes verificados de staging a producción.",
-      "mermaid": "flowchart LR\n    PR[\"1. PR (feature/*)<br/>Conventional Commits\"] --> CI[\"2. CI Validation<br/>Astro check + Lint\"]\n    CI --> BUILD[\"3. Build Image<br/>sha-&lt;short&gt;\"]\n    BUILD --> MERGE[\"4. Squash-Merge<br/>to master branch\"]\n    MERGE --> SD[\"5. Staging Dispatch<br/>Webhook to kubelab\"]\n    SD --> AS[\"6. Argo CD Staging<br/>Auto-sync to Ace1 in &lt;30s\"]\n    MERGE --> RP[\"7. Release Please<br/>Release PR (SemVer vX.Y.Z)\"]\n    RP --> PP[\"8. Promote Prod<br/>Re-tag exact staging digest\"]\n    PP --> AP[\"9. Argo CD Prod<br/>Zero-downtime K3s rollout\"]"
-    },
-    {
-      "id": "security",
-      "title": "Zero-Trust Request Path & Perimeter Defense",
-      "titleEs": "Ruta de Peticiones Zero-Trust y Defensa Perimetral",
-      "category": "Security & Gateway",
-      "categoryEs": "Seguridad y Gateway",
-      "description": "Layered security at the edge: Traefik terminates TLS and applies token-bucket rate limiting, CrowdSec blocks by behaviour, and Authelia enforces 2FA forward auth on the internal services. Cloudflare fronts api.kubelab.live only.",
-      "descriptionEs": "Seguridad en capas en el edge: Traefik termina TLS y aplica rate limiting por token bucket, CrowdSec bloquea por comportamiento y Authelia exige 2FA en los servicios internos. Cloudflare solo hace de proxy en api.kubelab.live.",
-      "mermaid": "flowchart TD\n    Client([\"Client / Browser\"]):::client -->|HTTPS 443| CF[\"Cloudflare DNS<br/>proxied for api.kubelab.live only\"]\n    CF -->|Forward| Traefik[\"Traefik L7 Ingress Router<br/>Rate Limiting & Secure Headers\"]\n    Traefik --> CrowdSec{\"CrowdSec IPS Bouncer<br/>Behavioral Threat Analysis\"}\n    CrowdSec -->|Malicious IP| Block[\"403 Forbidden / Drop\"]\n    CrowdSec -->|Clean Traffic| Auth{\"Route Inspection\"}\n    Auth -->|Public Route| PublicApps[\"Public Services<br/>mlorente.dev · API · Pollex\"]\n    Auth -->|Private / Admin| Authelia[\"Authelia Forward-Auth<br/>2FA / Duo / TOTP Session\"]\n    Authelia -->|Authenticated| InternalApps[\"Internal Platform<br/>Grafana · ArgoCD · Gitea · MinIO\"]\n    InternalApps --> WireGuard[\"Tailscale WireGuard Mesh<br/>Direct Pod Encapsulation\"]"
-    },
-    {
-      "id": "ai-mcp",
-      "title": "Edge AI & Multi-Agent MCP Knowledge Plane",
-      "titleEs": "Plano de Conocimiento MCP Multi-Agente y Edge AI",
-      "category": "AI & Knowledge",
-      "categoryEs": "IA y Conocimiento",
-      "description": "Sub-millisecond semantic retrieval layer and physical Jetson GPU hardware inference.",
-      "descriptionEs": "Capa de recuperación semántica en submilisegundos e inferencia GPU en hardware Jetson físico.",
-      "mermaid": "flowchart TB\n    subgraph Agents[\"Multi-Agent Swarm\"]\n        Claude[\"Claude Code\"]\n        Antigravity[\"Antigravity IDE / CLI\"]\n    end\n    subgraph MCP[\"Hive Knowledge & Context Plane\"]\n        Vault[\"Obsidian Knowledge Vault<br/>ADRs, Runbooks, Lessons\"]\n        TreeSitter[\"Tree-sitter AST Chunker<br/>Deterministic code/markdown\"]\n        FTS5[\"SQLite FTS5 BM25 Engine<br/>Sub-millisecond ranking\"]\n        FastMCP[\"Hive FastMCP Server<br/>Tools: vault_query, session_briefing\"]\n    end\n    subgraph EdgeAI[\"Hardware CPU Acceleration\"]\n        ClientReq[\"Client Text / Polish Request\"]\n        JetsonGPU[\"NVIDIA Jetson Nano (4GB)<br/>128 Maxwell CPU Cores\"]\n        Qwen[\"Ollama Quantized Qwen 1.5B<br/>~3.2s TTFT · 0% Cloud Leakage\"]\n    end\n    Vault --> TreeSitter --> FTS5 --> FastMCP\n    FastMCP <-->|Model Context Protocol| Agents\n    ClientReq --> JetsonGPU --> Qwen --> ClientReq"
-    },
-    {
-      "id": "dns",
-      "title": "Split DNS Resolution Paths & Mesh Routing",
-      "titleEs": "Rutas de Resolución Split DNS y Enrutamiento Mesh",
-      "category": "DNS & Network",
-      "categoryEs": "DNS y Red",
-      "description": "Intelligent split DNS routing staging domains, bare-metal extra records and public zones.",
-      "descriptionEs": "Enrutamiento Split DNS inteligente para dominios staging, registros bare-metal y zonas públicas.",
-      "mermaid": "flowchart TD\n    Client[\"Client / VPN Node\"] --> Query{\"Target Domain\"}\n    Query -->|\"*.staging.kubelab.live<br/>staging.mlorente.dev\"| Headscale[\"Headscale Split DNS<br/>staging_zones &rarr; RPi4\"]\n    Headscale --> CoreDNS[\"RPi4 CoreDNS<br/>Resolves to the staging nodes over the mesh\"]\n    Query -->|\"*.kubelab.live (Prod)<br/>mlorente.dev\"| PublicDNS[\"Public Cloudflare DNS<br/>Resolves to Hetzner VPS\"]\n    Query -->|\"Ad / Tracker Domain\"| PiHole[\"RPi4 Pi-hole Sinkhole<br/>0.0.0.0 / Blocked\"]"
-    }
   ]
 }

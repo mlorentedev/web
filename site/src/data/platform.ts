@@ -47,17 +47,6 @@ export interface PlatformService {
   status: 'operational' | 'degraded' | 'maintenance';
 }
 
-export interface ArchitectureDiagram {
-  id: string;
-  title: string;
-  titleEs: string;
-  category: string;
-  categoryEs: string;
-  description: string;
-  descriptionEs: string;
-  mermaid: string;
-}
-
 export interface PlatformManifest {
   /**
    * When these figures were last reconciled against the real platform, and the
@@ -78,7 +67,6 @@ export interface PlatformManifest {
   cluster: ClusterInfo;
   nodes: NodeTopology[];
   services: PlatformService[];
-  diagrams: ArchitectureDiagram[];
 }
 
 export const platform: PlatformManifest = platformData as PlatformManifest;
