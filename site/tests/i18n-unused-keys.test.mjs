@@ -2,7 +2,8 @@
  * Every key in `i18n/ui.ts` is read by something (WEB-146, WEB-160, WEB-038).
  *
  * Deleting a component leaves its keys behind, and nothing fails on a key no one
- * reads. That is how `ui.ts` grew from 30 dead keys to 192: #267 deleted
+ * reads. That is how `ui.ts` grew from 30 dead keys to 192 (measured 2026-09-07;
+ * 184 when this test landed): #267 deleted
  * `IdpPage.astro` and orphaned the whole `idp.*` family in one commit. The dead
  * keys were not harmless. They still carried claims the pages had retracted
  * ("67–82%" context reduction, "<30s" reconcile, "≥ 99.5%"), so every grep for a
