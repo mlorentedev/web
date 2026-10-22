@@ -1,29 +1,22 @@
 version: 1
 run_id: ""
 armed_by: manu
-armed_at: 2026-10-21T14:40:00Z
-expires_at: 2026-10-21T21:40:00Z
+armed_at: 2026-10-22T07:40:00Z
+expires_at: 2026-10-22T15:40:00Z
 objective: >-
-  Harden web's delivery chain while Manu is away: verify staging serves commit 9d79e52
-  once kubelab#2581 merges, and turn pilot-eligible delivery/CI tickets into PRs ready
-  for Manu's review.
+  While Manu sleeps, remove the dead copy and data that still carry retracted claims, and
+  close named coverage gaps, as PRs ready for Manu's review.
 branch: chore/delivery-chain-run
 scope:
   write_paths:
-    - ".github/workflows/**"
-    - "Dockerfile"
-    - ".dockerignore"
-    - ".nvmrc"
-    - "README.md"
-    - "docs/**"
-    - "scripts/**"
+    - "site/src/i18n/**"
+    - "site/src/data/**"
+    - "site/src/content/pages/**"
     - "site/tests/**"
-    - "site/scripts/**"
-    - "site/package.json"
-    - "site/nginx.conf"
+    - "docs/lessons/**"
     - ".agent/runs/**"
   frozen_paths:
-    - ".github/merge-grant.yml"
+    - ".github/**"
     - "harness/**"
     - "**/AGENTS.md"
     - ".agent/unattended.yml"
@@ -31,13 +24,13 @@ scope:
     - "version.txt"
     - ".release-please-manifest.json"
     - "release-please-config.json"
-    - "site/src/**"
+    - "site/scripts/**"
   max_files: 8
   max_loc: 300
-allowed_commands: [dotf, gh, git, make, npm, npx, node, curl, docker, jq]
+allowed_commands: [dotf, gh, git, npm, npx, node, jq, curl]
 queue:
   source: bitacora
-  filter: "explicit list, in order: web#446, web#344, web#164, web#345, web#177, web#302"
+  filter: "explicit list, in order: web#465, web#424 (with web#468), web#278, web#474"
   max_items: 4
 budget:
   max_iterations: 8
