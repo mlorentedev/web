@@ -20,6 +20,11 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '../..');
 const dockerfile = readFileSync(join(root, 'Dockerfile'), 'utf8');
 const lock = JSON.parse(readFileSync(join(here, '../package-lock.json'), 'utf8'));
+// Instructions only: comments mention `npm ci` and the stage before any of them.
+const code = dockerfile
+  .split('\n')
+  .filter((l) => !l.trimStart().startsWith('#'))
+  .join('\n');
 
 test('no Playwright version is written into the Dockerfile', () => {
   assert.doesNotMatch(
@@ -30,10 +35,12 @@ test('no Playwright version is written into the Dockerfile', () => {
 });
 
 test('install-deps uses the version the playwright-version stage read from the lockfile', () => {
-  assert.match(dockerfile, /AS playwright-version\nCOPY site\/package-lock\.json /);
-  assert.match(dockerfile, /packages\['node_modules\/playwright'\]\.version/);
-  assert.match(dockerfile, /COPY --from=playwright-version \/playwright-version /);
-  assert.match(dockerfile, /npx --yes "playwright@\$\(cat \/tmp\/playwright-version\)" install-deps chromium/);
+  const stage = code.match(/ AS playwright-version\n([\s\S]*?)(?=^FROM )/m)?.[1];
+  assert.ok(stage, 'Dockerfile has no playwright-version stage followed by another FROM');
+  assert.match(stage, /^COPY .*\bsite\/package-lock\.json /m);
+  assert.match(stage, /packages\['node_modules\/playwright'\]\.version/);
+  assert.match(code, /^COPY --from=playwright-version \/playwright-version /m);
+  assert.match(code, /npx --yes "playwright@\$\(cat \/tmp\/playwright-version\)" install-deps chromium/);
 });
 
 test('the lockfile path the stage reads resolves to a version', () => {
@@ -43,11 +50,6 @@ test('the lockfile path the stage reads resolves to a version', () => {
 });
 
 test('the libraries stay cached across source edits: install-deps comes before npm ci and the sources', () => {
-  // Instructions only: the header comment mentions `npm ci` before any of them.
-  const code = dockerfile
-    .split('\n')
-    .filter((l) => !l.trimStart().startsWith('#'))
-    .join('\n');
   const at = (pattern) => {
     const i = code.search(pattern);
     assert.notEqual(i, -1, `Dockerfile has no ${pattern}`);
