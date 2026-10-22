@@ -1,3 +1,17 @@
+# ---------- Playwright version: one source, the lockfile (WEB-163) ----------
+# install-deps runs as root before `npm ci`, so it cannot use the lockfile's
+# binary, and the version once written there by hand drifted from it (1.62.1 against
+# 1.64.1). This stage reads the version from the lockfile. The build stage
+# copies only the one-line result, and COPY is cached by content, so the
+# install-deps layer reruns when Playwright's version moves, not on every
+# lockfile edit.
+FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS playwright-version
+COPY site/package-lock.json /tmp/package-lock.json
+RUN node -p "require('/tmp/package-lock.json').packages['node_modules/playwright'].version" \
+      > /playwright-version \
+ && { grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' /playwright-version \
+      || { echo "playwright in site/package-lock.json is '$(cat /playwright-version)', not a bare semver" >&2; exit 1; }; }
+
 # ---------- Build Stage — Static site (Astro output: 'static') ----------
 # CI context: ./apps/web — files copied from site/ subdirectory
 #
@@ -55,8 +69,11 @@ ENV PUBLIC_SITE_TITLE=${PUBLIC_SITE_TITLE} \
     BACKEND_URL=${BACKEND_URL}
 
 # Chromium's shared libraries, as root and before dropping privileges. Their
-# own layer so they survive every source edit in the cache.
-RUN npx --yes playwright@1.62.1 install-deps chromium \
+# own layer so they survive every source edit in the cache. The version is the
+# lockfile's, read by the playwright-version stage above, so the libraries
+# match the browser `playwright install` fetches below.
+COPY --from=playwright-version /playwright-version /tmp/playwright-version
+RUN npx --yes "playwright@$(cat /tmp/playwright-version)" install-deps chromium \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --chown=node:node site/package.json site/package-lock.json ./
