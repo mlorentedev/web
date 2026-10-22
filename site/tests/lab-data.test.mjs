@@ -30,7 +30,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -69,7 +69,7 @@ const en = localeKeys(uiTs, 'en');
 const es = localeKeys(uiTs, 'es');
 
 /** Collections whose entries are rendered on the Lab page. */
-const collections = ['nodes', 'services', 'diagrams'];
+const collections = ['nodes', 'services'];
 
 /**
  * Field pairs to enforce, derived from the data rather than hard-coded: if any
@@ -122,6 +122,26 @@ test('platform.ts types the provenance rather than leaving it untyped JSON', () 
     /source_commit\s*:\s*string/,
     'PlatformManifest does not declare `source_commit: string`',
   );
+});
+
+// --- Nothing unread ---------------------------------------------------------
+//
+// A top-level field no page reads still makes claims. The `diagrams` array
+// outlived the mermaid diagrams it fed by months and still said the Jetson ran
+// Ollama at ~3.2 s TTFT (#465). Every field must be read as `platform.<field>`
+// somewhere under `src`, or it is removed.
+
+test('every top-level field of platform.json is read by the site', () => {
+  const sources = readdirSync(join(siteRoot, 'src'), { recursive: true })
+    .filter((p) => /\.(astro|ts|mjs)$/.test(p))
+    .map((p) => readFileSync(join(siteRoot, 'src', p), 'utf8'))
+    .join('\n');
+  const fields = Object.keys(manifest);
+  assert.ok(fields.length > 0, 'platform.json has no fields — nothing is being checked');
+
+  // A quoted `'platform.diagrams.heading'` is a translation key, not a read of the data.
+  const unread = fields.filter((f) => !new RegExp(`(?<!['"\\x60.])\\bplatform\\.${f}\\b`).test(sources));
+  assert.deepEqual(unread, [], `platform.json fields no file under src reads: ${unread.join(', ')}`);
 });
 
 // --- Bilingual: i18n --------------------------------------------------------
