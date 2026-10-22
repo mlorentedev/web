@@ -129,7 +129,9 @@ test('platform.ts types the provenance rather than leaving it untyped JSON', () 
 // A top-level field no page reads still makes claims. The `diagrams` array
 // outlived the mermaid diagrams it fed by months and still said the Jetson ran
 // Ollama at ~3.2 s TTFT (#465). Every field must be read as `platform.<field>`
-// somewhere under `src`, or it is removed.
+// somewhere under `src`, or it is removed. That dotted form is the only read the
+// test recognises: a destructured or bracketed read (`const { nodes } = platform`)
+// counts as unread, so read the field as `platform.<field>` instead.
 
 test('every top-level field of platform.json is read by the site', () => {
   const sources = readdirSync(join(siteRoot, 'src'), { recursive: true })
@@ -141,7 +143,7 @@ test('every top-level field of platform.json is read by the site', () => {
 
   // A quoted `'platform.diagrams.heading'` is a translation key, not a read of the data.
   const unread = fields.filter((f) => !new RegExp(`(?<!['"\\x60.])\\bplatform\\.${f}\\b`).test(sources));
-  assert.deepEqual(unread, [], `platform.json fields no file under src reads: ${unread.join(', ')}`);
+  assert.deepEqual(unread, [], `platform.json fields no file under src reads as platform.<field>: ${unread.join(', ')}. Remove the field, or read it in that dotted form.`);
 });
 
 // --- Bilingual: i18n --------------------------------------------------------
