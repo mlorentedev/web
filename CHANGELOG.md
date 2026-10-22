@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.16.1](https://github.com/mlorentedev/web/compare/v1.16.0...v1.16.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* **test:** refuse to run the suite on Node older than 22.18 ([#480](https://github.com/mlorentedev/web/issues/480)) ([ac6ebea](https://github.com/mlorentedev/web/commit/ac6ebea3445f8fc20ea837d5ca5081d6f4160933))
+* **version:** state the deployed commit in /version.json ([#477](https://github.com/mlorentedev/web/issues/477)) ([9d79e52](https://github.com/mlorentedev/web/commit/9d79e52aff18e0dfef5a7536b416c70b6183af1f))
+
 ## [1.16.0](https://github.com/mlorentedev/web/compare/v1.15.1...v1.16.0) (2026-10-18)
 
 
