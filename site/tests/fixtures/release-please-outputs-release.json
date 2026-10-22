@@ -1,0 +1,19 @@
+{
+  "releases_created": "true",
+  "release_created": "true",
+  "id": "416816081",
+  "name": "v1.16.0",
+  "tag_name": "v1.16.0",
+  "sha": "b9874f2f693dd41ee4e1985cb88b0645ac59f996",
+  "html_url": "https://github.com/mlorentedev/web/releases/tag/v1.16.0",
+  "draft": "false",
+  "upload_url": "https://uploads.github.com/repos/mlorentedev/web/releases/416816081/assets{?name,label}",
+  "path": ".",
+  "version": "1.16.0",
+  "major": "1",
+  "minor": "16",
+  "patch": "0",
+  "prNumber": "394",
+  "paths_released": "[\".\"]",
+  "prs_created": "false"
+}
