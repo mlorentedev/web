@@ -9,7 +9,8 @@ FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS playwright-version
 COPY site/package-lock.json /tmp/package-lock.json
 RUN node -p "require('/tmp/package-lock.json').packages['node_modules/playwright'].version" \
       > /playwright-version \
- && grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' /playwright-version
+ && { grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' /playwright-version \
+      || { echo "playwright in site/package-lock.json is '$(cat /playwright-version)', not a bare semver" >&2; exit 1; }; }
 
 # ---------- Build Stage — Static site (Astro output: 'static') ----------
 # CI context: ./apps/web — files copied from site/ subdirectory
