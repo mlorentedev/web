@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.16.2](https://github.com/mlorentedev/web/compare/v1.16.1...v1.16.2) (2026-10-22)
+
+
+### Bug Fixes
+
+* **ci:** fail the release gate when release-please's outputs cannot be read ([#484](https://github.com/mlorentedev/web/issues/484)) ([0c065ec](https://github.com/mlorentedev/web/commit/0c065ec41d598994cc9dfedf7d2906a0cc79964f))
+* **docker:** install Chromium's libraries for the lockfile's Playwright ([#486](https://github.com/mlorentedev/web/issues/486)) ([ceaffd5](https://github.com/mlorentedev/web/commit/ceaffd5a885e9baa07cae469620622a8e1efae98))
+
 ## [1.16.1](https://github.com/mlorentedev/web/compare/v1.16.0...v1.16.1) (2026-10-21)
 
 
