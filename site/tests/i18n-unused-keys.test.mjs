@@ -28,7 +28,8 @@ const uiPath = join('i18n', 'ui.ts');
 /** Key prefixes built at runtime, each with the file that builds it. None today. */
 const dynamicPrefixes = [];
 
-const keys = [...new Set([...readFileSync(join(srcDir, uiPath), 'utf8').matchAll(/^\s+'([^']+)':/gm)].map((m) => m[1]))];
+const uiSource = readFileSync(join(srcDir, uiPath), 'utf8');
+const keys = [...new Set([...uiSource.matchAll(/^\s+'([^']+)':/gm)].map((m) => m[1]))];
 
 const corpus = readdirSync(srcDir, { recursive: true })
   .filter((p) => /\.(astro|ts|tsx|js|mjs|md|mdx)$/.test(p) && p !== uiPath)
@@ -43,6 +44,14 @@ test('ui.ts has keys, and the reader finds one it knows is used', () => {
   assert.ok(keys.length > 0, 'no keys parsed from ui.ts — nothing is being checked');
   // nav.lab is rendered by Header.astro; if this fails, the parser or the corpus broke, not ui.ts.
   assert.ok(isRead('nav.lab'), 'nav.lab is not found as read — the corpus walk is broken');
+});
+
+test('every key in ui.ts is written in the one form the reader parses', () => {
+  // Keys are parsed as an indented, single-quoted property. A key in another form
+  // ("nav.foo": or `nav.foo`:) would be skipped silently, never checked and never
+  // reported, so any such key fails here instead.
+  const otherForms = [...uiSource.matchAll(/^\s+(["`])([^"`]+)\1\s*:/gm)].map((m) => m[2]);
+  assert.deepEqual(otherForms, [], `ui.ts keys not single-quoted, so the guard cannot see them: ${otherForms.join(', ')}`);
 });
 
 test('every key in ui.ts is read somewhere under src', () => {
