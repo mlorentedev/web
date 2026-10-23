@@ -9,12 +9,13 @@
  * the reverse. Parsing JavaScript properly would need a parser, and that would be
  * a reason to reshape the guard, not to make this cleverer.
  *
- * Markdown is returned untouched: there a line starting with `*` is a list item.
+ * In Markdown only the comment forms are cut (HTML comments, and MDX block comments in braces):
+ * there a line starting with `*` is a list item, not a comment.
  */
 export function withoutComments(source, file) {
-  if (/\.(md|mdx)$/.test(file)) return source;
-  return source
-    .replace(/<!--[\s\S]*?-->/g, '')
+  const noHtml = source.replace(/<!--[\s\S]*?-->/g, '');
+  if (/\.(md|mdx)$/.test(file)) return noHtml.replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
+  return noHtml
     .split('\n')
     .filter((line) => !/^\s*(\/\/|\/\*|\*)/.test(line))
     .join('\n');

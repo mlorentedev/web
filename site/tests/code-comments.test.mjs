@@ -22,7 +22,9 @@ test('comment lines and HTML comments are dropped from code', () => {
   assert.match(code, /'nav\.lab'/);
 });
 
-test('markdown is left as it is, since a leading * there is a list item', () => {
-  const source = "* see 'nav.lab'";
-  assert.equal(withoutComments(source, 'note.mdx'), source);
+test('markdown keeps its list items and loses its comments', () => {
+  const source = "* see 'nav.lab'\n<!-- t('nav.toggle') -->\n{/* t('404.cta') */}";
+  const prose = withoutComments(source, 'note.mdx');
+  assert.match(prose, /'nav\.lab'/);
+  assert.doesNotMatch(prose, /nav\.toggle|404\.cta/);
 });
