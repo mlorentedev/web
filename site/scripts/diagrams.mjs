@@ -5,6 +5,9 @@
  *   node scripts/diagrams.mjs generate        # authoring: render, theme, stamp
  *   node scripts/diagrams.mjs verify [file]   # build/CI: validate and check stamps
  *
+ * With a file, `verify` checks that one IR exactly as the build checks every
+ * one: schema, references, and the stamp of the SVG in `generated/` beside it.
+ *
  * ## Why there are two modes
  *
  * `generate` needs archify, which #242 installed as an authoring-time agent
@@ -35,7 +38,7 @@
 
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // archify's schemas declare draft 2020-12; ajv's default export only speaks
@@ -228,7 +231,9 @@ const irFileNames = () =>
   (existsSync(diagramsDir) ? readdirSync(diagramsDir) : []).filter((f) => f.endsWith('.architecture.json'));
 
 const sha256 = (buffer) => createHash('sha256').update(buffer).digest('hex');
-const svgPathFor = (irFile) => join(generatedDir, `${irFile.replace('.architecture.json', '')}.svg`);
+/** The SVG lives in `generated/` beside its IR, wherever that IR is. */
+const svgPathFor = (irPath) =>
+  join(dirname(irPath), 'generated', `${basename(irPath).replace('.architecture.json', '')}.svg`);
 
 /** A syntax error in an IR is a diagram problem, not a crash. */
 function parseIr(bytes, label) {
@@ -348,7 +353,7 @@ async function generate() {
       .replace(/(<title\b)/, `<style>${stylesheet}</style>$1`)
       .concat(`\n<!-- ir-sha256: ${sha256(irBytes)} -->\n`);
 
-    writeFileSync(svgPathFor(file), svg);
+    writeFileSync(svgPathFor(irPath), svg);
     process.stdout.write(`diagrams: ${file} -> ${Buffer.byteLength(svg)} bytes\n`);
   }
 }
@@ -375,33 +380,36 @@ async function renderToHtml(irPath) {
   }
 }
 
+/** Schema, references, then the stamp: the SVG beside the IR was rendered from these bytes. */
+function verifyOne(irPath, label, validate) {
+  const irBytes = readFileSync(irPath);
+  validate(parseIr(irBytes, label), label);
+
+  const svgPath = svgPathFor(irPath);
+  if (!existsSync(svgPath)) fail(`${label} has no generated SVG — run \`npm run diagrams\``);
+
+  const stamp = readFileSync(svgPath, 'utf8').match(/<!-- ir-sha256: ([0-9a-f]{64}) -->/);
+  if (!stamp) fail(`${svgPath} carries no ir-sha256 stamp — run \`npm run diagrams\``);
+  if (stamp[1] !== sha256(irBytes)) {
+    fail(`${label} changed since its SVG was generated — run \`npm run diagrams\``);
+  }
+}
+
 function verify(explicitFile) {
   const validate = architectureValidator();
 
   if (explicitFile) {
     const path = resolve(explicitFile);
     if (!existsSync(path)) fail(`${explicitFile} does not exist`);
-    validate(parseIr(readFileSync(path), explicitFile), explicitFile);
-    process.stdout.write(`diagrams: ${explicitFile} validates\n`);
+    verifyOne(path, explicitFile, validate);
+    process.stdout.write(`diagrams: ${explicitFile} validated and in sync\n`);
     return;
   }
 
   const files = irFileNames();
   if (files.length === 0) fail(`no *.architecture.json found in ${diagramsDir}`);
 
-  for (const file of files) {
-    const irBytes = readFileSync(join(diagramsDir, file));
-    validate(parseIr(irBytes, file), file);
-
-    const svgPath = svgPathFor(file);
-    if (!existsSync(svgPath)) fail(`${file} has no generated SVG — run \`npm run diagrams\``);
-
-    const stamp = readFileSync(svgPath, 'utf8').match(/<!-- ir-sha256: ([0-9a-f]{64}) -->/);
-    if (!stamp) fail(`${svgPath} carries no ir-sha256 stamp — run \`npm run diagrams\``);
-    if (stamp[1] !== sha256(irBytes)) {
-      fail(`${file} changed since its SVG was generated — run \`npm run diagrams\``);
-    }
-  }
+  for (const file of files) verifyOne(join(diagramsDir, file), file, validate);
   process.stdout.write(`diagrams: ${files.length} diagram(s) validated and in sync\n`);
 }
 

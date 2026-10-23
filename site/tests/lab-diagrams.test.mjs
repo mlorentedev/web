@@ -27,7 +27,8 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -142,3 +143,32 @@ for (const [fixture, because] of [
     );
   });
 }
+
+/**
+ * `verify <file>` is what someone runs by hand while debugging a diagram, so it
+ * must refuse a stale IR as the build does, not only a malformed one (#278).
+ * The fixture is a copy of a committed diagram, IR and SVG laid out as in
+ * `src/diagrams/`, so the stamp it checks is a real one.
+ */
+test('verify <file> refuses an IR edited after its SVG was generated', () => {
+  const [file] = irFiles;
+  const scratch = mkdtempSync(join(tmpdir(), 'diagrams-'));
+  try {
+    mkdirSync(join(scratch, 'generated'));
+    const svg = `${file.replace('.architecture.json', '')}.svg`;
+    copyFileSync(join(generatedDir, svg), join(scratch, 'generated', svg));
+    const irPath = join(scratch, file);
+    const run = () =>
+      execFileSync(process.execPath, [join(siteRoot, 'scripts/diagrams.mjs'), 'verify', irPath], { stdio: 'pipe' });
+
+    copyFileSync(join(diagramsDir, file), irPath);
+    assert.match(String(run()), /in sync/, 'an unedited copy was refused');
+
+    const ir = JSON.parse(readFileSync(irPath, 'utf8'));
+    ir.components[0].label = `${ir.components[0].label} (edited)`;
+    writeFileSync(irPath, JSON.stringify(ir, null, 2));
+    assert.throws(run, (error) => /changed since its SVG was generated/.test(String(error.stderr)));
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
+});
