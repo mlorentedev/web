@@ -15,11 +15,16 @@ test('comment lines and HTML comments are dropped from code', () => {
     ' */',
     "// t('nav.toggle')",
     '<!-- platform.diagrams -->',
+    '/*',
+    "  t('idp.title') has no star in front",
+    '*/',
+    "const glob = 'src/**/*.md';",
     "const label = t('nav.lab');",
   ].join('\n');
   const code = withoutComments(source, 'Header.astro');
-  assert.doesNotMatch(code, /platform\.nodes|nav\.toggle|platform\.diagrams/);
+  assert.doesNotMatch(code, /platform\.nodes|nav\.toggle|platform\.diagrams|idp\.title/);
   assert.match(code, /'nav\.lab'/);
+  assert.match(code, /src\/\*\*\/\*\.md/);
 });
 
 test('markdown keeps its list items and loses its comments', () => {
