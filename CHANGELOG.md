@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.16.3](https://github.com/mlorentedev/web/compare/v1.16.2...v1.16.3) (2026-10-23)
+
+
+### Bug Fixes
+
+* **diagrams:** check the ir-sha256 stamp in verify &lt;file&gt; too ([#492](https://github.com/mlorentedev/web/issues/492)) ([fd05ad2](https://github.com/mlorentedev/web/commit/fd05ad2504894832e21aebb7aa2704495fc5766e))
+* **i18n:** remove the 184 translation keys nothing reads ([#490](https://github.com/mlorentedev/web/issues/490)) ([15dc22a](https://github.com/mlorentedev/web/commit/15dc22a56261f4911204751a6924d0c8e9a73776))
+* **lab:** remove the platform diagrams data no page renders ([#488](https://github.com/mlorentedev/web/issues/488)) ([79b2561](https://github.com/mlorentedev/web/commit/79b2561b162310b2b47d7819a6668a5c7735d0ea))
+
 ## [1.16.2](https://github.com/mlorentedev/web/compare/v1.16.1...v1.16.2) (2026-10-22)
 
 
