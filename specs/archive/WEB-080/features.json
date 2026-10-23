@@ -11,7 +11,7 @@
     "behavior": "Every Lab diagram has a committed archify IR that validates; a malformed IR fails npm run build; the delivered SVG carries role/aria-* and real <text>; no horizontal scroll at 320/768/1440/2048",
     "verification": "cd site && node --test tests/lab-diagrams.test.mjs && node scripts/diagrams.mjs verify src/diagrams/topology.architecture.json && ! node scripts/diagrams.mjs verify tests/fixtures/malformed.architecture.json && node tests/lab-containment.mjs",
     "state": "verified",
-    "evidence": "PR7 2026-09-01: lab-diagrams 6/6; verify on a good IR exits 0 and on the malformed fixture exits 1 ('does not validate'); containment 8/8 at 320/768/1440/2048 on both locales. The negative half was vacuous until PR7 - the command omitted the `verify` subcommand, so it exited 1 on the usage error without ever reading the file, and a nonexistent path scored identically. The positive case was added beside it so the pair discriminates."
+    "evidence": "PR7 2026-09-01: lab-diagrams 6/6; verify on a good IR exits 0 and on the malformed fixture exits 1 ('does not validate'); containment 8/8 at 320/768/1440/2048 on both locales. The negative half was vacuous until PR7 - the command omitted the `verify` subcommand, so it exited 1 on the usage error without ever reading the file, and a nonexistent path scored identically. The positive case was added beside it so the pair discriminates. Until #278, `verify <file>` checked the schema and references only, so a stale IR was caught by lab-diagrams' own sha256 recomputation and by the no-arg `verify` in `prebuild`, never by the explicit-file call in this command. Since #278 it checks the stamp too, and lab-diagrams pins that with an edited copy of a committed IR."
   },
   {
     "id": "WEB-080-f3",
