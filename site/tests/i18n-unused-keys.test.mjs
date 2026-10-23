@@ -10,7 +10,7 @@
  * retired claim found them, and any new component could publish one again.
  *
  * A key counts as read when it appears as a quoted literal ('…', "…" or `…`)
- * in any file under `src` other than `ui.ts`. Every `t()` call in the site
+ * in any file under `src` other than `ui.ts`, outside a comment. Every `t()` call in the site
  * passes a literal today. A key assembled at runtime (t(`lab.${slug}`)) would
  * read as unused, so such a prefix must be declared in `dynamicPrefixes` below,
  * with the file that builds it. Do not disable the test instead.
@@ -22,6 +22,8 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { withoutComments } from './lib/code.mjs';
+
 const here = dirname(fileURLToPath(import.meta.url));
 const srcDir = join(here, '..', 'src');
 const uiPath = join('i18n', 'ui.ts');
@@ -30,11 +32,11 @@ const uiPath = join('i18n', 'ui.ts');
 const dynamicPrefixes = [];
 
 const uiSource = readFileSync(join(srcDir, uiPath), 'utf8');
-const keys = [...new Set([...uiSource.matchAll(/^\s+'([^']+)':/gm)].map((m) => m[1]))];
+const keys = [...new Set([...uiSource.matchAll(/^\s+'([^']+)'\s*:/gm)].map((m) => m[1]))];
 
 const corpus = readdirSync(srcDir, { recursive: true })
   .filter((p) => /\.(astro|ts|tsx|js|mjs|md|mdx)$/.test(p) && p !== uiPath)
-  .map((p) => readFileSync(join(srcDir, p), 'utf8'))
+  .map((p) => withoutComments(readFileSync(join(srcDir, p), 'utf8'), p))
   .join('\n');
 
 const isRead = (key) =>

@@ -35,6 +35,8 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { withoutComments } from './lib/code.mjs';
+
 const here = dirname(fileURLToPath(import.meta.url));
 const siteRoot = join(here, '..');
 
@@ -129,14 +131,14 @@ test('platform.ts types the provenance rather than leaving it untyped JSON', () 
 // A top-level field no page reads still makes claims. The `diagrams` array
 // outlived the mermaid diagrams it fed by months and still said the Jetson ran
 // Ollama at ~3.2 s TTFT (#465). Every field must be read as `platform.<field>`
-// somewhere under `src`, or it is removed. That dotted form is the only read the
+// somewhere under `src`, outside a comment, or it is removed. That dotted form is the only read the
 // test recognises: a destructured or bracketed read (`const { nodes } = platform`)
 // counts as unread, so read the field as `platform.<field>` instead.
 
 test('every top-level field of platform.json is read by the site', () => {
   const sources = readdirSync(join(siteRoot, 'src'), { recursive: true })
     .filter((p) => /\.(astro|ts|mjs)$/.test(p))
-    .map((p) => readFileSync(join(siteRoot, 'src', p), 'utf8'))
+    .map((p) => withoutComments(readFileSync(join(siteRoot, 'src', p), 'utf8'), p))
     .join('\n');
   const fields = Object.keys(manifest);
   assert.ok(fields.length > 0, 'platform.json has no fields — nothing is being checked');
