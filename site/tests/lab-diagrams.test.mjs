@@ -168,6 +168,13 @@ test('verify <file> refuses an IR edited after its SVG was generated', () => {
     ir.components[0].label = `${ir.components[0].label} (edited)`;
     writeFileSync(irPath, JSON.stringify(ir, null, 2));
     assert.throws(run, (error) => /changed since its SVG was generated/.test(String(error.stderr)));
+
+    const renamed = join(scratch, 'topology.json');
+    copyFileSync(irPath, renamed);
+    assert.throws(
+      () => execFileSync(process.execPath, [join(siteRoot, 'scripts/diagrams.mjs'), 'verify', renamed], { stdio: 'pipe' }),
+      (error) => /is not a \*\.architecture\.json file/.test(String(error.stderr)),
+    );
   } finally {
     rmSync(scratch, { recursive: true, force: true });
   }

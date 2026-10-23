@@ -401,6 +401,8 @@ function verify(explicitFile) {
   if (explicitFile) {
     const path = resolve(explicitFile);
     if (!existsSync(path)) fail(`${explicitFile} does not exist`);
+    // `generate` renders only `*.architecture.json`, so any other name could never get an SVG.
+    if (!path.endsWith('.architecture.json')) fail(`${explicitFile} is not a *.architecture.json file`);
     verifyOne(path, explicitFile, validate);
     process.stdout.write(`diagrams: ${explicitFile} validated and in sync\n`);
     return;
