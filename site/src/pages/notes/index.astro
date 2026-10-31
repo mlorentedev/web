@@ -13,13 +13,15 @@ const translatePath = useTranslatedPath(lang);
 const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === 'en'))
   .sort((a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
+const title = 'What I think';
 ---
 
-<BaseLayout title="What I think" description={t('notes.description')}>
+<BaseLayout title={title} description={t('notes.description')}>
   <Header />
   <main id="main-content" class="grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">
       <div class="max-w-3xl mx-auto px-4">
+        <h1 class="sr-only">{title}</h1>
         <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-10">{t('notes.articles')}</h2>
         {notes.length === 0 ? (
           <p class="text-gray-500">{t('notes.empty')}</p>
