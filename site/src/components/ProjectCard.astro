@@ -8,9 +8,12 @@ interface Props {
   project: LocalizedProject;
   /** Current UI language — drives tag links and the "View project" label. */
   lang: Lang;
+  /** Heading level of the project name: 2 where no section heading sits above the cards. */
+  level?: 2 | 3;
 }
 
-const { project, lang } = Astro.props;
+const { project, lang, level = 3 } = Astro.props;
+const Heading = level === 2 ? 'h2' : 'h3';
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
@@ -25,7 +28,7 @@ const newTab = internal ? {} : { target: '_blank', rel: 'noopener noreferrer' };
 
 <div class="border border-ink-200 bg-white rounded-lg p-5 hover:border-accent-700 transition-colors flex flex-col shadow-xs">
   <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-    <h3 class="font-bold text-ink-900 text-lg leading-snug text-balance">
+    <Heading class="font-bold text-ink-900 text-lg leading-snug text-balance">
       {link ? (
         <a href={link} {...newTab} class="hover:text-accent-700 transition-colors">
           {project.title}
@@ -33,7 +36,7 @@ const newTab = internal ? {} : { target: '_blank', rel: 'noopener noreferrer' };
       ) : (
         project.title
       )}
-    </h3>
+    </Heading>
     <span
       data-metric
       class="px-2 py-0.5 rounded bg-accent-50 text-accent-700 text-xs font-semibold tabular-nums font-mono whitespace-nowrap shrink-0"
