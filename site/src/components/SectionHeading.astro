@@ -18,10 +18,13 @@ interface Props {
   href?: string;
   /** Spacing below the heading, e.g. "mb-8". */
   margin?: string;
+  /** Renders a `<p>`: the label sits above a page's `h1`, so it must not open the outline. */
+  eyebrow?: boolean;
 }
 
-const { number, label, href, margin } = Astro.props;
+const { number, label, href, margin, eyebrow } = Astro.props;
+const Tag = eyebrow ? 'p' : 'h2';
 const bracket = number ? `[ ${number} /` : '[';
 ---
 
-<h2 class:list={['text-sm font-medium text-ink-500 tracking-wider uppercase text-balance', margin]}><span class="text-accent-700">{bracket}</span> {href ? <a href={href} class="hover:text-accent-700 transition-colors">{label}</a> : label} <span class="text-accent-700">]</span></h2>
+<Tag class:list={['text-sm font-medium text-ink-500 tracking-wider uppercase text-balance', margin]}><span class="text-accent-700">{bracket}</span> {href ? <a href={href} class="hover:text-accent-700 transition-colors">{label}</a> : label} <span class="text-accent-700">]</span></Tag>
