@@ -63,7 +63,7 @@ const WHY: Record<Exclude<IdpAccess, 'public'>, string> = {
     <div class="mb-8">
       <a
         href={translatePath('/lab')}
-        class="inline-flex items-center gap-1.5 text-xs font-mono text-ink-500 hover:text-accent-700 transition-colors focus:outline-hidden focus:text-accent-700"
+        class="inline-flex items-center gap-1.5 text-xs font-mono text-ink-500 hover:text-accent-700 transition-colors"
       >
         <span aria-hidden="true">&larr;</span>
         <span>{t('idp.catalog.backToLab')}</span>
@@ -100,13 +100,13 @@ const WHY: Record<Exclude<IdpAccess, 'public'>, string> = {
         <a
           href={translatePath('/lab/idp')}
           aria-current="page"
-          class="text-xs font-mono px-3 py-1.5 rounded transition-colors bg-panel-900 text-white font-medium focus:outline-hidden focus:ring-1 focus:ring-accent-500"
+          class="text-xs font-mono px-3 py-1.5 rounded transition-colors bg-panel-900 text-white font-medium"
         >
           {t('idp.nav.catalog')}
         </a>
         <a
           href={translatePath('/lab/idp/architecture')}
-          class="text-xs font-mono px-3 py-1.5 rounded transition-colors text-ink-600 hover:text-ink-900 hover:bg-panel-100 border border-panel-200 focus:outline-hidden focus:ring-1 focus:ring-accent-500"
+          class="text-xs font-mono px-3 py-1.5 rounded transition-colors text-ink-600 hover:text-ink-900 hover:bg-panel-100 border border-panel-200"
         >
           {t('idp.nav.architecture')}
         </a>
@@ -171,7 +171,7 @@ const WHY: Record<Exclude<IdpAccess, 'public'>, string> = {
                           href={item.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="inline-flex items-center gap-1 text-xs font-medium text-accent-700 hover:text-accent-900 transition-colors focus:outline-hidden focus:underline"
+                          class="inline-flex items-center gap-1 text-xs font-medium text-accent-700 hover:text-accent-900 transition-colors"
                         >
                           <span>{t('idp.action.open')}</span>
                           <span class="sr-only" translate={nameTranslate}> ({itemName})</span>
@@ -186,7 +186,7 @@ const WHY: Record<Exclude<IdpAccess, 'public'>, string> = {
                           <a
                             data-idp-why
                             href={`${translatePath('/lab')}#services`}
-                            class="text-xs font-mono text-panel-700 underline decoration-panel-300 hover:text-accent-700 focus:outline-hidden focus:text-accent-700"
+                            class="text-xs font-mono text-panel-700 underline decoration-panel-300 hover:text-accent-700"
                           >{WHY.platform}</a>
                         ) : (
                           <span data-idp-why class="text-xs font-mono text-panel-700">{WHY[item.access as 'auth' | 'local']}</span>
