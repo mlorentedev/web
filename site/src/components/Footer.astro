@@ -1,9 +1,11 @@
 ---
 import { site } from '../data/site';
 import { features } from '../data/features';
-import { getLocale, useTranslations } from '../i18n/utils';
+import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
-const t = useTranslations(getLocale(Astro.currentLocale));
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 
 const year = new Date().getFullYear();
 const { email, github, x, youtube } = site.social;
@@ -40,5 +42,7 @@ const { email, github, x, youtube } = site.social;
   </div>
   <p class="text-xs mt-3">
     &copy; {year} <span translate="no">Manu Lorente</span>
+    · <a href={translatePath('/legal/privacy/')} class="underline hover:text-accent-600">{t('footer.privacy')}</a>
+    · <a href="/rss.xml" translate="no" class="underline hover:text-accent-600">RSS</a>
   </p>
 </footer>
