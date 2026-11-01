@@ -223,7 +223,8 @@
 
 /* The one focus indicator (#114). No element sets its own: a `focus:` utility
    sits in a later layer than this rule and would erase it. An outline draws
-   against what is behind the element, so a dark surface sets `focus-on-dark`.
+   against what is behind the element, so a dark surface sets `focus-on-dark`,
+   and a link wrapping an image must be `block`: inline, it paints no outline.
    `focus-ring.mjs` measures the result on every keyboard stop. */
 @layer base {
   :focus-visible {

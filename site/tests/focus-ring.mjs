@@ -9,8 +9,12 @@
  * element (WCAG 2.4.7, 1.4.11). Then it clicks a link and requires no outline,
  * because `:focus-visible` is what keeps the ring away from mouse users.
  *
- * Transitions are off: `transition-colors` animates `outline-color`, and a
- * reading taken mid-fade measures a colour nobody ends up seeing.
+ * A computed outline can still paint nothing: the avatar link read `2px solid`
+ * and showed no ring. So each stop is also screenshotted with and without focus,
+ * and the two must differ.
+ *
+ * Transitions and smooth scrolling are off: a reading taken mid-fade measures a
+ * colour nobody ends up seeing, and a clip taken mid-scroll misses the element.
  *
  * A run that reaches no stops fails: a page that never loaded has no bad ones.
  */
@@ -58,6 +62,26 @@ function readStop() {
   };
 }
 
+/** Whether focusing the active element changes a pixel around it. */
+async function paintsIndicator(page) {
+  const clip = await page.evaluate(() => {
+    const { x, y, right, bottom } = document.activeElement.getBoundingClientRect();
+    const [left, top] = [Math.max(0, x - 6), Math.max(0, y - 6)];
+    const width = Math.min(innerWidth, right + 6) - left;
+    const height = Math.min(innerHeight, bottom + 6) - top;
+    return { x: left, y: top, width, height };
+  });
+  if (clip.width <= 0 || clip.height <= 0) return false;
+  const focused = await page.screenshot({ clip });
+  await page.evaluate(() => {
+    window.__stop = document.activeElement;
+    window.__stop.blur();
+  });
+  const blurred = await page.screenshot({ clip });
+  await page.evaluate(() => window.__stop.focus());
+  return !focused.equals(blurred);
+}
+
 const { url: BASE, server } = await labBaseUrl();
 const browser = await chromium.launch();
 let failures = 0;
@@ -72,7 +96,7 @@ for (const path of PATHS) {
     await page.close();
     continue;
   }
-  await page.addStyleTag({ content: '*, *::before, *::after { transition: none !important; }' });
+  await page.addStyleTag({ content: '*, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }' });
 
   let onPage = 0;
   const bad = [];
@@ -87,6 +111,7 @@ for (const path of PATHS) {
     } catch (error) {
       problems = [error.message];
     }
+    if (!(await paintsIndicator(page))) problems.push('focus paints nothing');
     if (problems.length > 0) bad.push(`${stop.name}: ${problems.join('; ')}`);
   }
   stops += onPage;

@@ -18,7 +18,9 @@ Searching `origin/master` for the ticket's term finds nothing, which reads as fi
 it listed had gained a ring, and `focus:ring-1 ring-accent-500` looked like a replacement but
 was 1 px at about 2.4:1 on white. Then the first green run of the new browser check proved
 little: every page it visited was light. The one surface where the shared colour fails, the
-subscribe form on `cyan-700`, only appears on `/es/rompe`, which was not in the page list.
+subscribe form on `cyan-700`, only appears on `/es/rompe`, which was not in the page list. And
+a screenshot showed the avatar link with no ring while its computed style said `2px solid`: an
+inline `<a>` wrapping an image paints no outline.
 
 **Solution**: One `:focus-visible` rule in `@layer base` owns the indicator, and the per-element
 utilities are gone, because a `focus:` utility sits in a later layer and erases the rule. A
@@ -26,7 +28,10 @@ test bans them by shape (`focus:(outline|ring|text|underline)`), not by the old 
 Playwright check presses Tab through the built pages and measures the computed outline against
 the composited backdrop, since axe has no focus-indicator rule. An outline paints outside its
 element, so the backdrop starts at the parent: a white button on `cyan-700` needs a white ring.
+Each stop is also screenshotted focused and blurred, and the two must differ, which is what
+found the two image links; they are `block` now.
 
 **Rule**: Before closing a ticket on "the string is gone", reproduce the behaviour it describes:
 a rename leaves the defect and removes the evidence. And when a check measures a surface,
-derive its page list from where the surfaces are, not from the pages that come to mind.
+derive its page list from where the surfaces are, not from the pages that come to mind. A
+computed style says what was asked for, so a visual claim needs a check of what was painted.
