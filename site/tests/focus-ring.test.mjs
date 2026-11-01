@@ -72,6 +72,17 @@ test('backdrop composites a translucent layer and keeps every gradient stop', ()
   assert.equal(backdrop([{ ...clear, backgroundImage: image }]).length, 2);
 });
 
+test('backdrop paints a layer gradient over its own fill, as CSS does', () => {
+  const image = 'linear-gradient(rgb(0, 0, 0), rgb(0, 0, 0))';
+  assert.deepEqual(backdrop([{ backgroundColor: 'rgb(255, 255, 255)', backgroundImage: image }]), [
+    { r: 0, g: 0, b: 0, a: 1 },
+  ]);
+});
+
+test('a gradient stop in an unread colour space fails instead of vanishing', () => {
+  assert.throws(() => gradientStops('linear-gradient(oklch(0.5 0.1 200), rgb(0, 0, 0))'), /cannot read colour/);
+});
+
 test('indicatorProblems names each way an indicator fails', () => {
   const on = (backgroundColor) => [{ backgroundColor, backgroundImage: 'none' }];
   const ring = { outlineStyle: 'solid', outlineWidth: '2px', outlineColor: 'rgb(14, 116, 144)' };

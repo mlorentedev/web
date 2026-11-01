@@ -48,7 +48,7 @@ export function contrast(a, b) {
 
 /** Every colour named in a computed `background-image` gradient. */
 export function gradientStops(backgroundImage) {
-  return [...backgroundImage.matchAll(/(?:rgba?|color)\([^()]*\)/g)].map((match) => parseColour(match[0]));
+  return [...backgroundImage.matchAll(/\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\([^()]*\)/g)].map((match) => parseColour(match[0]));
 }
 
 /**
@@ -61,10 +61,10 @@ export function backdrop(layers) {
   const white = { r: 255, g: 255, b: 255, a: 1 };
   let below = [white];
   for (const layer of [...layers].reverse()) {
-    const stops = gradientStops(layer.backgroundImage);
-    if (stops.length > 0) below = stops.flatMap((stop) => below.map((colour) => composite(stop, colour)));
     const fill = parseColour(layer.backgroundColor);
     below = below.map((colour) => composite(fill, colour));
+    const stops = gradientStops(layer.backgroundImage);
+    if (stops.length > 0) below = stops.flatMap((stop) => below.map((colour) => composite(stop, colour)));
   }
   return below;
 }
