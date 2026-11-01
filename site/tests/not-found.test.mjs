@@ -18,15 +18,18 @@ const site = join(dirname(fileURLToPath(import.meta.url)), '..');
 const built = (path) => readFileSync(join(site, 'dist', path), 'utf8');
 
 const PAGES = [
-  { file: '404.html', lang: 'en', text: "This page doesn't exist.", cta: 'Go home', home: '/' },
-  { file: 'es/404/index.html', lang: 'es', text: 'Esta página no existe.', cta: 'Ir al inicio', home: '/es/' },
+  { file: '404.html', lang: 'en', title: 'Not Found', text: "This page doesn't exist.", cta: 'Go home', home: '/' },
+  { file: 'es/404/index.html', lang: 'es', title: 'No encontrado', text: 'Esta página no existe.', cta: 'Ir al inicio', home: '/es/' },
 ];
 
-for (const { file, lang, text, cta, home } of PAGES) {
+for (const { file, lang, title, text, cta, home } of PAGES) {
   test(`${file} is ${lang} in its markup`, () => {
     const html = built(file);
     assert.match(html, new RegExp(`<html lang="${lang}"`));
     assert.ok(html.includes(text), 'the message is in the markup');
+    assert.match(html, new RegExp(`<title>${title}</title>`));
+    const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1];
+    assert.equal(description?.replaceAll('&#39;', "'"), text);
     assert.match(html, new RegExp(`href="${home}"[^>]*>\\s*${cta}\\s*<`));
   });
 
@@ -48,7 +51,7 @@ test('the sitemap lists neither 404 page', () => {
 
 test('nginx answers a missing /es/ path with the Spanish page', () => {
   const conf = readFileSync(join(site, 'nginx.conf'), 'utf8');
-  const es = conf.match(/location \/es\/ \{[^}]*\}/)?.[0] ?? '';
+  const es = conf.match(/location \^~ \/es\/ \{[^}]*\}/)?.[0] ?? '';
   assert.match(es, /try_files \$uri \$uri\/index\.html =404;/);
   assert.match(es, /error_page 404 \/es\/404\/index\.html;/);
   assert.match(conf, /location = \/es\/404\/index\.html \{\s*internal;\s*\}/);
