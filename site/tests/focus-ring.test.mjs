@@ -74,9 +74,8 @@ test('backdrop composites a translucent layer and keeps every gradient stop', ()
 
 test('backdrop paints a layer gradient over its own fill, as CSS does', () => {
   const image = 'linear-gradient(rgb(0, 0, 0), rgb(0, 0, 0))';
-  assert.deepEqual(backdrop([{ backgroundColor: 'rgb(255, 255, 255)', backgroundImage: image }]), [
-    { r: 0, g: 0, b: 0, a: 1 },
-  ]);
+  const black = { r: 0, g: 0, b: 0, a: 1 };
+  assert.deepEqual(backdrop([{ backgroundColor: 'rgb(255, 255, 255)', backgroundImage: image }]), [black, black]);
 });
 
 test('a gradient stop in an unread colour space fails instead of vanishing', () => {
