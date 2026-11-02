@@ -1,0 +1,46 @@
+version: 1
+run_id: "web-2026-11-02-night"
+armed_by: manu
+armed_at: 2026-11-02T05:50:00Z
+expires_at: 2026-11-02T17:50:00Z
+objective: "Open reviewed, green PRs for the small non-copy web tickets in the queue, leaving every merge to the owner."
+scope:
+  write_paths:
+    - "site/src/components/**"
+    - "site/src/layouts/**"
+    - "site/src/styles/**"
+    - "site/src/data/**"
+    - "site/tests/**"
+    - "site/scripts/**"
+    - "site/public/fonts/**"
+    - "site/package.json"
+    - "site/package-lock.json"
+    - "skills-lock.json"
+    - "docs/lessons/**"
+    - ".agent/runs/**"
+  frozen_paths:
+    - ".github/**"
+    - "harness/**"
+    - "**/AGENTS.md"
+    - ".agent/unattended.yml"
+    - "site/src/content/pages/**"
+    - "site/src/i18n/ui.ts"
+    - "site/nginx.conf"
+    - "Dockerfile"
+    - "kubelab.yaml"
+  max_files: 15
+  max_loc: 300
+allowed_commands: [dotf, gh, git, npm, npx, node, docker, jq, python3, make]
+queue:
+  source: bitacora
+  filter: "explicit, in order: #412, #130, #252, #352, #358, #139, #393"
+  max_items: 7
+budget:
+  max_iterations: 8
+  max_minutes_per_iteration: 60
+  max_consecutive_failures: 2
+authority:
+  merge: never
+  push: true
+  open_pr: true
+  advisor_tier: top
