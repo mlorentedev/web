@@ -24,29 +24,27 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
 ---
 
 <header class="bg-accent-50 text-ink-700 sticky top-0 w-full border-b border-accent-100 z-50">
-  <nav class="px-3 sm:px-4 py-3 flex items-center justify-between">
-    <span class="text-xl font-extrabold">
-      <a href={translatePath('/')} translate="no" class="no-underline hover:text-accent-700 transition-colors duration-200">
-        Manu Lorente
-      </a>
-    </span>
-
-    <div class="fixed left-1/2 transform -translate-x-1/2 top-1 z-60">
-      <a href={translatePath('/')} class="block rounded-full">
-        <img
-          src="/images/me-2.webp"
-          alt="Manu Lorente"
-          translate="no"
-          width="96"
-          height="125"
-          class="w-12 h-auto rounded-full border-[1.5px] border-white shadow-lg"
-        />
-      </a>
-    </div>
+  <nav class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+    <!-- One link for the portrait and the name. Below sm the name does not fit
+         beside the nav, so it stays as the link's accessible name only. -->
+    <a
+      data-header-brand
+      href={translatePath('/')}
+      class="flex shrink-0 items-center gap-2 text-xl font-extrabold no-underline hover:text-accent-700 transition-colors duration-200"
+    >
+      <img
+        src="/images/me-2.webp"
+        alt=""
+        width="96"
+        height="125"
+        class="h-9 w-auto rounded-full border-[1.5px] border-white shadow-sm"
+      />
+      <span translate="no" class="sr-only sm:not-sr-only">Manu Lorente</span>
+    </a>
 
     <!-- Tighter gaps below sm: the fourth nav item pushes the row past a 320px
          viewport at the desktop spacing. A real mobile menu is WEB-042. -->
-    <div class="flex items-center space-x-2 sm:space-x-4">
+    <div data-header-links class="flex items-center space-x-2 sm:space-x-4">
       {navItems.map((item) => (
         <a
           href={item.href}
