@@ -84,6 +84,6 @@ test('built Spanish newsletter page contains correct localized privacy link and 
   }
 
   const html = readFileSync(esNewsletterPath, 'utf8');
-  assert.ok(html.includes('href="/es/legal/privacy"'), 'Spanish page links to /es/legal/privacy');
+  assert.ok(html.includes('href="/es/legal/privacy/"'), 'Spanish page links to /es/legal/privacy/');
   assert.ok(html.includes('data-button-success="Recibido"'), 'Spanish page has data-button-success="Recibido"');
 });

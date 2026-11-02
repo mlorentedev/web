@@ -184,8 +184,8 @@ test('idp-catalog.ts types the data rather than leaving it untyped', () => {
 });
 
 const IDP_HTML_PAGES = [
-  ['en', join(siteRoot, 'dist/lab/idp/index.html'), '/lab'],
-  ['es', join(siteRoot, 'dist/es/lab/idp/index.html'), '/es/lab'],
+  ['en', join(siteRoot, 'dist/lab/idp/index.html'), '/lab/'],
+  ['es', join(siteRoot, 'dist/es/lab/idp/index.html'), '/es/lab/'],
 ];
 
 for (const [locale, pagePath, expectedBackPath] of IDP_HTML_PAGES) {
@@ -278,8 +278,8 @@ for (const [locale, pagePath, expectedBackPath] of IDP_HTML_PAGES) {
 }
 
 const IDP_ARCH_PAGES = [
-  ['en', join(siteRoot, 'dist/lab/idp/architecture/index.html'), '/lab/idp'],
-  ['es', join(siteRoot, 'dist/es/lab/idp/architecture/index.html'), '/es/lab/idp'],
+  ['en', join(siteRoot, 'dist/lab/idp/architecture/index.html'), '/lab/idp/'],
+  ['es', join(siteRoot, 'dist/es/lab/idp/architecture/index.html'), '/es/lab/idp/'],
 ];
 
 for (const [locale, pagePath, expectedBackPath] of IDP_ARCH_PAGES) {

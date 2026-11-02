@@ -15,7 +15,7 @@ interface Props {
 const { number } = Astro.props;
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
-const noteHref = '/notes/fail-closed-agent-harnesses';
+const noteHref = '/notes/fail-closed-agent-harnesses/';
 
 const badgeColors: Record<string, string> = {
   Doctrine: 'bg-ok-50 text-ok-700 border-ok-200',

@@ -52,7 +52,7 @@ test('the sitemap lists neither 404 page', () => {
 test('nginx answers a missing /es/ path with the Spanish page', () => {
   const conf = readFileSync(join(site, 'nginx.conf'), 'utf8');
   const es = conf.match(/location \^~ \/es\/ \{[^}]*\}/)?.[0] ?? '';
-  assert.match(es, /try_files \$uri \$uri\/index\.html =404;/);
+  assert.match(es, /try_files \$uri \$uri\/ =404;/);
   assert.match(es, /error_page 404 \/es\/404\/index\.html;/);
   assert.match(conf, /location = \/es\/404\/index\.html \{\s*internal;\s*\}/);
 });

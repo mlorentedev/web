@@ -1,3 +1,4 @@
+import { withTrailingSlash } from '../../plugins/trailing-slash.mjs';
 import { ui, defaultLang, type Lang } from './ui';
 
 export function getLangFromUrl(url: URL): Lang {
@@ -19,7 +20,8 @@ export function useTranslations(lang: Lang) {
 
 export function useTranslatedPath(lang: Lang) {
   return function translatePath(path: string, l: Lang = lang) {
-    return l === defaultLang ? path : `/${l}${path}`;
+    const canonical = withTrailingSlash(path);
+    return l === defaultLang ? canonical : `/${l}${canonical}`;
   };
 }
 
