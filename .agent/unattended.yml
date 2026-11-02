@@ -1,0 +1,25 @@
+version: 1
+run_id: "web-copy-20261102t0548z"
+armed_by: manu
+armed_at: 2026-11-02T05:48:44Z
+expires_at: 2026-11-02T17:48:44Z
+objective: "Open the home rewrite of #499 as a draft PR for the owner to view, then the agreed copy tickets, as draft PRs in ES and EN parity."
+scope:
+  write_paths: ["site/src/components/Hero.astro", "site/src/components/Home*.astro", "site/src/components/Door.astro", "site/src/components/Offer.astro", "site/src/data/experience.ts", "site/src/data/skills.ts", "site/src/data/site.ts", "site/src/data/education.ts", "site/src/data/offer.ts", "site/src/data/timeline.mjs", "site/src/content/pages/**", "site/src/i18n/ui.ts", "site/tests/**", "docs/lessons/**"]
+  frozen_paths: [".github/**", "harness/**", "**/AGENTS.md", "site/package.json", "site/package-lock.json", "site/src/layouts/**", "site/src/styles/**", ".agent/unattended.yml"]
+  max_files: 25
+  max_loc: 300
+allowed_commands: [dotf, gh, git, make, npm, npx, node]
+queue:
+  source: explicit
+  filter: "#499 home, #499 contact, #354, #349"
+  max_items: 4
+budget:
+  max_iterations: 8
+  max_minutes_per_iteration: 60
+  max_consecutive_failures: 2
+authority:
+  merge: never
+  push: true
+  open_pr: true
+  advisor_tier: top
