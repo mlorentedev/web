@@ -45,13 +45,15 @@ const CASES = {
     const context = await browser.newContext({ javaScriptEnabled: false });
     const page = await context.newPage();
     await page.goto(`${BASE}${FORM_PAGE}`);
+    const navigations = [];
+    page.on('framenavigated', (frame) => navigations.push(frame.url()));
     const form = page.locator('form[data-api-url]').first();
     assert.equal(await form.getAttribute('method'), 'post');
     assert.equal(await form.locator('button[type="submit"]').isDisabled(), true);
     await form.locator('input[name="email"]').fill('a@example.com');
     await form.locator('input[name="email"]').press('Enter');
-    await page.waitForLoadState('load');
-    assert.equal(page.url(), `${BASE}${FORM_PAGE}`);
+    await page.waitForTimeout(500);
+    assert.deepEqual(navigations, []);
     await context.close();
   },
 
