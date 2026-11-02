@@ -45,20 +45,23 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
     <!-- Tighter gaps below sm: the fourth nav item pushes the row past a 320px
          viewport at the desktop spacing. A real mobile menu is WEB-042. -->
     <div data-header-links class="flex items-center space-x-2 sm:space-x-4">
-      {navItems.map((item) => (
-        <a
-          href={item.href}
-          translate={item.name ? 'no' : undefined}
-          class:list={[
-            'hover:text-accent-700 transition-colors duration-200 text-sm',
-            currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
-              ? 'text-accent-700 font-bold no-underline'
-              : '',
-          ]}
-        >
-          {item.label}
-        </a>
-      ))}
+      {navItems.map((item) => {
+        const here = currentPath === item.href;
+        const within = currentPath.startsWith(item.href);
+        return (
+          <a
+            href={item.href}
+            translate={item.name ? 'no' : undefined}
+            aria-current={here ? 'page' : within ? 'true' : undefined}
+            class:list={[
+              'hover:text-accent-700 transition-colors duration-200 text-sm',
+              within ? 'text-accent-700 font-bold no-underline' : '',
+            ]}
+          >
+            {item.label}
+          </a>
+        );
+      })}
       {hasAlternates && otherLangs.map(([l, label]) => (
         <a
           href={switchLangUrl(Astro.url, l as keyof typeof languages)}
