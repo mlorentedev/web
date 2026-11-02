@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 import { rehypeMermaid } from './plugins/rehype-mermaid.mjs';
+import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
 
 export default defineConfig({
   site: 'https://mlorente.dev',
@@ -17,6 +18,15 @@ export default defineConfig({
     sitemap({
       // The integration drops `/404` but not a localised one.
       filter: (page) => !page.endsWith('/404/'),
+      // The integration writes the locales. The HTML also declares `x-default`
+      // on every page with alternates, and both surfaces must say the same.
+      // The integration shares one `links` array between the two locales' URLs,
+      // so this builds a new one: pushing onto it would add `x-default` twice.
+      serialize(item) {
+        const english = item.links?.find((link) => link.lang === 'en');
+        if (!english) return item;
+        return { ...item, links: [...item.links, { lang: 'x-default', url: english.url }] };
+      },
       i18n: {
         defaultLocale: 'en',
         locales: { en: 'en', es: 'es' },
@@ -44,6 +54,7 @@ export default defineConfig({
     // which is why `@astrojs/markdown-remark` is a direct dependency (WEB-022).
     processor: unified({
       rehypePlugins: [
+        rehypeTrailingSlash,
         [
           rehypeMermaid,
           {

@@ -137,9 +137,8 @@ test('HTML head alternates and sitemap alternates agree across all URLs (WEB-034
     const headMatch = html.match(/<head>(.*?)<\/head>/s);
     const head = headMatch ? headMatch[1] : '';
 
-    // HTML alternates (languages only, ignore x-default and rss)
+    // HTML alternates, x-default included
     const htmlLangs = [...head.matchAll(/<link rel="alternate" hreflang="([a-zA-Z-]+)" href="([^"]+)"/g)]
-      .filter((m) => m[1] !== 'x-default')
       .map((m) => m[1])
       .sort();
 

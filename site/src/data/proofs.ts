@@ -69,7 +69,7 @@ export const proofs: Record<ProofId, Proof> = {
     },
     verify: {
       label: { en: 'Services, and who can reach them', es: 'Servicios, y quién puede llegar a ellos' },
-      href: '/lab#services',
+      href: '/lab/#services',
     },
   },
   agents: {
@@ -88,7 +88,7 @@ export const proofs: Record<ProofId, Proof> = {
     },
     verify: {
       label: { en: 'The rules, quoted from their files', es: 'Las reglas, citadas de sus ficheros' },
-      href: '/ai#artifacts',
+      href: '/ai/#artifacts',
     },
   },
 };

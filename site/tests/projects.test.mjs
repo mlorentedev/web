@@ -35,9 +35,9 @@ const anchors = (html) =>
 // `/projects` is English-only (`hasAlternates={false}`); the card reaches Spanish
 // readers through the tag pages, which render the same `ProjectCard`.
 for (const [page, lab] of [
-  ['projects', '/lab'],
-  ['tags/kubernetes', '/lab'],
-  ['es/tags/kubernetes', '/es/lab'],
+  ['projects', '/lab/'],
+  ['tags/kubernetes', '/lab/'],
+  ['es/tags/kubernetes', '/es/lab/'],
 ]) {
   test(`/${page}: the KubeLab card opens ${lab}`, () => {
     const title = anchors(read(page)).find((a) => a.text === 'KubeLab');
