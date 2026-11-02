@@ -22,6 +22,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { chromium } from 'playwright';
 
+import { freezeMotion } from './lib/motion.mjs';
 import { distDir, labBaseUrl } from './lib/serve.mjs';
 
 const WIDTHS = [320, 1440];
@@ -96,6 +97,7 @@ async function capture(out) {
       await pinNetwork(page, base);
       for (const path of paths) {
         await settle(page, base + path);
+        await freezeMotion(page);
         result[`${width} ${path}`] = await page.evaluate((props) => {
           // Identity is the element's position in the tree, which is stable
           // across two builds of the same content.
