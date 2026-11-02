@@ -1,7 +1,7 @@
 {
   "name": "mlorente.dev",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "engines": {
     "node": ">=22.18"
   },
@@ -21,7 +21,6 @@
     "test:links": "node --test tests/catalog.live.mjs"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.12",
     "@astrojs/markdown-remark": "^7.3.4",
     "@astrojs/mdx": "^8.1.1",
     "@astrojs/rss": "^4.0.19",
@@ -31,6 +30,7 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.12",
     "@beoe/rehype-code-hook-img": "^0.4.1",
     "@tailwindcss/typography": "^0.5.20",
     "ajv": "^8.20.0",
@@ -39,8 +39,5 @@
     "playwright": "^1.64.1",
     "semver": "^7.8.5",
     "typescript": "^5.8.2"
-  },
-  "overrides": {
-    "fast-uri": "^3.1.9"
   }
 }
