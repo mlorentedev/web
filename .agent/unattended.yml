@@ -9,7 +9,6 @@ scope:
     - "site/src/components/**"
     - "site/src/layouts/**"
     - "site/src/styles/**"
-    - "site/src/data/**"
     - "site/tests/**"
     - "site/scripts/**"
     - "site/public/fonts/**"
@@ -28,6 +27,21 @@ scope:
     - "site/nginx.conf"
     - "Dockerfile"
     - "kubelab.yaml"
+    # Reserved by the content run until its PR lands; these carve out of write_paths.
+    - "site/src/components/Hero.astro"
+    - "site/src/components/HomePage.astro"
+    - "site/src/components/HomeStory.astro"
+    - "site/src/components/HomeSkills.astro"
+    - "site/src/components/HomeDoor.astro"
+    - "site/src/components/HomeActivity.astro"
+    - "site/src/components/Door.astro"
+    - "site/src/components/Offer.astro"
+    - "site/src/data/**"
+    - "site/tests/home.test.mjs"
+    - "site/tests/skills.test.mjs"
+    - "site/tests/bio.test.mjs"
+    - "site/tests/contact.test.mjs"
+    - "site/tests/home-first-screen.mjs"
   max_files: 15
   max_loc: 300
 allowed_commands: [dotf, gh, git, npm, npx, node, docker, jq, python3, make]
