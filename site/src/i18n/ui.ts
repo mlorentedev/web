@@ -23,6 +23,7 @@ export const ui = {
     'nav.contact': 'Contact',
     'nav.skipToContent': 'Skip to content',
     'footer.email': 'Email',
+    'footer.privacy': 'Privacy',
 
     // AI Section
     // A section name, not a second label: the label is the home eyebrow (WEB-137).
@@ -304,6 +305,7 @@ export const ui = {
     'nav.contact': 'Contacto',
     'nav.skipToContent': 'Saltar al contenido',
     'footer.email': 'Correo electrónico',
+    'footer.privacy': 'Privacidad',
 
     // AI Section
     'ai.hero.eyebrow': 'Cómo trabajo con agentes de IA',
