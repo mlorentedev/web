@@ -37,6 +37,7 @@ nvm install                         # latest 22.x, as CI resolves .nvmrc; `npm t
 npm ci
 npx playwright install --with-deps chromium   # the build renders the notes' diagrams in a headless browser; on Linux this needs sudo for its system libraries
 npm run build && npm test           # the tests read dist/, so build first
+npm run test:all                    # unit, browser and accessibility: what CI runs, after the same build
 ```
 
 These ignored directories are regenerated, not copied: `site/public/beoe/` by the

@@ -191,9 +191,12 @@ test('every test script in package.json runs in the shared suite', () => {
   // `lab-audit.test.mjs`, which `npm test`'s glob already runs. `test:access`
   // runs in its own workflow instead: it measures the live hosts (#292), so on
   // a pull request it would fail on the cluster's state rather than the change.
+  // `test:all` is the local shorthand for the three scripts CI runs step by step,
+  // so it is held to exactly those three.
   const { scripts } = JSON.parse(readFileSync(join(here, '../package.json'), 'utf8'));
   const elsewhere = { 'test:access': 'access-check.yml', 'test:links': 'access-check.yml' };
-  const excluded = new Set(['test:audit', ...Object.keys(elsewhere)]);
+  const excluded = new Set(['test:audit', 'test:all', ...Object.keys(elsewhere)]);
+  assert.equal(scripts['test:all'], 'npm test && npm run test:browser && npm run test:a11y');
   assert.match(scripts['test:audit'], /tests\/lab-audit\.test\.mjs$/, 'test:audit is excluded only while npm test covers it');
   for (const [script, file] of Object.entries(elsewhere)) {
     assert.match(workflow(file), new RegExp(`^ +run: npm run ${script}\\s*$`, 'm'), `${file} never runs \`npm run ${script}\``);

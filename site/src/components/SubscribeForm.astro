@@ -106,6 +106,7 @@ const privacyHref = translatePath('/legal/privacy');
         return;
       }
 
+      const label = button.textContent;
       button.disabled = true;
       button.textContent = '...';
 
@@ -140,7 +141,7 @@ const privacyHref = translatePath('/legal/privacy');
           msg.className = 'subscribe-msg text-xs text-center text-red-200';
         }
         button.disabled = false;
-        button.textContent = f.querySelector('button')?.textContent || 'Retry';
+        button.textContent = label;
       }
     });
   });
