@@ -156,11 +156,11 @@ for (const { lang, contact, home, href } of pages) {
     assert.equal(body.split('\r\n').filter((l) => l.trim()).length, 3, 'the mail body should be the three filter lines');
   });
 
-  test(`[${lang}] the hero's first button after the title is the door`, () => {
+  test(`[${lang}] the home ends on a button to the contact page`, () => {
     const html = dist(home);
-    const afterTitle = html.slice(html.indexOf('</h1>'));
-    assert.ok(afterTitle.length > 0, `dist/${home} has no hero title`);
-    assert.equal(afterTitle.match(/<a\s[^>]*href="([^"]+)"/)?.[1], href);
+    assert.match(html, /<section[^>]*data-home-block="door"/, `dist/${home} has no door block`);
+    const button = html.match(/<a\b[^>]*data-home-door[^>]*>/)?.[0] ?? '';
+    assert.match(button, new RegExp(`href="${href}"`), `dist/${home}: the home's button does not open ${href}`);
   });
 
   test(`[${lang}] the contact page carries none of the retired positioning`, () => {

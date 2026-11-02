@@ -90,17 +90,15 @@ export const ui = {
     // The eyebrow is the one label repeated on every surface and profile
     // (WEB-137): where the career comes from, CMOS sensors to clusters. The
     // title below says what the work is now; the two do different jobs.
-    'hero.eyebrow': 'Engineer from Silicon to Cloud',
-    'hero.title': 'The infrastructure under the agents, not the prompts on top',
+    'hero.title': 'Engineer from Silicon to Cloud',
     'hero.subtitle':
-      'Almost everyone building for AI agents arrives from the application side. I arrive from the metal — Kubernetes on hardware I own, mesh, split DNS, GitOps that reconciles in under thirty seconds. That platform is where my own agents now run, under a harness with hard limits. The agent platform is what I am building on it.',
+      'I design and run cloud platforms and infrastructure: Kubernetes, AWS, GCP and GitOps, with AI agents in the workflow. Over ten years of engineering, from hardware to cloud, working with customers across Europe, Asia and the US.',
     // The door (WEB-137): the one way in, the same button on the hero and on
     // /contact/. The mail it opens is the written filter, three lines.
     'door.cta': 'Tell me what has to work',
     'door.subject': 'What has to work',
     'door.body': "What has to work:\nWhat's already in production:\nWhen you need it:\n",
     'door.busy': 'Currently on a project; the next one starts in {month}.',
-    'hero.story': 'Read my story',
 
     // IDP Catalog (KubeLab IDP)
     'idp.catalog.title': 'KubeLab IDP · Control Plane & Tooling Catalog',
@@ -243,6 +241,12 @@ export const ui = {
     // Home sections
     'home.stack': 'What I work with',
     'home.skills': 'What I do',
+    'home.languages': 'Languages',
+    'home.activity': 'On GitHub',
+    'home.timeline.work': 'Work',
+    'home.timeline.study': 'Education',
+    'home.cta.body': 'A role or a project where this fits? Tell me about it.',
+    'home.cta.button': 'Get in touch',
 
     // Projects
     'projects.viewProject': 'View project',
@@ -287,9 +291,9 @@ export const ui = {
     'tags.all': 'All notes',
 
     // Meta
-    'meta.title': 'Manu Lorente — Infrastructure for AI agents, from the metal up',
+    'meta.title': 'Manu Lorente — Engineer from Silicon to Cloud',
     'meta.description':
-      'The infrastructure under the agents, not the prompts on top. Kubernetes on hardware I own — mesh, split DNS, GitOps. The homelab is the proof.',
+      'I design and run cloud platforms and infrastructure: Kubernetes, AWS, GCP and GitOps, with AI agents in the workflow. Over ten years of engineering, from hardware to cloud, working with customers across Europe, Asia and the US.',
     'meta.ghchart.alt': "Manu's GitHub contribution chart",
   },
   es: {
@@ -362,15 +366,13 @@ export const ui = {
     'ai.automations.source': 'Migrado de {repo} · {commit}',
 
     // Hero
-    'hero.eyebrow': 'Ingeniero del silicio a la nube',
-    'hero.title': 'La infraestructura de debajo de los agentes, no los prompts de encima',
+    'hero.title': 'Ingeniero del silicio a la nube',
     'hero.subtitle':
-      'Casi todo el que construye para agentes de IA llega desde el lado de la aplicación. Yo llego desde el metal — Kubernetes sobre hardware que es mío, malla, DNS partido, GitOps que reconcilia en menos de treinta segundos. Ahí es donde corren ahora mis propios agentes, bajo un harness con límites duros. La plataforma de agentes es lo que estoy construyendo encima.',
+      'Diseño y opero plataformas e infraestructura cloud: Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo. Más de diez años de ingeniería, del hardware a la nube, trabajando con clientes entre Europa, Asia y EE. UU.',
     'door.cta': 'Cuéntame qué tiene que funcionar',
     'door.subject': 'Qué tiene que funcionar',
     'door.body': 'Qué tiene que funcionar:\nQué hay ya en producción:\nPara cuándo lo necesitas:\n',
     'door.busy': 'Ahora mismo en un proyecto; el siguiente arranca en {month}.',
-    'hero.story': 'Lee mi historia',
 
     // IDP Catalog (KubeLab IDP)
     'idp.catalog.title': 'KubeLab IDP · Catálogo de Control Plane y Herramientas',
@@ -513,6 +515,12 @@ export const ui = {
     // Home sections
     'home.stack': 'Con qué trabajo',
     'home.skills': 'Qué hago',
+    'home.languages': 'Lenguajes',
+    'home.activity': 'En GitHub',
+    'home.timeline.work': 'Trabajo',
+    'home.timeline.study': 'Formación',
+    'home.cta.body': '¿Un puesto o un proyecto donde esto encaje? Cuéntamelo.',
+    'home.cta.button': 'Hablemos',
 
     // Projects
     'projects.viewProject': 'Ver proyecto',
@@ -555,9 +563,9 @@ export const ui = {
     'tags.all': 'Todas las notas',
 
     // Meta
-    'meta.title': 'Manu Lorente — Infraestructura para agentes de IA, desde el metal',
+    'meta.title': 'Manu Lorente — Ingeniero del silicio a la nube',
     'meta.description':
-      'La infraestructura de debajo de los agentes, no los prompts de encima. Kubernetes sobre hardware que es mío — malla, DNS partido, GitOps. El homelab es la prueba.',
+      'Diseño y opero plataformas e infraestructura cloud: Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo. Más de diez años de ingeniería, del hardware a la nube, trabajando con clientes entre Europa, Asia y EE. UU.',
     'meta.ghchart.alt': 'Contribuciones de Manu en GitHub',
   },
 } as const;

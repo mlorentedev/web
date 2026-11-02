@@ -1,11 +1,10 @@
 ---
-// The home's skills list (WEB-158): what Manu does, one item per line, like the
-// jobs painted on a contractor's door, each linking where it can be checked.
-// Text only, like the story above it. The items live in `data/skills.ts`, so
-// both locales list the same ones.
+// What Manu does, by layer (#499): terms to scan, then the work that proves
+// them. Text only, like the timeline above it. The layers live in
+// `data/skills.ts`, so both locales list the same ones.
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
-import { skillsFor } from '../data/skills';
+import { languages, layersFor } from '../data/skills';
 import type { Lang } from '../i18n/ui';
 import { useTranslations, useTranslatedPath } from '../i18n/utils';
 
@@ -17,26 +16,24 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-// Site paths take the locale prefix; anchors and external proofs do not.
 const link = (href: string) => (href.startsWith('/') ? translatePath(href) : href);
 ---
 
 <Section id="skills" data-home-block="skills">
   <SectionHeading label={t('home.skills')} margin="mb-6" />
-  <ul data-skills class="max-w-3xl space-y-2">
-    {skillsFor(lang).map(({ href, label, proof }) => (
-      <li data-skill class="flex gap-2 text-base text-ink-700 leading-relaxed">
-        <span aria-hidden="true" class="text-accent-700">&rsaquo;</span>
-        <span>
-          {label}{' '}
-          <a
-            href={link(href)}
-            class="text-sm text-gray-500 underline decoration-gray-300 hover:text-accent-800 transition-colors"
-          >
-            {proof}
-          </a>
-        </span>
-      </li>
+  <dl data-skills class="max-w-3xl divide-y divide-ink-100 border-y border-ink-100">
+    {layersFor(lang).map(({ name, terms, proof, link: label, href }) => (
+      <div data-skill class="grid gap-1 py-4 md:grid-cols-[11rem_1fr] md:gap-6">
+        <dt class="text-sm font-semibold text-ink-900">{name}</dt>
+        <dd>
+          <p class="text-sm font-mono text-ink-700 leading-relaxed">{terms.join(' · ')}</p>
+          <p class="mt-1 text-base text-ink-700 leading-relaxed">
+            {proof}{' '}
+            <a href={link(href)} class="text-sm text-accent-700 underline decoration-ink-300 hover:text-accent-800 transition-colors">{label}</a>
+          </p>
+        </dd>
+      </div>
     ))}
-  </ul>
+  </dl>
+  <p data-languages class="max-w-3xl mt-4 text-sm font-mono text-ink-600">{t('home.languages')}: {languages.join(' · ')}</p>
 </Section>

@@ -1,9 +1,9 @@
 
 /**
  * Career facts, condensed from the canonical CV (the `resume` project's
- * `data/cv.yml`): one headline per role, metric-first. Nothing renders this list
- * any more (the Timeline left the home, WEB-140); it is the source every figure
- * in the home's story is held to (`tests/bio.test.mjs`). A new figure goes here
+ * `data/cv.yml`): one headline per role, metric-first. The home's timeline
+ * renders this list next to `data/education.ts`, and every figure elsewhere on
+ * the home is held to it (`tests/bio.test.mjs`). A new figure goes here
  * first, next to the role it belongs to. Bilingual, same shape as `portfolio.ts`.
  */
 
@@ -19,7 +19,7 @@ export interface RoleContent {
 export interface Experience {
   /** Start year, e.g. "2019". */
   start: string;
-  /** End year, or `null` for an ongoing role (rendered as "Present" / "Actualidad"). */
+  /** End year, or `null` for an ongoing role. */
   end: string | null;
   /** Employer — language-neutral. */
   company: string;
@@ -31,19 +31,33 @@ export interface Experience {
 
 export const experience: Experience[] = [
   {
-    start: '2019',
-    end: null,
+    start: '2024',
+    end: '2027',
     company: 'Teledyne E2V',
-    location: { en: 'Spain / USA', es: 'España / EE. UU.' },
+    location: { en: 'USA', es: 'EE. UU.' },
     en: {
       role: 'Applications & Platform Engineer',
       highlight:
-        'Built the platform (Kubernetes + AWS) that turned out an SDK per camera and PoCs for shows, demos and customer requests; led hardware and product integration with customers — onboarding 120→20–30 days, infra −80%.',
+        'Kubernetes and AWS platform that builds an SDK and a PoC per camera, and the infrastructure the team\'s AI agents run on. Customer onboarding from 120 to 20–30 days.',
     },
     es: {
       role: 'Ingeniero de Plataforma y Aplicaciones',
       highlight:
-        'Construí la plataforma (Kubernetes + AWS) que producía un SDK por cámara y PoCs para ferias, demos y peticiones de clientes; lideré la integración de hardware y producto con clientes — onboarding de 120 a 20–30 días, −80% de coste de infra.',
+        'Plataforma en Kubernetes y AWS que genera un SDK y una PoC por cámara, e infraestructura sobre la que corren los agentes de IA del equipo. Onboarding de clientes de 120 a 20–30 días.',
+    },
+  },
+  {
+    start: '2019',
+    end: '2024',
+    company: 'Teledyne E2V',
+    location: { en: 'Spain', es: 'España' },
+    en: {
+      role: 'Applications Engineer',
+      highlight: 'Hardware and product integration with European customers, automating development with cloud, Kubernetes and DevOps.',
+    },
+    es: {
+      role: 'Ingeniero de Aplicaciones',
+      highlight: 'Integración de hardware y producto con clientes europeos, automatizando el desarrollo con cloud, Kubernetes y DevOps.',
     },
   },
   {
@@ -54,12 +68,12 @@ export const experience: Experience[] = [
     en: {
       role: 'Technical Specialist',
       highlight:
-        'NPI and technical presales for high-speed imaging across APAC; primary engineering liaison between EMEA and Chinese clients.',
+        'New product introductions and technical support with Asian customers; engineering liaison between Europe and China.',
     },
     es: {
       role: 'Especialista Técnico',
       highlight:
-        'NPI y presales técnico de imaging de alta velocidad en APAC; enlace de ingeniería principal entre EMEA y clientes chinos.',
+        'Introducción de nuevos productos y soporte técnico con clientes de Asia; enlace de ingeniería entre Europa y China.',
     },
   },
   {
@@ -70,12 +84,12 @@ export const experience: Experience[] = [
     en: {
       role: 'R&D Engineer',
       highlight:
-        'C and VHDL firmware for vision cameras at sub-10 ms latency; .NET GUIs for automated validation systems.',
+        'C and VHDL firmware for vision cameras at sub-10 ms latency.',
     },
     es: {
       role: 'Ingeniero de I+D',
       highlight:
-        'Firmware en C y VHDL para cámaras de visión a <10 ms de latencia; GUIs en .NET para sistemas de validación automatizada.',
+        'Firmware en C y VHDL para cámaras de visión a <10 ms de latencia.',
     },
   },
   {
