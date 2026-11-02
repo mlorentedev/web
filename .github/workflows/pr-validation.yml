@@ -67,6 +67,7 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version-file: .nvmrc
+          check-latest: true
 
       # Everything from the event goes through `env` rather than straight into
       # the script — `head_ref` is a branch name, which a fork controls.
