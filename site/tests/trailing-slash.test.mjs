@@ -72,3 +72,22 @@ test('nginx redirects a direct index.html request without catching its own index
   const conf = readFileSync(join(site, 'nginx.conf'), 'utf8');
   assert.match(conf, /if \(\$request_uri ~ .*index\\\.html.*\) \{\s*return 301/);
 });
+
+test('the index.html redirect cannot leave the host', () => {
+  // `$1` becomes the `Location`, and a browser reads `//evil.com/` as another host.
+  const conf = readFileSync(join(site, 'nginx.conf'), 'utf8');
+  const pattern = new RegExp(conf.match(/if \(\$request_uri ~ (\S+)\) \{/)[1]);
+  assert.equal('/notes/index.html'.match(pattern)?.[1], '/notes/');
+  assert.equal('/es/notes/index.html?x=1'.match(pattern)?.[1], '/es/notes/');
+  assert.equal('/index.html'.match(pattern)?.[1], '/');
+  for (const uri of ['//evil.com/index.html', '//index.html', '///evil.com/index.html', '/\\evil.com/index.html']) {
+    assert.doesNotMatch(uri, pattern, uri);
+  }
+});
+
+test("a directory with no index answers the 404 page, not nginx's bare 403", () => {
+  const conf = readFileSync(join(site, 'nginx.conf'), 'utf8');
+  const es = conf.match(/location \^~ \/es\/ \{[^}]*\}/)[0];
+  assert.match(conf.replace(es, ''), /error_page 403 =404 \/404\.html;/);
+  assert.match(es, /error_page 403 =404 \/es\/404\/index\.html;/);
+});

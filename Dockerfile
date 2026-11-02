@@ -125,6 +125,9 @@ COPY site/nginx.conf /etc/nginx/conf.d/default.conf
 
 USER 1001
 
+# Fail the build, which pull requests run, on a config that would not start.
+RUN nginx -t
+
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
