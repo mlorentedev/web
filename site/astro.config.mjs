@@ -15,6 +15,8 @@ export default defineConfig({
   vite: { plugins: [tailwindcss()] },
   integrations: [
     sitemap({
+      // The integration drops `/404` but not a localised one.
+      filter: (page) => !page.endsWith('/404/'),
       i18n: {
         defaultLocale: 'en',
         locales: { en: 'en', es: 'es' },

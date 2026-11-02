@@ -9,6 +9,11 @@ export type Lang = keyof typeof languages;
 
 export const ui = {
   en: {
+    // 404
+    '404.title': 'Not Found',
+    '404.text': "This page doesn't exist.",
+    '404.cta': 'Go home',
+
     // Nav
     // "Lab" is the door; "IDP" is what is inside. Keep it 3 characters wide —
     // the nav row is already at its 320px limit (see Header.astro).
@@ -287,6 +292,11 @@ export const ui = {
     'meta.ghchart.alt': "Manu's GitHub contribution chart",
   },
   es: {
+    // 404
+    '404.title': 'No encontrado',
+    '404.text': 'Esta página no existe.',
+    '404.cta': 'Ir al inicio',
+
     // Nav
     'nav.ai': 'IA',
     'nav.lab': 'Lab',
