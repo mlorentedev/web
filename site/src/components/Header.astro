@@ -30,6 +30,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
     <a
       data-header-brand
       href={translatePath('/')}
+      aria-current={currentPath === translatePath('/') ? 'page' : undefined}
       class="flex shrink-0 items-center gap-2 text-xl font-extrabold no-underline hover:text-accent-700 transition-colors duration-200"
     >
       <img

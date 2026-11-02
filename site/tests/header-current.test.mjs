@@ -23,9 +23,10 @@ for (const [path, expected] of [
   ['/notes/', [['/notes/', 'page']]],
   ['/es/contact/', [['/es/contact/', 'page']]],
   ['/notes/building-a-homelab-idp/', [['/notes/', 'true']]],
-  ['/', []],
+  ['/', [['/', 'page']]],
+  ['/es/', [['/es/', 'page']]],
 ]) {
-  test(`header on ${path} marks ${expected.length ? expected[0].join(' as ') : 'nothing'}`, () => {
+  test(`header on ${path} marks ${expected[0].join(' as ')}`, () => {
     assert.deepEqual(current(header(path)), expected);
   });
 }
