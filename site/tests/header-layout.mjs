@@ -28,7 +28,7 @@ function measure() {
   const header = document.querySelector('header');
   const brand = header.querySelector('[data-header-brand]');
   const links = header.querySelector('[data-header-links]');
-  const avatar = header.querySelector('img');
+  const avatar = brand.querySelector('img');
   const positioned = [];
   for (let node = avatar; node !== header; node = node.parentElement) {
     positioned.push(getComputedStyle(node).position);
