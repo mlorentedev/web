@@ -18,8 +18,8 @@ test('the lockfile pins archify to a release tag', () => {
 
 for (const path of ['site/scripts/diagrams.mjs', 'site/vendor/archify-schemas/README.md']) {
   test(`${path} installs the pinned ref`, () => {
-    const commands = read(path).match(/npx skills add \S+/g);
-    assert.ok(commands.length > 0);
+    const commands = read(path).match(/npx skills add \S+/g) ?? [];
+    assert.ok(commands.length > 0, 'no install command found');
     for (const command of commands) assert.ok(command.includes(`#${ref}`), command);
   });
 }
