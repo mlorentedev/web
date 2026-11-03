@@ -63,14 +63,6 @@ export function switchLangUrl(url: URL, targetLang: Lang): string {
     if (pathname === '/projects' || pathname === '/projects/') {
       return '/es/';
     }
-  } else if (targetLang === 'en') {
-    if (
-      pathname === '/es/nodo' || pathname === '/es/nodo/' ||
-      pathname === '/es/rompe' || pathname === '/es/rompe/' ||
-      pathname === '/es/newsletter' || pathname === '/es/newsletter/'
-    ) {
-      return '/';
-    }
   }
 
   if (currentLang === defaultLang) {

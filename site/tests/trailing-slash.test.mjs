@@ -53,12 +53,12 @@ test('the rehype plugin rewrites local links in content and nothing else', () =>
   const link = (href) => ({ type: 'element', tagName: 'a', properties: { href }, children: [] });
   const tree = {
     type: 'root',
-    children: [link('/es/rompe'), link('https://example.com/a'), link('//example.com/a'), link('#top'), link('/feed.xml')],
+    children: [link('/es/lab'), link('https://example.com/a'), link('//example.com/a'), link('#top'), link('/feed.xml')],
   };
   rehypeTrailingSlash()(tree);
   assert.deepEqual(
     tree.children.map((node) => node.properties.href),
-    ['/es/rompe/', 'https://example.com/a', '//example.com/a', '#top', '/feed.xml'],
+    ['/es/lab/', 'https://example.com/a', '//example.com/a', '#top', '/feed.xml'],
   );
 });
 

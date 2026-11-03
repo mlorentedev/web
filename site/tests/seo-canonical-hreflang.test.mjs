@@ -3,7 +3,7 @@
  *
  * Verifies:
  * - 404 page emits <meta name="robots" content="noindex, nofollow"> and no canonical or alternate hreflang.
- * - Unilingual pages (notes, projects, es/nodo, es/rompe, unilingual tags) emit self-canonical and no broken alternate hreflangs.
+ * - Unilingual pages (notes, projects, unilingual tags) emit self-canonical and no broken alternate hreflangs.
  * - Bilingual pages (/lab, /es/lab) emit symmetric hreflang links and agree on x-default pointing to default locale.
  * - Navigation links carry trailing slashes to avoid internal redirect hops.
  */
@@ -41,9 +41,6 @@ test('Unilingual pages emit canonical but omit missing alternate hreflangs', () 
   const unilingualPages = [
     { path: 'notes/why-build-homelab/index.html', canonical: 'https://mlorente.dev/notes/why-build-homelab/' },
     { path: 'projects/index.html', canonical: 'https://mlorente.dev/projects/' },
-    { path: 'es/nodo/index.html', canonical: 'https://mlorente.dev/es/nodo/' },
-    { path: 'es/rompe/index.html', canonical: 'https://mlorente.dev/es/rompe/' },
-    { path: 'es/newsletter/index.html', canonical: 'https://mlorente.dev/es/newsletter/' },
     { path: 'tags/dns/index.html', canonical: 'https://mlorente.dev/tags/dns/' },
   ];
 
