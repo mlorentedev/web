@@ -1,29 +1,31 @@
 # mlorente.dev
 
-> Manu Lorente's personal site and engineering platform. Systems & Platform Engineer — infrastructure under autonomous AI agents, Kubernetes bare-metal, local inference, and GitOps.
+> Manu Lorente's personal site. SRE & AI Platform Engineer: from silicon to cloud, he designs and runs platforms with Kubernetes, AWS, GCP and GitOps, with AI agents in the workflow.
 
 ## About
 
-Manu Lorente is a Systems & Platform Engineer with 10+ years of engineering experience across Spain, France, China, and the US. Background spanning CMOS image sensor testing, cleanroom hardware, low-latency firmware, Linux kernel systems, Go concurrency, and production Kubernetes platforms. Currently focused on building sovereign AI infrastructure, autonomous agent execution harnesses, and reproducible cloud-native systems.
+Manu Lorente has over ten years of engineering, working with customers across Europe, Asia and the US. He started in hardware: automated CMOS sensor testing, firmware for vision cameras and hardware integration with customers, at e2v and then at Teledyne Technologies from 2019. He now builds the platform layer: KubeLab, his own hybrid Kubernetes platform, and the harness his AI agents work in.
 
 ## Site Structure
 
-- / — Homepage: engineering thesis, featured open-source systems, latest technical notes, and verified GitHub commit activity.
-- /lab/ — The KubeLab Platform: hybrid cloud (Hetzner, GCP) and bare-metal homelab topology, interactive architectural flows, service catalog, real-time SLOs, and client-side reachability probe.
-- /ai/ — Autonomous AI Harness: deterministic execution harnesses for stochastic AI models (OS concurrency, worktree sandboxing, in-stream secret redaction, and multi-model adversarial review gates).
-- /notes/ — Technical notes and deep dives covering systems engineering, Kubernetes internals, networking (Split DNS, WireGuard), and GitOps failure modes.
-- /contact/ — How to hire Manu. He takes one project at a time: a three-line written brief first, then a paid session and a fixed-length sprint, with the terms on the page.
-- /es/ — Complete Spanish localization of all platform pages and technical notes.
+- / — Home: career and studies timeline, skills by layer with a link that proves each one, GitHub activity, latest notes, and a way to get in touch.
+- /lab/ — KubeLab: hybrid platform on Hetzner, Google Cloud and a bare-metal homelab, its topology and services, and who can reach each service, measured from outside the mesh and re-checked weekly.
+- /ai/ — How his AI agents work: each rule backed by a mechanism (an isolated Git worktree per agent, flock locking, secret redaction, a second model reviewing every pull request, and nothing merged before he reads it).
+- /projects/ — Open-source projects, each with the problem, the solution and a link to the code.
+- /notes/ — Technical notes on platforms, Kubernetes, networking and GitOps. Written in English.
+- /contact/ — Get in touch by email: companies, individuals or a one-off need; he replies within 24 hours.
+- /es/ — The Spanish version of the home, /lab/, /ai/ and /contact/.
 
 ## Core Engineering Domains
 
-Systems Engineering, Platform Engineering, Kubernetes (K3s), Infrastructure as Code (Ansible, Terraform), Docker, GitOps (Argo CD), Autonomous Agent Harnesses, Local LLM Inference (vLLM, Ollama), Networking (WireGuard, Headscale/Tailscale, Split DNS, CoreDNS), Linux POSIX Primitives, Go, Python, Zero-Trust Security (Authelia, CrowdSec).
+Site Reliability Engineering, Platform Engineering, Kubernetes (K3s), GitOps (Argo CD), Infrastructure as Code (Terraform, Ansible), AWS, Google Cloud, Observability (Prometheus, Grafana), tested backups and restore drills, AI agent harnesses and MCP servers, local LLM inference (Jetson Nano), Networking (WireGuard, Headscale/Tailscale, Split DNS), Zero-Trust access (Authelia, CrowdSec), Go, Python, C, C++, FPGA and embedded firmware.
 
-## Flagship Systems & Proof of Work
+## Flagship Systems
 
-- KubeLab: 24/7 hybrid cloud and bare-metal platform IDP (K3s, VPN mesh, SSO, full Prometheus/Grafana observability, automated GitOps delivery).
-- Deterministic AI Harness: OS-level agent execution framework featuring AST loop circuit breakers, zero-copy worktree sandboxing, in-stream secret scrubbing, and cross-model adversarial audit gates.
-- Pollex: Local LLM inference engine operating on edge hardware (Jetson Nano).
+- KubeLab: his hybrid platform, where this site is deployed.
+- AI agent harness: the rules and mechanisms his coding agents work under.
+- Hive: open-source MCP server that gives agents the context each task needs.
+- Pollex: local LLM inference on a Jetson Nano.
 
 ## Contact
 
