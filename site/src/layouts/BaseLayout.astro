@@ -34,8 +34,9 @@ const pageTitle = title;
 const canonicalUrl = new URL(Astro.url.pathname, site.url);
 const defaultLocaleUrl = new URL(switchLangUrl(Astro.url, defaultLang), site.url);
 
-// The ongoing role names the employer in the structured data.
-const current = experience.find((e) => e.end === null) ?? experience[0];
+// The ongoing role names the employer in the structured data; with none, the
+// claim is left out rather than naming a former employer.
+const current = experience.find((e) => e.end === null);
 
 const schemaGraph = {
   '@context': 'https://schema.org',
@@ -47,7 +48,7 @@ const schemaGraph = {
       jobTitle: 'SRE & AI Platform Engineer',
       description: 'SRE & AI Platform Engineer',
       url: site.url,
-      worksFor: { '@type': 'Organization', name: current.company },
+      ...(current && { worksFor: { '@type': 'Organization', name: current.company } }),
       sameAs: [
         site.social.github,
         site.social.x,

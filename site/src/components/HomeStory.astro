@@ -23,11 +23,12 @@ const [bio] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) 
 if (!bio) throw new Error(`HomeStory: no bio for "${lang}" — expected src/content/pages/${lang}-bio.mdx with page: bio`);
 const { Content: Bio } = await render(bio);
 
-// An ongoing role is laid out up to the build year and reads "present".
-const thisYear = String(new Date().getFullYear());
+// An ongoing role is laid out up to the build year, at least one year long so
+// it keeps a row of its own, and reads "present".
+const thisYear = new Date().getFullYear();
 const work = experience.map((e) => ({
   start: e.start,
-  end: e.end ?? thisYear,
+  end: e.end ?? String(Math.max(thisYear, Number(e.start) + 1)),
   until: e.end ?? t('home.timeline.present'),
   title: e[lang].role,
   place: `${e.company} · ${e.location[lang]}`,
