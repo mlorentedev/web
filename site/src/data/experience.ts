@@ -39,14 +39,14 @@ export const experience: Experience[] = [
     company: 'Teledyne Technologies',
     location: { en: 'USA', es: 'EE. UU.' },
     en: {
-      role: 'Applications & Platform Engineer',
+      role: 'Applications Engineer',
       highlight:
-        'Kubernetes and AWS platform that builds an SDK and a PoC per camera, and the infrastructure the team\'s AI agents run on. Customer onboarding from 120 to 20–30 days.',
+        'An internal platform that builds the SDK and a PoC for each camera, AI agents for SDK support and sensor characterisation, agentic-workflow training for EMEA, NAM and APAC, and bring-up with customers: onboarding from 120 to 20–30 days.',
     },
     es: {
-      role: 'Ingeniero de Plataforma y Aplicaciones',
+      role: 'Ingeniero de Aplicaciones',
       highlight:
-        'Plataforma en Kubernetes y AWS que genera un SDK y una PoC por cámara, e infraestructura sobre la que corren los agentes de IA del equipo. Onboarding de clientes de 120 a 20–30 días.',
+        'Plataforma interna que genera el SDK y una PoC de cada cámara, agentes de IA para el soporte del SDK y la caracterización de sensores, formación en flujos agénticos para EMEA, NAM y APAC, y puesta en marcha con clientes: onboarding de 120 a 20–30 días.',
     },
   },
   {
@@ -56,11 +56,11 @@ export const experience: Experience[] = [
     location: { en: 'Spain', es: 'España' },
     en: {
       role: 'Applications Engineer',
-      highlight: 'Hardware and product integration with European customers, automating development with cloud, Kubernetes and DevOps.',
+      highlight: 'Tooling for each camera and the work with customers: a Python CLI that retired the MATLAB manufacturing scripts across the global teams, the SDK (Python, C++, MATLAB) customers used to evaluate it against EMVA 1288, and integration and technical support with European customers.',
     },
     es: {
       role: 'Ingeniero de Aplicaciones',
-      highlight: 'Integración de hardware y producto con clientes europeos, automatizando el desarrollo con cloud, Kubernetes y DevOps.',
+      highlight: 'Herramientas para cada cámara y trabajo con el cliente: una CLI en Python que retiró los scripts de MATLAB de fabricación en los equipos globales, el SDK (Python, C++, MATLAB) con el que los clientes la evaluaban según EMVA 1288, y la integración y el soporte técnico con clientes europeos.',
     },
   },
   {

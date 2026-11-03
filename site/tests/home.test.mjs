@@ -162,8 +162,8 @@ const present = { en: 'present', es: 'actualidad' };
 for (const { lang, built } of homes) {
   test(`[${lang}] the timeline names each employer and leaves the current role open`, () => {
     const html = dist(built);
-    for (const marker of ['data-timeline', 'data-timeline-list']) {
-      const block = html.match(new RegExp(`<(?:table|ol)[^>]*${marker}[\\s\\S]*?</(?:table|ol)>`))?.[0] ?? '';
+    for (const marker of ['data-timeline']) {
+      const block = html.match(new RegExp(`<ol[^>]*${marker}[\\s\\S]*?</ol>`))?.[0] ?? '';
       assert.ok(block, `dist/${built}: no ${marker}`);
       assert.match(block, /Teledyne Technologies/, `dist/${built} ${marker}: no current employer`);
       assert.match(block, /\be2v\b/, `dist/${built} ${marker}: no employer before 2019`);
@@ -180,3 +180,16 @@ test('the structured data names the current employer and the hero title', () => 
   assert.equal(person.jobTitle, 'SRE & AI Platform Engineer');
   assert.equal(person.worksFor?.name, 'Teledyne Technologies');
 });
+
+for (const { lang, built } of homes) {
+  test(`[${lang}] the timeline is one line, newest first, with every role and every study`, () => {
+    const block = dist(built).match(/<ol[^>]*data-timeline[\s\S]*?<\/ol>/)?.[0] ?? '';
+    const items = [...block.matchAll(/<li[^>]*data-timeline-item[^>]*data-kind="(work|study)"[\s\S]*?<\/li>/g)];
+    const kinds = items.map((m) => m[1]);
+    assert.equal(kinds.filter((k) => k === 'work').length, 5, `dist/${built}: expected 5 roles`);
+    assert.equal(kinds.filter((k) => k === 'study').length, 3, `dist/${built}: expected 3 studies`);
+    const starts = items.map((m) => Number(m[0].match(/(\d{4})–/)?.[1]));
+    assert.deepEqual(starts, [...starts].sort((a, b) => b - a), `dist/${built}: entries are not newest first`);
+    assert.doesNotMatch(dist(built), /<table[^>]*data-timeline/, `dist/${built} still renders the timeline table`);
+  });
+}
