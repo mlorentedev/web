@@ -1,31 +1,23 @@
 import type { Lang } from '../i18n/ui';
 
 /**
- * The offer ladder behind the contact door (WEB-137). Every figure on the offer
- * is stated here once and rendered by `components/Offer.astro` in both locales,
- * so a price change is one edit and the two languages cannot quote different
- * numbers. The contact markdown carries no figures of its own; a test holds it
- * to that.
+ * How the work starts (#499). The one price is stated here once and rendered by
+ * `components/Offer.astro` in both locales, so a change is one edit and the two
+ * languages cannot quote different numbers. The contact markdown carries no
+ * figures of its own; a test holds it to that.
  *
- * Prices are in USD in both locales. The step before these two, the written
- * filter, is free and is the door itself (`components/Door.astro`).
+ * The price is in USD in both locales. The payment link goes out by mail, after
+ * a yes, so the page has no direct pay button.
  */
 export const offer = {
   session: {
     minutes: 60,
-    fromUsd: 300,
-    /** A sprint started within this many days gets the session credited in full, once. */
-    creditDays: 30,
-  },
-  sprint: {
-    minWeeks: 2,
-    maxWeeks: 4,
+    usd: 300,
   },
 } as const;
 
-/** One rung of the ladder, flattened to a language. */
+/** One step of the process, flattened to a language. */
 export interface OfferStep {
-  /** The rung and its terms, e.g. "60-minute session · from $300". */
   title: string;
   body: string;
 }
@@ -33,28 +25,35 @@ export interface OfferStep {
 const usd = (amount: number) => `$${amount.toLocaleString('en-US')}`;
 
 export function offerSteps(lang: Lang): OfferStep[] {
-  const { session, sprint } = offer;
-  const weeks = `${sprint.minWeeks}–${sprint.maxWeeks}`;
+  const { session } = offer;
   if (lang === 'es') {
     return [
       {
-        title: `Sesión de ${session.minutes} minutos · desde ${usd(session.fromUsd)}`,
-        body: `Revisamos tu sistema juntos y te llevas por escrito qué arreglar primero. Si no crees que valió lo que pagaste, te lo devuelvo. Si en ${session.creditDays} días empezamos un sprint, se descuenta entero.`,
+        title: 'Me escribes',
+        body: 'Tres líneas: qué necesitas, qué hay ya en marcha y para cuándo.',
       },
       {
-        title: `Sprint · ${weeks} semanas, precio según la sesión`,
-        body: 'Un sistema, sobre una base que ya existe. “Terminado” es en producción y monitorizado, y sigo hasta cumplir el resultado acordado.',
+        title: 'Te digo si puedo ayudarte',
+        body: 'Te respondo por correo. Si no soy la persona adecuada, te lo digo y ahí queda.',
+      },
+      {
+        title: `Sesión de ${session.minutes} minutos · ${usd(session.usd)}`,
+        body: 'Si puedo ayudarte, te envío el enlace de pago. Una hora como máximo por cada parte, y te llevas por escrito qué hacer primero. Si no crees que valió lo que pagaste, te lo devuelvo.',
       },
     ];
   }
   return [
     {
-      title: `${session.minutes}-minute session · from ${usd(session.fromUsd)}`,
-      body: `We look at your system together and you leave with a written list of what to fix first. If you don’t think it was worth it, I refund you. If we start a sprint within ${session.creditDays} days, it’s credited in full.`,
+      title: 'You write to me',
+      body: 'Three lines: what you need, what’s already running, and when you need it.',
     },
     {
-      title: `Sprint · ${weeks} weeks, priced after the session`,
-      body: 'One system, on a foundation that already exists. “Done” means in production and monitored, and I keep working until the agreed result is met.',
+      title: 'I tell you whether I can help',
+      body: 'I reply by email. If I’m not the right person, I say so and that’s that.',
+    },
+    {
+      title: `${session.minutes}-minute session · ${usd(session.usd)}`,
+      body: 'If I can help, I send you the payment link. One hour at most on each side, and you leave with a written list of what to do first. If you don’t think it was worth it, I refund you.',
     },
   ];
 }
