@@ -28,8 +28,9 @@ function dist(page) {
 for (const page of ['index.html', 'es/index.html', 'lab/index.html', 'es/contact/index.html']) {
   test(`dist/${page}: the build chip matches /version.json`, () => {
     const { version, commit } = JSON.parse(dist('version.json'));
-    const chip = dist(page).match(/<a[^>]*data-build[\s\S]*?<\/a>/)?.[0] ?? '';
-    assert.ok(chip, `dist/${page} has no build chip`);
+    const chips = dist(page).match(/<a[^>]*data-build[\s\S]*?<\/a>/g) ?? [];
+    assert.equal(chips.length, 1, `dist/${page} has ${chips.length} build chips, expected one`);
+    const [chip] = chips;
     const words = chip.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     if (commit === 'local') {
       assert.equal(words, `local · v${version}`);
