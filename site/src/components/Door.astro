@@ -24,16 +24,13 @@ const month = busyMonth(site.nextStart, new Date(), getDateLocale(lang));
       {t('door.busy').replace('{month}', month)}
     </p>
   )}
-  {/* One link, with the address in it: a button plus the address under it
-      said the same thing twice, and the visible address still serves anyone
-      whose browser opens no mail client. */}
+  {/* The button alone: the address printed under it said the same thing
+      twice, and the footer already shows it to anyone with no mail client. */}
   <a
     href={mailto}
-    class="group inline-flex flex-wrap items-baseline gap-x-3 gap-y-1 font-mono"
+    class="inline-block px-6 py-2.5 bg-ink-900 text-white rounded-md text-sm font-medium hover:bg-accent-700 transition-colors shadow-xs"
   >
-    <span class="text-sm text-ink-500">{t('door.cta')}</span>
-    <span aria-hidden="true" class="text-accent-600 transition-transform group-hover:translate-x-0.5">→</span>
-    <span class="text-lg text-ink-900 border-b border-accent-500 group-hover:text-accent-700 group-hover:border-accent-700 transition-colors">{site.social.email}</span>
+    {t('door.cta')}
   </a>
   {month && (
     <script is:inline>
