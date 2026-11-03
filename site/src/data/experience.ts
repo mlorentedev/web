@@ -39,14 +39,14 @@ export const experience: Experience[] = [
     company: 'Teledyne Technologies',
     location: { en: 'USA', es: 'EE. UU.' },
     en: {
-      role: 'Applications & Platform Engineer',
+      role: 'Applications Engineer',
       highlight:
-        'Kubernetes and AWS platform that builds an SDK and a PoC per camera, and the infrastructure the team\'s AI agents run on. Customer onboarding from 120 to 20–30 days.',
+        'Platforms that build an SDK and a PoC per camera, automation and AI agents, and bring-up with customers. Customer onboarding from 120 to 20–30 days.',
     },
     es: {
-      role: 'Ingeniero de Plataforma y Aplicaciones',
+      role: 'Ingeniero de Aplicaciones',
       highlight:
-        'Plataforma en Kubernetes y AWS que genera un SDK y una PoC por cámara, e infraestructura sobre la que corren los agentes de IA del equipo. Onboarding de clientes de 120 a 20–30 días.',
+        'Desarrollo de plataformas que generan un SDK y una PoC por cámara, automatizaciones y agentes de IA, y puesta en marcha con clientes. Onboarding de clientes de 120 a 20–30 días.',
     },
   },
   {
