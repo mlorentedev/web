@@ -93,8 +93,8 @@ for (const { lang, built } of homes) {
 
 // ── How the work starts: one source (WEB-140, AC3) ─────────────────────────
 //
-// The home renders the same contact markdown as /contact, so the offer and the
-// door cannot say two different things. Compared as rendered text, element by
+// The home renders the same contact markdown as /contact, so the door cannot
+// say two different things. Compared as rendered text, element by
 // element, so a copy pasted onto the home and left to drift is caught.
 
 const contacts = { en: 'contact/index.html', es: 'es/contact/index.html' };
@@ -116,13 +116,6 @@ function element(html, attr) {
 const text = (html) => html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
 for (const { lang, built } of homes) {
-  test(`[${lang}] one source: the home's offer is the contact page's offer`, () => {
-    const home = text(element(dist(built), 'data-offer'));
-    const contact = text(element(dist(contacts[lang]), 'data-offer'));
-    assert.ok(contact.length > 100, `dist/${contacts[lang]}: the offer rendered empty`);
-    assert.equal(home, contact, `dist/${built}: the offer differs from /contact's, or is missing`);
-  });
-
   test(`[${lang}] one source: the home's door opens the same mail as the contact page's`, () => {
     const mailto = (html) => element(html, 'data-door').match(/href="(mailto:[^"]+)"/)?.[1] ?? '';
     const contact = mailto(dist(contacts[lang]));
@@ -162,7 +155,7 @@ for (const { lang, built } of homes) {
       const main = dist(page).match(/<main[\s\S]*<\/main>/)?.[0] ?? '';
       const withoutBusy = main.replace(/<p[^>]*data-busy[\s\S]*?<\/p>/g, '');
       const words = text(withoutBusy);
-      assert.ok(words.length > 300, `dist/${page}: <main> rendered almost nothing`);
+      assert.ok(words.length > 100, `dist/${page}: <main> rendered almost nothing`);
       const claims = words.match(/open to (?:work|opportunities)|available (?:now|for hire|immediately)|currently available|accepting (?:new )?(?:clients|projects)|disponible|disponibilidad|abierto a (?:nuevas )?(?:oportunidades|proyectos)|aceptando (?:nuevos )?(?:clientes|proyectos)/gi) ?? [];
       assert.deepEqual(claims, [], `dist/${page} says: ${claims.join(', ')}`);
     });

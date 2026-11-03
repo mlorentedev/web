@@ -1,12 +1,9 @@
 /**
- * The contact door and how the work starts (WEB-137, #499).
+ * The contact door (WEB-137, #499).
  *
  * The words on the page are Manu's to change, so these tests do not pin copy.
- * They pin the three things copy edits must not break:
+ * They pin what copy edits must not break:
  *
- *   - **Figures have one source.** Every price and duration is in
- *     `data/offer.ts`; the markdown states none, and both locales render the
- *     same ones. Two languages quoting two prices is the failure this prevents.
  *   - **The busy line is asymmetric.** It shows only while `site.nextStart` is
  *     a future date, and never otherwise.
  *   - **There is one door.** The hero's primary button leads to it, and the
@@ -26,7 +23,6 @@ import { busyMonth } from '../src/data/availability.mjs';
 const here = dirname(fileURLToPath(import.meta.url));
 const siteRoot = join(here, '..');
 const distDir = join(siteRoot, 'dist');
-const offerSrc = readFileSync(join(siteRoot, 'src/data/offer.ts'), 'utf8');
 const siteSrc = readFileSync(join(siteRoot, 'src/data/site.ts'), 'utf8');
 
 const pages = [
@@ -62,51 +58,18 @@ function element(html, attr) {
   return '';
 }
 
-/** The figure a field of `offer.ts` holds, e.g. `usd: 300` → `300`. */
-function offerField(name) {
-  const value = offerSrc.match(new RegExp(`\\b${name}:\\s*(\\d+)`))?.[1];
-  assert.ok(value, `offer.ts has no numeric \`${name}\``);
-  return value;
-}
-
-// ── Figures have one source ────────────────────────────────────────────────
-
-const expected = [`$${offerField('usd')}`, offerField('minutes')];
-
 for (const { lang, contact } of pages) {
-  test(`[${lang}] the offer block quotes every figure in offer.ts`, () => {
-    const offer = text(element(dist(contact), 'data-offer'));
-    assert.ok(offer.length > 100, `dist/${contact}: the offer block is missing or empty`);
-    const missing = expected.filter((f) => !offer.includes(f));
-    assert.deepEqual(missing, [], `dist/${contact}: offer block lacks ${missing.join(', ')}`);
-  });
-
-  test(`[${lang}] the contact markdown states no figure of its own`, () => {
-    const raw = readFileSync(join(siteRoot, `src/content/pages/${lang}-contact.mdx`), 'utf8');
-    const body = raw.replace(/^---[\s\S]*?---/, '');
-    assert.ok(body.includes('<Offer />') && body.includes('<Door />'), `${lang}-contact.mdx must place <Door /> and <Offer />`);
-    assert.deepEqual(body.match(/\d+/g) ?? [], [], `${lang}-contact.mdx: figures belong in src/data/offer.ts`);
+  test(`[${lang}] the contact page offers one way in and quotes no price`, () => {
+    const body = readFileSync(join(siteRoot, `src/content/pages/${lang}-contact.mdx`), 'utf8');
+    assert.ok(body.includes('<Door />'), `${lang}-contact.mdx must place <Door />`);
+    assert.doesNotMatch(text(dist(contact).match(/<main[\s\S]*<\/main>/)?.[0] ?? ''), /[$€]\s?\d/, `dist/${contact} quotes a price`);
   });
 }
 
-test('both locales quote the same figures', () => {
-  const [en, es] = pages.map(({ contact }) => text(element(dist(contact), 'data-offer')).match(/\$?\d+(?:–\d+)?/g) ?? []);
-  assert.ok(en.length >= expected.length, 'the English offer block quotes no figures');
-  assert.deepEqual([...es].sort(), [...en].sort());
-});
-
-test('each locale renders its own words around those figures', () => {
-  // The offer and the door are placed from the markdown with no `lang` prop; they
-  // read the page's locale (lesson 056). If that broke, both pages would render the
-  // same language, and the figure checks above would still pass.
-  // `element`, not `block`: the markdown after the offer is already Spanish on the
-  // Spanish page, so a slice running on to </main> would differ even with an
-  // all-English offer.
-  const [en, es] = pages.map(({ contact }) => text(element(dist(contact), 'data-offer')));
-  assert.ok(en.length > 100 && es.length > 100, 'an offer block rendered empty');
-  assert.notEqual(es, en, 'the Spanish and English offer blocks are identical: the locale did not reach the component');
-  const [enDoor, esDoor] = pages.map(({ contact }) => text(element(dist(contact), 'data-door')));
-  assert.notEqual(esDoor, enDoor, 'the Spanish and English doors are identical: the locale did not reach the component');
+test('each locale renders its own door', () => {
+  const [en, es] = pages.map(({ contact }) => text(element(dist(contact), 'data-door')));
+  assert.ok(en.length > 0 && es.length > 0, 'a door rendered empty');
+  assert.notEqual(es, en, 'the Spanish and English doors are identical: the locale did not reach the component');
 });
 
 // ── The busy line is asymmetric ────────────────────────────────────────────
@@ -160,7 +123,7 @@ for (const { lang, contact, home, href } of pages) {
 
   test(`[${lang}] the contact page carries none of the retired positioning`, () => {
     const page = text(block(dist(contact), 'data-contact'));
-    assert.ok(page.length > 300, `dist/${contact}: the contact page rendered empty`);
+    assert.ok(page.length > 100, `dist/${contact}: the contact page rendered empty`);
     const retired = [/Service-as-a-Software/i, /sovereign|soberan/i, /100\s?%/, /technical debt|deuda técnica/i, /deterministic|determinist/i];
     const found = retired.filter((re) => re.test(page)).map(String);
     assert.deepEqual(found, [], `dist/${contact} still says: ${found.join(', ')}`);
