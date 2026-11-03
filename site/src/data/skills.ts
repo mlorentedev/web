@@ -26,21 +26,6 @@ export interface Layer {
 
 export const layers: Layer[] = [
   {
-    href: 'https://github.com/mlorentedev/vicon-fpga-face-detection',
-    en: {
-      name: 'Hardware',
-      terms: ['FPGA', 'C firmware', 'Inference on Jetson and FPGA', 'Hands-on with hardware'],
-      proof: 'My master\'s project: face detection on an FPGA.',
-      link: 'the code',
-    },
-    es: {
-      name: 'Hardware',
-      terms: ['FPGA', 'Firmware en C', 'Inferencia en Jetson y FPGA', 'Trabajo directo con hardware'],
-      proof: 'Mi trabajo de fin de máster: detección facial en FPGA.',
-      link: 'el código',
-    },
-  },
-  {
     href: '/lab/',
     en: {
       name: 'Platform',
@@ -56,18 +41,18 @@ export const layers: Layer[] = [
     },
   },
   {
-    href: 'https://github.com/zuidui/doc',
+    href: 'https://github.com/mlorentedev/kubelab',
     en: {
-      name: 'Cloud and systems design',
-      terms: ['AWS, GCP and Hetzner', 'Observability', 'Tested backups', 'Security', 'Microservices'],
-      proof: 'Zuidui, my cloud master\'s project with a teammate: event-driven microservices on Kubernetes. I took development, integration and documentation.',
-      link: 'the project',
+      name: 'Reliability',
+      terms: ['Observability', 'Tested backups', 'Restore drills', 'Alerting', 'Security'],
+      proof: 'I restore KubeLab\'s backups for real, and I test its alerts by breaking things on purpose.',
+      link: 'the repository',
     },
     es: {
-      name: 'Cloud y diseño de sistemas',
-      terms: ['AWS, GCP y Hetzner', 'Observabilidad', 'Backups probados', 'Seguridad', 'Microservicios'],
-      proof: 'Zuidui, mi trabajo de fin del máster cloud junto a un compañero: microservicios por eventos sobre Kubernetes. Yo llevé desarrollo, integración y documentación.',
-      link: 'el proyecto',
+      name: 'Fiabilidad',
+      terms: ['Observabilidad', 'Backups probados', 'Simulacros de recuperación', 'Alertas', 'Seguridad'],
+      proof: 'Restauro de verdad los backups de KubeLab y pruebo sus alertas rompiendo cosas a propósito.',
+      link: 'el repositorio',
     },
   },
   {
@@ -83,6 +68,36 @@ export const layers: Layer[] = [
       terms: ['Harness de agentes', 'Servidores MCP', 'Orquestación de agentes'],
       proof: 'El harness en el que trabajan mis agentes, y Hive, mi servidor MCP de código abierto.',
       link: 'cómo funciona',
+    },
+  },
+  {
+    href: 'https://github.com/zuidui/doc',
+    en: {
+      name: 'Cloud and systems design',
+      terms: ['AWS, GCP and Hetzner', 'Microservices', 'Event-driven systems'],
+      proof: 'Zuidui, my cloud master\'s project with a teammate: event-driven microservices on Kubernetes. I took development, integration and documentation.',
+      link: 'the project',
+    },
+    es: {
+      name: 'Cloud y diseño de sistemas',
+      terms: ['AWS, GCP y Hetzner', 'Microservicios', 'Sistemas por eventos'],
+      proof: 'Zuidui, mi trabajo de fin del máster cloud junto a un compañero: microservicios por eventos sobre Kubernetes. Yo llevé desarrollo, integración y documentación.',
+      link: 'el proyecto',
+    },
+  },
+  {
+    href: 'https://github.com/mlorentedev/vicon-fpga-face-detection',
+    en: {
+      name: 'Hardware',
+      terms: ['FPGA', 'C firmware', 'Inference on Jetson and FPGA', 'Hands-on with hardware'],
+      proof: 'My master\'s project: face detection on an FPGA.',
+      link: 'the code',
+    },
+    es: {
+      name: 'Hardware',
+      terms: ['FPGA', 'Firmware en C', 'Inferencia en Jetson y FPGA', 'Trabajo directo con hardware'],
+      proof: 'Mi trabajo de fin de máster: detección facial en FPGA.',
+      link: 'el código',
     },
   },
 ];

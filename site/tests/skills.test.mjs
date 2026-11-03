@@ -27,8 +27,8 @@ const homes = [
   { lang: 'es', built: 'es/index.html', prefix: '/es' },
 ];
 
-/** Hardware, platform, cloud and systems design, AI (#499). */
-const ITEMS = 4;
+/** Platform, reliability, AI, cloud and systems design, hardware (#499). */
+const ITEMS = 5;
 
 /**
  * Where a proof may live: a public repository of Manu's, or a package index.
