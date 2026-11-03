@@ -20,6 +20,7 @@ const current = (html) =>
 for (const [path, expected] of [
   ['/lab/', [['/lab/', 'page']]],
   ['/es/lab/', [['/es/lab/', 'page']]],
+  ['/ai/', [['/ai/', 'page']]],
   ['/notes/', [['/notes/', 'page']]],
   ['/es/contact/', [['/es/contact/', 'page']]],
   ['/notes/building-a-homelab-idp/', [['/notes/', 'true']]],
