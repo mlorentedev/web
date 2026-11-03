@@ -12,8 +12,9 @@ import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
 // /es/notes/ is noindex while no note is written in Spanish; keep it out of the
 // sitemap for as long, so the two signals agree.
 const notesDir = new URL('./src/content/notes/', import.meta.url);
+const frontMatter = (text) => text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
 const hasSpanishNotes = readdirSync(notesDir).some((f) =>
-  /^lang:\s*['"]?es\b/m.test(readFileSync(new URL(f, notesDir), 'utf8')),
+  /^lang:\s*['"]?es\b/m.test(frontMatter(readFileSync(new URL(f, notesDir), 'utf8'))),
 );
 
 export default defineConfig({

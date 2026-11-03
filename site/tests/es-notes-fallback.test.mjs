@@ -18,7 +18,8 @@ import { fileURLToPath } from 'node:url';
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = join(siteRoot, 'dist');
 const notesDir = join(siteRoot, 'src/content/notes');
-const spanish = readdirSync(notesDir).some((f) => /^lang:\s*['"]?es\b/m.test(readFileSync(join(notesDir, f), 'utf8')));
+const frontMatter = (text) => text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
+const spanish = readdirSync(notesDir).some((f) => /^lang:\s*['"]?es\b/m.test(frontMatter(readFileSync(join(notesDir, f), 'utf8'))));
 
 function dist(page) {
   const file = join(distDir, page);
