@@ -78,15 +78,15 @@ export const projects: Project[] = [
   {
     en: {
       title: 'Hive',
-      metric: '67–82% fewer tokens',
+      metric: 'Context on demand over MCP',
       description:
-        'AI assistants waste tokens loading context they don\'t need. Hive queries your Obsidian vault on demand via MCP — only what\'s relevant, when it\'s relevant. 67-82% token reduction.',
+        'AI assistants waste tokens loading context they don\'t need. Hive queries your Obsidian vault on demand via MCP — only what\'s relevant, when it\'s relevant.',
     },
     es: {
       title: 'Hive',
-      metric: '67–82% menos tokens',
+      metric: 'Contexto bajo demanda vía MCP',
       description:
-        'Los asistentes de IA malgastan tokens cargando contexto que no necesitan. Hive consulta tu bóveda de Obsidian bajo demanda vía MCP: solo lo relevante, cuando es relevante. 67-82% menos tokens.',
+        'Los asistentes de IA malgastan tokens cargando contexto que no necesitan. Hive consulta tu bóveda de Obsidian bajo demanda vía MCP: solo lo relevante, cuando es relevante.',
     },
     url: 'https://mlorentedev.github.io/hive/',
     github: 'https://github.com/mlorentedev/hive',
@@ -142,8 +142,8 @@ export const projects: Project[] = [
       description:
         'Buscar y reemplazar en PDFs sin destrozar el formato. CLI para lotes, servidor MCP para agentes de IA.',
     },
-    url: 'https://mlorentedev.github.io/pdf-modifier-mcp/',
-    github: 'https://github.com/mlorentedev/pdf-modifier-mcp',
+    url: 'https://pypi.org/project/pdf-modifier-mcp/',
+    github: 'https://github.com/mlorentedev/pdf-modifier',
     tags: ['Python', 'MCP', 'PDF'],
     featured: false,
   },
