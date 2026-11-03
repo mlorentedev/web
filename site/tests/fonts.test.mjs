@@ -29,7 +29,8 @@ const visibleText = (html) =>
   html
     .replace(/<(script|style|svg)\b[\s\S]*?<\/\1>/g, '')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/&#x([\da-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)));
+    .replace(/&#x([\da-f]+);/gi, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number(decimal)));
 
 test('every committed face is a subset', () => {
   for (const face of readdirSync(join(site, 'public/fonts'))) {
