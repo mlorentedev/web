@@ -1,6 +1,7 @@
 ---
 import { site } from '../data/site';
 import { features } from '../data/features';
+import { SITE_COMMIT, SITE_VERSION } from '../data/version';
 import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -9,6 +10,11 @@ const translatePath = useTranslatedPath(lang);
 
 const year = new Date().getFullYear();
 const { email, github, x, youtube } = site.social;
+
+// The build this page came from, as a sync chip (ADR-060): the release and the
+// commit `/version.json` serves. A tagged build links its commit; a local one
+// says `local` and claims no sync.
+const deployed = SITE_COMMIT !== 'local';
 ---
 
 <footer class="bg-accent-50 text-ink-500 px-4 py-4 text-center border-t border-accent-200">
@@ -44,5 +50,16 @@ const { email, github, x, youtube } = site.social;
     &copy; {year} <span translate="no">Manu Lorente</span>
     · <a href={translatePath('/legal/privacy/')} class="underline hover:text-accent-600">{t('footer.privacy')}</a>
     · <a href="/rss.xml" translate="no" class="underline hover:text-accent-600">RSS</a>
+  </p>
+  <p class="mt-3">
+    <a
+      data-build
+      href={deployed ? `https://github.com/mlorentedev/web/commit/${SITE_COMMIT}` : '/version.json'}
+      translate="no"
+      class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-0.5 font-mono text-xs text-ink-600 ring-1 ring-inset ring-accent-200 hover:text-accent-700"
+    >
+      {deployed && <span class="size-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>}
+      {deployed ? 'synced' : 'local'} · v{SITE_VERSION}{deployed && ` · sha-${SITE_COMMIT}`}
+    </a>
   </p>
 </footer>
