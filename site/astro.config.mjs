@@ -13,8 +13,10 @@ import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
 // sitemap for as long, so the two signals agree.
 const notesDir = new URL('./src/content/notes/', import.meta.url);
 const frontMatter = (text) => text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
+// A Spanish note counts once it is published: drafts are not built, as in the collection filters.
+const isSpanishPublished = (fm) => /^lang:\s*['"]?es\b/m.test(fm) && !/^draft:\s*true\b/m.test(fm);
 const hasSpanishNotes = readdirSync(notesDir).some((f) =>
-  /^lang:\s*['"]?es\b/m.test(frontMatter(readFileSync(new URL(f, notesDir), 'utf8'))),
+  isSpanishPublished(frontMatter(readFileSync(new URL(f, notesDir), 'utf8'))),
 );
 
 export default defineConfig({
