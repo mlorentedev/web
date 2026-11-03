@@ -5,7 +5,7 @@
  *
  * `getComputedStyle()` reports an animated property at whichever frame it runs,
  * so an animation running during `capture` reads as a style change between two
- * captures of one build. The home is the page that has animations: if it ever
+ * captures of one build. The Lab is the page that has animations: if it ever
  * loses them, the first assertion says this check no longer proves anything.
  */
 import assert from 'node:assert/strict';
@@ -20,8 +20,8 @@ const { url: base, server } = await labBaseUrl();
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await page.goto(`${base}/`, { waitUntil: 'networkidle' });
-  assert.ok((await page.evaluate(running)) > 0, 'the home has no animation left to freeze');
+  await page.goto(`${base}/lab/`, { waitUntil: 'networkidle' });
+  assert.ok((await page.evaluate(running)) > 0, 'the Lab has no animation left to freeze');
   await freezeMotion(page);
   assert.equal(await page.evaluate(running), 0);
   console.log('visual-diff-motion: no animation runs after freezeMotion');
