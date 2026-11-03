@@ -3,6 +3,7 @@ import '../styles/tailwind.css';
 import '../styles/global.css';
 import { site } from '../data/site';
 import { SITE_COMMIT, SITE_VERSION } from '../data/version';
+import { experience } from '../data/experience';
 import { languages, defaultLang } from '../i18n/ui';
 import { getLocale, useTranslations, switchLangUrl } from '../i18n/utils';
 
@@ -33,6 +34,9 @@ const pageTitle = title;
 const canonicalUrl = new URL(Astro.url.pathname, site.url);
 const defaultLocaleUrl = new URL(switchLangUrl(Astro.url, defaultLang), site.url);
 
+// The ongoing role names the employer in the structured data.
+const current = experience.find((e) => e.end === null) ?? experience[0];
+
 const schemaGraph = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -40,10 +44,10 @@ const schemaGraph = {
       '@type': 'Person',
       '@id': `${site.url}/#person`,
       name: site.author,
-      // The role people search for; the label (WEB-137) rides in `description`.
-      jobTitle: 'Platform Engineer',
+      jobTitle: 'SRE & AI Platform Engineer',
       description: 'SRE & AI Platform Engineer',
       url: site.url,
+      worksFor: { '@type': 'Organization', name: current.company },
       sameAs: [
         site.social.github,
         site.social.x,

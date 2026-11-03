@@ -154,3 +154,29 @@ for (const { lang, built } of homes) {
     assert.doesNotMatch(hero.slice(hero.indexOf('<h1')), /<a\s|<button\b/, `dist/${built}: the hero carries a link`);
   });
 }
+
+// ── The timeline names the employer, and the current role has no end (#499) ──
+
+const present = { en: 'present', es: 'actualidad' };
+
+for (const { lang, built } of homes) {
+  test(`[${lang}] the timeline names each employer and leaves the current role open`, () => {
+    const html = dist(built);
+    for (const marker of ['data-timeline', 'data-timeline-list']) {
+      const block = html.match(new RegExp(`<(?:table|ol)[^>]*${marker}[\\s\\S]*?</(?:table|ol)>`))?.[0] ?? '';
+      assert.ok(block, `dist/${built}: no ${marker}`);
+      assert.match(block, /Teledyne Technologies/, `dist/${built} ${marker}: no current employer`);
+      assert.match(block, /\be2v\b/, `dist/${built} ${marker}: no employer before 2019`);
+      assert.match(block, new RegExp(`2024–${present[lang]}`), `dist/${built} ${marker}: the current role is not open`);
+      const future = (block.match(/\b20\d\d\b/g) ?? []).filter((y) => Number(y) > new Date().getFullYear());
+      assert.deepEqual(future, [], `dist/${built} ${marker}: years in the future`);
+    }
+  });
+}
+
+test('the structured data names the current employer and the hero title', () => {
+  const ld = dist('index.html').match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] ?? '';
+  const person = JSON.parse(ld)['@graph'].find((n) => n['@type'] === 'Person');
+  assert.equal(person.jobTitle, 'SRE & AI Platform Engineer');
+  assert.equal(person.worksFor?.name, 'Teledyne Technologies');
+});
