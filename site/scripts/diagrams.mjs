@@ -326,7 +326,7 @@ async function generate() {
   if (!existsSync(archifyRoot)) {
     fail(
       `archify is not installed at ${archifyRoot}.\n` +
-        '  `generate` renders diagrams and needs it; run `npx skills add tt-a1i/archify`.\n' +
+        '  `generate` renders diagrams and needs it; run `npx skills add tt-a1i/archify#v2.16.0`.\n' +
         '  CI does not run `generate` — it runs `verify`, which needs no renderer.',
     );
   }
