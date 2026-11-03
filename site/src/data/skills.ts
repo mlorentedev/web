@@ -17,7 +17,16 @@ export interface LayerCopy {
   link: string;
 }
 
+/** A hue from the site tokens (`styles/tailwind.css`); see `HomeSkills.astro`. */
+export type Tone = 'accent' | 'emerald' | 'purple' | 'amber' | 'rose';
+
 export interface Layer {
+  /**
+   * The layer as a path-style label key, the way platform tools label things
+   * (ADR-060). An identifier, so the same in both locales.
+   */
+  key: string;
+  tone: Tone;
   /** A site path (`/lab/`, localised at render time) or a public artifact. */
   href: string;
   en: LayerCopy;
@@ -26,6 +35,8 @@ export interface Layer {
 
 export const layers: Layer[] = [
   {
+    key: 'platform/idp',
+    tone: 'accent',
     href: '/lab/',
     en: {
       name: 'Platform',
@@ -41,6 +52,8 @@ export const layers: Layer[] = [
     },
   },
   {
+    key: 'sre/reliability',
+    tone: 'emerald',
     href: 'https://github.com/mlorentedev/kubelab',
     en: {
       name: 'Reliability',
@@ -56,6 +69,8 @@ export const layers: Layer[] = [
     },
   },
   {
+    key: 'ai/agents',
+    tone: 'purple',
     href: '/ai/',
     en: {
       name: 'AI',
@@ -71,6 +86,8 @@ export const layers: Layer[] = [
     },
   },
   {
+    key: 'cloud/systems',
+    tone: 'amber',
     href: 'https://github.com/zuidui/doc',
     en: {
       name: 'Cloud and systems design',
@@ -86,6 +103,8 @@ export const layers: Layer[] = [
     },
   },
   {
+    key: 'hw/silicon',
+    tone: 'rose',
     href: 'https://github.com/mlorentedev/vicon-fpga-face-detection',
     en: {
       name: 'Hardware',
@@ -105,6 +124,6 @@ export const layers: Layer[] = [
 export const languages = ['Python', 'Go', 'C', 'C++'];
 
 /** The layers flattened to one language, in order. */
-export function layersFor(lang: Lang): (LayerCopy & { href: string })[] {
-  return layers.map(({ href, ...copy }) => ({ href, ...copy[lang] }));
+export function layersFor(lang: Lang): (LayerCopy & Omit<Layer, 'en' | 'es'>)[] {
+  return layers.map(({ key, tone, href, ...copy }) => ({ key, tone, href, ...copy[lang] }));
 }
