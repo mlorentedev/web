@@ -1,10 +1,9 @@
 /**
- * The home's skills list (WEB-158): one item per line, each with its proof.
+ * The home's skills, by layer (#499): terms to scan, then the work that proves them.
  *
- * A reader scanning the home for "does he do IaC, observability, embedded" gets
- * a list, and every line links where it can be checked. The words are Manu's to
- * change; these tests hold the shape: the same items in both locales, one link
- * per item, links that land somewhere a visitor can open, and no copy the brand
+ * Every layer links where it can be checked. The words are Manu's to change;
+ * these tests hold the shape: the same layers in both locales, one link per
+ * layer, links that land somewhere a visitor can open, and no copy the brand
  * package bans.
  *
  *   npm run build && npm test
@@ -28,8 +27,8 @@ const homes = [
   { lang: 'es', built: 'es/index.html', prefix: '/es' },
 ];
 
-/** The eleven items Manu confirmed on 2026-10-17 (#459). */
-const ITEMS = 11;
+/** Platform, reliability, AI, cloud and systems design, hardware (#499). */
+const ITEMS = 5;
 
 /**
  * Where a proof may live: a public repository of Manu's, or a package index.
@@ -38,6 +37,7 @@ const ITEMS = 11;
  */
 const publicOwners = [
   /^https:\/\/github\.com\/mlorentedev\/(kubelab|pollex|hive|pdf-modifier|dotfiles|ts-bridge|vicon-fpga-face-detection|emva1288-sensor-characterization)(\/|$)/,
+  /^https:\/\/github\.com\/zuidui\/[\w.-]+\/?$/,
   /^https:\/\/pypi\.org\/project\/[\w.-]+\/?$/,
 ];
 
@@ -58,11 +58,11 @@ function block(html) {
 }
 
 function items(html) {
-  return [...block(html).matchAll(/<li[^>]*data-skill[^>]*>([\s\S]*?)<\/li>/g)].map((m) => m[1]);
+  return [...block(html).matchAll(/<div[^>]*data-skill[^>]*>([\s\S]*?)<\/div>/g)].map((m) => m[1]);
 }
 
 const hrefs = (item) => [...item.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
-const text = (html) => html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+const text = (html) => html.replace(/<[^>]*>|&#?\w+;/g, ' ').replace(/\s+/g, ' ').trim();
 
 for (const { lang, built: page, prefix } of homes) {
   test(`[${lang}] the skills block lists ${ITEMS} items, each with exactly one link`, () => {

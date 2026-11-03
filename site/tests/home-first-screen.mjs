@@ -3,11 +3,11 @@
  *
  *   npm run build && node tests/home-first-screen.mjs
  *
- * Whoever lands on the home and reads nothing else must still see who this is
- * and how to hire him: the label, the H1 and the door, without scrolling, on a
- * laptop and on a phone, in both locales. Measured in a real browser because
- * only layout knows where the fold falls: a longer subtitle or a bigger H1
- * pushes the door down without changing a byte of the markup around it.
+ * Whoever lands on the home and reads nothing else must still see who this is:
+ * the H1 and the subtitle, without scrolling, on a laptop and on a phone, in
+ * both locales. Measured in a real browser because only layout knows where the
+ * fold falls: a longer subtitle or a bigger H1 moves it without changing a byte
+ * of the markup around it.
  *
  * The viewports are the small end of each class: a 1280 × 720 laptop, and a
  * 400 × 740 phone (a 390–412 px wide phone minus its browser chrome).
@@ -24,11 +24,9 @@ const VIEWPORTS = [
   { width: 400, height: 740 },
 ];
 
-// The door is the hero's first link after the H1 (contact.test pins its href).
 const TARGETS = {
-  label: '[data-hero-label]',
   h1: 'main h1',
-  door: '[data-hero-door]',
+  subtitle: '[data-hero-subtitle]',
 };
 
 const browser = await chromium.launch();
@@ -51,7 +49,7 @@ for (const path of PATHS) {
         failures++;
         console.error(`✗ ${where} — below the fold: ${below.join('; ')}`);
       } else {
-        console.log(`✓ ${where} — label, H1 and door on the first screen`);
+        console.log(`✓ ${where} — H1 and subtitle on the first screen`);
       }
     } catch (error) {
       failures++;
@@ -68,4 +66,4 @@ if (failures > 0) {
   console.error(`\n${failures} check(s) failed.`);
   process.exit(1);
 }
-console.log('\nThe first screen holds the label, the H1 and the door.');
+console.log('\nThe first screen holds the H1 and the subtitle.');

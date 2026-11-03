@@ -1,10 +1,13 @@
 ---
-// The home's story (WEB-140): the bio, told as prose, where the Timeline used
-// to list roles. It lives in `content/pages/<lang>-bio.mdx` so it is edited as
-// markdown, and every figure in it must already be in `data/experience.ts`
-// (`bio.test`). The hero links here through `#story`.
+// The home's story (#499): career and studies side by side, then a short note
+// in `content/pages/<lang>-bio.mdx`. Roles come from `data/experience.ts` and
+// studies from `data/education.ts`. A table on wide screens, because the overlap
+// between the two paths is the point; one merged list on a phone.
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
+import { education } from '../data/education';
+import { experience } from '../data/experience';
+import { spanRows } from '../data/timeline.mjs';
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
@@ -19,11 +22,59 @@ const t = useTranslations(lang);
 const [bio] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'bio' && data.lang === lang);
 if (!bio) throw new Error(`HomeStory: no bio for "${lang}" — expected src/content/pages/${lang}-bio.mdx with page: bio`);
 const { Content: Bio } = await render(bio);
+
+const work = experience.map((e) => ({
+  start: e.start,
+  end: e.end ?? '',
+  title: e[lang].role,
+  place: e.location[lang],
+  detail: e[lang].highlight,
+}));
+const study = education.map((e) => ({ start: e.start, end: e.end, title: e[lang], place: e.school, detail: '' }));
+
+const rows = spanRows(work, study);
+const merged = [...work, ...study].sort((a, b) => Number(b.start) - Number(a.start) || Number(b.end) - Number(a.end));
 ---
 
 <Section id="story" data-home-block="story">
   <SectionHeading label={t('home.experience')} margin="mb-8" />
-  <div data-bio class="prose prose-base max-w-3xl prose-p:text-ink-700 prose-p:leading-relaxed prose-a:text-accent-700 hover:prose-a:text-accent-800">
+  <table data-timeline class="hidden md:table w-full max-w-4xl table-fixed border-collapse text-sm">
+    <thead>
+      <tr class="text-left font-mono text-xs uppercase tracking-wider text-ink-500">
+        <th scope="col" class="pb-2 font-medium">{t('home.timeline.work')}</th>
+        <th scope="col" class="w-64 pb-2 pl-6 font-medium">{t('home.timeline.study')}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(({ left, right }) => (
+        <tr class="border-t border-ink-100 align-top">
+          {left === null ? null : left.item ? (
+            <td rowspan={left.span} class="py-3 pr-4">
+              <p class="font-semibold text-ink-900">{left.item.title} <span class="font-normal text-ink-500">· {left.item.place} · {left.item.start}–{left.item.end}</span></p>
+              <p class="mt-1 text-ink-700 leading-relaxed">{left.item.detail}</p>
+            </td>
+          ) : <td />}
+          {right === null ? null : right.item ? (
+            <td rowspan={right.span} class="border-l border-accent-200 bg-ink-50/60 py-3 pl-6">
+              <p class="font-semibold text-ink-900">{right.item.title}</p>
+              <p class="mt-1 text-ink-500">{right.item.place} · {right.item.start}–{right.item.end}</p>
+            </td>
+          ) : <td class="border-l border-ink-100" />}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <ol data-timeline-list class="md:hidden space-y-4 border-l border-ink-200 pl-4">
+    {merged.map((item) => (
+      <li class="text-sm">
+        <p class="font-mono text-xs text-ink-500 tabular-nums">{item.start}–{item.end}</p>
+        <p class="font-semibold text-ink-900">{item.title}</p>
+        <p class="text-ink-500">{item.place}</p>
+        {item.detail && <p class="mt-1 text-ink-700 leading-relaxed">{item.detail}</p>}
+      </li>
+    ))}
+  </ol>
+  <div data-bio class="prose prose-base max-w-3xl mt-8 prose-p:text-ink-700 prose-p:leading-relaxed prose-a:text-accent-700 hover:prose-a:text-accent-800">
     <Bio />
   </div>
 </Section>

@@ -5,8 +5,8 @@
  *
  * `getComputedStyle()` reports an animated property at whichever frame it runs,
  * so an animation running during `capture` reads as a style change between two
- * captures of one build. The home is the page that has animations: if it ever
- * loses them, the first assertion says this check no longer proves anything.
+ * captures of one build. No page has to animate for this to hold, so the check
+ * brings its own animation: the first assertion proves it is running.
  */
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
@@ -21,7 +21,8 @@ const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${base}/`, { waitUntil: 'networkidle' });
-  assert.ok((await page.evaluate(running)) > 0, 'the home has no animation left to freeze');
+  await page.addStyleTag({ content: '@keyframes probe { to { opacity: 0.5; } } main { animation: probe 1s infinite; }' });
+  assert.ok((await page.evaluate(running)) > 0, 'the probe animation did not start');
   await freezeMotion(page);
   assert.equal(await page.evaluate(running), 0);
   console.log('visual-diff-motion: no animation runs after freezeMotion');

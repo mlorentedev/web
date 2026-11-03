@@ -38,6 +38,6 @@ test('only the strings of the source state a figure, not its comments', () => {
 
 test('experience.ts sources the figures the copy quotes, and nothing from its comments', () => {
   const sourced = sourcedFigures(join(dirname(fileURLToPath(import.meta.url)), '..'));
-  for (const figure of ['80', '120', '20–30', '2019']) assert.ok(sourced.has(figure), `experience.ts no longer states ${figure}`);
+  for (const figure of ['120', '20–30', '2019']) assert.ok(sourced.has(figure), `experience.ts no longer states ${figure}`);
   assert.ok(!sourced.has('140'), '"140" is sourced, but it only occurs in a ticket name in a comment');
 });

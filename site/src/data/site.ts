@@ -7,7 +7,7 @@ export const site = {
   // Page title and description are per-locale strings and live in i18n/ui.ts
   // ('meta.title' / 'meta.description'). Keeping an English copy here is what let
   // the Spanish homepage fall back to an English <title>.
-  description: 'The infrastructure under the agents, not the prompts on top. Kubernetes on hardware I own — the homelab is the proof, the agent platform is the direction.',
+  description: 'From silicon to cloud: I design and run platforms with Kubernetes, AWS, GCP and GitOps, with AI agents in the workflow. Over ten years of engineering, working with customers across Europe, Asia and the US.',
   author: 'Manu Lorente',
   // One project at a time (WEB-137). While on one, set this to the date the next
   // can start (`YYYY-MM-DD`) and the contact door says "the next one starts in

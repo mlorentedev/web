@@ -54,7 +54,8 @@ for (const { lang, page, importPath, built } of homes) {
 
 // ── The home is prose (amended 2026-09-25) ─────────────────────────────────
 //
-// The visual sections live on the pages the story links to. Each one is named
+// The visual sections live on the pages the story links to; the GitHub chart is
+// the one picture the home keeps (#499). Each one is named
 // by the marker it rendered, so a section that comes back under any heading is
 // still caught. Counts of nodes or services and a hand-written uptime are
 // banned copy (brand-package §7, #133/#355).
@@ -91,47 +92,30 @@ for (const { lang, built } of homes) {
   });
 }
 
-// ── How the work starts: one source (WEB-140, AC3) ─────────────────────────
+// ── The offer lives on /contact (#499) ─────────────────────────────────────
 //
-// The home renders the same contact markdown as /contact, so the door cannot
-// say two different things. Compared as rendered text, element by
-// element, so a copy pasted onto the home and left to drift is caught.
+// The home ends on one button to /contact and states no offer, so the two pages
+// cannot say different things.
 
 const contacts = { en: 'contact/index.html', es: 'es/contact/index.html' };
-
-/** Exactly the `<div>` carrying `attr`, nested divs included. */
-function element(html, attr) {
-  const start = html.search(new RegExp(`<div[^>]*\\b${attr}\\b`));
-  if (start < 0) return '';
-  const tags = /<\/?div\b[^>]*>/g;
-  tags.lastIndex = start;
-  let depth = 0;
-  for (let m; (m = tags.exec(html)); ) {
-    depth += m[0][1] === '/' ? -1 : 1;
-    if (depth === 0) return html.slice(start, tags.lastIndex);
-  }
-  return '';
-}
 
 const text = (html) => html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
 for (const { lang, built } of homes) {
-  test(`[${lang}] one source: the home's door opens the same mail as the contact page's`, () => {
-    const mailto = (html) => element(html, 'data-door').match(/href="(mailto:[^"]+)"/)?.[1] ?? '';
-    const contact = mailto(dist(contacts[lang]));
-    assert.ok(contact, `dist/${contacts[lang]}: the door has no mailto`);
-    assert.equal(mailto(dist(built)), contact, `dist/${built}: the door is missing or opens a different mail`);
+  test(`[${lang}] the home states no offer and renders no door of its own`, () => {
+    const html = dist(built);
+    assert.doesNotMatch(html, /\bdata-offer\b|\bdata-door\b/, `dist/${built} repeats the contact page's offer`);
   });
 }
 
 // ── Structure (WEB-140, AC2) ───────────────────────────────────────────────
 
 for (const { lang, built } of homes) {
-  test(`[${lang}] the home's blocks come in order after the hero: story, skills, door, notes`, () => {
+  test(`[${lang}] the home's blocks come in order after the hero: story, skills, activity, notes, door`, () => {
     const html = dist(built);
     const afterTitle = html.slice(html.indexOf('</h1>'));
     const blocks = [...afterTitle.matchAll(/data-home-block="([^"]+)"/g)].map((m) => m[1]);
-    assert.deepEqual(blocks, ['story', 'skills', 'door', 'notes']);
+    assert.deepEqual(blocks, ['story', 'skills', 'activity', 'notes', 'door']);
   });
 
   test(`[${lang}] the story, the skills and the notes are text: no image, svg or card`, () => {
@@ -163,9 +147,10 @@ for (const { lang, built } of homes) {
 }
 
 for (const { lang, built } of homes) {
-  test(`[${lang}] the hero links down to the story`, () => {
+  test(`[${lang}] the hero is a title and a subtitle: no link and no button`, () => {
     const hero = dist(built).match(/<main[\s\S]*?<h1[\s\S]*?(?=<section)/)?.[0] ?? '';
     assert.ok(hero, `dist/${built}: no hero before the first section`);
-    assert.match(hero, /href="#story"/, `dist/${built}: the hero has no link to #story`);
+    assert.match(hero, /data-hero-subtitle/, `dist/${built}: the hero has no subtitle`);
+    assert.doesNotMatch(hero.slice(hero.indexOf('<h1')), /<a\s|<button\b/, `dist/${built}: the hero carries a link`);
   });
 }
