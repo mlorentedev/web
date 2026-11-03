@@ -192,4 +192,15 @@ for (const { lang, built } of homes) {
     assert.deepEqual(starts, [...starts].sort((a, b) => b - a), `dist/${built}: entries are not newest first`);
     assert.doesNotMatch(dist(built), /<table[^>]*data-timeline/, `dist/${built} still renders the timeline table`);
   });
+
+  test(`[${lang}] HEAD marks the ongoing role, and only it`, () => {
+    const block = dist(built).match(/<ol[^>]*data-timeline[\s\S]*?<\/ol>/)?.[0] ?? '';
+    const items = [...block.matchAll(/<li[^>]*data-timeline-item[\s\S]*?<\/li>/g)].map((m) => m[0]);
+    const marked = items.filter((item) => /\bdata-head\b/.test(item));
+    assert.equal(marked.length, 1, `dist/${built}: expected one HEAD, found ${marked.length}`);
+    const current = items.filter((item) => /<li[^>]*\bdata-current\b/.test(item));
+    assert.equal(current.length, 1, `dist/${built}: expected one ongoing role, found ${current.length}`);
+    assert.equal(marked[0], current[0], `dist/${built}: HEAD is not on the ongoing role`);
+    assert.match(marked[0], /class="sr-only"/, `dist/${built}: HEAD has no screen-reader equivalent`);
+  });
 }
