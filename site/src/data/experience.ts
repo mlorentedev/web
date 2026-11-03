@@ -41,12 +41,12 @@ export const experience: Experience[] = [
     en: {
       role: 'Applications Engineer',
       highlight:
-        'A platform that builds an SDK and a PoC per camera, AI agents for SDK support and sensor characterisation, and training on agentic workflows for EMEA, NAM and APAC. Customer onboarding from 120 to 20–30 days.',
+        'An internal platform that builds the SDK and a PoC for each camera, AI agents for SDK support and sensor characterisation, and agentic-workflow training for EMEA, NAM and APAC. Customer onboarding from 120 to 20–30 days.',
     },
     es: {
       role: 'Ingeniero de Aplicaciones',
       highlight:
-        'Plataforma que genera un SDK y una PoC por cámara, agentes de IA para el soporte del SDK y la caracterización de sensores, y formación en flujos agénticos para EMEA, NAM y APAC. Onboarding de clientes de 120 a 20–30 días.',
+        'Plataforma interna que genera el SDK y una PoC de cada cámara, agentes de IA para el soporte del SDK y la caracterización de sensores, y formación en flujos agénticos para EMEA, NAM y APAC. Onboarding de clientes de 120 a 20–30 días.',
     },
   },
   {
@@ -56,11 +56,11 @@ export const experience: Experience[] = [
     location: { en: 'Spain', es: 'España' },
     en: {
       role: 'Applications Engineer',
-      highlight: 'An SDK per camera in C++, MATLAB and Python, for customers to evaluate cameras against EMVA 1288 and integrate them; technical presales and integration with European customers; a Python CLI that retired the MATLAB manufacturing scripts.',
+      highlight: 'Tooling for each camera: a Python CLI that retired the MATLAB manufacturing scripts across the global teams, and the SDK (Python, C++, MATLAB) customers used to evaluate it against EMVA 1288 and integrate it.',
     },
     es: {
       role: 'Ingeniero de Aplicaciones',
-      highlight: 'Un SDK por cámara en C++, MATLAB y Python con el que los clientes evaluaban las cámaras según EMVA 1288 y las integraban; preventa técnica e integración con clientes europeos; una CLI en Python que retiró los scripts de MATLAB de fabricación.',
+      highlight: 'Herramientas para cada cámara: una CLI en Python que retiró los scripts de MATLAB de fabricación en los equipos globales, y el SDK (Python, C++, MATLAB) con el que los clientes la evaluaban según EMVA 1288 y la integraban.',
     },
   },
   {
