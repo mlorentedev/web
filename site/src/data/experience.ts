@@ -56,11 +56,11 @@ export const experience: Experience[] = [
     location: { en: 'Spain', es: 'España' },
     en: {
       role: 'Applications Engineer',
-      highlight: 'Tooling for each camera and the work with customers: a Python CLI that retired the MATLAB manufacturing scripts across the global teams, the SDK (Python, C++, MATLAB) customers used to evaluate it against EMVA 1288, and its integration with European customers.',
+      highlight: 'Tooling for each camera and the work with customers: a Python CLI that retired the MATLAB manufacturing scripts across the global teams, the SDK (Python, C++, MATLAB) customers used to evaluate it against EMVA 1288, and integration and technical support with European customers.',
     },
     es: {
       role: 'Ingeniero de Aplicaciones',
-      highlight: 'Herramientas para cada cámara y trabajo con el cliente: una CLI en Python que retiró los scripts de MATLAB de fabricación en los equipos globales, el SDK (Python, C++, MATLAB) con el que los clientes la evaluaban según EMVA 1288, y su integración con clientes europeos.',
+      highlight: 'Herramientas para cada cámara y trabajo con el cliente: una CLI en Python que retiró los scripts de MATLAB de fabricación en los equipos globales, el SDK (Python, C++, MATLAB) con el que los clientes la evaluaban según EMVA 1288, y la integración y el soporte técnico con clientes europeos.',
     },
   },
   {
