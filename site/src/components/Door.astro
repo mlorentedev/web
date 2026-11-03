@@ -24,8 +24,9 @@ const month = busyMonth(site.nextStart, new Date(), getDateLocale(lang));
       {t('door.busy').replace('{month}', month)}
     </p>
   )}
-  {/* The button alone: the address printed under it said the same thing
-      twice, and the footer already shows it to anyone with no mail client. */}
+  {/* The button alone (Manu, 2026-11-03): the address printed under it said
+      the same thing twice. The address is no longer shown as text on this
+      page; the button and the footer icon both carry it as a mailto. */}
   <a
     href={mailto}
     class="inline-block px-6 py-2.5 bg-ink-900 text-white rounded-md text-sm font-medium hover:bg-accent-700 transition-colors shadow-xs"
