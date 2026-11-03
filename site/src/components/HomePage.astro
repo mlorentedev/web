@@ -6,6 +6,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import Hero from './Hero.astro';
+import HomeLoop from './HomeLoop.astro';
 import HomeStory from './HomeStory.astro';
 import HomeSkills from './HomeSkills.astro';
 import HomeActivity from './HomeActivity.astro';
@@ -24,6 +25,7 @@ const { lang } = Astro.props;
   <Header />
   <main id="main-content" class="grow">
     <Hero />
+    <HomeLoop lang={lang} />
     <HomeStory lang={lang} />
     <HomeSkills lang={lang} />
     <HomeActivity lang={lang} />

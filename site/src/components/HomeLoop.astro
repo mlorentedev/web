@@ -1,0 +1,114 @@
+---
+// The career loop under the hero (ADR-060): Manu's path drawn on the DevOps
+// loop, from silicon to AI and back. The geometry is a lemniscate of Bernoulli
+// computed here at build time, so the page ships inline SVG and no script.
+// Wide screens get it lying down; a phone gets it standing, so the labels keep
+// their size. Screen readers get the stations as a list instead of the drawing.
+import { stations } from '../data/loop';
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+if (stations.length !== 5) throw new Error(`HomeLoop: the loop is laid out for 5 stations, data/loop.ts has ${stations.length}`);
+
+const PI = Math.PI;
+// Where each station sits on the curve: three on the hardware lobe, then the
+// crossing, then two on the software lobe. The return runs from the last one.
+const at = [PI / 2 + 0.55, PI, (3 * PI) / 2 - 0.55, (3 * PI) / 2 + 0.55, 2 * PI];
+const r = (n: number) => Math.round(n * 10) / 10;
+
+type Orientation = 'wide' | 'tall';
+
+function layout(o: Orientation, a: number) {
+  // u runs along the loop's long axis, v across it.
+  const uv = (s: number) => {
+    const d = 1 + Math.sin(s) ** 2;
+    return [(a * Math.cos(s)) / d, (a * Math.sin(s) * Math.cos(s)) / d];
+  };
+  const xy = (s: number) => {
+    const [u, v] = uv(s);
+    return o === 'wide' ? [u, v] : [v, u];
+  };
+  const trace = (from: number, to: number, steps: number) =>
+    'M' + Array.from({ length: steps + 1 }, (_, i) => xy(from + ((to - from) * i) / steps).map(r).join(',')).join(' L');
+
+  const points = stations.map((station, i) => {
+    const [x, y] = xy(at[i]);
+    const onAxis = Math.abs(uv(at[i])[1]) < 4;
+    const beside = (o === 'wide') === onAxis;
+    const year = i === stations.length - 1 ? `${station.start} · ${t('home.loop.today')}` : station.start;
+    if (beside) {
+      const dir = Math.sign(x) || 1;
+      return { x: r(x), y: r(y), name: station[lang], year, lx: r(x + 14 * dir), ny: r(y - 2), yy: r(y + 13), anchor: dir < 0 ? 'end' : 'start' };
+    }
+    const ny = y < 0 ? y - 28 : y + 22;
+    return { x: r(x), y: r(y), name: station[lang], year, lx: r(x), ny: r(ny), yy: r(ny + 14), anchor: 'middle' };
+  });
+
+  const arrows = [PI / 2 + 0.2, (3 * PI) / 2 + 0.2].map((s) => {
+    const [x1, y1] = xy(s);
+    const [x2, y2] = xy(s + 0.01);
+    return `translate(${r(x1)},${r(y1)}) rotate(${r((Math.atan2(y2 - y1, x2 - x1) * 180) / PI)})`;
+  });
+
+  const lobe = r(a * 0.62);
+  const lobes = o === 'wide'
+    ? [{ x: -lobe, y: 4, label: t('home.loop.hardware') }, { x: lobe, y: 4, label: t('home.loop.software') }]
+    : [{ x: 0, y: -lobe + 4, label: t('home.loop.hardware') }, { x: 0, y: lobe + 4, label: t('home.loop.software') }];
+
+  return {
+    viewBox: o === 'wide' ? '-430 -150 860 300' : '-180 -275 360 550',
+    loop: trace(0, 2 * PI, 400) + ' Z',
+    back: trace(0.02, at[0] - 0.02, 120),
+    points,
+    arrows,
+    lobes,
+  };
+}
+
+const drawings = [
+  { o: 'wide' as const, ...layout('wide', 290), cls: 'hidden md:block max-w-3xl' },
+  { o: 'tall' as const, ...layout('tall', 230), cls: 'md:hidden mx-auto max-w-sm' },
+];
+---
+
+<section data-home-block="loop" class="max-w-6xl mx-auto px-4 pb-6">
+  <figure data-loop>
+    {drawings.map((d) => (
+      <svg data-loop-drawing={d.o} viewBox={d.viewBox} class:list={['w-full h-auto', d.cls]} aria-hidden="true" focusable="false">
+        <path d={d.loop} fill="none" class="stroke-ink-300" stroke-width="1.5" />
+        <path d={d.back} fill="none" class="stroke-accent-600" stroke-width="1.5" stroke-dasharray="4 4" />
+        {d.arrows.map((transform) => (
+          <path d="M-5,-4 L3,0 L-5,4" fill="none" class="stroke-accent-600" stroke-width="1.5" transform={transform} />
+        ))}
+        {d.lobes.map((l) => (
+          <text x={l.x} y={l.y} text-anchor="middle" class="fill-ink-400 font-mono text-[11px] font-semibold tracking-[0.12em]">{l.label}</text>
+        ))}
+        {d.points.map((p, i) => (
+          <g>
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r={i === d.points.length - 1 ? 7 : 5}
+              class:list={['fill-accent-600', i === d.points.length - 1 && 'stroke-accent-100']}
+              stroke-width={i === d.points.length - 1 ? 6 : 0}
+              paint-order="stroke"
+            />
+            <text x={p.lx} y={p.ny} text-anchor={p.anchor} class="fill-ink-900 font-mono text-[13px] font-medium">{p.name}</text>
+            <text x={p.lx} y={p.yy} text-anchor={p.anchor} class="fill-ink-500 font-mono text-[11px]">{p.year}</text>
+          </g>
+        ))}
+      </svg>
+    ))}
+    <ol class="sr-only">
+      {stations.map((s) => <li>{s.start}: {s[lang]}</li>)}
+    </ol>
+    <figcaption class="mt-2 max-w-3xl font-mono text-xs text-ink-500 md:text-center">{t('home.loop.caption')}</figcaption>
+  </figure>
+</section>
