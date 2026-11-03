@@ -23,14 +23,18 @@ const [bio] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) 
 if (!bio) throw new Error(`HomeStory: no bio for "${lang}" — expected src/content/pages/${lang}-bio.mdx with page: bio`);
 const { Content: Bio } = await render(bio);
 
+// An ongoing role is laid out up to the build year, at least one year long so
+// it keeps a row of its own, and reads "present".
+const thisYear = new Date().getFullYear();
 const work = experience.map((e) => ({
   start: e.start,
-  end: e.end ?? '',
+  end: e.end ?? String(Math.max(thisYear, Number(e.start) + 1)),
+  until: e.end ?? t('home.timeline.present'),
   title: e[lang].role,
-  place: e.location[lang],
+  place: `${e.company} · ${e.location[lang]}`,
   detail: e[lang].highlight,
 }));
-const study = education.map((e) => ({ start: e.start, end: e.end, title: e[lang], place: e.school, detail: '' }));
+const study = education.map((e) => ({ start: e.start, end: e.end, until: e.end, title: e[lang], place: e.school, detail: '' }));
 
 const rows = spanRows(work, study);
 const merged = [...work, ...study].sort((a, b) => Number(b.start) - Number(a.start) || Number(b.end) - Number(a.end));
@@ -50,14 +54,14 @@ const merged = [...work, ...study].sort((a, b) => Number(b.start) - Number(a.sta
         <tr class="border-t border-ink-100 align-top">
           {left === null ? null : left.item ? (
             <td rowspan={left.span} class="py-3 pr-4">
-              <p class="font-semibold text-ink-900">{left.item.title} <span class="font-normal text-ink-500">· {left.item.place} · {left.item.start}–{left.item.end}</span></p>
+              <p class="font-semibold text-ink-900">{left.item.title} <span class="font-normal text-ink-500">· {left.item.place} · {left.item.start}–{left.item.until}</span></p>
               <p class="mt-1 text-ink-700 leading-relaxed">{left.item.detail}</p>
             </td>
           ) : <td />}
           {right === null ? null : right.item ? (
             <td rowspan={right.span} class="border-l border-accent-200 bg-ink-50/60 py-3 pl-6">
               <p class="font-semibold text-ink-900">{right.item.title}</p>
-              <p class="mt-1 text-ink-500">{right.item.place} · {right.item.start}–{right.item.end}</p>
+              <p class="mt-1 text-ink-500">{right.item.place} · {right.item.start}–{right.item.until}</p>
             </td>
           ) : <td class="border-l border-ink-100" />}
         </tr>
@@ -67,7 +71,7 @@ const merged = [...work, ...study].sort((a, b) => Number(b.start) - Number(a.sta
   <ol data-timeline-list class="md:hidden space-y-4 border-l border-ink-200 pl-4">
     {merged.map((item) => (
       <li class="text-sm">
-        <p class="font-mono text-xs text-ink-500 tabular-nums">{item.start}–{item.end}</p>
+        <p class="font-mono text-xs text-ink-500 tabular-nums">{item.start}–{item.until}</p>
         <p class="font-semibold text-ink-900">{item.title}</p>
         <p class="text-ink-500">{item.place}</p>
         {item.detail && <p class="mt-1 text-ink-700 leading-relaxed">{item.detail}</p>}

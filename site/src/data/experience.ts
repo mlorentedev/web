@@ -21,7 +21,10 @@ export interface Experience {
   start: string;
   /** End year, or `null` for an ongoing role. */
   end: string | null;
-  /** Employer — language-neutral. */
+  /**
+   * Employer — language-neutral. Manu names it as he lived it: e2v until 2019,
+   * then Teledyne Technologies, which bought it (his dating, 2026-11-02).
+   */
   company: string;
   /** Localized location string. */
   location: { en: string; es: string };
@@ -32,8 +35,8 @@ export interface Experience {
 export const experience: Experience[] = [
   {
     start: '2024',
-    end: '2027',
-    company: 'Teledyne E2V',
+    end: null,
+    company: 'Teledyne Technologies',
     location: { en: 'USA', es: 'EE. UU.' },
     en: {
       role: 'Applications & Platform Engineer',
@@ -49,7 +52,7 @@ export const experience: Experience[] = [
   {
     start: '2019',
     end: '2024',
-    company: 'Teledyne E2V',
+    company: 'Teledyne Technologies',
     location: { en: 'Spain', es: 'España' },
     en: {
       role: 'Applications Engineer',
@@ -63,7 +66,7 @@ export const experience: Experience[] = [
   {
     start: '2018',
     end: '2019',
-    company: 'Teledyne E2V',
+    company: 'e2v',
     location: { en: 'Shenzhen, China', es: 'Shenzhen (China)' },
     en: {
       role: 'Technical Specialist',
@@ -79,7 +82,7 @@ export const experience: Experience[] = [
   {
     start: '2017',
     end: '2018',
-    company: 'Teledyne E2V',
+    company: 'e2v',
     location: { en: 'Grenoble, France', es: 'Grenoble (Francia)' },
     en: {
       role: 'R&D Engineer',
@@ -95,7 +98,7 @@ export const experience: Experience[] = [
   {
     start: '2015',
     end: '2017',
-    company: 'Teledyne E2V',
+    company: 'e2v',
     location: { en: 'Seville, Spain', es: 'Sevilla, España' },
     en: {
       role: 'Test Engineer',

@@ -245,6 +245,7 @@ export const ui = {
     'home.activity': 'On GitHub',
     'home.timeline.work': 'Work',
     'home.timeline.study': 'Education',
+    'home.timeline.present': 'present',
     'home.cta.body': 'Whether you’re a company, an individual or have a one-off need, write to me and I’ll reply within 24 hours.',
     'home.cta.button': 'Get in touch',
 
@@ -519,6 +520,7 @@ export const ui = {
     'home.activity': 'En GitHub',
     'home.timeline.work': 'Trabajo',
     'home.timeline.study': 'Formación',
+    'home.timeline.present': 'actualidad',
     'home.cta.body': 'Seas empresa, particular o tengas una necesidad puntual, escríbeme y te respondo en menos de 24 horas.',
     'home.cta.button': 'Hablemos',
 
