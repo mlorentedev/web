@@ -1,3 +1,5 @@
+import { readdirSync, readFileSync } from 'node:fs';
+
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
@@ -6,6 +8,13 @@ import tailwindcss from '@tailwindcss/vite';
 
 import { rehypeMermaid } from './plugins/rehype-mermaid.mjs';
 import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
+
+// /es/notes/ is noindex while no note is written in Spanish; keep it out of the
+// sitemap for as long, so the two signals agree.
+const notesDir = new URL('./src/content/notes/', import.meta.url);
+const hasSpanishNotes = readdirSync(notesDir).some((f) =>
+  /^lang:\s*['"]?es\b/m.test(readFileSync(new URL(f, notesDir), 'utf8')),
+);
 
 export default defineConfig({
   site: 'https://mlorente.dev',
@@ -17,7 +26,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       // The integration drops `/404` but not a localised one.
-      filter: (page) => !page.endsWith('/404/'),
+      filter: (page) => !page.endsWith('/404/') && (hasSpanishNotes || !page.endsWith('/es/notes/')),
       // The integration writes the locales. The HTML also declares `x-default`
       // on every page with alternates, and both surfaces must say the same.
       // The integration shares one `links` array between the two locales' URLs,

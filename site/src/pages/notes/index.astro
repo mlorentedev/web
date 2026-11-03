@@ -10,12 +10,15 @@ const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
+const hasSpanish = (await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === 'es')).length > 0;
 const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === 'en'))
   .sort((a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 ---
 
-<BaseLayout title="What I think" description={t('notes.description')}>
+{/* /es/notes/ is noindex until a note is written in Spanish, so no alternate
+    may point at it until then. */}
+<BaseLayout title="What I think" description={t('notes.description')} hasAlternates={hasSpanish}>
   <Header />
   <main id="main-content" class="grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">
