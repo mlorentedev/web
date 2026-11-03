@@ -272,6 +272,7 @@ export const ui = {
     'notes.description': 'Platform engineering notes — from hardware to Kubernetes.',
     'notes.articles': 'What I think',
     'notes.empty': 'Coming soon.',
+    'notes.inEnglish': 'For now I write in English.',
     'notes.all': 'All notes',
 
     // Note detail
@@ -547,6 +548,7 @@ export const ui = {
     'notes.description': 'Notas de ingeniería de plataformas — del hardware a Kubernetes.',
     'notes.articles': 'Lo que pienso',
     'notes.empty': 'Próximamente.',
+    'notes.inEnglish': 'Por ahora escribo en inglés.',
     'notes.all': 'Todas las notas',
 
     // Note detail

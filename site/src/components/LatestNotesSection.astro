@@ -13,19 +13,27 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-const notes: CollectionEntry<'notes'>[] = (
-  await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === lang)
-)
-  .sort((a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
+const latest = async (l: Lang) =>
+  (await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === l))
+    .sort((a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+    .slice(0, 3);
+
+// A locale with no notes of its own shows the English ones, marked as English,
+// rather than an empty "coming soon" band on the home (#499).
+const own = await latest(lang);
+const fallback = own.length === 0 && lang !== 'en';
+const notes: CollectionEntry<'notes'>[] = fallback ? await latest('en') : own;
+const noteHref = (id: string) => (fallback ? `/notes/${id}/` : translatePath(`/notes/${id}/`));
+const allHref = fallback ? '/notes/' : translatePath('/notes/');
 ---
 
 <Section data-home-block="notes">
-  <SectionHeading label={t('home.latest')} href={translatePath('/notes/')} margin="mb-6" />
+  <SectionHeading label={t('home.latest')} href={allHref} margin="mb-6" />
+    {fallback && notes.length > 0 && <p data-notes-in-english class="text-sm text-gray-500 mb-3">{t('notes.inEnglish')}</p>}
     {notes.length > 0 ? (
-      <div class="divide-y divide-gray-100">
+      <div class="divide-y divide-gray-100" lang={fallback ? 'en' : undefined}>
         {notes.map((note) => (
-          <a href={translatePath(`/notes/${note.id}/`)} class="group block py-3 first:pt-0">
+          <a href={noteHref(note.id)} class="group block py-3 first:pt-0">
             <span class="text-sm text-gray-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
             <span class="text-base text-gray-700 group-hover:text-cyan-700 transition-colors">{note.data.title}</span>
           </a>
@@ -35,7 +43,7 @@ const notes: CollectionEntry<'notes'>[] = (
       <p class="text-base text-gray-500">{t('notes.empty')}</p>
     )}
     <a
-      href={translatePath('/notes/')}
+      href={allHref}
       class="text-xs text-gray-500 hover:text-cyan-700 transition-colors mt-4 block"
     >
       {t('home.allNotes')} &rarr;
