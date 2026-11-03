@@ -246,6 +246,10 @@ export const ui = {
     'home.timeline.work': 'Work',
     'home.timeline.study': 'Education',
     'home.timeline.present': 'present',
+    'home.loop.today': 'today',
+    'home.loop.hardware': 'HARDWARE',
+    'home.loop.software': 'SOFTWARE',
+    'home.loop.caption': 'Back to silicon: a platform and AI agents working for each camera.',
     'home.cta.body': 'Whether you’re a company, an individual or have a one-off need, write to me and I’ll reply within 24 hours.',
     'home.cta.button': 'Get in touch',
 
@@ -514,6 +518,10 @@ export const ui = {
     'home.timeline.work': 'Trabajo',
     'home.timeline.study': 'Formación',
     'home.timeline.present': 'actualidad',
+    'home.loop.today': 'hoy',
+    'home.loop.hardware': 'HARDWARE',
+    'home.loop.software': 'SOFTWARE',
+    'home.loop.caption': 'De vuelta al silicio: una plataforma y agentes de IA al servicio de cada cámara.',
     'home.cta.body': 'Seas empresa, particular o tengas una necesidad puntual, escríbeme y te respondo en menos de 24 horas.',
     'home.cta.button': 'Hablemos',
 

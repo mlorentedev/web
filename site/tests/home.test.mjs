@@ -111,11 +111,11 @@ for (const { lang, built } of homes) {
 // ── Structure (WEB-140, AC2) ───────────────────────────────────────────────
 
 for (const { lang, built } of homes) {
-  test(`[${lang}] the home's blocks come in order after the hero: story, skills, activity, notes, door`, () => {
+  test(`[${lang}] the home's blocks come in order after the hero: loop, story, skills, activity, notes, door`, () => {
     const html = dist(built);
     const afterTitle = html.slice(html.indexOf('</h1>'));
     const blocks = [...afterTitle.matchAll(/data-home-block="([^"]+)"/g)].map((m) => m[1]);
-    assert.deepEqual(blocks, ['story', 'skills', 'activity', 'notes', 'door']);
+    assert.deepEqual(blocks, ['loop', 'story', 'skills', 'activity', 'notes', 'door']);
   });
 
   test(`[${lang}] the story, the skills and the notes are text: no image, svg or card`, () => {
