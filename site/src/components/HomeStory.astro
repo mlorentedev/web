@@ -58,7 +58,7 @@ const entries = [...work, ...study].sort((a, b) => Number(b.start) - Number(a.st
   </p>
   <ol data-timeline class="max-w-3xl md:ml-36">
     {entries.map((item) => (
-      <li data-timeline-item data-kind={item.kind} class="group relative pl-8 pb-8 last:pb-0">
+      <li data-timeline-item data-kind={item.kind} data-current={item.current || undefined} class="group relative pl-8 pb-8 last:pb-0">
         <span class="absolute left-[5px] top-2 -bottom-2 w-px bg-ink-200 group-last:hidden" aria-hidden="true"></span>
         <span
           class:list={[
@@ -69,7 +69,7 @@ const entries = [...work, ...study].sort((a, b) => Number(b.start) - Number(a.st
           aria-hidden="true"
         ></span>
         <p class="font-mono text-xs text-ink-500 tabular-nums md:absolute md:right-full md:top-1 md:mr-6 md:w-28 md:text-right">{item.start}–{item.until}</p>
-        <p class:list={['text-ink-900', item.kind === 'work' ? 'font-semibold' : 'font-medium text-sm']}><span class="sr-only">{t(item.kind === 'work' ? 'home.timeline.work' : 'home.timeline.study')}: </span>{item.title}{item.current && <span data-head class="ml-2 align-middle rounded px-1.5 py-px font-mono text-xs font-semibold tracking-wide bg-accent-50 text-accent-800 ring-1 ring-inset ring-accent-200" aria-hidden="true">HEAD</span>}</p>
+        <p class:list={['text-ink-900', item.kind === 'work' ? 'font-semibold' : 'font-medium text-sm']}><span class="sr-only">{t(item.kind === 'work' ? 'home.timeline.work' : 'home.timeline.study')}: </span>{item.title}{item.current && <span data-head class="ml-2 align-middle rounded px-1.5 py-px font-mono text-xs font-semibold tracking-wide bg-accent-50 text-accent-800 ring-1 ring-inset ring-accent-200" aria-hidden="true">HEAD</span>}{item.current && <span class="sr-only"> ({t('home.timeline.current')})</span>}</p>
         <p class="text-sm text-ink-500">{item.place}</p>
         {item.detail && <p class="mt-1.5 text-sm text-ink-700 leading-relaxed">{item.detail}</p>}
       </li>

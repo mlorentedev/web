@@ -198,6 +198,9 @@ for (const { lang, built } of homes) {
     const items = [...block.matchAll(/<li[^>]*data-timeline-item[\s\S]*?<\/li>/g)].map((m) => m[0]);
     const marked = items.filter((item) => /\bdata-head\b/.test(item));
     assert.equal(marked.length, 1, `dist/${built}: expected one HEAD, found ${marked.length}`);
-    assert.match(marked[0], /\d{4}–(present|actualidad)/, `dist/${built}: HEAD is not on the ongoing role`);
+    const current = items.filter((item) => /<li[^>]*\bdata-current\b/.test(item));
+    assert.equal(current.length, 1, `dist/${built}: expected one ongoing role, found ${current.length}`);
+    assert.equal(marked[0], current[0], `dist/${built}: HEAD is not on the ongoing role`);
+    assert.match(marked[0], /class="sr-only"/, `dist/${built}: HEAD has no screen-reader equivalent`);
   });
 }
