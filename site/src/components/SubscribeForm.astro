@@ -2,6 +2,9 @@
 // The form keeps `novalidate`: the submit handler is the single place that decides
 // whether a request goes out, and it now checks the consent box explicitly. Turning
 // native validation back on would give one form two different error surfaces.
+// For the same reason the button starts disabled and the script enables it: until
+// the handler exists nothing can submit, and a native GET would put the address in
+// a URL (#130). `method="post"` covers any path that still gets past the button.
 import { site } from '../data/site';
 import type { Lang } from '../i18n/ui';
 import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
@@ -39,6 +42,7 @@ const privacyHref = translatePath('/legal/privacy');
 <div class="not-prose focus-on-dark bg-cyan-700 text-white p-4 rounded-md max-w-xs mx-auto">
   <form
     id={formId}
+    method="post"
     class="flex flex-col gap-4"
     data-api-url={`${site.api.baseUrl}/api/subscribe`}
     data-tag={tag}
@@ -61,6 +65,7 @@ const privacyHref = translatePath('/legal/privacy');
     />
     <button
       type="submit"
+      disabled
       class="w-full px-4 py-2.5 bg-white text-cyan-700 border border-transparent rounded-md text-sm font-medium hover:bg-cyan-700 hover:text-white hover:border-white transition-colors"
     >
       {buttonText}
@@ -77,6 +82,7 @@ const privacyHref = translatePath('/legal/privacy');
 
 <script>
   document.querySelectorAll('form[data-api-url]').forEach((form) => {
+    (form.querySelector('button[type="submit"]') as HTMLButtonElement).disabled = false;
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const f = e.target as HTMLFormElement;

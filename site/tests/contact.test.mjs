@@ -1,5 +1,5 @@
 /**
- * The contact door and the offer ladder (WEB-137, AC4).
+ * The contact door and how the work starts (WEB-137, #499).
  *
  * The words on the page are Manu's to change, so these tests do not pin copy.
  * They pin the three things copy edits must not break:
@@ -62,7 +62,7 @@ function element(html, attr) {
   return '';
 }
 
-/** The figure a field of `offer.ts` holds, e.g. `fromUsd: 300` → `300`. */
+/** The figure a field of `offer.ts` holds, e.g. `usd: 300` → `300`. */
 function offerField(name) {
   const value = offerSrc.match(new RegExp(`\\b${name}:\\s*(\\d+)`))?.[1];
   assert.ok(value, `offer.ts has no numeric \`${name}\``);
@@ -71,12 +71,7 @@ function offerField(name) {
 
 // ── Figures have one source ────────────────────────────────────────────────
 
-const expected = [
-  `$${offerField('fromUsd')}`,
-  offerField('minutes'),
-  offerField('creditDays'),
-  `${offerField('minWeeks')}–${offerField('maxWeeks')}`,
-];
+const expected = [`$${offerField('usd')}`, offerField('minutes')];
 
 for (const { lang, contact } of pages) {
   test(`[${lang}] the offer block quotes every figure in offer.ts`, () => {

@@ -95,9 +95,9 @@ export const ui = {
       'I design and run cloud platforms and infrastructure: Kubernetes, AWS, GCP and GitOps, with AI agents in the workflow. Over ten years of engineering, from hardware to cloud, working with customers across Europe, Asia and the US.',
     // The door (WEB-137): the one way in, the same button on the hero and on
     // /contact/. The mail it opens is the written filter, three lines.
-    'door.cta': 'Tell me what has to work',
-    'door.subject': 'What has to work',
-    'door.body': "What has to work:\nWhat's already in production:\nWhen you need it:\n",
+    'door.cta': 'Tell me what you need',
+    'door.subject': 'What I need',
+    'door.body': "What I need:\nWhat's already running:\nWhen I need it:\n",
     'door.busy': 'Currently on a project; the next one starts in {month}.',
 
     // IDP Catalog (KubeLab IDP)
@@ -369,9 +369,9 @@ export const ui = {
     'hero.title': 'Ingeniero del silicio a la nube',
     'hero.subtitle':
       'Diseño y opero plataformas e infraestructura cloud: Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo. Más de diez años de ingeniería, del hardware a la nube, trabajando con clientes entre Europa, Asia y EE. UU.',
-    'door.cta': 'Cuéntame qué tiene que funcionar',
-    'door.subject': 'Qué tiene que funcionar',
-    'door.body': 'Qué tiene que funcionar:\nQué hay ya en producción:\nPara cuándo lo necesitas:\n',
+    'door.cta': 'Cuéntame qué necesitas',
+    'door.subject': 'Qué necesito',
+    'door.body': 'Qué necesito:\nQué hay ya en marcha:\nPara cuándo:\n',
     'door.busy': 'Ahora mismo en un proyecto; el siguiente arranca en {month}.',
 
     // IDP Catalog (KubeLab IDP)
