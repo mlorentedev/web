@@ -6,8 +6,26 @@
  * A cell is `{ item, span }`, `{ item: null }` for an empty cell, or `null` for
  * a row an item above already covers, where no cell may be rendered. Rows run
  * newest first, as the page reads.
+ *
+ * Every item needs a closed year range, and items in one list may not overlap:
+ * a table has one cell per row, so an open or nested entry would vanish.
  */
+function checked(items) {
+  const sorted = [...items].sort((a, b) => Number(a.start) - Number(b.start));
+  sorted.forEach((item, i) => {
+    if (!/^\d{4}$/.test(item.start) || !/^\d{4}$/.test(item.end)) {
+      throw new Error(`timeline: "${item.title}" needs a start and an end year`);
+    }
+    if (i > 0 && Number(item.start) < Number(sorted[i - 1].end)) {
+      throw new Error(`timeline: "${item.title}" overlaps "${sorted[i - 1].title}"`);
+    }
+  });
+  return items;
+}
+
 export function spanRows(left, right) {
+  checked(left);
+  checked(right);
   const years = [...new Set([...left, ...right].flatMap((i) => [i.start, i.end]))]
     .map(Number)
     .sort((a, b) => b - a);

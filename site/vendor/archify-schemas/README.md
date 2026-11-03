@@ -23,19 +23,17 @@ where archify is absent.
 | | |
 |---|---|
 | Source | `tt-a1i/archify` |
-| Skill version at copy time | `2.16.0-dev.0` |
-| Upstream `HEAD` at copy time | `9a5060566c832832fb843e457e58c8ee6bac82fd` (2026-08-27) |
+| Skill version at copy time | `2.16.0` |
+| Upstream tag at copy time | `v2.16.0` (`c826e6c3a7abad19c0f3cd1ca57207d54b1ad8de`) |
 | Files | `architecture.schema.json`, `common.schema.json` |
 
-`2.16.0-dev.0` is an unreleased development build — the latest upstream release
-is `v2.15.0`. `skills-lock.json` pins no ref, so `npx skills add` fetches the
-default branch, which moves. Recorded here so a future mismatch is diagnosable
-rather than mysterious.
+`skills-lock.json` pins that tag, and `npx skills add` needs the same ref on its
+command line: without one it fetches the default branch, which moves.
 
 ## Updating
 
-1. Refresh the skill (`npx skills add tt-a1i/archify`) and note the new version
-   and upstream SHA.
+1. Refresh the skill (`npx skills add tt-a1i/archify#v2.16.0`, with the new tag)
+   and note the new version and upstream SHA.
 2. Copy both files back over the ones here.
 3. Re-run `npm run diagrams` — the SVGs are regenerated and re-stamped.
 4. `npm test` — if an IR stops validating, the schema changed under it; fix the

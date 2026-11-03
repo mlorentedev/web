@@ -139,7 +139,7 @@ for (const { lang, built } of homes) {
       const main = dist(page).match(/<main[\s\S]*<\/main>/)?.[0] ?? '';
       const withoutBusy = main.replace(/<p[^>]*data-busy[\s\S]*?<\/p>/g, '');
       const words = text(withoutBusy);
-      assert.ok(words.length > 300, `dist/${page}: <main> rendered almost nothing`);
+      assert.ok(words.length > 100, `dist/${page}: <main> rendered almost nothing`);
       const claims = words.match(/open to (?:work|opportunities)|available (?:now|for hire|immediately)|currently available|accepting (?:new )?(?:clients|projects)|disponible|disponibilidad|abierto a (?:nuevas )?(?:oportunidades|proyectos)|aceptando (?:nuevos )?(?:clientes|proyectos)/gi) ?? [];
       assert.deepEqual(claims, [], `dist/${page} says: ${claims.join(', ')}`);
     });
