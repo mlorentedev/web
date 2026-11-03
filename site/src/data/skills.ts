@@ -103,18 +103,18 @@ export const layers: Layer[] = [
     },
   },
   {
-    key: 'hw/silicon',
+    key: 'hw/embedded',
     tone: 'rose',
     href: 'https://github.com/mlorentedev/vicon-fpga-face-detection',
     en: {
-      name: 'Hardware',
-      terms: ['FPGA', 'C firmware', 'Inference on Jetson and FPGA', 'Hands-on with hardware'],
+      name: 'Embedded systems',
+      terms: ['C firmware', 'FPGA and VHDL', 'Microcontrollers and FreeRTOS', 'Image sensors', 'Inference on Jetson and FPGA'],
       proof: 'My master\'s project: face detection on an FPGA.',
       link: 'the code',
     },
     es: {
-      name: 'Hardware',
-      terms: ['FPGA', 'Firmware en C', 'Inferencia en Jetson y FPGA', 'Trabajo directo con hardware'],
+      name: 'Sistemas embebidos',
+      terms: ['Firmware en C', 'FPGA y VHDL', 'Microcontroladores y FreeRTOS', 'Sensores de imagen', 'Inferencia en Jetson y FPGA'],
       proof: 'Mi trabajo de fin de máster: detección facial en FPGA.',
       link: 'el código',
     },
