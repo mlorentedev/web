@@ -258,14 +258,6 @@ export const ui = {
     'home.allNotes': 'All notes',
 
     // Subscribe form (WEB-083)
-    'subscribe.placeholder': 'you@email.com',
-    'subscribe.successText': 'Done! Check your email.',
-    'subscribe.errorText': 'Please enter a valid email.',
-    'subscribe.consentText': 'Please accept the privacy policy to continue.',
-    'subscribe.consentPrefix': 'I agree to the',
-    'subscribe.privacyPolicy': 'privacy policy',
-    'subscribe.buttonSuccess': 'Received',
-    'subscribe.networkError': 'Error. Please try again.',
 
     // Notes page
     'notes.title': 'Notes',
@@ -534,14 +526,6 @@ export const ui = {
     'home.allNotes': 'Todas las notas',
 
     // Subscribe form (WEB-083)
-    'subscribe.placeholder': 'tu@email.com',
-    'subscribe.successText': '¡Listo! Revisa tu email.',
-    'subscribe.errorText': 'Por favor, introduce un email válido.',
-    'subscribe.consentText': 'Necesito que aceptes la política de privacidad para poder escribirte.',
-    'subscribe.consentPrefix': 'Acepto la',
-    'subscribe.privacyPolicy': 'política de privacidad',
-    'subscribe.buttonSuccess': 'Recibido',
-    'subscribe.networkError': 'Error. Inténtalo de nuevo.',
 
     // Notes page
     'notes.title': 'Notas',
