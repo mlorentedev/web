@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 
 import { ghchartUpstream } from '../data/site';
+import { unsafeSvg } from '../lib/safe-svg.mjs';
 
 /**
  * The GitHub contribution chart, fetched once at build time and served from
@@ -9,8 +10,9 @@ import { ghchartUpstream } from '../data/site';
  *
  * The chart is decorative, so a failed fetch must not block a release: the
  * build warns and serves an empty chart with the same size, and the image
- * still links to the profile. Anything that is not an SVG counts as a failure,
- * so an error page from upstream is never served as the chart.
+ * still links to the profile. A body that is not an SVG of rectangles and text
+ * counts as a failure (`lib/safe-svg.mjs`), so neither an error page nor a
+ * script from upstream is ever served from this origin.
  */
 const WIDTH = 663;
 const HEIGHT = 104;
@@ -19,9 +21,9 @@ async function chart(): Promise<string> {
   try {
     const response = await fetch(ghchartUpstream, { signal: AbortSignal.timeout(15_000) });
     const body = await response.text();
-    if (!response.ok || !/^\s*(<\?xml[^>]*>\s*)?(<!DOCTYPE[^>]*>\s*)?<svg[\s>]/.test(body)) {
-      throw new Error(`HTTP ${response.status}, ${body.length} bytes, not an SVG`);
-    }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const refused = unsafeSvg(body);
+    if (refused) throw new Error(`refused: ${refused}`);
     return body;
   } catch (error) {
     console.warn(`[github-activity] ${ghchartUpstream}: ${(error as Error).message}; serving an empty chart`);
@@ -29,4 +31,5 @@ async function chart(): Promise<string> {
   }
 }
 
-export const GET: APIRoute = async () => new Response(await chart());
+export const GET: APIRoute = async () =>
+  new Response(await chart(), { headers: { 'Content-Type': 'image/svg+xml; charset=utf-8' } });

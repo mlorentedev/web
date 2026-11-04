@@ -16,6 +16,8 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { unsafeSvg } from '../src/lib/safe-svg.mjs';
+
 const distDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 
 const pages = (dir) =>
@@ -25,11 +27,11 @@ const pages = (dir) =>
     return entry.name.endsWith('.html') ? [path] : [];
   });
 
-test('dist/github-activity.svg is an SVG', () => {
+test('dist/github-activity.svg is an SVG of rectangles and text', () => {
   const file = join(distDir, 'github-activity.svg');
   assert.ok(existsSync(file), 'dist/github-activity.svg must exist — run the build first');
   const svg = readFileSync(file, 'utf8');
-  assert.match(svg, /^\s*(<\?xml[^>]*>\s*)?(<!DOCTYPE[^>]*>\s*)?<svg[\s>]/);
+  assert.equal(unsafeSvg(svg), null);
   if (process.env.CI) assert.doesNotMatch(svg, /data-fallback/, 'the build served the empty chart: the upstream fetch failed (see the build log)');
 });
 
