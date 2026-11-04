@@ -28,7 +28,7 @@ const newTab = internal ? {} : { target: '_blank', rel: 'noopener noreferrer' };
 
 <div class="border border-ink-200 bg-white rounded-lg p-5 hover:border-accent-700 transition-colors flex flex-col shadow-xs">
   <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-    <Heading class="font-bold text-ink-900 text-lg leading-snug text-balance">
+    <Heading data-project-title class="font-bold text-ink-900 text-lg leading-snug text-balance">
       {link ? (
         <a href={link} {...newTab} class="hover:text-accent-700 transition-colors">
           {project.title}

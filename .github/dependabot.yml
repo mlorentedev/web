@@ -33,3 +33,17 @@ updates:
       # One cumulative weekly PR for all action bumps, mirroring the npm group.
       actions:
         patterns: ["*"]
+
+  # The Dockerfile's base images, pinned by digest (#350): Dependabot moves the
+  # digest when the tag's image is rebuilt, so the pin is maintained rather
+  # than frozen. Node majors follow .nvmrc, so they stay a deliberate migration.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      docker:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]

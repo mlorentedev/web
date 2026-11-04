@@ -248,6 +248,7 @@ export const ui = {
     'home.timeline.present': 'present',
     'home.timeline.current': 'current role',
     'home.loop.today': 'today',
+    'home.bio.label': 'About me',
     'home.loop.hardware': 'HARDWARE',
     'home.loop.software': 'SOFTWARE',
     'home.cta.body': 'Whether you’re a company, an individual or have a one-off need, write to me and I’ll reply within 24 hours.',
@@ -274,6 +275,10 @@ export const ui = {
     // Note detail
     'note.prev': 'Previous',
     'note.next': 'Next',
+    // Landmark names: the header nav and the prev/next nav are both <nav>,
+    // and two unnamed ones cannot be told apart in a landmark list (#358).
+    'nav.label': 'Main',
+    'note.navLabel': 'More notes',
 
     // The exit at the end of a note (WEB-090). Says what the notes are; it does
     // not restate the hero, which is still being decided.
@@ -520,6 +525,7 @@ export const ui = {
     'home.timeline.present': 'actualidad',
     'home.timeline.current': 'puesto actual',
     'home.loop.today': 'hoy',
+    'home.bio.label': 'Sobre mí',
     'home.loop.hardware': 'HARDWARE',
     'home.loop.software': 'SOFTWARE',
     'home.cta.body': 'Seas empresa, particular o tengas una necesidad puntual, escríbeme y te respondo en menos de 24 horas.',
@@ -546,6 +552,8 @@ export const ui = {
     // Note detail
     'note.prev': 'Anterior',
     'note.next': 'Siguiente',
+    'nav.label': 'Principal',
+    'note.navLabel': 'Más notas',
 
     'note.closing.eyebrow': 'Quién escribe esto',
     'note.closing.body':

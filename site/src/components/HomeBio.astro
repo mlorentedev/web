@@ -4,6 +4,7 @@
 // `content/pages/<lang>-bio.mdx`, linking /lab and /ai for the proof.
 import Section from './Section.astro';
 import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -11,13 +12,14 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+const t = useTranslations(lang);
 
 const [bio] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'bio' && data.lang === lang);
 if (!bio) throw new Error(`HomeBio: no bio for "${lang}" — expected src/content/pages/${lang}-bio.mdx with page: bio`);
 const { Content: Bio } = await render(bio);
 ---
 
-<Section id="about" data-home-block="bio">
+<Section id="about" data-home-block="bio" aria-label={t('home.bio.label')}>
   <div data-bio class="prose prose-base max-w-3xl prose-p:text-ink-700 prose-p:leading-relaxed prose-a:text-accent-700 hover:prose-a:text-accent-800">
     <Bio />
   </div>

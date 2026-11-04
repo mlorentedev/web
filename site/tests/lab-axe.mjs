@@ -1,9 +1,10 @@
 /**
- * The Lab has no accessibility violations (WEB-080, AC5).
+ * No built page has an accessibility violation (WEB-080 AC5, widened by #517).
  *
  *   npm run build && npm run test:a11y
  *
- * Playwright + axe-core over the built `/lab` and `/es/lab` at 320 and 1440, like
+ * The name is from when it covered only the Lab; it now audits every page in
+ * `dist/`. Playwright + axe-core over each at 320 and 1440, like
  * `lab-containment.mjs` and for the same reason: what the page *is* is what a
  * browser computes from it. A static grep cannot see that a colour fails
  * contrast once it has been composited, or that an element is in the tab order.
@@ -55,6 +56,12 @@
  * Manu's VPS is up is not a verdict CI should give, and a request nobody
  * expected is the first sign a script has come back.
  *
+ * That promise is the Lab's and the AI page's (`SCRIPTLESS`): there, any
+ * request to another origin fails. Other pages embed one third-party image on
+ * purpose, the GitHub activity chart on `/` and `/projects/` (`EMBEDDED`). It
+ * is still blocked, so the verdict never waits on the network, and listed, but
+ * it does not fail the run. Any other origin fails on every page.
+ *
  * ## The one `incomplete` is honest and is not suppressed
  *
  * axe reports 79 `color-contrast` results as *incomplete* on this page: they
@@ -65,7 +72,10 @@
  * could not decide is making a claim it did not earn. The diagram palette is
  * covered instead by the token audit (AC1) and by PR4's rendered screenshots.
  */
+import { readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { chromium } from 'playwright';
 
@@ -77,16 +87,46 @@ import { labBaseUrl } from './lib/serve.mjs';
 // from somewhere else and report a clean page it never audited.
 const AXE_BUNDLE = createRequire(import.meta.url).resolve('axe-core/axe.min.js');
 
-const PATHS = [
-  '/lab',
-  '/es/lab',
-  '/lab/idp',
-  '/es/lab/idp',
-  '/lab/idp/architecture',
-  '/es/lab/idp/architecture',
-  '/ai',
-  '/es/ai',
-];
+/**
+ * Every page the build wrote, not a list (#517).
+ *
+ * The list this replaced named the eight Lab and AI pages, so the notes never
+ * reached axe: all sixteen carried two unnamed `<nav>` landmarks
+ * (`landmark-unique`), eleven had code comments at 3.04:1, and the 404 heading
+ * sat at 1.47:1. A page added later is audited the day it is built. Measured
+ * 2026-11-03: 85 pages, about 13 s per width.
+ */
+const DIST = fileURLToPath(new URL('../dist/', import.meta.url));
+const pagesIn = (dir) =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) return pagesIn(path);
+    return entry.name.endsWith('.html') ? [`/${relative(DIST, path).replace(/index\.html$/, '')}`] : [];
+  });
+const PATHS = pagesIn(DIST).sort();
+
+/** Pages that must make no request to another origin. */
+const SCRIPTLESS = /^\/(es\/)?(lab|ai)\//;
+
+/** The one third-party origin other pages embed on purpose: `ghchartSrc` in `src/data/site.ts`. */
+const EMBEDDED = new Set(['https://ghchart.rshah.org']);
+
+/**
+ * The six AA rules axe 4.14 ships disabled, turned on by name. Measured
+ * 2026-11-03 with all 15 disabled rules on, across every page at both widths:
+ * only `color-contrast-enhanced` (AAA, 7:1) fails, and AA is this site's bar.
+ * AAA and experimental rules stay off: their verdicts are not a conformance
+ * claim and may change between axe releases. Named, not discovered, so an axe
+ * upgrade cannot switch a new rule on unseen; a name axe no longer knows
+ * fails the run instead of being skipped.
+ */
+const ENABLED = ['aria-roledescription', 'audio-caption', 'duplicate-id', 'duplicate-id-active', 'landmark-complementary-is-top-level', 'target-size'];
+
+// A build that wrote nothing, or wrote somewhere else, would audit no page and
+// pass. The pages this check began with must still be among the ones it found.
+for (const page of ['/lab/', '/es/lab/', '/ai/', '/es/ai/', '/notes/', '/']) {
+  if (!PATHS.includes(page)) throw new Error(`${page} is not in dist/: run the build first`);
+}
 
 /**
  * Both ends of the range `lab-containment.mjs` covers.
@@ -124,7 +164,14 @@ for (const path of PATHS) {
       if (!response?.ok()) throw new Error(`HTTP ${response?.status()}`);
 
       await page.addScriptTag({ path: AXE_BUNDLE });
-      results = await page.evaluate(async () => await window.axe.run(document));
+      results = await page.evaluate(async (enabled) => {
+        const known = new Set(window.axe.getRules().map((rule) => rule.ruleId));
+        const unknown = enabled.filter((id) => !known.has(id));
+        if (unknown.length > 0) throw new Error(`axe no longer has the rules ${unknown.join(', ')}`);
+        return await window.axe.run(document, {
+          rules: Object.fromEntries(enabled.map((id) => [id, { enabled: true }])),
+        });
+      }, ENABLED);
     } catch (error) {
       console.error(`✗ ${label} — ${error.message}`);
       failures++;
@@ -132,8 +179,13 @@ for (const path of PATHS) {
       continue;
     }
 
-    if (elsewhere.length > 0) {
-      console.error(`✗ ${label} — requests to another origin:\n    ${elsewhere.join('\n    ')}`);
+    const expected = (url) => !SCRIPTLESS.test(path) && EMBEDDED.has(new URL(url).origin);
+    const unexpected = elsewhere.filter((url) => !expected(url));
+    if (elsewhere.length > unexpected.length) {
+      console.log(`  ${label} — blocked, not counted: ${elsewhere.filter(expected).join(', ')}`);
+    }
+    if (unexpected.length > 0) {
+      console.error(`✗ ${label} — requests to another origin:\n    ${unexpected.join('\n    ')}`);
       failures++;
     }
 
@@ -177,4 +229,7 @@ if (failures > 0) {
   console.error(`\n${failures} check(s) failed.`);
   process.exit(1);
 }
-console.log('\n0 axe violations and no request to another origin, at 320 and 1440 on both locales.');
+console.log(
+  `\n0 axe violations on ${PATHS.length} pages at 320 and 1440, ` +
+    'and no request to another origin beyond the GitHub chart, none at all from the Lab or AI pages.',
+);

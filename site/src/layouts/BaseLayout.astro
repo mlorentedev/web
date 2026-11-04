@@ -15,6 +15,8 @@ interface Props {
   jsonLd?: boolean;
   noindex?: boolean;
   hasAlternates?: boolean;
+  /** The page's own JSON-LD nodes, appended to the site graph (`data/structured-data.ts`). */
+  schema?: Record<string, unknown>[];
 }
 
 const lang = getLocale(Astro.currentLocale);
@@ -28,6 +30,7 @@ const {
   jsonLd = true,
   noindex = false,
   hasAlternates = true,
+  schema = [],
 } = Astro.props;
 
 const pageTitle = title;
@@ -86,6 +89,7 @@ const schemaGraph = {
       about: { '@id': `${site.url}/#person` },
       inLanguage: lang === 'es' ? 'es-ES' : 'en-US',
     },
+    ...schema,
   ],
 };
 ---
