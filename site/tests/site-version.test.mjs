@@ -113,14 +113,16 @@ test('nginx still refuses to let /version.json be cached', () => {
   // discards response headers, so the guarantee lives in nginx or nowhere. It
   // is asserted here because "nowhere" and "in nginx" look identical from the
   // built output, and the failure is silent — a cached stale release number.
+  // The path policy is `map $uri $path_cache_control` (#328); nginx-cache.test.mjs
+  // asserts the map is what sends the header.
   const conf = readFileSync(join(siteRoot, 'nginx.conf'), 'utf8');
-  const block = conf.match(/location\s*=\s*\/version\.json\s*\{([^}]*)\}/);
+  const map = conf.match(/^map\s+\$uri\s+\$path_cache_control\s*\{([^}]*)\}/m);
 
-  assert.ok(block, 'nginx.conf has no `location = /version.json` block');
+  assert.ok(map, 'nginx.conf has no `map $uri $path_cache_control` block');
   assert.match(
-    block[1],
-    /add_header\s+Cache-Control\s+"no-cache"/,
-    'the /version.json location exists but no longer sets Cache-Control: no-cache',
+    map[1],
+    /^\s*\/version\.json\s+"no-cache"\s*;/m,
+    'the cache map no longer gives /version.json an exact `no-cache` entry',
   );
 });
 
