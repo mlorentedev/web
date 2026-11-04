@@ -5,7 +5,7 @@
 # copies only the one-line result, and COPY is cached by content, so the
 # install-deps layer reruns when Playwright's version moves, not on every
 # lockfile edit.
-FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS playwright-version
+FROM --platform=$BUILDPLATFORM node:22-bookworm-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da AS playwright-version
 COPY site/package-lock.json /tmp/package-lock.json
 RUN node -p "require('/tmp/package-lock.json').packages['node_modules/playwright'].version" \
       > /playwright-version \
@@ -13,7 +13,9 @@ RUN node -p "require('/tmp/package-lock.json').packages['node_modules/playwright
       || { echo "playwright in site/package-lock.json is '$(cat /playwright-version)', not a bare semver" >&2; exit 1; }; }
 
 # ---------- Build Stage — Static site (Astro output: 'static') ----------
-# CI context: ./apps/web — files copied from site/ subdirectory
+# Context: the repository root. `.dockerignore` lets in only site/ (minus local
+# build output) and version.txt, so `COPY site/ ./` below cannot lay a local
+# node_modules over the tree `npm ci` installs.
 #
 # Debian rather than Alpine: the build renders the notes' mermaid diagrams to
 # SVG through a headless browser, and Playwright ships no musl build. Nothing
@@ -29,44 +31,13 @@ RUN node -p "require('/tmp/package-lock.json').packages['node_modules/playwright
 # different files (36 of 116, measured on sha-641b26a). Without them the stage
 # runs once and both platforms copy the same dist/ — which the release workflow
 # asserts before testing it (#376).
-FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS build
+FROM --platform=$BUILDPLATFORM node:22-bookworm-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da AS build
 
-# Astro build arguments (injected by CI from values/*.yaml)
-ARG PUBLIC_SITE_TITLE
-ARG PUBLIC_SITE_DESCRIPTION
-ARG PUBLIC_SITE_DOMAIN
-ARG PUBLIC_SITE_URL
-ARG PUBLIC_SITE_MAIL
-ARG PUBLIC_SITE_AUTHOR
-ARG PUBLIC_SITE_KEYWORDS
-ARG PUBLIC_TWITTER_URL
-ARG PUBLIC_YOUTUBE_URL
-ARG PUBLIC_GITHUB_URL
-ARG PUBLIC_CALENDLY_URL
-ARG PUBLIC_BUY_ME_A_COFFEE_URL
-ARG PUBLIC_GOOGLE_ANALYTICS_ID
-ARG PUBLIC_GOOGLE_TAG_MANAGER_ID
-ARG BACKEND_URL
-
+# Site settings are source, in site/src/data/site.ts: no build argument
+# configures the site. The one ARG, SITE_COMMIT, is declared next to the build
+# step below.
 WORKDIR /app
 RUN chown node:node /app
-
-# Make build arguments available as env vars for Astro static build
-ENV PUBLIC_SITE_TITLE=${PUBLIC_SITE_TITLE} \
-    PUBLIC_SITE_DESCRIPTION=${PUBLIC_SITE_DESCRIPTION} \
-    PUBLIC_SITE_DOMAIN=${PUBLIC_SITE_DOMAIN} \
-    PUBLIC_SITE_URL=${PUBLIC_SITE_URL} \
-    PUBLIC_SITE_MAIL=${PUBLIC_SITE_MAIL} \
-    PUBLIC_SITE_AUTHOR=${PUBLIC_SITE_AUTHOR} \
-    PUBLIC_SITE_KEYWORDS=${PUBLIC_SITE_KEYWORDS} \
-    PUBLIC_TWITTER_URL=${PUBLIC_TWITTER_URL} \
-    PUBLIC_YOUTUBE_URL=${PUBLIC_YOUTUBE_URL} \
-    PUBLIC_GITHUB_URL=${PUBLIC_GITHUB_URL} \
-    PUBLIC_CALENDLY_URL=${PUBLIC_CALENDLY_URL} \
-    PUBLIC_BUY_ME_A_COFFEE_URL=${PUBLIC_BUY_ME_A_COFFEE_URL} \
-    PUBLIC_GOOGLE_ANALYTICS_ID=${PUBLIC_GOOGLE_ANALYTICS_ID} \
-    PUBLIC_GOOGLE_TAG_MANAGER_ID=${PUBLIC_GOOGLE_TAG_MANAGER_ID} \
-    BACKEND_URL=${BACKEND_URL}
 
 # Chromium's shared libraries, as root and before dropping privileges. Their
 # own layer so they survive every source edit in the cache. The version is the
@@ -107,7 +78,7 @@ ARG SITE_COMMIT
 RUN npm run build
 
 # ---------- Runtime Stage — Nginx static serving ----------
-FROM nginx:1.27-alpine
+FROM nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
 
 # The base image ships its own index.html and 50x.html in the web root, and the
 # COPY below merges into that directory rather than replacing it. index.html is
