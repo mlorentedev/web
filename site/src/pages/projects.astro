@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import { getLocale, useTranslations } from '../i18n/utils';
 import { projects, localize } from '../data/portfolio';
 import { ghchartSrc } from '../data/site';
+import { softwareSourceCode } from '../data/structured-data';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
@@ -13,12 +14,13 @@ const t = useTranslations(lang);
 
 const featured = projects.filter((p) => p.featured);
 const other = projects.filter((p) => !p.featured);
+const schema = [...featured, ...other].map((p) => softwareSourceCode(localize(p, lang), lang));
 
 const [page] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'projects' && data.lang === 'en');
 const { Content } = await render(page);
 ---
 
-<BaseLayout title={page.data.title} description={page.data.description} hasAlternates={false}>
+<BaseLayout title={page.data.title} description={page.data.description} hasAlternates={false} schema={schema}>
   <Header hasAlternates={false} />
   <main id="main-content" class="grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">
