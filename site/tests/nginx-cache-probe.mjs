@@ -10,7 +10,7 @@
  * in the file and plain on the wire. Raw headers, not `fetch`: `fetch` joins
  * duplicates into one comma-separated value, which is the defect to count.
  */
-import { get } from 'node:http';
+import { request as httpRequest } from 'node:http';
 
 const base = process.argv[2];
 if (!base) {
@@ -19,9 +19,9 @@ if (!base) {
 }
 
 /** Status, body and every header line as sent, duplicates kept. */
-const request = (path) =>
+const request = (path, method = 'GET') =>
   new Promise((resolve, reject) => {
-    get(new URL(path, base), (res) => {
+    const req = httpRequest(new URL(path, base), { method }, (res) => {
       let body = '';
       res.setEncoding('utf8');
       res.on('data', (chunk) => (body += chunk));
@@ -30,7 +30,9 @@ const request = (path) =>
         for (let i = 0; i < res.rawHeaders.length; i += 2) raw.push([res.rawHeaders[i].toLowerCase(), res.rawHeaders[i + 1]]);
         resolve({ status: res.statusCode, body, all: (name) => raw.filter(([n]) => n === name).map(([, v]) => v) });
       });
-    }).on('error', reject);
+    });
+    req.on('error', reject);
+    req.end();
   });
 
 // Real asset names come from the served pages, so the probe follows the build.
@@ -60,11 +62,16 @@ const CASES = [
   ['/_astro/missing.AAAAAAAA.css', 404, REVALIDATE],
   ['/no-such-page/', 404, REVALIDATE],
   ['/es/no-such-page/', 404, REVALIDATE],
+  // Any other error keeps the asset's URI, since only 403 and 404 have an
+  // `error_page`. A 405 is the one a client can provoke, and a cache that kept
+  // it under `immutable` would serve the error for a year.
+  [astro, 405, REVALIDATE, 'POST'],
+  [beoe, 405, REVALIDATE, 'POST'],
 ];
 
 let failures = 0;
-for (const [path, status, policy] of CASES) {
-  const res = await request(path);
+for (const [path, status, policy, method = 'GET'] of CASES) {
+  const res = await request(path, method);
   const cache = res.all('cache-control');
   const problems = [
     res.status !== status && `status ${res.status}, expected ${status}`,
@@ -75,8 +82,8 @@ for (const [path, status, policy] of CASES) {
     res.all('x-content-type-options').length !== 1 && 'no single X-Content-Type-Options',
   ].filter(Boolean);
   if (problems.length > 0) failures++;
-  console.log(`${problems.length ? '✗' : '✓'} ${path} ${res.status} ${cache.join(' | ')}${problems.length ? `\n    ${problems.join('\n    ')}` : ''}`);
+  console.log(`${problems.length ? '✗' : '✓'} ${method} ${path} ${res.status} ${cache.join(' | ')}${problems.length ? `\n    ${problems.join('\n    ')}` : ''}`);
 }
 
 if (failures > 0) process.exit(1);
-console.log(`nginx cache probe: ${CASES.length} paths, one Cache-Control each, immutable only on hashed names.`);
+console.log(`nginx cache probe: ${CASES.length} paths, one Cache-Control each, immutable only on hashed names that answered 200.`);

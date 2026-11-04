@@ -23,12 +23,16 @@ The regex also matched `/fonts/*.woff2` and `/images/*`. Their names never chang
 **Solution**: one `map $uri $cache_control` at the `http` level and one server-level
 `add_header Cache-Control $cache_control always;`. `immutable` applies only to
 `/_astro/` and `/beoe/`, whose names are content hashes; other assets get one day, and
-pages, `/version.json` and errors get `no-cache`. A 404 is answered under `/404.html`,
-so a missing hashed asset is never cached as immutable. No location sets a header any
+pages, `/version.json` and errors get `no-cache`. A path map alone is not enough:
+only 403 and 404 have an `error_page`, so a 405 or a 500 keeps the asset's URI and went
+out as immutable. A second `map $status $cache_control` sends `no-cache` for every 4xx
+and 5xx and the path policy otherwise. No location sets a header any
 more, so none can drop the security set. `tests/nginx-cache-probe.mjs` reads
 `res.rawHeaders` from the running image. Against the old config it failed 10 of 11
-paths; against the new one it passes 11 of 11. CI runs it on every image.
+paths; against the new one it passes all 13, including a `POST` that must answer 405
+with `no-cache`. CI runs it on every image.
 
 **Rule**: count response headers from the raw list, against the container, never from
 `fetch` or from the config. Put `immutable` only on a path whose name is a content
-hash, and have a test assert that every file under that path carries one.
+hash, only on a 2xx or 3xx, and have a test recompute each name from the file's bytes:
+a pattern cannot tell a hash from `banner.svg`.

@@ -20,6 +20,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
+import { xxh32 } from '@node-rs/xxhash';
 import { fileURLToPath } from 'node:url';
 
 const site = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -28,12 +29,15 @@ const conf = readFileSync(join(site, 'nginx.conf'), 'utf8')
   .map((line) => line.replace(/#.*$/, ''))
   .join('\n');
 
-/** The `map $uri $cache_control { … }` entries, in order, as `[pattern, value]`. */
-function cachePolicy() {
-  const body = conf.match(/^map\s+\$uri\s+\$cache_control\s*\{([^}]*)\}/m)?.[1];
-  assert.ok(body, 'nginx.conf has no `map $uri $cache_control` block');
-  return [...body.matchAll(/^\s*(\S+)\s+"([^"]*)"\s*;/gm)].map((m) => [m[1], m[2]]);
+/** The entries of `map <source> <target> { … }`, in order, as `[pattern, value]`, quotes dropped. */
+function mapEntries(source, target) {
+  const body = conf.match(new RegExp(`^map\\s+\\${source}\\s+\\${target}\\s*\\{([^}]*)\\}`, 'm'))?.[1];
+  assert.ok(body, `nginx.conf has no \`map ${source} ${target}\` block`);
+  return [...body.matchAll(/^\s*(\S+)\s+("[^"]*"|\S+)\s*;/gm)].map((m) => [m[1], m[2].replace(/^"|"$/g, '')]);
 }
+
+/** The policy by path, before the response status is known. */
+const cachePolicy = () => mapEntries('$uri', '$path_cache_control');
 
 /** The value the map gives a URI: exact keys first, then regexes in order, then `default`. */
 function policyFor(uri) {
@@ -72,6 +76,16 @@ test('only content-hashed paths are immutable; the rest expire or revalidate', (
   }
 });
 
+test('an error response revalidates, whatever its path', () => {
+  // Only 403 and 404 have an `error_page`. Any other error keeps the asset's
+  // URI, so the path map alone sent a 405 or a 500 for a hashed name as
+  // immutable, and a cache could keep the error for a year.
+  assert.deepEqual(mapEntries('$status', '$cache_control'), [
+    ['~^[45]', 'no-cache'],
+    ['default', '$path_cache_control'],
+  ]);
+});
+
 test('pages, fonts, images and the release marker get the policy their names allow', () => {
   assert.equal(policyFor('/'), 'no-cache');
   assert.equal(policyFor('/notes/some-note/'), 'no-cache');
@@ -86,12 +100,15 @@ test('every file the immutable paths serve has a content hash in its name', { sk
   // A file here without a hash would make that promise falsely.
   for (const [dir, hashed] of [
     ['_astro', /\.[\w-]{8}\.\w+$/],
-    // @beoe's `file` strategy names each SVG by a base-36 hash of its content.
-    ['beoe', /^[0-9a-z]{5,}\.svg$/],
+    // @beoe's `file` strategy names each SVG `xxh32(svg).toString(36)`, which
+    // is 1 to 7 characters of [0-9a-z]: `banner.svg` has that shape too, so
+    // the name is checked against the bytes, not against a pattern.
+    ['beoe', (name, bytes) => name === `${xxh32(bytes).toString(36)}.svg`],
   ]) {
     const path = join(site, 'dist', dir);
     if (!existsSync(path)) continue;
-    const unhashed = readdirSync(path).filter((name) => !hashed.test(name));
+    const check = typeof hashed === 'function' ? hashed : (name) => hashed.test(name);
+    const unhashed = readdirSync(path).filter((name) => !check(name, readFileSync(join(path, name), 'utf8')));
     assert.deepEqual(unhashed, [], `dist/${dir}/ holds files whose names do not change with their content`);
   }
 });
