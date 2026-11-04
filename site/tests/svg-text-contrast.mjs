@@ -39,18 +39,6 @@ if (!PATHS.includes('/')) throw new Error('/ is not in dist/: run the build firs
 
 const WIDTHS = [320, 1440];
 
-/**
- * Fills known to fail inside the generated archify diagrams (`svg[data-preset]`),
- * and only there: edge and node labels take the family's stroke shade, tuned for
- * lines rather than text. Fixing them means re-running the diagram generator
- * (WEB-182, #559). Any other failing fill, in a diagram or out, counts, and a
- * fill listed here that no longer fails anywhere fails the run, so the list can
- * only shrink.
- */
-const KNOWN_DIAGRAM_FILLS = new Set(['rgb(5, 150, 105)', 'rgb(6, 182, 212)', 'rgb(100, 116, 139)']);
-const stillFailing = new Set();
-let known = 0;
-
 /** Every visible SVG `<text>` on the page, with what it is painted on. */
 function readTexts() {
   const opacity = (node) => {
@@ -99,7 +87,6 @@ function readTexts() {
         weight: Number(style.fontWeight),
         under,
         layers,
-        diagram: svg.hasAttribute('data-preset'),
       };
     });
 }
@@ -145,11 +132,6 @@ for (const path of PATHS) {
       } catch (error) {
         return `${text.name}: ${error.message}`;
       }
-      if (found && text.diagram && KNOWN_DIAGRAM_FILLS.has(text.fill)) {
-        stillFailing.add(text.fill);
-        known++;
-        return [];
-      }
       return found ?? [];
     });
     if (bad.length > 0) {
@@ -168,13 +150,5 @@ if (checked === 0) {
   console.error('✗ no SVG text found on any page: the check read nothing');
   process.exit(1);
 }
-const fixed = [...KNOWN_DIAGRAM_FILLS].filter((fill) => !stillFailing.has(fill));
-if (fixed.length > 0) {
-  console.error(`✗ no diagram label fails with ${fixed.join(', ')} any more: remove it from KNOWN_DIAGRAM_FILLS`);
-  failures++;
-}
 if (failures > 0) process.exit(1);
-console.log(
-  `svg text contrast: ${checked} texts on ${PATHS.length} pages at 320 and 1440 at AA, ` +
-    `except ${known} diagram label readings known to fail (WEB-182, #559).`,
-);
+console.log(`svg text contrast: ${checked} texts on ${PATHS.length} pages at 320 and 1440 at AA.`);
