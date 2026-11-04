@@ -16,7 +16,10 @@
  * exception.
  *
  * A target counts as inline when it is `display: inline` and its block holds
- * text of its own beside the link.
+ * text that is not inside any target.
+ *
+ * The marked set must match: a page with no marked nav link, or a run with no
+ * tag chip, fails, so a renamed hook cannot drop the rule in silence.
  *
  * Every built page, at 320 and 1440, in the Chromium `test:browser` installs.
  */
@@ -50,10 +53,14 @@ function undersized(min) {
     }
     return document.body;
   };
-  const inlineInText = (el) => {
-    if (getComputedStyle(el).display !== 'inline') return false;
-    return (blockOf(el).textContent ?? '').trim().length > (el.textContent ?? '').trim().length;
+  // The block's own text: what is left once every target inside it is taken out,
+  // so two bare links side by side do not count as each other's sentence.
+  const ownText = (block) => {
+    const copy = block.cloneNode(true);
+    copy.querySelectorAll(TARGETS).forEach((t) => t.remove());
+    return (copy.textContent ?? '').trim();
   };
+  const inlineInText = (el) => getComputedStyle(el).display === 'inline' && ownText(blockOf(el)).length > 0;
   const label = (el) => {
     const name = el.getAttribute('aria-label') || el.textContent?.trim().replace(/\s+/g, ' ') || el.getAttribute('href') || '';
     const where = el.closest('header, nav, footer, main, aside')?.tagName.toLowerCase() ?? 'body';
@@ -86,20 +93,23 @@ function undersized(min) {
     const crowd = targets.find((b) => b !== a && !b.el.contains(a.el) && !a.el.contains(b.el) && (reaches(a, b.r) || (b.small && Math.hypot(a.cx - b.cx, a.cy - b.cy) < min)));
     if (crowd) found.push(`${label(a.el)} ${size}, its ${min} px circle reaches ${label(crowd.el)}`);
   }
-  return found;
+  return { found, marked: { nav: document.querySelectorAll('[data-header-links] a').length, chips: document.querySelectorAll('[data-tag-chip]').length } };
 }
 
 const { url, server } = await labBaseUrl();
 const browser = await chromium.launch();
 let failures = 0;
 let targets = 0;
+let chips = 0;
 try {
   for (const width of WIDTHS) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     for (const path of PATHS) {
       await page.goto(new URL(path, url).href, { waitUntil: 'load' });
       targets += await page.evaluate(() => document.querySelectorAll('a[href], button, summary').length);
-      const small = await page.evaluate(undersized, MIN);
+      const { found: small, marked } = await page.evaluate(undersized, MIN);
+      chips += marked.chips;
+      if (marked.nav === 0) small.push('no `[data-header-links] a` on the page: the own-box rule matched nothing');
       if (small.length === 0) continue;
       failures += small.length;
       console.log(`✗ ${path} @${width}\n    ${[...new Set(small)].join('\n    ')}`);
@@ -111,6 +121,10 @@ try {
   server?.close();
 }
 
+if (chips === 0) {
+  console.error('✗ no `[data-tag-chip]` on any page: the own-box rule matched nothing');
+  failures += 1;
+}
 if (failures > 0) {
   console.error(`\n${failures} tap targets fail 2.5.8, or are marked and below ${MIN}×${MIN} px on their own box.`);
   process.exit(1);

@@ -38,7 +38,7 @@ const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data 
                   </a>
                   <div class="flex flex-wrap gap-1.5 mt-3">
                     {note.data.tags.map((tag: string) => (
-                      <a href={translatePath(`/tags/${tag.toLowerCase()}`)} data-tag-chip class="inline-flex min-h-7 items-center px-2 text-xs rounded bg-gray-100 text-gray-600 hover:bg-cyan-700 hover:text-white transition-colors">
+                      <a href={translatePath(`/tags/${tag.toLowerCase()}`)} data-tag-chip class="inline-flex min-h-7 min-w-6 items-center justify-center px-2 text-xs rounded bg-gray-100 text-gray-600 hover:bg-cyan-700 hover:text-white transition-colors">
                         {tag}
                       </a>
                     ))}

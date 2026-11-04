@@ -51,7 +51,7 @@ const newTab = internal ? {} : { target: '_blank', rel: 'noopener noreferrer' };
     {project.tags.map((tag) => (
       <a
         href={translatePath(`/tags/${tag.toLowerCase()}`)} data-tag-chip
-        class="inline-flex min-h-7 items-center px-2 text-xs rounded bg-ink-100 text-ink-600 hover:bg-accent-700 hover:text-white transition-colors"
+        class="inline-flex min-h-7 min-w-6 items-center justify-center px-2 text-xs rounded bg-ink-100 text-ink-600 hover:bg-accent-700 hover:text-white transition-colors"
       >
         {tag}
       </a>
