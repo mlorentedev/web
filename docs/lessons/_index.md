@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-69 lessons, one file each, newest first. Numbers are assigned in the order
+70 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 070 | [A build-time fallback hid a validator that rejected the real upstream response](lesson-070-a-build-time-fallback-hid-a-validator-that-r.md) | 2026-11-04 | `#build` `#testing` `#privacy` |
 | 069 | [A contrast check that compares NaN passes every page](lesson-069-a-contrast-check-that-compares-nan-passes-ev.md) | 2026-11-04 | `#testing` `#accessibility` |
 | 068 | [A PR build renders the local variant of the footer, so a defect only the shipped variant carries passed every PR check](lesson-068-a-pr-build-renders-the-local-variant-of-the-.md) | 2026-11-03 | `#testing` `#ci` `#build` |
 | 067 | [A codemod renames the bug a ticket names, so the ticket's own search reports it fixed](lesson-067-a-codemod-renames-the-bug-a-ticket-names-so-th.md) | 2026-11-01 | `#accessibility` `#testing` `#tailwind` |
