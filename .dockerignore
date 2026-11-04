@@ -1,3 +1,18 @@
-node_modules
-.git
-*.log
+# An allowlist: the build context is the repository root, and the image needs
+# only site/ and version.txt (#350). A bare `node_modules` here once matched
+# only the root, which has none, so 445 MB of site/node_modules went to every
+# build and `COPY site/ ./` laid it over the tree `npm ci` had installed.
+*
+!site/
+!version.txt
+
+# Local build output and secrets under site/, at any depth for the two that can
+# nest: the image builds its own.
+site/**/node_modules
+site/dist
+site/.astro
+site/public/beoe
+site/**/.env*
+site/test-results
+site/**/*.log
+site/**/.DS_Store
