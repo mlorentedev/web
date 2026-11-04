@@ -148,7 +148,38 @@ const themeVariables = {
   '--external-stroke': token.panel[500],
   '--security-fill': tint(token.ink[700], 0.16),
   '--security-stroke': token.ink[800],
+
+  // Label text per type (#559). archify paints a type's labels (`.t-<type>`)
+  // with its stroke, a shade chosen for 1.5 px lines at 3:1, so emerald-600,
+  // cyan-500 and slate-500 labels read at 2.3–3.9:1. Each is the lightest shade
+  // of its family at 4.5:1 or more over the worst surface a label sits on: the
+  // type's own tinted fill over a lane. That gives 700 for the chromatic
+  // families and leaves the strokes alone. `stylesheetFor` points the label
+  // rules here; `tests/svg-text-contrast.mjs` measures the result in a browser.
+  '--frontend-text': token.accent[700],
+  '--messagebus-text': token.accent[700],
+  '--backend-text': token.ok[700],
+  '--database-text': token.observe[700],
+  '--cloud-text': token.panel[600],
+  '--external-text': token.panel[600],
+  '--security-text': token.ink[800],
 };
+
+/**
+ * archify's label rules, `.t-<type>{fill:var(--<type>-stroke)}`, pointed at the
+ * type's text shade instead. A label rule naming a stroke with no text shade
+ * fails the run rather than keeping the line colour on text.
+ */
+export function labelRule(rule) {
+  if (!/^\.t-[\w-]+$/.test(rule.selector)) return rule;
+  const body = rule.body.replace(/var\(--([\w-]+)-stroke\)/g, (_, type) => {
+    if (!(`--${type}-text` in themeVariables)) {
+      fail(`${rule.selector} paints text with --${type}-stroke and there is no --${type}-text for it`);
+    }
+    return `var(--${type}-text)`;
+  });
+  return { ...rule, body };
+}
 
 /**
  * Throws rather than exiting so the pure functions below can be unit-tested.
@@ -318,7 +349,7 @@ function stylesheetFor(svg, templateCss) {
   const variables = Object.entries(themeVariables)
     .map(([name, value]) => `${name}:${value}`)
     .join(';');
-  const rules = matched.map((r) => `${r.selector}{${r.body.trim()}}`).join('\n');
+  const rules = matched.map(labelRule).map((r) => `${r.selector}{${r.body.trim()}}`).join('\n');
   return minify(`svg{${variables}}\n${rules}`);
 }
 
