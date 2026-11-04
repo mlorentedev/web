@@ -136,6 +136,21 @@ jobs:
           EXPECTED_COMMIT: ${{ inputs.commit }}
         run: npm test
 
+      # What nginx sends can only be read off a running server (#328): `expires`
+      # beside `add_header` gave every asset two Cache-Control headers, and the
+      # file looked fine. Only on an image run, because a pull request publishes
+      # no image; there, nginx-cache.test.mjs checks the config statically.
+      - name: Cache headers from the running image
+        if: inputs.image != ''
+        working-directory: site
+        env:
+          IMAGE: ${{ inputs.image }}
+        run: |
+          docker run -d --rm -p 8080:8080 --name web-probe "$IMAGE"
+          trap 'docker rm -f web-probe >/dev/null' EXIT
+          for _ in $(seq 1 30); do curl -fsS -o /dev/null http://localhost:8080/ && break; sleep 1; done
+          node tests/nginx-cache-probe.mjs http://localhost:8080
+
       # WEB-080 AC2, enabled with PR4 — before it there was no generated SVG on
       # the page, so a pass would have meant the check was looking at nothing.
       # It loads `/lab` and `/es/lab` in the Chromium installed above at 320,
