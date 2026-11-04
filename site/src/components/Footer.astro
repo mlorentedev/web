@@ -55,10 +55,12 @@ const deployed = SITE_COMMIT !== 'local';
     <a
       data-build
       href={deployed ? `https://github.com/mlorentedev/web/commit/${SITE_COMMIT}` : '/version.json'}
+      target={deployed ? '_blank' : undefined}
+      rel={deployed ? 'noopener noreferrer' : undefined}
       translate="no"
       class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-0.5 font-mono text-xs text-ink-600 ring-1 ring-inset ring-accent-200 hover:text-accent-700"
     >
-      {deployed && <span class="size-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>}
+      {deployed && <span class="size-1.5 rounded-full bg-ok-500" aria-hidden="true"></span>}
       {deployed ? 'synced' : 'local'} · v{SITE_VERSION}{deployed && ` · sha-${SITE_COMMIT}`}
     </a>
   </p>
