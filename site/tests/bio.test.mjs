@@ -1,5 +1,6 @@
 /**
- * The bio: the short note under the home's timeline (#499).
+ * The bio: the parallel track right under the career loop (#499): the homelab,
+ * the agents and the communities, in Manu's words.
  *
  * The bio is hand-edited markdown, so the one thing a test can hold it to is the
  * facts: every figure it states must already be stated in `data/experience.ts`,
@@ -34,16 +35,16 @@ for (const lang of ['en', 'es']) {
 }
 
 for (const [lang, page] of [['en', 'index.html'], ['es', 'es/index.html']]) {
-  test(`[${lang}] the home page renders the bio as its story block`, () => {
+  test(`[${lang}] the home page renders the bio as its own block`, () => {
     const file = join(distDir, page);
     assert.ok(existsSync(file), `dist/${page} must exist — run the build first`);
     const html = readFileSync(file, 'utf8');
-    const section = html.match(/<section[^>]*data-home-block="story"[\s\S]*?<\/section>/)?.[0] ?? '';
-    assert.match(section, /\bid="story"/, `dist/${page}: the story block has no #story anchor for the hero to link`);
+    const section = html.match(/<section[^>]*data-home-block="bio"[\s\S]*?<\/section>/)?.[0] ?? '';
+    assert.match(section, /\bid="about"/, `dist/${page}: the bio block has no #about anchor`);
     const bio = section.match(/<div[^>]*data-bio[^>]*>([\s\S]*?)<\/div>/)?.[1] ?? '';
     // Any wording passes; an empty block does not. The words are Manu's to change.
     const text = bio.replace(/<[^>]*>/g, '').trim();
-    assert.ok(text.length > 100, `dist/${page}: the story block has no bio, or it rendered empty`);
+    assert.ok(text.length > 100, `dist/${page}: the bio block rendered empty`);
   });
 }
 
@@ -58,12 +59,12 @@ const homes = [
   { lang: 'es', page: 'es/index.html', prefix: '/es' },
 ];
 
-/** The rendered story block of a built home. */
+/** The rendered bio block of a built home. */
 function story(page) {
   const file = join(distDir, page);
   assert.ok(existsSync(file), `dist/${page} must exist — run the build first`);
   const html = readFileSync(file, 'utf8');
-  return html.match(/<section[^>]*data-home-block="story"[\s\S]*?<\/section>/)?.[0] ?? '';
+  return html.match(/<section[^>]*data-home-block="bio"[\s\S]*?<\/section>/)?.[0] ?? '';
 }
 
 /** Where a site-relative href lands in `dist/`. */
@@ -97,13 +98,14 @@ for (const { lang, page, prefix } of homes) {
     assert.doesNotMatch(sentence, /\d/, `the agents sentence states a figure: "${sentence}"`);
   });
 
-  test(`[${lang}] the note under the timeline stays short: 30 to 100 words`, () => {
+  // Two short paragraphs since #499 moved the community and the homelab here.
+  test(`[${lang}] the bio stays short: 30 to 150 words`, () => {
     const words = bioBody(lang)
       .replace(/\]\([^)]*\)/g, ']')
       .replace(/[[\]*_#>]/g, ' ')
       .split(/\s+/)
       .filter(Boolean).length;
-    assert.ok(words >= 30 && words <= 100, `the ${lang} note is ${words} words`);
+    assert.ok(words >= 30 && words <= 150, `the ${lang} bio is ${words} words`);
   });
 }
 

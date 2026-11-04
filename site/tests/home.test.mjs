@@ -111,11 +111,11 @@ for (const { lang, built } of homes) {
 // ── Structure (WEB-140, AC2) ───────────────────────────────────────────────
 
 for (const { lang, built } of homes) {
-  test(`[${lang}] the home's blocks come in order after the hero: loop, story, skills, activity, notes, door`, () => {
+  test(`[${lang}] the home's blocks come in order after the hero: loop, bio, story, skills, activity, notes`, () => {
     const html = dist(built);
     const afterTitle = html.slice(html.indexOf('</h1>'));
     const blocks = [...afterTitle.matchAll(/data-home-block="([^"]+)"/g)].map((m) => m[1]);
-    assert.deepEqual(blocks, ['loop', 'story', 'skills', 'activity', 'notes', 'door']);
+    assert.deepEqual(blocks, ['loop', 'bio', 'story', 'skills', 'activity', 'notes']);
   });
 
   test(`[${lang}] the story, the skills and the notes are text: no image, svg or card`, () => {
@@ -146,12 +146,17 @@ for (const { lang, built } of homes) {
   }
 }
 
+// The hero carries one way in since #499 (2026-11-03): the button to /contact,
+// so nobody scrolls to find it. Anything else in it is a second call to action.
 for (const { lang, built } of homes) {
-  test(`[${lang}] the hero is a title and a subtitle: no link and no button`, () => {
+  test(`[${lang}] the hero is a title, a subtitle and one button to the contact page`, () => {
     const hero = dist(built).match(/<main[\s\S]*?<h1[\s\S]*?(?=<section)/)?.[0] ?? '';
     assert.ok(hero, `dist/${built}: no hero before the first section`);
     assert.match(hero, /data-hero-subtitle/, `dist/${built}: the hero has no subtitle`);
-    assert.doesNotMatch(hero.slice(hero.indexOf('<h1')), /<a\s|<button\b/, `dist/${built}: the hero carries a link`);
+    const links = hero.slice(hero.indexOf('<h1')).match(/<a\s[^>]*>/g) ?? [];
+    assert.equal(links.length, 1, `dist/${built}: the hero carries ${links.length} links, expected the contact button alone`);
+    assert.match(links[0], /data-home-door/, `dist/${built}: the hero's link is not the contact button`);
+    assert.doesNotMatch(hero, /<button\b/, `dist/${built}: the hero carries a button element`);
   });
 }
 

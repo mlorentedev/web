@@ -1,0 +1,24 @@
+---
+// The parallel track, right under the career loop (#499): what Manu does
+// alongside the job (the homelab, the agents, the communities), as prose in
+// `content/pages/<lang>-bio.mdx`, linking /lab and /ai for the proof.
+import Section from './Section.astro';
+import type { Lang } from '../i18n/ui';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const [bio] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'bio' && data.lang === lang);
+if (!bio) throw new Error(`HomeBio: no bio for "${lang}" — expected src/content/pages/${lang}-bio.mdx with page: bio`);
+const { Content: Bio } = await render(bio);
+---
+
+<Section id="about" data-home-block="bio">
+  <div data-bio class="prose prose-base max-w-3xl prose-p:text-ink-700 prose-p:leading-relaxed prose-a:text-accent-700 hover:prose-a:text-accent-800">
+    <Bio />
+  </div>
+</Section>
