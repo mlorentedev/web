@@ -7,6 +7,8 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { projects, localize, type Project } from '../../data/portfolio';
 import { getLocale, useTranslations, useTranslatedPath } from '../../i18n/utils';
+import { site } from '../../data/site';
+import { breadcrumbs } from '../../data/structured-data';
 
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
@@ -49,9 +51,13 @@ const displayTag = matchingProjects.find((p) => p.tags.some((t) => t.toLowerCase
   || matchingNotes[0]?.data.tags.find((t: string) => t.toLowerCase() === tag)
   || tag;
 const hasAlternates = matchingProjects.length > 0;
+const schema = [breadcrumbs([
+  { name: site.author, path: translatePath('/') },
+  { name: displayTag, path: translatePath(`/tags/${tag}`) },
+])];
 ---
 
-<BaseLayout title={`${displayTag}`} description={`${t('tags.projects')} & ${t('tags.notes')} — ${displayTag}.`} hasAlternates={hasAlternates}>
+<BaseLayout title={`${displayTag}`} description={`${t('tags.projects')} & ${t('tags.notes')} — ${displayTag}.`} hasAlternates={hasAlternates} schema={schema}>
   <Header hasAlternates={hasAlternates} />
   <main id="main-content" class="grow">
     <section class="pt-12 pb-6 md:pt-16 md:pb-10">

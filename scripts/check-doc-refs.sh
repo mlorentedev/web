@@ -7,6 +7,8 @@
 # purpose: site/ and specs/, which quote other repositories' docs paths by design, and
 # docs/lessons/, which quotes paths as they were when the lesson happened. A path
 # inside a URL (preceded by '/') names another repo and is skipped.
+# The ADR check below reads wider, site/ included: an ADR number means the same in a
+# code comment as in prose. Only site/tests/fixtures/, copies of kubelab files, is out.
 # Sibling: dotfiles' scripts/check-doc-paths.sh checks backticked paths in agent
 # instruction files; this one checks docs paths in comments and prose.
 set -euo pipefail
@@ -16,7 +18,10 @@ cd "$ROOT"
 # -I skips binaries; --untracked so a new file is checked before it is added.
 refs="$(git grep -nIE --untracked \
   '(^|[^/A-Za-z0-9_.-])docs/(adr|lessons|runbooks|troubleshooting)/[A-Za-z0-9._-]+\.md' \
-  -- .github scripts docs ':!docs/lessons' AGENTS.md README.md Makefile 2>/dev/null || true)"
+  -- .github scripts docs ':!docs/lessons' AGENTS.md README.md Makefile)" || [ $? -eq 1 ] || {
+  echo "check-doc-refs: git grep could not search for docs paths" >&2
+  exit 2
+}
 
 missing=""
 while IFS= read -r line; do
@@ -35,6 +40,33 @@ if [ -n "$missing" ]; then
   echo "check-doc-refs: paths named here that do not exist in this repo:"
   printf '%s' "$missing"
   echo "Point at the doc's current home (another repo or the vault: say which), or restore it."
+  exit 1
+fi
+
+# An ADR number cited in the same surfaces is either this repo's (docs/adr/ADR-NNN-*.md)
+# or listed in docs/adr/README.md with the repository it lives in. The numbers collide
+# across repos (kubelab and dotfiles both have an ADR-018), so a bare citation that
+# resolves nowhere here sends a reader to the wrong document (#361).
+# git grep exits 1 when nothing matches and above 1 when it could not search;
+# only the second must fail, or a check that read nothing reports OK.
+cited=$(git grep -ohIE --untracked 'ADR-[0-9]{3}' -- \
+  .github scripts docs AGENTS.md README.md CONTRIBUTING.md Makefile Dockerfile kubelab.yaml harness site \
+  ':!docs/lessons' ':!docs/adr/README.md' ':!site/tests/fixtures' ':!site/package-lock.json') || [ $? -eq 1 ] || {
+  echo "check-doc-refs: git grep could not search for ADR citations" >&2
+  exit 2
+}
+
+unmapped=""
+while IFS= read -r adr; do
+  [ -n "$adr" ] || continue
+  compgen -G "docs/adr/${adr}-*.md" > /dev/null && continue
+  grep -qE "^\| ${adr} \|" docs/adr/README.md 2>/dev/null || unmapped+="  $adr"$'\n'
+done < <(printf '%s\n' "$cited" | sort -u)
+
+if [ -n "$unmapped" ]; then
+  echo "check-doc-refs: ADR numbers cited here that are neither in docs/adr/ nor mapped in docs/adr/README.md:"
+  printf '%s' "$unmapped"
+  echo "Add a row naming the repository the ADR lives in."
   exit 1
 fi
 echo "check-doc-refs: OK"
