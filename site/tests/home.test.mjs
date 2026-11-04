@@ -209,3 +209,26 @@ for (const { lang, built } of homes) {
     assert.match(marked[0], /class="sr-only"/, `dist/${built}: HEAD has no screen-reader equivalent`);
   });
 }
+
+// ── Each role tells its story (#499) ───────────────────────────────────────
+//
+// Every role renders at least one paragraph from `experience.ts`, no markdown
+// link syntax leaks into the page, and each link in a story lands on a built
+// page in the reader's own locale.
+
+for (const { lang, built } of homes) {
+  test(`[${lang}] every role tells its story, and its links land in the same locale`, () => {
+    const block = dist(built).match(/<ol[^>]*data-timeline[\s\S]*?<\/ol>/)?.[0] ?? '';
+    const roles = [...block.matchAll(/<li[^>]*data-timeline-item[^>]*data-kind="work"[\s\S]*?<\/li>/g)].map((m) => m[0]);
+    assert.equal(roles.length, 5, `dist/${built}: expected 5 roles`);
+    const silent = roles.filter((role) => !/data-story-block/.test(role));
+    assert.equal(silent.length, 0, `dist/${built}: ${silent.length} roles with no story`);
+    assert.doesNotMatch(text(block), /\]\(/, `dist/${built}: markdown link syntax leaked into the timeline`);
+    const hrefs = [...block.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+    assert.ok(hrefs.length > 0, `dist/${built}: the timeline links nowhere`);
+    for (const href of hrefs) {
+      assert.ok(lang === 'es' ? href.startsWith('/es/') : !href.startsWith('/es/'), `dist/${built}: ${href} is in the other locale`);
+      assert.ok(existsSync(join(distDir, href, 'index.html')), `dist/${built}: ${href} has no built page`);
+    }
+  });
+}
