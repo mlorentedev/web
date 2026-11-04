@@ -73,12 +73,12 @@ export const layers: Layer[] = [
     en: {
       name: 'AI',
       terms: ['Agent harness', 'MCP servers', 'Agent orchestration'],
-      story: ['I work with AI agents every day, and to trust them I built ', 'the harness they work in', ', with rules, reviews and memory, plus Hive, my open-source MCP server.'],
+      story: ['I build everything with AI agents, this platform included, and to trust them I built ', 'the harness they work in', ', with rules, reviews and memory, plus Hive, my open-source MCP server.'],
     },
     es: {
       name: 'IA',
       terms: ['Harness de agentes', 'Servidores MCP', 'Orquestación de agentes'],
-      story: ['Trabajo con agentes de IA a diario, y para fiarme de ellos construí ', 'el harness en el que trabajan', ', con reglas, revisiones y memoria, además de Hive, mi servidor MCP de código abierto.'],
+      story: ['Lo desarrollo todo con agentes de IA, también esta plataforma, y para fiarme de ellos construí ', 'el harness en el que trabajan', ', con reglas, revisiones y memoria, además de Hive, mi servidor MCP de código abierto.'],
     },
   },
   {
