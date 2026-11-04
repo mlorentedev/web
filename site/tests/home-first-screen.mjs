@@ -45,6 +45,7 @@ for (const path of PATHS) {
         const box = await page.locator(selector).first().boundingBox({ timeout: 2000 }).catch(() => null);
         if (!box) below.push(`${name} not found (${selector})`);
         else if (box.y + box.height > viewport.height) below.push(`${name} ends at ${Math.round(box.y + box.height)}px`);
+        else if (box.x < 0 || box.x + box.width > viewport.width) below.push(`${name} spans x ${Math.round(box.x)}–${Math.round(box.x + box.width)}px`);
       }
       if (below.length > 0) {
         failures++;

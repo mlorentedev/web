@@ -63,7 +63,10 @@ function layout(o: Orientation, a: number) {
     : [{ x: 0, y: -lobe + 4, label: t('home.loop.hardware') }, { x: 0, y: lobe + 4, label: t('home.loop.software') }];
 
   return {
-    viewBox: o === 'wide' ? '-430 -150 860 300' : '-230 -275 460 550',
+    // Standing, the long labels sit left of the loop (`semiconductors` ends near
+    // x = -190) and the right ones stop near 135, so the frame is shifted left
+    // rather than widened: a wider frame would shrink every label on a phone.
+    viewBox: o === 'wide' ? '-430 -150 860 300' : '-200 -275 350 550',
     loop: trace(0, 2 * PI, 400) + ' Z',
     back: trace(0.02, at[0] - 0.02, 120),
     points,
