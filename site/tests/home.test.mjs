@@ -111,20 +111,30 @@ for (const { lang, built } of homes) {
 // ── Structure (WEB-140, AC2) ───────────────────────────────────────────────
 
 for (const { lang, built } of homes) {
-  test(`[${lang}] the home's blocks come in order after the hero: loop, bio, story, skills, activity, notes`, () => {
+  test(`[${lang}] the home's blocks come in order after the hero: loop, bio, story, skills, notes`, () => {
     const html = dist(built);
     const afterTitle = html.slice(html.indexOf('</h1>'));
     const blocks = [...afterTitle.matchAll(/data-home-block="([^"]+)"/g)].map((m) => m[1]);
-    assert.deepEqual(blocks, ['loop', 'bio', 'story', 'skills', 'activity', 'notes']);
+    assert.deepEqual(blocks, ['loop', 'bio', 'story', 'skills', 'notes']);
   });
 
+  // The skills block closes on the GitHub chart (#499), the home's one picture,
+  // so it is checked with that figure taken out.
   test(`[${lang}] the story, the skills and the notes are text: no image, svg or card`, () => {
     const html = dist(built);
     for (const name of ['story', 'skills', 'notes']) {
-      const section = html.match(new RegExp(`<section[^>]*data-home-block="${name}"[\\s\\S]*?</section>`))?.[0] ?? '';
-      assert.ok(section, `dist/${built} has no ${name} block`);
+      const block = html.match(new RegExp(`<section[^>]*data-home-block="${name}"[\\s\\S]*?</section>`))?.[0] ?? '';
+      const section = block.replace(/<figure[^>]*data-activity[\s\S]*?<\/figure>/, '');
+      assert.ok(block, `dist/${built} has no ${name} block`);
       assert.doesNotMatch(section, /<img\b|<svg\b|<picture\b|data-card\b|\bcard\b/, `dist/${built}: the ${name} block is not plain text`);
     }
+  });
+
+  test(`[${lang}] the GitHub chart closes the skills block, once on the home`, () => {
+    const html = dist(built);
+    const skills = html.match(/<section[^>]*data-home-block="skills"[\s\S]*?<\/section>/)?.[0] ?? '';
+    assert.equal((skills.match(/<figure[^>]*data-activity[\s\S]*?<img\b/g) ?? []).length, 1, `dist/${built}: the skills block has no GitHub chart`);
+    assert.equal((html.match(/\bdata-activity\b/g) ?? []).length, 1, `dist/${built}: the GitHub chart appears more than once`);
   });
 }
 
