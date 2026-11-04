@@ -30,17 +30,47 @@ test('.dockerignore excludes everything, then lets back in only site/ and versio
   );
 });
 
-test('local build output and secrets under site/ stay out of the context', () => {
-  for (const path of ['site/node_modules', 'site/dist', 'site/.astro', 'site/public/beoe', 'site/.env*']) {
-    assert.ok(ignore.includes(path), `${path} is not excluded`);
+/**
+ * Whether a `.dockerignore` exclusion matches a path, in Docker's terms: `**`
+ * spans any number of directories, `*` stays within one, and a pattern that
+ * matches a directory excludes everything under it.
+ */
+function excludes(pattern, path) {
+  const regex = new RegExp(
+    `^${pattern
+      .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+      .replace(/\*\*\//g, '\u0000')
+      .replace(/\*/g, '[^/]*')
+      .replace(/\?/g, '[^/]')
+      .replace(/\u0000/g, '(?:.*/)?')}$`,
+  );
+  const parts = path.replace(/\/$/, '').split('/');
+  return parts.some((_, i) => regex.test(parts.slice(0, i + 1).join('/')));
+}
+
+const exclusions = ignore.filter((line) => line !== '*' && !line.startsWith('!'));
+
+test('local build output and secrets under site/ stay out of the context, nested ones too', () => {
+  for (const path of [
+    'site/node_modules',
+    'site/packages/x/node_modules',
+    'site/dist',
+    'site/.astro',
+    'site/public/beoe',
+    'site/.env',
+    'site/config/.env.local',
+  ]) {
+    assert.ok(exclusions.some((pattern) => excludes(pattern, path)), `${path} is not excluded`);
   }
 });
 
-test('every path the Dockerfile copies from the context is let back in', () => {
+test('every path the Dockerfile copies from the context is let back in, and none is excluded again', () => {
   const sources = [...dockerfile.matchAll(/^COPY\s+(?!--from)(?:--\S+\s+)*(.+)\s+\S+$/gm)].flatMap((m) => m[1].split(/\s+/));
   assert.ok(sources.length > 0, 'no COPY from the context found');
   for (const source of sources) {
-    assert.ok(source === 'version.txt' || source.startsWith('site/'), `${source} is excluded by .dockerignore`);
+    assert.ok(source === 'version.txt' || source.startsWith('site/'), `${source} is not let back in by .dockerignore`);
+    const hit = exclusions.find((pattern) => excludes(pattern, source));
+    assert.equal(hit, undefined, `${source} is copied, but .dockerignore excludes it with ${hit}`);
   }
 });
 

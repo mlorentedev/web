@@ -6,12 +6,13 @@
 !site/
 !version.txt
 
-# Local build output and secrets under site/: the image builds its own.
-site/node_modules
+# Local build output and secrets under site/, at any depth for the two that can
+# nest: the image builds its own.
+site/**/node_modules
 site/dist
 site/.astro
 site/public/beoe
-site/.env*
+site/**/.env*
 site/test-results
 site/**/*.log
 site/**/.DS_Store
