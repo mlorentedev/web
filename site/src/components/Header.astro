@@ -24,7 +24,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
 ---
 
 <header class="bg-accent-50 text-ink-700 sticky top-0 w-full border-b border-accent-100 z-50">
-  <nav class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+  <nav aria-label={t('nav.label')} class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
     <!-- One link for the portrait and the name. Below sm the name does not fit
          beside the nav, so it stays as the link's accessible name only. -->
     <a
