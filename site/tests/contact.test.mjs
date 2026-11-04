@@ -114,9 +114,10 @@ for (const { lang, contact, home, href } of pages) {
     assert.equal(body.split('\r\n').filter((l) => l.trim()).length, 3, 'the mail body should be the three filter lines');
   });
 
-  test(`[${lang}] the home ends on a button to the contact page`, () => {
+  test(`[${lang}] the home opens on a button to the contact page`, () => {
     const html = dist(home);
-    assert.match(html, /<section[^>]*data-home-block="door"/, `dist/${home} has no door block`);
+    const hero = html.match(/<h1[\s\S]*?(?=<section)/)?.[0] ?? '';
+    assert.match(hero, /data-home-door/, `dist/${home}: the contact button is not in the hero`);
     const button = html.match(/<a\b[^>]*data-home-door[^>]*>/)?.[0] ?? '';
     assert.match(button, new RegExp(`href="${href}"`), `dist/${home}: the home's button does not open ${href}`);
   });

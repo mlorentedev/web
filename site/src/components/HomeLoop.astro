@@ -1,6 +1,6 @@
 ---
 // The career loop under the hero (ADR-060): Manu's path drawn on the DevOps
-// loop, from silicon to AI and back. The geometry is a lemniscate of Bernoulli
+// loop, from semiconductors to AI and back. The geometry is a lemniscate of Bernoulli
 // computed here at build time, so the page ships inline SVG and no script.
 // Wide screens get it lying down; a phone gets it standing, so the labels keep
 // their size. Screen readers get the stations as a list instead of the drawing.
@@ -63,7 +63,7 @@ function layout(o: Orientation, a: number) {
     : [{ x: 0, y: -lobe + 4, label: t('home.loop.hardware') }, { x: 0, y: lobe + 4, label: t('home.loop.software') }];
 
   return {
-    viewBox: o === 'wide' ? '-430 -150 860 300' : '-180 -275 360 550',
+    viewBox: o === 'wide' ? '-430 -150 860 300' : '-230 -275 460 550',
     loop: trace(0, 2 * PI, 400) + ' Z',
     back: trace(0.02, at[0] - 0.02, 120),
     points,
@@ -109,6 +109,5 @@ const drawings = [
     <ol class="sr-only">
       {stations.map((s) => <li>{s.start}: {s[lang]}</li>)}
     </ol>
-    <figcaption class="mt-2 max-w-3xl font-mono text-xs text-ink-500 md:text-center">{t('home.loop.caption')}</figcaption>
   </figure>
 </section>

@@ -4,7 +4,7 @@
  *   npm run build && node tests/home-first-screen.mjs
  *
  * Whoever lands on the home and reads nothing else must still see who this is:
- * the H1 and the subtitle, without scrolling, on a laptop and on a phone, in
+ * the H1, the subtitle and the contact button, without scrolling, on a laptop and on a phone, in
  * both locales. Measured in a real browser because only layout knows where the
  * fold falls: a longer subtitle or a bigger H1 moves it without changing a byte
  * of the markup around it.
@@ -27,6 +27,7 @@ const VIEWPORTS = [
 const TARGETS = {
   h1: 'main h1',
   subtitle: '[data-hero-subtitle]',
+  contact: '[data-home-door]',
 };
 
 const browser = await chromium.launch();
@@ -49,7 +50,7 @@ for (const path of PATHS) {
         failures++;
         console.error(`✗ ${where} — below the fold: ${below.join('; ')}`);
       } else {
-        console.log(`✓ ${where} — H1 and subtitle on the first screen`);
+        console.log(`✓ ${where} — H1, subtitle and contact button on the first screen`);
       }
     } catch (error) {
       failures++;
@@ -66,4 +67,4 @@ if (failures > 0) {
   console.error(`\n${failures} check(s) failed.`);
   process.exit(1);
 }
-console.log('\nThe first screen holds the H1 and the subtitle.');
+console.log('\nThe first screen holds the H1, the subtitle and the contact button.');

@@ -92,7 +92,7 @@ export const ui = {
     // title below says what the work is now; the two do different jobs.
     'hero.title': 'SRE & AI Platform Engineer',
     'hero.subtitle':
-      'From silicon to cloud: I design and run platforms with Kubernetes, AWS, GCP and GitOps, with AI agents in the workflow. Over ten years of engineering, working with customers across Europe, Asia and the US.',
+      'Over the years I’ve become a real full-stack engineer, just not the frontend-and-backend kind: I started characterising image sensors in the semiconductor industry, which is physics, data and code in equal parts, moved through firmware on FPGAs and microcontrollers, and got all the way to the cloud application and the conversation with the customer. Over ten years of engineering with customers across Europe, Asia and North America; today I design and run platforms with Kubernetes, AWS, GCP and GitOps, with AI agents in the workflow.',
     // The door (WEB-137): the one way in, the same button on the hero and on
     // /contact/. The mail it opens is the written filter, three lines.
     'door.cta': 'Write to me',
@@ -250,7 +250,6 @@ export const ui = {
     'home.loop.today': 'today',
     'home.loop.hardware': 'HARDWARE',
     'home.loop.software': 'SOFTWARE',
-    'home.loop.caption': 'Back to silicon: a platform and AI agents working for each camera.',
     'home.cta.body': 'Whether you’re a company, an individual or have a one-off need, write to me and I’ll reply within 24 hours.',
     'home.cta.button': 'Get in touch',
 
@@ -292,7 +291,7 @@ export const ui = {
     // Meta
     'meta.title': 'Manu Lorente — SRE & AI Platform Engineer',
     'meta.description':
-      'From silicon to cloud: I design and run platforms with Kubernetes, AWS, GCP and GitOps, with AI agents in the workflow. Over ten years of engineering, working with customers across Europe, Asia and the US.',
+      'A real full stack, from semiconductors and firmware to the cloud and the customer: I design and run platforms with Kubernetes, AWS, GCP and GitOps, with AI agents in the workflow.',
     'meta.ghchart.alt': "Manu's GitHub contribution chart",
   },
   es: {
@@ -367,7 +366,7 @@ export const ui = {
     // Hero
     'hero.title': 'SRE e ingeniero de plataformas de IA',
     'hero.subtitle':
-      'Del silicio a la nube: diseño y opero plataformas con Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo. Más de diez años de ingeniería, trabajando con clientes entre Europa, Asia y EE. UU.',
+      'Con los años me he convertido en un full stack de verdad, pero no el de frontend y backend: empecé caracterizando sensores de imagen en la industria de semiconductores, que es física, datos y código a partes iguales, pasé por el firmware en FPGA y microcontroladores y he llegado hasta la aplicación en la nube y la conversación con el cliente. Más de diez años de ingeniería con clientes de Europa, Asia y Norteamérica; hoy diseño y opero plataformas con Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo.',
     'door.cta': 'Escríbeme',
     'door.subject': 'Hablemos',
     'door.body': 'Quién soy:\nQué necesito:\nPara cuándo:\n',
@@ -523,7 +522,6 @@ export const ui = {
     'home.loop.today': 'hoy',
     'home.loop.hardware': 'HARDWARE',
     'home.loop.software': 'SOFTWARE',
-    'home.loop.caption': 'De vuelta al silicio: una plataforma y agentes de IA al servicio de cada cámara.',
     'home.cta.body': 'Seas empresa, particular o tengas una necesidad puntual, escríbeme y te respondo en menos de 24 horas.',
     'home.cta.button': 'Hablemos',
 
@@ -563,7 +561,7 @@ export const ui = {
     // Meta
     'meta.title': 'Manu Lorente — SRE e ingeniero de plataformas de IA',
     'meta.description':
-      'Del silicio a la nube: diseño y opero plataformas con Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo. Más de diez años de ingeniería, trabajando con clientes entre Europa, Asia y EE. UU.',
+      'Un full stack de verdad, de los semiconductores y el firmware a la nube y el cliente: diseño y opero plataformas con Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo.',
     'meta.ghchart.alt': 'Contribuciones de Manu en GitHub',
   },
 } as const;

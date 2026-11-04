@@ -1,11 +1,23 @@
 ---
-import { getLocale, useTranslations } from '../i18n/utils';
+// The hero: who this is, and the one way in, on the first screen (#499). The
+// contact button sits here, not at the foot of the home, so nobody has to scroll
+// to find it; /contact holds the offer, so the home still states none.
+import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 ---
 
 <div class="max-w-6xl mx-auto px-4 pt-8 pb-10 text-ink-900">
   <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-ink-900 tracking-tight leading-[1.18] text-balance wrap-break-word sm:leading-10 lg:leading-none">{t('hero.title')}</h1>
   <p data-hero-subtitle class="text-base sm:text-lg lg:text-xl text-ink-600 mt-5 leading-relaxed max-w-3xl text-pretty sm:leading-7">{t('hero.subtitle')}</p>
+  <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+    <a
+      data-home-door
+      href={translatePath('/contact/')}
+      class="inline-flex w-fit items-center gap-2 rounded-md bg-ink-900 px-4 py-2 text-sm font-medium text-white hover:bg-accent-700 transition-colors shadow-xs"
+    >{t('home.cta.button')}</a>
+    <p class="max-w-xl text-sm text-ink-500 leading-relaxed">{t('home.cta.body')}</p>
+  </div>
 </div>

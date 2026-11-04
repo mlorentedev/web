@@ -1,6 +1,6 @@
 ---
 // The home's story (#499): career and studies on one vertical line, newest
-// first, then a short note in `content/pages/<lang>-bio.mdx`. Roles come from
+// first. Roles come from
 // `data/experience.ts` and studies from `data/education.ts`. A filled dot marks
 // work, a hollow one study, and the ongoing role carries a halo and a `HEAD`
 // ref, the git-log nod of ADR-060 (its years already say it is ongoing). Years sit left
@@ -11,7 +11,6 @@ import { education } from '../data/education';
 import { experience } from '../data/experience';
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
-import { getCollection, render, type CollectionEntry } from 'astro:content';
 
 interface Props {
   lang: Lang;
@@ -19,10 +18,6 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-
-const [bio] = await getCollection('pages', ({ data }: CollectionEntry<'pages'>) => data.page === 'bio' && data.lang === lang);
-if (!bio) throw new Error(`HomeStory: no bio for "${lang}" — expected src/content/pages/${lang}-bio.mdx with page: bio`);
-const { Content: Bio } = await render(bio);
 
 type Entry = { kind: 'work' | 'study'; start: string; end: number; until: string; title: string; place: string; detail: string; current: boolean };
 
@@ -75,7 +70,4 @@ const entries = [...work, ...study].sort((a, b) => Number(b.start) - Number(a.st
       </li>
     ))}
   </ol>
-  <div data-bio class="prose prose-base max-w-3xl mt-10 prose-p:text-ink-700 prose-p:leading-relaxed prose-a:text-accent-700 hover:prose-a:text-accent-800">
-    <Bio />
-  </div>
 </Section>
