@@ -89,10 +89,18 @@ jobs:
       # inside a layer this job never sees. It also runs `astro check` and the
       # `prebuild` diagram verification, so a malformed or stale IR fails here
       # too.
+      #
+      # It builds with a `SITE_COMMIT`, as the shipped image does, so the audits
+      # read the markup that ships. A build without one renders the `local`
+      # variant of any commit-dependent element, and a defect only the deployed
+      # variant carries passed every PR check (lesson-068). `$GITHUB_ENV` hands
+      # the same value to the test steps, which assert the commit dist states.
       - name: Build
         if: inputs.image == ''
         working-directory: site
-        run: npm run build
+        run: |
+          echo "SITE_COMMIT=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+          SITE_COMMIT="${GITHUB_SHA::7}" npm run build
 
       # Authenticated so the pulls count against the account, not the runner's
       # shared anonymous allowance. Read-only use of the push credentials.
