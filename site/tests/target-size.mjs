@@ -16,7 +16,8 @@
  * exception.
  *
  * A target counts as inline when it is `display: inline` and its block holds
- * text that is not inside any target.
+ * text that is not inside any target. It is exempt itself, and it still counts
+ * as a neighbour of every other target.
  *
  * The marked set must match: a page with no marked nav link, or a run with no
  * tag chip, fails, so a renamed hook cannot drop the rule in silence.
@@ -73,16 +74,18 @@ function undersized(min) {
       const { width, height } = el.getBoundingClientRect();
       return width > 0 && height > 0; // the skip link is 0 × 0 until focused
     })
-    .filter((el) => !inlineInText(el))
     .map((el) => {
       const r = el.getBoundingClientRect();
-      return { el, r, cx: r.left + r.width / 2, cy: r.top + r.height / 2, small: r.width < min || r.height < min };
+      const small = r.width < min || r.height < min;
+      return { el, r, cx: r.left + r.width / 2, cy: r.top + r.height / 2, small, inline: inlineInText(el) };
     });
   // A target's circle reaches a box when the box's nearest point is within the radius.
   const reaches = (a, r) => Math.hypot(Math.max(r.left - a.cx, 0, a.cx - r.right), Math.max(r.top - a.cy, 0, a.cy - r.bottom)) < min / 2;
   const found = [];
+  // A link in a sentence is exempt from the size rule, but it is still a target,
+  // so it stays in the set a small target's circle must not reach.
   for (const a of targets) {
-    if (!a.small) continue;
+    if (!a.small || a.inline) continue;
     const size = `${Math.round(a.r.width)}×${Math.round(a.r.height)}`;
     if (a.el.matches(OWN_SIZE)) {
       found.push(`${label(a.el)} ${size}, must be ${min}×${min} on its own box`);
