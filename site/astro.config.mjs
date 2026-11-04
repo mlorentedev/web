@@ -7,6 +7,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 import { rehypeMermaid } from './plugins/rehype-mermaid.mjs';
+import rehypeScrollableTables from './plugins/scrollable-tables.mjs';
 import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
 
 // /es/notes/ is noindex while no note is written in Spanish; keep it out of the
@@ -50,6 +51,10 @@ export default defineConfig({
     // Shiki turns every fence into <pre class="astro-code"> before rehype runs,
     // so mermaid has to opt out of highlighting or the plugin never sees it.
     syntaxHighlight: { type: 'shiki', excludeLangs: ['mermaid'] },
+    // Astro's default, `github-dark`, paints comments #6a737d on #24292e:
+    // 3.04:1, under the 4.5:1 body text needs (#517). This theme's faintest
+    // text, the same comments, is #8b949e on #0d1117: 6.15:1.
+    shikiConfig: { theme: 'github-dark-default' },
     // Renders ```mermaid fences to SVG at build time. Ten of them across eight
     // notes were shipping as raw DSL in a dark code block on a light page.
     //
@@ -67,6 +72,7 @@ export default defineConfig({
     processor: unified({
       rehypePlugins: [
         rehypeTrailingSlash,
+        rehypeScrollableTables,
         [
           rehypeMermaid,
           {

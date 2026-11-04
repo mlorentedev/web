@@ -274,6 +274,10 @@ export const ui = {
     // Note detail
     'note.prev': 'Previous',
     'note.next': 'Next',
+    // Landmark names: the header nav and the prev/next nav are both <nav>,
+    // and two unnamed ones cannot be told apart in a landmark list (#358).
+    'nav.label': 'Main',
+    'note.navLabel': 'More notes',
 
     // The exit at the end of a note (WEB-090). Says what the notes are; it does
     // not restate the hero, which is still being decided.
@@ -546,6 +550,8 @@ export const ui = {
     // Note detail
     'note.prev': 'Anterior',
     'note.next': 'Siguiente',
+    'nav.label': 'Principal',
+    'note.navLabel': 'Más notas',
 
     'note.closing.eyebrow': 'Quién escribe esto',
     'note.closing.body':
