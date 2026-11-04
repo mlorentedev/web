@@ -262,8 +262,6 @@ export const ui = {
     'home.latest': 'Latest notes',
     'home.allNotes': 'All notes',
 
-    // Subscribe form (WEB-083)
-
     // Notes page
     'notes.title': 'Notes',
     'notes.description': 'Platform engineering notes — from hardware to Kubernetes.',
@@ -538,8 +536,6 @@ export const ui = {
     'home.experience': 'Mi camino',
     'home.latest': 'Últimas notas',
     'home.allNotes': 'Todas las notas',
-
-    // Subscribe form (WEB-083)
 
     // Notes page
     'notes.title': 'Notas',
