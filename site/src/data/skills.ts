@@ -3,18 +3,20 @@
  * that proves them. Terms come from the `resume` project's `cv.yml` and the
  * review on #499; rendered on the home by `components/HomeSkills.astro`.
  *
- * A proof is one sentence and one link, and the link must be public
- * (`tests/skills.test.mjs`). A figure must already be in `data/experience.ts`.
+ * Each layer tells, in a sentence or two, the work that proves it, with one
+ * inline link: `story` is the text before the link, the link's words, and the
+ * text after. The link must be public (`tests/skills.test.mjs`). A figure must
+ * already be in `data/experience.ts`.
  */
 
 import type { Lang } from '../i18n/ui';
 
 export interface LayerCopy {
+  /** The layer's name: not shown, but it names the term list for screen readers. */
   name: string;
   terms: string[];
-  proof: string;
-  /** What the link opens, so a reader knows before clicking. */
-  link: string;
+  /** Before the link, the link's words (saying what it opens), after it. */
+  story: [string, string, string];
 }
 
 /** A hue from the site tokens (`styles/tailwind.css`); see `HomeSkills.astro`. */
@@ -41,14 +43,12 @@ export const layers: Layer[] = [
     en: {
       name: 'Platform',
       terms: ['Internal developer platforms', 'Kubernetes', 'GitOps', 'CI/CD', 'Terraform and Ansible'],
-      proof: 'KubeLab, my hybrid internal platform. This site deploys through it.',
-      link: 'see KubeLab',
+      story: ['A platform is learned by running it. ', 'KubeLab', ' is my hybrid internal platform, and this site deploys through it, so every change you see here went through its pipeline.'],
     },
     es: {
       name: 'Plataforma',
       terms: ['Plataformas internas (IDP)', 'Kubernetes', 'GitOps', 'CI/CD', 'Terraform y Ansible'],
-      proof: 'KubeLab, mi plataforma interna híbrida. Esta web se despliega sobre ella.',
-      link: 'ver KubeLab',
+      story: ['Una plataforma se aprende operándola. ', 'KubeLab', ' es mi plataforma interna híbrida, y esta web se despliega sobre ella: cada cambio que ves aquí ha pasado por su pipeline.'],
     },
   },
   {
@@ -58,14 +58,12 @@ export const layers: Layer[] = [
     en: {
       name: 'Reliability',
       terms: ['Observability', 'Tested backups', 'Restore drills', 'Alerting', 'Security'],
-      proof: 'I restore KubeLab\'s backups for real, and I test its alerts by breaking things on purpose.',
-      link: 'the repository',
+      story: ['A backup you have never restored is a hope, not a backup. In KubeLab I restore the backups for real and test the alerts by breaking things on purpose; it is all in ', 'the repository', '.'],
     },
     es: {
       name: 'Fiabilidad',
       terms: ['Observabilidad', 'Backups probados', 'Simulacros de recuperación', 'Alertas', 'Seguridad'],
-      proof: 'Restauro de verdad los backups de KubeLab y pruebo sus alertas rompiendo cosas a propósito.',
-      link: 'el repositorio',
+      story: ['Un backup que nunca has restaurado es una esperanza, no un backup. En KubeLab restauro las copias de verdad y pruebo las alertas rompiendo cosas a propósito; está todo en ', 'el repositorio', '.'],
     },
   },
   {
@@ -75,14 +73,12 @@ export const layers: Layer[] = [
     en: {
       name: 'AI',
       terms: ['Agent harness', 'MCP servers', 'Agent orchestration'],
-      proof: 'The harness my agents work in, and Hive, my open-source MCP server.',
-      link: 'how it works',
+      story: ['I work with AI agents every day, and to trust them I built ', 'the harness they work in', ', with rules, reviews and memory, plus Hive, my open-source MCP server.'],
     },
     es: {
       name: 'IA',
       terms: ['Harness de agentes', 'Servidores MCP', 'Orquestación de agentes'],
-      proof: 'El harness en el que trabajan mis agentes, y Hive, mi servidor MCP de código abierto.',
-      link: 'cómo funciona',
+      story: ['Trabajo con agentes de IA a diario, y para fiarme de ellos construí ', 'el harness en el que trabajan', ', con reglas, revisiones y memoria, además de Hive, mi servidor MCP de código abierto.'],
     },
   },
   {
@@ -92,14 +88,12 @@ export const layers: Layer[] = [
     en: {
       name: 'Cloud and systems design',
       terms: ['AWS, GCP and Hetzner', 'Microservices', 'Event-driven systems'],
-      proof: 'Zuidui, my cloud master\'s project with a teammate: event-driven microservices on Kubernetes. I took development, integration and documentation.',
-      link: 'the project',
+      story: ['For my cloud master\'s, a teammate and I designed ', 'Zuidui', ': event-driven microservices on Kubernetes. I took development, integration and documentation.'],
     },
     es: {
       name: 'Cloud y diseño de sistemas',
       terms: ['AWS, GCP y Hetzner', 'Microservicios', 'Sistemas por eventos'],
-      proof: 'Zuidui, mi trabajo de fin del máster cloud junto a un compañero: microservicios por eventos sobre Kubernetes. Yo llevé desarrollo, integración y documentación.',
-      link: 'el proyecto',
+      story: ['En el máster cloud diseñamos ', 'Zuidui', ' entre un compañero y yo: microservicios por eventos sobre Kubernetes. Yo me encargué del desarrollo, la integración y la documentación.'],
     },
   },
   {
@@ -109,14 +103,12 @@ export const layers: Layer[] = [
     en: {
       name: 'Embedded systems',
       terms: ['C firmware', 'FPGA and VHDL', 'Microcontrollers and FreeRTOS', 'Image sensors', 'Inference on Jetson and FPGA'],
-      proof: 'My master\'s project: face detection on an FPGA.',
-      link: 'the code',
+      story: ['I come from hardware: my master\'s project was ', 'face detection on an FPGA', ', from the VHDL up.'],
     },
     es: {
       name: 'Sistemas embebidos',
       terms: ['Firmware en C', 'FPGA y VHDL', 'Microcontroladores y FreeRTOS', 'Sensores de imagen', 'Inferencia en Jetson y FPGA'],
-      proof: 'Mi trabajo de fin de máster: detección facial en FPGA.',
-      link: 'el código',
+      story: ['Vengo del hardware: mi trabajo de fin de máster fue ', 'detección facial en una FPGA', ', desde el VHDL.'],
     },
   },
 ];
