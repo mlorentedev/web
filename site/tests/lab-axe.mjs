@@ -56,10 +56,11 @@
  * Manu's VPS is up is not a verdict CI should give, and a request nobody
  * expected is the first sign a script has come back.
  *
- * That promise is the Lab's and the AI page's (`SCRIPTLESS`). Other pages
- * embed third-party images on purpose (the GitHub activity chart on `/` and
- * `/projects/`): those requests are still blocked, so the verdict never waits
- * on the network, and listed, but they do not fail the run.
+ * That promise is the Lab's and the AI page's (`SCRIPTLESS`): there, any
+ * request to another origin fails. Other pages embed one third-party image on
+ * purpose, the GitHub activity chart on `/` and `/projects/` (`EMBEDDED`). It
+ * is still blocked, so the verdict never waits on the network, and listed, but
+ * it does not fail the run. Any other origin fails on every page.
  *
  * ## The one `incomplete` is honest and is not suppressed
  *
@@ -107,6 +108,20 @@ const PATHS = pagesIn(DIST).sort();
 /** Pages that must make no request to another origin. */
 const SCRIPTLESS = /^\/(es\/)?(lab|ai)\//;
 
+/** The one third-party origin other pages embed on purpose: `ghchartSrc` in `src/data/site.ts`. */
+const EMBEDDED = new Set(['https://ghchart.rshah.org']);
+
+/**
+ * The six AA rules axe 4.14 ships disabled, turned on by name. Measured
+ * 2026-11-03 with all 15 disabled rules on, across every page at both widths:
+ * only `color-contrast-enhanced` (AAA, 7:1) fails, and AA is this site's bar.
+ * AAA and experimental rules stay off: their verdicts are not a conformance
+ * claim and may change between axe releases. Named, not discovered, so an axe
+ * upgrade cannot switch a new rule on unseen; a name axe no longer knows
+ * fails the run instead of being skipped.
+ */
+const ENABLED = ['aria-roledescription', 'audio-caption', 'duplicate-id', 'duplicate-id-active', 'landmark-complementary-is-top-level', 'target-size'];
+
 // A build that wrote nothing, or wrote somewhere else, would audit no page and
 // pass. The pages this check began with must still be among the ones it found.
 for (const page of ['/lab/', '/es/lab/', '/ai/', '/es/ai/', '/notes/', '/']) {
@@ -149,20 +164,14 @@ for (const path of PATHS) {
       if (!response?.ok()) throw new Error(`HTTP ${response?.status()}`);
 
       await page.addScriptTag({ path: AXE_BUNDLE });
-      // axe 4.14 ships 15 rules disabled. Measured 2026-11-03 with all of them
-      // on, across every page at both widths: only `color-contrast-enhanced`
-      // (AAA, 7:1) fails, and AA is this site's bar. The rest pass, so six
-      // are turned on here (`target-size`, `duplicate-id`, …). AAA and
-      // experimental rules stay off: their verdicts are not a conformance
-      // claim and may change between axe releases.
-      results = await page.evaluate(async () => {
-        const off = window.axe._audit.rules.filter(
-          (rule) => !rule.enabled && !rule.tags.includes('wcag2aaa') && !rule.tags.includes('experimental'),
-        );
+      results = await page.evaluate(async (enabled) => {
+        const known = new Set(window.axe.getRules().map((rule) => rule.ruleId));
+        const unknown = enabled.filter((id) => !known.has(id));
+        if (unknown.length > 0) throw new Error(`axe no longer has the rules ${unknown.join(', ')}`);
         return await window.axe.run(document, {
-          rules: Object.fromEntries(off.map((rule) => [rule.id, { enabled: true }])),
+          rules: Object.fromEntries(enabled.map((id) => [id, { enabled: true }])),
         });
-      });
+      }, ENABLED);
     } catch (error) {
       console.error(`✗ ${label} — ${error.message}`);
       failures++;
@@ -170,10 +179,13 @@ for (const path of PATHS) {
       continue;
     }
 
-    if (elsewhere.length > 0 && !SCRIPTLESS.test(path)) {
-      console.log(`  ${label} — blocked, not counted: ${elsewhere.join(', ')}`);
-    } else if (elsewhere.length > 0) {
-      console.error(`✗ ${label} — requests to another origin:\n    ${elsewhere.join('\n    ')}`);
+    const expected = (url) => !SCRIPTLESS.test(path) && EMBEDDED.has(new URL(url).origin);
+    const unexpected = elsewhere.filter((url) => !expected(url));
+    if (elsewhere.length > unexpected.length) {
+      console.log(`  ${label} — blocked, not counted: ${elsewhere.filter(expected).join(', ')}`);
+    }
+    if (unexpected.length > 0) {
+      console.error(`✗ ${label} — requests to another origin:\n    ${unexpected.join('\n    ')}`);
       failures++;
     }
 
@@ -219,5 +231,5 @@ if (failures > 0) {
 }
 console.log(
   `\n0 axe violations on ${PATHS.length} pages at 320 and 1440, ` +
-    'and no request to another origin from the Lab or AI pages.',
+    'and no request to another origin beyond the GitHub chart, none at all from the Lab or AI pages.',
 );

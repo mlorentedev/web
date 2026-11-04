@@ -13,7 +13,15 @@ import { fileURLToPath } from 'node:url';
 
 import rehypeScrollableTables from '../plugins/scrollable-tables.mjs';
 
-const notes = fileURLToPath(new URL('../dist/notes/', import.meta.url));
+const dist = fileURLToPath(new URL('../dist/', import.meta.url));
+
+/** Every built page under a notes tree, at any depth. */
+const pagesIn = (dir) =>
+  !existsSync(dir)
+    ? []
+    : readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+        entry.isDirectory() ? pagesIn(join(dir, entry.name)) : entry.name === 'index.html' ? [join(dir, entry.name)] : [],
+      );
 
 test('the plugin makes a table focusable and leaves other elements alone', () => {
   const table = { type: 'element', tagName: 'table', properties: { className: ['x'] }, children: [] };
@@ -23,11 +31,11 @@ test('the plugin makes a table focusable and leaves other elements alone', () =>
   assert.deepEqual(pre.properties, {});
 });
 
-test('every table in a built note carries tabindex="0"', () => {
-  assert.ok(existsSync(notes), 'dist/notes must exist — run the build first');
-  const tables = readdirSync(notes, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .flatMap((entry) => readFileSync(join(notes, entry.name, 'index.html'), 'utf8').match(/<table[^>]*>/g) ?? []);
+test('every table in a built note carries tabindex="0", in both locales', () => {
+  assert.ok(existsSync(join(dist, 'notes')), 'dist/notes must exist — run the build first');
+  const tables = [join(dist, 'notes'), join(dist, 'es', 'notes')]
+    .flatMap(pagesIn)
+    .flatMap((file) => readFileSync(file, 'utf8').match(/<table[^>]*>/g) ?? []);
   assert.ok(tables.length > 0, 'no note has a table, so this test checks nothing');
   assert.deepEqual(
     tables.filter((tag) => !/tabindex="0"/.test(tag)),
