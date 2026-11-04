@@ -78,7 +78,7 @@ ARG SITE_COMMIT
 RUN npm run build
 
 # ---------- Runtime Stage — Nginx static serving ----------
-FROM nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+FROM nginx:1.31-alpine@sha256:785835ea65db4bba6f021acc0f3be91b0fef76a53fe41f8588c6698d2aed0606
 
 # The base image ships its own index.html and 50x.html in the web root, and the
 # COPY below merges into that directory rather than replacing it. index.html is
