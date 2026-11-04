@@ -61,6 +61,12 @@ for (const [locale, inLanguage] of [['', 'en-US'], ['es/', 'es-ES']]) {
       assert.deepEqual(post.author, { '@id': PERSON }, `${path}: author`);
       assert.equal(post.inLanguage, inLanguage, `${path}: inLanguage`);
       assert.equal(post.mainEntityOfPage['@id'], `${SITE}/${path}/#webpage`, `${path}: mainEntityOfPage`);
+      // The reference must land on a node in the same graph, or it dangles
+      // while the page still renders (a trailing-slash mismatch would do it).
+      assert.ok(
+        graph.some((node) => node['@type'] === 'WebPage' && node['@id'] === post.mainEntityOfPage['@id']),
+        `${path}: mainEntityOfPage points at no WebPage in the graph`,
+      );
       assertBreadcrumb(graph, path);
     }
   });
@@ -75,8 +81,8 @@ test('the author every BlogPosting points at exists in the same graph', () => {
 test('/projects/ declares one SoftwareSourceCode per project card, with its repository', () => {
   const { html, graph } = page('projects');
   const code = ofType(graph, 'SoftwareSourceCode');
-  // ProjectCard's heading level varies with the page; its class does not.
-  const cards = [...html.matchAll(/<h[2-4][^>]*class="font-bold text-ink-900 text-lg[^"]*"[^>]*>([\s\S]*?)<\/h[2-4]>/g)].map((m) => text(m[1]));
+  // ProjectCard's heading level varies with the page; its data attribute does not.
+  const cards = [...html.matchAll(/<h[2-4][^>]*\bdata-project-title\b[^>]*>([\s\S]*?)<\/h[2-4]>/g)].map((m) => text(m[1]));
   assert.ok(cards.length > 0, 'no project cards found');
   assert.deepEqual(code.map((node) => node.name).sort(), [...cards].sort());
   for (const node of code) {
