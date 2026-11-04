@@ -49,7 +49,7 @@ for (const path of PATHS) {
       }
       if (below.length > 0) {
         failures++;
-        console.error(`✗ ${where} — below the fold: ${below.join('; ')}`);
+        console.error(`✗ ${where} — off the first screen: ${below.join('; ')}`);
       } else {
         console.log(`✓ ${where} — H1, subtitle and contact button on the first screen`);
       }
