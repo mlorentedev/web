@@ -133,6 +133,22 @@ test('the parser actually found the blocks it is about to judge', () => {
   }
 });
 
+test('every add_header carries `always`', () => {
+  // Without `always`, nginx sends the header only on 200, 201, 204, 206, 301,
+  // 302, 303, 304, 307 and 308. The 404 page (`error_page 404 /404.html`) would
+  // then go out with no security headers and no Cache-Control: a missing asset
+  // under `/_astro/` is exactly the response nobody looks at.
+  const directives = [...conf.matchAll(/^[ \t]*add_header\s+[^;]*;/gm)].map((m) => m[0].trim());
+  assert.ok(directives.length > 0, 'no add_header found in nginx.conf');
+  for (const directive of directives) {
+    assert.match(
+      directive,
+      /\salways;$/,
+      `${directive} lacks \`always\`, so the 404 and every other error response are sent without it`,
+    );
+  }
+});
+
 test('the server block declares the full platform set', () => {
   // The inheritance root: every location that sets no header of its own gets
   // this set and nothing else, so an omission here is site-wide.
