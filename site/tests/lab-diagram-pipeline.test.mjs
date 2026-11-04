@@ -10,7 +10,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { minify, topologyErrors } from '../scripts/diagrams.mjs';
+import { labelRule, minify, topologyErrors } from '../scripts/diagrams.mjs';
 
 test('minify strips whitespace without touching values', () => {
   assert.equal(minify('.a {\n  fill: red;\n}'), '.a{fill:red}');
@@ -65,4 +65,18 @@ test('topologyErrors leaves schema violations to the schema', () => {
   // A component with no id is the schema's finding, not this function's; it must
   // not also report it as a broken reference or the error output doubles up.
   assert.deepEqual(topologyErrors({ components: [{ type: 'backend', label: 'no id' }] }), []);
+});
+
+test('labelRule paints a type label with its text shade, not its line shade (#559)', () => {
+  assert.deepEqual(labelRule({ selector: '.t-backend', body: 'fill:var(--backend-stroke)' }), {
+    selector: '.t-backend',
+    body: 'fill:var(--backend-text)',
+  });
+  // Strokes and markers are lines; they keep the stroke shade.
+  const marker = { selector: '.m-security', body: 'fill:var(--security-stroke)' };
+  assert.deepEqual(labelRule(marker), marker);
+});
+
+test('labelRule refuses a label type the theme has no text shade for', () => {
+  assert.throws(() => labelRule({ selector: '.t-queue', body: 'fill:var(--queue-stroke)' }), /no --queue-text/);
 });
