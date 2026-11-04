@@ -4,13 +4,16 @@
 // `data/experience.ts` and studies from `data/education.ts`. A filled dot marks
 // work, a hollow one study, and the ongoing role carries a halo and a `HEAD`
 // ref, the git-log nod of ADR-060 (its years already say it is ongoing). Years sit left
-// of the line on wide screens and above each entry on a phone.
+// of the line on wide screens and above each entry on a phone. Each role tells
+// its story in one or more short paragraphs; a `[words](/path/)` in the text
+// becomes a link to that page in the reader's locale.
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { education } from '../data/education';
 import { experience } from '../data/experience';
 import type { Lang } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+import type { StoryBlock } from '../data/experience';
 
 interface Props {
   lang: Lang;
@@ -18,8 +21,16 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 
-type Entry = { kind: 'work' | 'study'; start: string; end: number; until: string; title: string; place: string; detail: string; current: boolean };
+/** A paragraph split into plain text and `[words](/path/)` links. */
+const parts = (text: string) =>
+  text.split(/(\[[^\]]+\]\([^)]+\))/).filter(Boolean).map((part) => {
+    const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    return link ? { words: link[1], href: translatePath(link[2]) } : { words: part, href: undefined };
+  });
+
+type Entry = { kind: 'work' | 'study'; start: string; end: number; until: string; title: string; place: string; story: StoryBlock[]; current: boolean };
 
 const thisYear = new Date().getFullYear();
 const work: Entry[] = experience.map((e) => ({
@@ -29,7 +40,7 @@ const work: Entry[] = experience.map((e) => ({
   until: e.end ?? t('home.timeline.present'),
   title: e[lang].role,
   place: `${e.company} · ${e.location[lang]}`,
-  detail: e[lang].highlight,
+  story: e[lang].story,
   current: e.end === null,
 }));
 const study: Entry[] = education.map((e) => ({
@@ -39,7 +50,7 @@ const study: Entry[] = education.map((e) => ({
   until: e.end,
   title: e[lang],
   place: e.school,
-  detail: '',
+  story: [],
   current: false,
 }));
 const entries = [...work, ...study].sort((a, b) => Number(b.start) - Number(a.start) || b.end - a.end);
@@ -66,7 +77,12 @@ const entries = [...work, ...study].sort((a, b) => Number(b.start) - Number(a.st
         <p class="font-mono text-xs text-ink-500 tabular-nums md:absolute md:right-full md:top-1 md:mr-6 md:w-28 md:text-right">{item.start}–{item.until}</p>
         <p class:list={['text-ink-900', item.kind === 'work' ? 'font-semibold' : 'font-medium text-sm']}><span class="sr-only">{t(item.kind === 'work' ? 'home.timeline.work' : 'home.timeline.study')}: </span>{item.title}{item.current && <span data-head class="ml-2 align-middle rounded px-1.5 py-px font-mono text-xs font-semibold tracking-wide bg-accent-50 text-accent-800 ring-1 ring-inset ring-accent-200" aria-hidden="true">HEAD</span>}{item.current && <span class="sr-only"> ({t('home.timeline.current')})</span>}</p>
         <p class="text-sm text-ink-500">{item.place}</p>
-        {item.detail && <p class="mt-1.5 text-sm text-ink-700 leading-relaxed">{item.detail}</p>}
+        {item.story.map((block) => (
+          <p data-story-block class="mt-2 text-sm text-ink-700 leading-relaxed">
+            {block.label && <span class="font-mono text-xs font-semibold text-ink-900">{block.label}. </span>}
+            {parts(block.text).map((p) => (p.href ? <a href={p.href} class="text-accent-700 underline decoration-ink-300 hover:text-accent-800">{p.words}</a> : p.words))}
+          </p>
+        ))}
       </li>
     ))}
   </ol>

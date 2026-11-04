@@ -56,11 +56,9 @@
  * Manu's VPS is up is not a verdict CI should give, and a request nobody
  * expected is the first sign a script has come back.
  *
- * That promise is the Lab's and the AI page's (`SCRIPTLESS`): there, any
- * request to another origin fails. Other pages embed one third-party image on
- * purpose, the GitHub activity chart on `/` and `/projects/` (`EMBEDDED`). It
- * is still blocked, so the verdict never waits on the network, and listed, but
- * it does not fail the run. Any other origin fails on every page.
+ * The promise holds on every page: any request to another origin fails. The
+ * GitHub activity chart on `/` and `/projects/` was the one exception until the
+ * build began fetching it and serving it from the site (`ghchartSrc`).
  *
  * ## The one `incomplete` is honest and is not suppressed
  *
@@ -104,12 +102,6 @@ const pagesIn = (dir) =>
     return entry.name.endsWith('.html') ? [`/${relative(DIST, path).replace(/index\.html$/, '')}`] : [];
   });
 const PATHS = pagesIn(DIST).sort();
-
-/** Pages that must make no request to another origin. */
-const SCRIPTLESS = /^\/(es\/)?(lab|ai)\//;
-
-/** The one third-party origin other pages embed on purpose: `ghchartSrc` in `src/data/site.ts`. */
-const EMBEDDED = new Set(['https://ghchart.rshah.org']);
 
 /**
  * The six AA rules axe 4.14 ships disabled, turned on by name. Measured
@@ -179,13 +171,8 @@ for (const path of PATHS) {
       continue;
     }
 
-    const expected = (url) => !SCRIPTLESS.test(path) && EMBEDDED.has(new URL(url).origin);
-    const unexpected = elsewhere.filter((url) => !expected(url));
-    if (elsewhere.length > unexpected.length) {
-      console.log(`  ${label} — blocked, not counted: ${elsewhere.filter(expected).join(', ')}`);
-    }
-    if (unexpected.length > 0) {
-      console.error(`✗ ${label} — requests to another origin:\n    ${unexpected.join('\n    ')}`);
+    if (elsewhere.length > 0) {
+      console.error(`✗ ${label} — requests to another origin:\n    ${elsewhere.join('\n    ')}`);
       failures++;
     }
 
@@ -231,5 +218,5 @@ if (failures > 0) {
 }
 console.log(
   `\n0 axe violations on ${PATHS.length} pages at 320 and 1440, ` +
-    'and no request to another origin beyond the GitHub chart, none at all from the Lab or AI pages.',
+    'and no request to another origin from any page.',
 );
