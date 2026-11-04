@@ -27,7 +27,7 @@ const translatePath = useTranslatedPath(lang);
 const parts = (text: string) =>
   text.split(/(\[[^\]]+\]\([^)]+\))/).filter(Boolean).map((part) => {
     const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-    return link ? { words: link[1], href: translatePath(link[2]) } : { words: part };
+    return link ? { words: link[1], href: translatePath(link[2]) } : { words: part, href: undefined };
   });
 
 type Entry = { kind: 'work' | 'study'; start: string; end: number; until: string; title: string; place: string; story: StoryBlock[]; current: boolean };

@@ -232,3 +232,15 @@ for (const { lang, built } of homes) {
     }
   });
 }
+
+test('each role tells the same story in both locales: as many paragraphs, labelled alike', () => {
+  const shape = (built) => {
+    const block = dist(built).match(/<ol[^>]*data-timeline[\s\S]*?<\/ol>/)?.[0] ?? '';
+    return [...block.matchAll(/<li[^>]*data-timeline-item[^>]*data-kind="work"[\s\S]*?<\/li>/g)].map((m) =>
+      [...m[0].matchAll(/<p[^>]*data-story-block[^>]*>([\s\S]*?)<\/p>/g)].map((p) => (/font-mono/.test(p[1]) ? 'labelled' : 'plain')),
+    );
+  };
+  const [en, es] = homes.map(({ built }) => shape(built));
+  assert.equal(en.length, 5, 'expected 5 roles');
+  assert.deepEqual(es, en);
+});
