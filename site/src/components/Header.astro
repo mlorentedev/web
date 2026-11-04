@@ -55,7 +55,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
             translate={item.name ? 'no' : undefined}
             aria-current={here ? 'page' : within ? 'true' : undefined}
             class:list={[
-              'hover:text-accent-700 transition-colors duration-200 text-sm',
+              'inline-flex min-h-6 min-w-6 items-center justify-center hover:text-accent-700 transition-colors duration-200 text-sm',
               within ? 'text-accent-700 font-bold no-underline' : '',
             ]}
           >
@@ -67,7 +67,7 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
         <a
           href={switchLangUrl(Astro.url, l as keyof typeof languages)}
           aria-label={`${label} ${l.toUpperCase()}`}
-          class="text-xs text-ink-500 hover:text-accent-700 transition-colors uppercase tracking-wide"
+          class="inline-flex min-h-6 min-w-6 items-center justify-center text-xs text-ink-500 hover:text-accent-700 transition-colors uppercase tracking-wide"
         >
           {/* The code below sm — the full name does not fit a 320px viewport
               once the nav carries four items. The accessible name carries both
