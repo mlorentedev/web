@@ -78,7 +78,12 @@ repos:
         language: script
         entry: scripts/check-doc-refs.sh
         pass_filenames: false
-        files: ^(\.github/|scripts/|docs/|AGENTS\.md$|README\.md$|Makefile$)
+        # site/, harness/ and the root files are read by its ADR check (#361).
+        files: |
+          (?x)^(
+            \.github/|scripts/|docs/|site/|harness/|
+            (AGENTS|README|CONTRIBUTING)\.md$|Makefile$|Dockerfile$|kubelab\.yaml$
+          )
 
   # The Astro and Tailwind CSS majors in AGENTS.md match site/package.json (scripts/check-agents-stack.sh)
   - repo: local
