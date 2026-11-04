@@ -37,4 +37,23 @@ if [ -n "$missing" ]; then
   echo "Point at the doc's current home (another repo or the vault: say which), or restore it."
   exit 1
 fi
+
+# An ADR number cited in the same surfaces is either this repo's (docs/adr/ADR-NNN-*.md)
+# or listed in docs/adr/README.md with the repository it lives in. The numbers collide
+# across repos (kubelab and dotfiles both have an ADR-018), so a bare citation that
+# resolves nowhere here sends a reader to the wrong document (#361).
+unmapped=""
+while IFS= read -r adr; do
+  [ -n "$adr" ] || continue
+  compgen -G "docs/adr/${adr}-*.md" > /dev/null && continue
+  grep -qE "^\| ${adr} \|" docs/adr/README.md 2>/dev/null || unmapped+="  $adr"$'\n'
+done < <(git grep -ohIE --untracked 'ADR-[0-9]{3}' \
+  -- .github scripts docs ':!docs/lessons' ':!docs/adr/README.md' AGENTS.md README.md Makefile 2>/dev/null | sort -u)
+
+if [ -n "$unmapped" ]; then
+  echo "check-doc-refs: ADR numbers cited here that are neither in docs/adr/ nor mapped in docs/adr/README.md:"
+  printf '%s' "$unmapped"
+  echo "Add a row naming the repository the ADR lives in."
+  exit 1
+fi
 echo "check-doc-refs: OK"

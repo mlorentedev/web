@@ -63,7 +63,7 @@ build, `.agents/` (third-party agent skills) by `npx skills add` from the commit
 │       └── styles/
 ├── CLAUDE.md         # agent instructions (two-repo flow)
 ├── harness/          # reviewer registry (review-attestation.json) and adversarial reviewer pool (reviewer-pool.json), see ADR-057
-└── docs/             # build/operate docs (adr, runbooks, troubleshooting, lessons)
+└── docs/             # build/operate docs (adr, runbooks, lessons); docs/adr/README.md maps ADRs that live in other repos
 ```
 
 ## Deployment — the two-repo flow (ADR-053)
