@@ -9,12 +9,13 @@ tags: [web, lessons, index]
 
 # Lessons
 
-69 lessons, one file each, newest first. Numbers are assigned in the order
+70 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
 | 072 | [A target-size check without the spacing exception counts 2641 failures the standard does not](lesson-072-a-target-size-check-without-the-spacing-exc.md) | 2026-11-04 | `#accessibility` `#testing` |
+| 070 | [A build-time fallback hid a validator that rejected the real upstream response](lesson-070-a-build-time-fallback-hid-a-validator-that-r.md) | 2026-11-04 | `#build` `#testing` `#privacy` |
 | 068 | [A PR build renders the local variant of the footer, so a defect only the shipped variant carries passed every PR check](lesson-068-a-pr-build-renders-the-local-variant-of-the-.md) | 2026-11-03 | `#testing` `#ci` `#build` |
 | 067 | [A codemod renames the bug a ticket names, so the ticket's own search reports it fixed](lesson-067-a-codemod-renames-the-bug-a-ticket-names-so-th.md) | 2026-11-01 | `#accessibility` `#testing` `#tailwind` |
 | 066 | [A version read from the lockfile in its own stage keeps the cache a pinned literal bought](lesson-066-a-version-read-from-the-lockfile-in-its-own-.md) | 2026-10-22 | `#docker` `#dependencies` `#ci` |

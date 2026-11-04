@@ -1,12 +1,14 @@
 ---
-// What Manu does, by layer (#499): terms to scan, then the work that proves
-// them. Each layer opens on a label key in its own hue and its terms read as
-// chips, the way platform tools label things (ADR-060). Text only: the key and
-// the layer name carry the meaning, the hue only groups. The layers live in
-// `data/skills.ts`, so both locales list the same ones.
+// What Manu does, by layer (#499): terms to scan, then a sentence or two on the
+// work that proves them, linked inline. Each layer opens on a label key in its
+// own hue and its terms read as chips, the way platform tools label things
+// (ADR-060). The key carries the meaning, the hue only groups. The layers live
+// in `data/skills.ts`, so both locales list the same ones. The GitHub chart
+// closes the section: the activity behind the layers, linked to the profile.
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { languages, layersFor, type Tone } from '../data/skills';
+import { ghchartSrc, site } from '../data/site';
 import type { Lang } from '../i18n/ui';
 import { useTranslations, useTranslatedPath } from '../i18n/utils';
 
@@ -40,13 +42,13 @@ const dot: Record<Tone, string> = {
 <Section id="skills" data-home-block="skills">
   <SectionHeading label={t('home.skills')} margin="mb-6" />
   <dl data-skills class="max-w-3xl divide-y divide-ink-100 border-y border-ink-100">
-    {layersFor(lang).map(({ key, tone, name, terms, proof, link: label_, href }) => (
+    {layersFor(lang).map(({ key, tone, name, terms, story: [before, words, after], href }) => (
       <div data-skill data-key={key} class="grid gap-2 py-4 md:grid-cols-[11rem_1fr] md:gap-6">
         <dt>
           <span class:list={['inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-xs font-medium ring-1 ring-inset', label[tone]]}>
             <span class:list={['size-1.5 rounded-full', dot[tone]]} aria-hidden="true"></span>{key}
           </span>
-          <span class="mt-1 block text-xs text-ink-500">{name}</span>
+          <span class="sr-only">{name}</span>
         </dt>
         <dd>
           <ul class="flex flex-wrap gap-1.5" aria-label={name}>
@@ -55,8 +57,7 @@ const dot: Record<Tone, string> = {
             ))}
           </ul>
           <p class="mt-2 text-base text-ink-700 leading-relaxed">
-            {proof}{' '}
-            <a href={link(href)} class="text-sm text-accent-700 underline decoration-ink-300 hover:text-accent-800 transition-colors">{label_}</a>
+            {before}<a href={link(href)} class="text-accent-700 underline decoration-ink-300 hover:text-accent-800 transition-colors">{words}</a>{after}
           </p>
         </dd>
       </div>
@@ -68,4 +69,10 @@ const dot: Record<Tone, string> = {
       {languages.map((l) => <li class="rounded-md bg-ink-50 px-2 py-0.5 text-ink-700 ring-1 ring-inset ring-ink-200">{l}</li>)}
     </ul>
   </div>
+  <figure data-activity class="max-w-3xl mt-8">
+    <figcaption class="mb-2 font-mono text-xs text-ink-500">{t('home.activity')}</figcaption>
+    <a href={site.social.github} target="_blank" rel="noopener noreferrer" class="block">
+      <img src={ghchartSrc} alt={t('meta.ghchart.alt')} width="663" height="104" class="w-full hover:opacity-80 transition-opacity" loading="lazy" />
+    </a>
+  </figure>
 </Section>

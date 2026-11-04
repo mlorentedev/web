@@ -111,20 +111,30 @@ for (const { lang, built } of homes) {
 // ── Structure (WEB-140, AC2) ───────────────────────────────────────────────
 
 for (const { lang, built } of homes) {
-  test(`[${lang}] the home's blocks come in order after the hero: loop, bio, story, skills, activity, notes`, () => {
+  test(`[${lang}] the home's blocks come in order after the hero: loop, bio, story, skills, notes`, () => {
     const html = dist(built);
     const afterTitle = html.slice(html.indexOf('</h1>'));
     const blocks = [...afterTitle.matchAll(/data-home-block="([^"]+)"/g)].map((m) => m[1]);
-    assert.deepEqual(blocks, ['loop', 'bio', 'story', 'skills', 'activity', 'notes']);
+    assert.deepEqual(blocks, ['loop', 'bio', 'story', 'skills', 'notes']);
   });
 
+  // The skills block closes on the GitHub chart (#499), the home's one picture,
+  // so it is checked with that figure taken out.
   test(`[${lang}] the story, the skills and the notes are text: no image, svg or card`, () => {
     const html = dist(built);
     for (const name of ['story', 'skills', 'notes']) {
-      const section = html.match(new RegExp(`<section[^>]*data-home-block="${name}"[\\s\\S]*?</section>`))?.[0] ?? '';
-      assert.ok(section, `dist/${built} has no ${name} block`);
+      const block = html.match(new RegExp(`<section[^>]*data-home-block="${name}"[\\s\\S]*?</section>`))?.[0] ?? '';
+      const section = block.replace(/<figure[^>]*data-activity[\s\S]*?<\/figure>/, '');
+      assert.ok(block, `dist/${built} has no ${name} block`);
       assert.doesNotMatch(section, /<img\b|<svg\b|<picture\b|data-card\b|\bcard\b/, `dist/${built}: the ${name} block is not plain text`);
     }
+  });
+
+  test(`[${lang}] the GitHub chart closes the skills block, once on the home`, () => {
+    const html = dist(built);
+    const skills = html.match(/<section[^>]*data-home-block="skills"[\s\S]*?<\/section>/)?.[0] ?? '';
+    assert.equal((skills.match(/<figure[^>]*data-activity[\s\S]*?<img\b/g) ?? []).length, 1, `dist/${built}: the skills block has no GitHub chart`);
+    assert.equal((html.match(/\bdata-activity\b/g) ?? []).length, 1, `dist/${built}: the GitHub chart appears more than once`);
   });
 }
 
@@ -209,3 +219,38 @@ for (const { lang, built } of homes) {
     assert.match(marked[0], /class="sr-only"/, `dist/${built}: HEAD has no screen-reader equivalent`);
   });
 }
+
+// ── Each role tells its story (#499) ───────────────────────────────────────
+//
+// Every role renders at least one paragraph from `experience.ts`, no markdown
+// link syntax leaks into the page, and each link in a story lands on a built
+// page in the reader's own locale.
+
+for (const { lang, built } of homes) {
+  test(`[${lang}] every role tells its story, and its links land in the same locale`, () => {
+    const block = dist(built).match(/<ol[^>]*data-timeline[\s\S]*?<\/ol>/)?.[0] ?? '';
+    const roles = [...block.matchAll(/<li[^>]*data-timeline-item[^>]*data-kind="work"[\s\S]*?<\/li>/g)].map((m) => m[0]);
+    assert.equal(roles.length, 5, `dist/${built}: expected 5 roles`);
+    const silent = roles.filter((role) => !/data-story-block/.test(role));
+    assert.equal(silent.length, 0, `dist/${built}: ${silent.length} roles with no story`);
+    assert.doesNotMatch(text(block), /\]\(/, `dist/${built}: markdown link syntax leaked into the timeline`);
+    const hrefs = [...block.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+    assert.ok(hrefs.length > 0, `dist/${built}: the timeline links nowhere`);
+    for (const href of hrefs) {
+      assert.ok(lang === 'es' ? href.startsWith('/es/') : !href.startsWith('/es/'), `dist/${built}: ${href} is in the other locale`);
+      assert.ok(existsSync(join(distDir, href, 'index.html')), `dist/${built}: ${href} has no built page`);
+    }
+  });
+}
+
+test('each role tells the same story in both locales: as many paragraphs, labelled alike', () => {
+  const shape = (built) => {
+    const block = dist(built).match(/<ol[^>]*data-timeline[\s\S]*?<\/ol>/)?.[0] ?? '';
+    return [...block.matchAll(/<li[^>]*data-timeline-item[^>]*data-kind="work"[\s\S]*?<\/li>/g)].map((m) =>
+      [...m[0].matchAll(/<p[^>]*data-story-block[^>]*>([\s\S]*?)<\/p>/g)].map((p) => (/font-mono/.test(p[1]) ? 'labelled' : 'plain')),
+    );
+  };
+  const [en, es] = homes.map(({ built }) => shape(built));
+  assert.equal(en.length, 5, 'expected 5 roles');
+  assert.deepEqual(es, en);
+});
