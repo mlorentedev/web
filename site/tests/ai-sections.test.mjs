@@ -11,7 +11,8 @@
  *   03 / Autonomous Fleet & Automations (automations, migrated from lab-ai.json)
  *   04 / The rules, quoted from their files (artifacts)
  *
- * The page ships ZERO client JavaScript, like /lab since its probe console was retired (#280).
+ * The page ships ZERO client JavaScript, like /lab since its probe console was retired (#280);
+ * no-client-js.test.mjs asserts that for every page.
  */
 
 import assert from 'node:assert/strict';
@@ -202,18 +203,6 @@ for (const { locale, html } of built) {
   });
 
   // ----------------------------------------------------------------- hygiene
-
-  test(`[${locale}] the AI page ships no client JavaScript`, () => {
-    const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)]
-      .map((m) => m[0])
-      .filter((s) => !s.includes('type="application/ld+json"'));
-
-    assert.deepEqual(
-      scripts,
-      [],
-      `the AI page ships ${scripts.length} client <script> tag(s) — the page must be static`,
-    );
-  });
 
   test(`[${locale}] the AI page has no duplicate ids`, () => {
     const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
