@@ -34,6 +34,27 @@ const VALUE = String.raw`(?:"[^"]*"|'[^']*'|[^\s"'=<>\x60]+)`;
 const ATTR = new RegExp(String.raw`([^\s"'<>/=]+)(?:\s*=\s*(${VALUE}))?`, 'g');
 const TAG = new RegExp(String.raw`<([a-zA-Z][\w-]*)((?:\s+[^\s"'<>/=]+(?:\s*=\s*${VALUE})?)*)\s*/?>`, 'g');
 const URL_ATTRS = new Set(['href', 'src', 'action', 'formaction']);
+const NAMED = { colon: ':', tab: '\t', newline: '\n', amp: '&' };
+
+/**
+ * A URL the way the browser reads its scheme: entities decoded, then tabs and
+ * newlines dropped, so `&#106;avascript:` and `java\nscript:` are `javascript:`.
+ */
+const urlOf = (value) =>
+  value
+    .replace(/&#x([0-9a-f]+);?/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);?/g, (_, dec) => String.fromCodePoint(Number(dec)))
+    .replace(/&(colon|tab|newline|amp);/gi, (_, name) => NAMED[name.toLowerCase()])
+    .replace(/[\t\n\r]/g, '');
+
+/** The tag's attributes, lower-cased; a repeated one keeps its first value, as the parser does. */
+function attributesOf(attrs) {
+  const values = new Map();
+  for (const [, key, value = ''] of attrs.matchAll(ATTR)) {
+    if (!values.has(key.toLowerCase())) values.set(key.toLowerCase(), value.replace(/^["']|["']$/g, ''));
+  }
+  return values;
+}
 
 /** Every way the HTML would run code in a browser, as a short description. */
 function clientCode(html) {
@@ -44,11 +65,11 @@ function clientCode(html) {
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(new RegExp(String.raw`(<script\b(?:${VALUE}|[^"'>])*>)[\s\S]*?(</script>)`, 'gi'), '$1$2');
   for (const [tag, name, attrs] of markup.matchAll(TAG)) {
-    const values = new Map([...attrs.matchAll(ATTR)].map(([, key, value = '']) => [key.toLowerCase(), value.replace(/^["']|["']$/g, '')]));
+    const values = attributesOf(attrs);
     if (name.toLowerCase() === 'script' && values.get('type')?.toLowerCase() !== 'application/ld+json') found.push(tag);
     for (const [key, value] of values) {
       if (key.startsWith('on')) found.push(`${key} handler`);
-      if (URL_ATTRS.has(key) && /^\s*javascript:/i.test(value)) found.push(`javascript: ${key}`);
+      if (URL_ATTRS.has(key) && /^\s*javascript:/i.test(urlOf(value))) found.push(`javascript: ${key}`);
     }
   }
   return found;
@@ -73,6 +94,16 @@ test('the detector reads attributes with their quotes, and an unclosed script st
   assert.deepEqual(clientCode('<a title="href= javascript: void" href="/x/">a</a>'), []);
   assert.deepEqual(clientCode('<!-- <script>x()</script><b onclick="y()"> -->'), []);
   assert.deepEqual(clientCode('<script type="application/ld+json" data-x="a > b">{"a":"<i onload=1>"}</script>'), []);
+});
+
+test('the detector reads a URL and a repeated attribute the way the browser does', () => {
+  assert.deepEqual(clientCode('<a href="&#106;avascript:alert(1)">a</a>'), ['javascript: href']);
+  assert.deepEqual(clientCode('<a href="&#x6A;avascript&colon;x()">a</a>'), ['javascript: href']);
+  assert.deepEqual(clientCode('<a href="java\nscript:x()">a</a>'), ['javascript: href']);
+  assert.deepEqual(clientCode('<a href="javascript:x()" href="/safe/">a</a>'), ['javascript: href']);
+  assert.deepEqual(clientCode('<a href="/safe/" href="javascript:x()">a</a>'), []);
+  assert.deepEqual(clientCode('<script type="text/javascript" type="application/ld+json">x()</script>'), ['<script type="text/javascript" type="application/ld+json">']);
+  assert.deepEqual(clientCode('<a href="/notes/?a=1&amp;b=2">a</a>'), []);
 });
 
 test('no page ships client JavaScript', () => {
