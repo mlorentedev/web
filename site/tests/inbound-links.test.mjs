@@ -39,13 +39,17 @@ function target(href) {
   return path.endsWith('/') || path.endsWith('.html') ? path : `${path}/`;
 }
 
+/** The href of every rendered `<a>`: a commented-out link or a string in a script is no way in. */
+const hrefs = (html) =>
+  [...html.replace(/<!--[\s\S]*?-->|<script\b[\s\S]*?<\/script>/gi, '').matchAll(/<a\b[^>]*\shref="([^"]*)"/g)].map(([, href]) => href);
+
 /** Every built route, and every route some other page links to. */
 function scan() {
   const pages = files(DIST);
   const linked = new Set();
   for (const file of pages) {
     const from = route(file);
-    for (const [, href] of readFileSync(file, 'utf8').matchAll(/<a\b[^>]*\shref="([^"]*)"/g)) {
+    for (const href of hrefs(readFileSync(file, 'utf8'))) {
       const to = target(href);
       if (to && to !== from) linked.add(to);
     }
@@ -57,6 +61,13 @@ test('a same-site href resolves to the route it lands on', () => {
   assert.deepEqual(
     ['/projects', '/es/projects/#top', 'https://mlorente.dev/lab?x=1', 'https://mlorente.dev', '//cdn.example', 'mailto:a@b', '#main'].map(target),
     ['/projects/', '/es/projects/', '/lab/', '/', null, null, null],
+  );
+});
+
+test('only a rendered link counts, not one in a comment or a script', () => {
+  assert.deepEqual(
+    hrefs('<!-- <a href="/old/">x</a> --><script type="application/ld+json">{"x":"<a href=\\"/ld/\\">"}</script><a class="c" href="/real/">r</a>'),
+    ['/real/'],
   );
 });
 
