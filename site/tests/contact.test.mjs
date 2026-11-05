@@ -106,12 +106,18 @@ for (const { lang, contact } of pages) {
 // ── One door ───────────────────────────────────────────────────────────────
 
 for (const { lang, contact, home, href } of pages) {
-  test(`[${lang}] the door is a mailto carrying the three-line filter`, () => {
+  test(`[${lang}] the door is a mailto with a subject and no body`, () => {
     const door = element(dist(contact), 'data-door');
-    const mailto = door.match(/href="(mailto:[^"]+)"/)?.[1] ?? '';
-    assert.match(mailto, /[?&]subject=[^&]+/, 'the door mail has no subject');
-    const body = decodeURIComponent(mailto.match(/[?&](?:amp;)?body=([^&"]+)/)?.[1] ?? '');
-    assert.equal(body.split('\r\n').filter((l) => l.trim()).length, 3, 'the mail body should be the three filter lines');
+    const mailto = (door.match(/href="(mailto:[^"]+)"/)?.[1] ?? '').replace(/&amp;/g, '&');
+    // Manu, #586: "que no salga nada escrito, es un simple email" — a subject
+    // to filter mail from the site, nothing for the sender to delete.
+    assert.match(mailto, /^mailto:manu@mlorente\.dev\?subject=[^&]+$/, `dist/${contact}: expected only a subject, got ${mailto}`);
+    assert.match(decodeURIComponent(mailto.split('subject=')[1]), /mlorente\.dev/);
+  });
+
+  test(`[${lang}] the footer links LinkedIn`, () => {
+    const footer = dist(contact).match(/<footer[\s\S]*<\/footer>/)?.[0] ?? '';
+    assert.match(footer, /href="https:\/\/www\.linkedin\.com\/in\/manloralm\/"/, `dist/${contact}: no LinkedIn icon in the footer`);
   });
 
   test(`[${lang}] the home opens on a button to the contact page`, () => {
