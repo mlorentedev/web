@@ -55,6 +55,15 @@ function firstScreen() {
     const [min, max = min] = weight.split(' ').map(Number);
     return { family: face.family.replace(/["']/g, ''), style: face.style, weight, min, max, status: face.status };
   });
+  // A cross-origin sheet, linked or imported, hides its rules. Skipping it would
+  // read its faces as having no file, and pass them, so the run stops and names it.
+  const rulesOf = (sheet) => {
+    try {
+      return sheet.cssRules;
+    } catch {
+      throw new Error(`cannot read the @font-face rules of ${sheet.href}: a cross-origin stylesheet`);
+    }
+  };
   // Every @font-face, wherever it sits: Tailwind can nest them in @layer,
   // a @media or @supports block nests them too, and an @import brings a sheet.
   const fontFaces = (rules) =>
@@ -62,19 +71,12 @@ function firstScreen() {
       rule instanceof CSSFontFaceRule
         ? [rule]
         : rule instanceof CSSImportRule
-          ? rule.styleSheet ? fontFaces(rule.styleSheet.cssRules) : []
+          ? rule.styleSheet ? fontFaces(rulesOf(rule.styleSheet)) : []
           : rule.cssRules ? fontFaces(rule.cssRules) : [],
     );
   const files = new Map();
   for (const sheet of document.styleSheets) {
-    // A cross-origin sheet hides its rules. Skipping it would read its faces as
-    // having no file, and pass them, so the run stops and names the sheet.
-    let rules;
-    try {
-      rules = sheet.cssRules;
-    } catch {
-      throw new Error(`cannot read the @font-face rules of ${sheet.href}: a cross-origin stylesheet`);
-    }
+    const rules = rulesOf(sheet);
     for (const rule of fontFaces(rules)) {
       // Only upright faces: `pick` reads those, and an italic face of the same weight is another file.
       if ((rule.style.getPropertyValue('font-style') || 'normal') !== 'normal') continue;
