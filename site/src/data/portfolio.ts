@@ -29,6 +29,15 @@ export interface Project {
   tags: string[];
   /** Featured projects sort first on the `/projects` page. */
   featured: boolean;
+  /** Year of the repository's first commit (#587): when the project started, read from git, never typed from memory. */
+  since: number;
+  /** Plain-text state of the project, the same word for all of them until one stops. */
+  status: 'active';
+  /**
+   * One-line install, only where the project installs, run on a clean machine
+   * before it goes here (#89). KubeLab, the harness and ts-bridge have none.
+   */
+  install?: string;
 }
 
 /** A project flattened to a single language — what the card actually renders. */
@@ -37,6 +46,9 @@ export interface LocalizedProject extends ProjectContent {
   github?: string;
   tags: string[];
   featured: boolean;
+  since: number;
+  status: 'active';
+  install?: string;
 }
 
 /**
@@ -52,29 +64,16 @@ export function localize(project: Project, lang: Lang): LocalizedProject {
     github: project.github,
     tags: project.tags,
     featured: project.featured,
+    since: project.since,
+    status: project.status,
+    install: project.install,
   };
 }
 
+// Five projects, few and good (#587, decided 2026-11-04): Hive first, then the
+// platform, the harness and the two tools that install. Pollex, yt-metrics-cli,
+// kasa-provisioner and garsync stay public on GitHub and off this list.
 export const projects: Project[] = [
-  {
-    en: {
-      title: 'KubeLab',
-      metric: '8 machines, 3 K3s clusters',
-      description:
-        'I wanted to understand how platforms actually work — not just click buttons on managed K8s. So I built one from scratch. Eight machines, three single-node K3s clusters, VPN mesh, SSO, full observability. Everything IaC, nothing manual.',
-    },
-    es: {
-      title: 'KubeLab',
-      metric: '8 máquinas, 3 clústeres K3s',
-      description:
-        'Quería entender cómo funcionan de verdad las plataformas, no solo pulsar botones en un K8s gestionado. Así que construí una desde cero. Ocho máquinas, tres clústeres K3s de un nodo, malla VPN, SSO y observabilidad completa. Todo IaC, nada manual.',
-    },
-    // The Lab shows and measures the platform; kubelab.live is platform-internal (ADR-059, #31).
-    url: '/lab',
-    github: 'https://github.com/mlorentedev/kubelab',
-    tags: ['Kubernetes', 'Go', 'Python', 'Terraform', 'Ansible'],
-    featured: true,
-  },
   {
     en: {
       title: 'Hive',
@@ -92,24 +91,51 @@ export const projects: Project[] = [
     github: 'https://github.com/mlorentedev/hive',
     tags: ['Python', 'MCP', 'Obsidian', 'AI'],
     featured: true,
+    since: 2026,
+    status: 'active',
+    install: 'uv tool install hive-vault',
   },
   {
     en: {
-      title: 'Pollex',
-      metric: '6.4 s median, one user',
+      title: 'KubeLab',
+      metric: '8 machines, 3 K3s clusters',
       description:
-        'Cloud LLM APIs see everything you type. Pollex polishes your English on a $99 Jetson Nano — grammar, coherence, wording. A measured median of 6.4 seconds per request with one user; time grows with the text, about 16 seconds for 350 characters. A cloud engine is optional.',
+        'I wanted to understand how platforms actually work — not just click buttons on managed K8s. So I built one from scratch. Eight machines, three single-node K3s clusters, VPN mesh, SSO, full observability. Everything IaC, nothing manual.',
     },
     es: {
-      title: 'Pollex',
-      metric: 'Mediana de 6,4 s, un usuario',
+      title: 'KubeLab',
+      metric: '8 máquinas, 3 clústeres K3s',
       description:
-        'Las APIs de LLM en la nube ven todo lo que escribes. Pollex pule tu inglés en una Jetson Nano de 99 $: gramática, coherencia y redacción. Una mediana medida de 6,4 segundos por petición con un solo usuario; el tiempo crece con el texto, unos 16 segundos para 350 caracteres. El motor en la nube es opcional.',
+        'Quería entender cómo funcionan de verdad las plataformas, no solo pulsar botones en un K8s gestionado. Así que construí una desde cero. Ocho máquinas, tres clústeres K3s de un nodo, malla VPN, SSO y observabilidad completa. Todo IaC, nada manual.',
     },
-    url: 'https://mlorentedev.github.io/pollex/',
-    github: 'https://github.com/mlorentedev/pollex',
-    tags: ['Go', 'MCP', 'LLM', 'Jetson-Nano'],
-    featured: true,
+    // The Lab shows and measures the platform; kubelab.live is platform-internal (ADR-059, #31).
+    url: '/lab',
+    github: 'https://github.com/mlorentedev/kubelab',
+    tags: ['Kubernetes', 'Go', 'Python', 'Terraform', 'Ansible'],
+    featured: false,
+    since: 2024,
+    status: 'active',
+  },
+  {
+    en: {
+      title: 'dotf',
+      metric: 'A second run changes nothing',
+      description:
+        'My machines and my AI agents come out of the same repository. dotf installs and converges the shell, the editors and the encrypted secrets on Linux and Windows, macOS on the way, and enforces the rules my agents work under.',
+    },
+    es: {
+      title: 'dotf',
+      metric: 'Repetirlo no cambia nada',
+      description:
+        'Mis máquinas y mis agentes de IA salen del mismo repositorio. dotf instala y converge la shell, los editores y los secretos cifrados en Linux y Windows, macOS en camino, y hace cumplir las reglas con las que trabajan mis agentes.',
+    },
+    // The harness, not a product (P-4): its card opens /ai, where the rules are shown.
+    url: '/ai',
+    github: 'https://github.com/mlorentedev/dotfiles',
+    tags: ['Go', 'Shell', 'AI'],
+    featured: false,
+    since: 2024,
+    status: 'active',
   },
   {
     en: {
@@ -127,76 +153,30 @@ export const projects: Project[] = [
     url: 'https://mlorentedev.github.io/ts-bridge/',
     github: 'https://github.com/mlorentedev/ts-bridge',
     tags: ['Go', 'Tailscale', 'Networking'],
-    featured: true,
+    featured: false,
+    since: 2026,
+    status: 'active',
   },
   {
     en: {
-      title: 'pdf-modifier-mcp',
+      title: 'pdf-modifier',
       metric: 'Format-preserving edits',
       description:
         'Find-and-replace in PDFs without destroying the formatting. CLI for batch jobs, MCP server for AI agents.',
     },
     es: {
-      title: 'pdf-modifier-mcp',
+      title: 'pdf-modifier',
       metric: 'Edición sin perder formato',
       description:
         'Buscar y reemplazar en PDFs sin destrozar el formato. CLI para lotes, servidor MCP para agentes de IA.',
     },
-    url: 'https://pypi.org/project/pdf-modifier-mcp/',
+    // The package was renamed from pdf-modifier-mcp, which stays frozen at 1.6.0.
+    url: 'https://pypi.org/project/pdf-modifier/',
     github: 'https://github.com/mlorentedev/pdf-modifier',
     tags: ['Python', 'MCP', 'PDF'],
     featured: false,
-  },
-  {
-    en: {
-      title: 'yt-metrics-cli',
-      metric: 'Any public channel',
-      description:
-        'YouTube Studio analytics are shallow and locked to your own channel. This CLI pulls metrics for any public channel and exports everything.',
-    },
-    es: {
-      title: 'yt-metrics-cli',
-      metric: 'Cualquier canal público',
-      description:
-        'Las analíticas de YouTube Studio son superficiales y están limitadas a tu propio canal. Esta CLI extrae métricas de cualquier canal público y lo exporta todo.',
-    },
-    url: 'https://mlorentedev.github.io/yt-metrics-cli/',
-    github: 'https://github.com/mlorentedev/yt-metrics-cli',
-    tags: ['Python', 'CLI', 'YouTube'],
-    featured: false,
-  },
-  {
-    en: {
-      title: 'kasa-provisioner',
-      metric: 'No vendor cloud',
-      description:
-        'Setting up smart plugs through the vendor\'s phone app ties them to its cloud. This provisions a factory-fresh plug onto your WiFi, finds the plugs on the LAN and switches them locally, over both TP-Link protocols.',
-    },
-    es: {
-      title: 'kasa-provisioner',
-      metric: 'Sin la nube del fabricante',
-      description:
-        'Configurar enchufes inteligentes desde la app del fabricante los ata a su nube. Esto da de alta un enchufe recién sacado de la caja en tu WiFi, encuentra los enchufes de la red local y los controla en local, con los dos protocolos de TP-Link.',
-    },
-    github: 'https://github.com/mlorentedev/kasa-provisioner',
-    tags: ['Python', 'IoT', 'Networking'],
-    featured: false,
-  },
-  {
-    en: {
-      title: 'dotfiles',
-      metric: '1 script, fresh machine',
-      description:
-        'Dev environment that rebuilds itself. Zsh, Neovim, tmux, Git — one script on a fresh machine.',
-    },
-    es: {
-      title: 'dotfiles',
-      metric: '1 script, máquina nueva',
-      description:
-        'Un entorno de desarrollo que se reconstruye solo. Zsh, Neovim, tmux, Git: un script en una máquina nueva.',
-    },
-    github: 'https://github.com/mlorentedev/dotfiles',
-    tags: ['Shell', 'Neovim', 'DevEx'],
-    featured: false,
+    since: 2026,
+    status: 'active',
+    install: 'pip install pdf-modifier',
   },
 ];
