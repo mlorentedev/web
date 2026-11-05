@@ -29,7 +29,9 @@ import { chromium } from 'playwright';
 
 import { labBaseUrl } from './lib/serve.mjs';
 
-const PAGES = ['/', '/lab/', '/ai/', '/notes/building-a-homelab-idp/'];
+// The Spanish pages share the layout, not the copy, so a line that wraps
+// differently can paint another weight on the first screen. No note is in Spanish yet.
+const PAGES = ['/', '/lab/', '/ai/', '/notes/building-a-homelab-idp/', '/es/', '/es/lab/', '/es/ai/'];
 const WIDTHS = [320, 1440];
 const HEIGHT = 800;
 
@@ -50,10 +52,12 @@ function firstScreen() {
     [...rules].flatMap((rule) => (rule instanceof CSSFontFaceRule ? [rule] : rule.cssRules ? fontFaces(rule.cssRules) : []));
   const files = new Map();
   for (const sheet of document.styleSheets) {
+    // A relative `url()` resolves against its stylesheet, not the page.
+    const base = sheet.href ?? location.href;
     for (const rule of fontFaces(sheet.cssRules)) {
       const src = /url\(["']?([^"')]+)/.exec(rule.style.getPropertyValue('src'))?.[1];
       const family = rule.style.getPropertyValue('font-family').replace(/["']/g, '').trim();
-      files.set(`${family}|${weightOf(rule.style.getPropertyValue('font-weight') || 'normal')}`, new URL(src, location.href).pathname);
+      files.set(`${family}|${weightOf(rule.style.getPropertyValue('font-weight') || 'normal')}`, new URL(src, base).pathname);
     }
   }
   // CSS Fonts 4 §5.2: a face whose range holds the weight wins; otherwise
