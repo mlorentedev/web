@@ -23,11 +23,18 @@ Bold above the fold depends on the copy as well as the breakpoint. There was a s
 lead: the home page's bold `HARDWARE`/`SOFTWARE` labels are `font-mono`, the system family,
 so they need no Roboto file at all.
 
+The test that ships samples more than that first measurement: seven pages (`/`, `/lab/`,
+`/ai/`, the note, and the three Spanish twins) at 320, 640 and 1440 px, 21 screens. There,
+Medium is painted on 20 (all but the note at 320), and Bold on 10, at 640 and 1440 on
+`/lab/`, `/ai/`, the note and their twins, and never at 320.
+
 **Solution**: Medium is preloaded. All four faces are preloaded with no `media`.
 `site/tests/font-preloads.mjs` (in `test:browser`) prints the faces each sample screen
 paints. It fails if a preloaded face is painted above the fold on no screen in the sample,
 or if a face painted above the fold is not preloaded. Before the fix it failed with
-`Roboto-Medium.woff2 is painted above the fold, and not preloaded`.
+`Roboto-Medium.woff2 is painted above the fold, and not preloaded`. It also fails on any
+font preload that carries `media`: a sample of widths cannot see the ones between them, so
+the 640 px scope above would pass at the sampled widths and miss the note at 639.
 
 **Rule**: Before you scope a resource hint to a viewport, test the width on each side of
 the breakpoint as well as the two ends. A layout breakpoint says where the chrome changes,

@@ -17,7 +17,10 @@
  * whole sample:
  * - every preloaded face is painted above the fold on at least one page;
  * - every face a first screen paints is preloaded on that screen, so a preload
- *   scoped by `media` to other widths does not count for it.
+ *   scoped by `media` to other widths does not count for it;
+ * - no font preload carries `media` at all. A sample of widths cannot see the
+ *   ones between them, so a preload scoped to 640 and up would pass at 320 and
+ *   1440 and miss the note that paints Bold at 639 (lesson 074).
  *
  * The first check is over the sample, not per width, on purpose. Bold is painted
  * above the fold at 640 and up (the nav row's current link), and at 639 too on
@@ -32,7 +35,7 @@ import { labBaseUrl } from './lib/serve.mjs';
 // The Spanish pages share the layout, not the copy, so a line that wraps
 // differently can paint another weight on the first screen. No note is in Spanish yet.
 const PAGES = ['/', '/lab/', '/ai/', '/notes/building-a-homelab-idp/', '/es/', '/es/lab/', '/es/ai/'];
-const WIDTHS = [320, 1440];
+const WIDTHS = [320, 640, 1440];
 const HEIGHT = 800;
 
 /** Runs in the page: the font files the first viewport paints with, and the ones the head preloads. */
@@ -136,6 +139,11 @@ try {
       } else {
         await page.evaluate(() => document.fonts.ready);
         const { painted, preloaded, unloaded } = await page.evaluate(firstScreen);
+        const scoped = await page.evaluate(() => [...document.querySelectorAll('link[rel="preload"][as="font"][media]')].map((l) => `${l.href} (${l.media})`));
+        for (const link of scoped) {
+          console.error(`✗ ${path} @ ${width}px preloads ${name(link)}: a font preload is never scoped by media`);
+          failures++;
+        }
         for (const face of unloaded) {
           console.error(`✗ ${path} @ ${width}px paints with ${name(face)}, which did not load`);
           failures++;
