@@ -35,6 +35,7 @@ const PATHS = [
   '/ai',
   '/es/ai',
   '/projects',
+  '/es/projects',
   '/contact',
   '/notes/building-a-homelab-idp',
   '/404.html',
