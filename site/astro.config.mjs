@@ -12,7 +12,7 @@ import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
 
 // /es/notes/ is noindex while no note is written in Spanish; keep it out of the
 // sitemap for as long, so the two signals agree.
-const notesDir = new URL('./src/content/notes/', import.meta.url);
+const notesDir = new URL(`./${process.env.NOTES_DIR ?? 'src/content/notes'}/`, import.meta.url);
 const frontMatter = (text) => text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
 // A Spanish note counts once it is published: drafts are not built, as in the collection filters.
 const isSpanishPublished = (fm) => /^lang:\s*['"]?es\b/m.test(fm) && !/^draft:\s*true\b/m.test(fm);
@@ -23,6 +23,10 @@ const hasSpanishNotes = readdirSync(notesDir).some((f) =>
 export default defineConfig({
   site: 'https://mlorente.dev',
   output: 'static',
+  // The content store lives here. tests/note-dates.test.mjs builds over fixture
+  // notes, and points this at a scratch dir so the fixtures never enter the
+  // store the next real build reads (WEB-138).
+  cacheDir: process.env.ASTRO_CACHE_DIR,
   // Tailwind 4 runs as a Vite plugin, configured in `src/styles/tailwind.css`
   // (WEB-022). It replaced a PostCSS config that had replaced the deprecated
   // `@astrojs/tailwind` integration, and it prefixes CSS itself.

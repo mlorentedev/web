@@ -5,15 +5,23 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { projects, type Project } from '../data/portfolio';
 import type { Lang } from '../i18n/ui';
+import { buildClock, isPublished } from './note-dates.mjs';
 
 export type Note = CollectionEntry<'notes'>;
 export type NoteLink = { id: string; title: string } | null;
 
 export const otherLang = (lang: Lang): Lang => (lang === 'en' ? 'es' : 'en');
 
-/** The published notes written in `lang`, newest first. */
+// Read once per build, so every page agrees on which notes exist.
+const now = buildClock();
+
+/**
+ * The published notes written in `lang`, newest first: not drafts, and not
+ * dated after the build (WEB-138). The only reader of the notes collection,
+ * which tests/note-dates.test.mjs asserts, so no page can skip the filter.
+ */
 export async function notesIn(lang: Lang): Promise<Note[]> {
-  return (await getCollection('notes', ({ data }: Note) => !data.draft && data.lang === lang)).sort(
+  return (await getCollection('notes', ({ data }: Note) => isPublished(data, now) && data.lang === lang)).sort(
     (a: Note, b: Note) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
 }
