@@ -23,8 +23,9 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 const DIST = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
-// 145 paragraphs with text-xs on their own, and the 4 IDP provenance footers that inherit it.
-const BASELINE = 149;
+// 146 paragraphs with text-xs on their own, and the 4 IDP provenance footers that inherit it.
+// Each new page adds one: the footer's copyright line (the last was /es/projects).
+const BASELINE = 150;
 const SENTENCE_WORDS = 12;
 
 /** True when the class list sets 12 px at some breakpoint, with or without a `/<line-height>`. */

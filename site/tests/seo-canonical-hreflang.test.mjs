@@ -3,8 +3,8 @@
  *
  * Verifies:
  * - 404 page emits <meta name="robots" content="noindex, nofollow"> and no canonical or alternate hreflang.
- * - Unilingual pages (notes, projects, unilingual tags) emit self-canonical and no broken alternate hreflangs.
- * - Bilingual pages (/lab, /es/lab) emit symmetric hreflang links and agree on x-default pointing to default locale.
+ * - Unilingual pages (notes, unilingual tags) emit self-canonical and no broken alternate hreflangs.
+ * - Bilingual pages (/lab, /projects and their /es twins) emit symmetric hreflang links and agree on x-default pointing to default locale.
  * - Navigation links carry trailing slashes to avoid internal redirect hops.
  */
 
@@ -40,7 +40,6 @@ test('404.html carries noindex and suppresses canonical and hreflangs', () => {
 test('Unilingual pages emit canonical but omit missing alternate hreflangs', () => {
   const unilingualPages = [
     { path: 'notes/why-build-homelab/index.html', canonical: 'https://mlorente.dev/notes/why-build-homelab/' },
-    { path: 'projects/index.html', canonical: 'https://mlorente.dev/projects/' },
     { path: 'tags/dns/index.html', canonical: 'https://mlorente.dev/tags/dns/' },
   ];
 
@@ -64,33 +63,37 @@ test('Unilingual pages emit canonical but omit missing alternate hreflangs', () 
   }
 });
 
-test('Bilingual pages have symmetric hreflangs and agree on x-default', () => {
-  const enFile = join(distDir, 'lab/index.html');
-  const esFile = join(distDir, 'es/lab/index.html');
+for (const section of ['lab', 'projects']) {
+  test(`Bilingual /${section} has symmetric hreflangs and agrees on x-default`, () => {
+    const enFile = join(distDir, section, 'index.html');
+    const esFile = join(distDir, 'es', section, 'index.html');
 
-  assert.ok(existsSync(enFile), 'dist/lab/index.html must exist');
-  assert.ok(existsSync(esFile), 'dist/es/lab/index.html must exist');
+    assert.ok(existsSync(enFile), `dist/${section}/index.html must exist`);
+    assert.ok(existsSync(esFile), `dist/es/${section}/index.html must exist`);
 
-  const enHtml = readFileSync(enFile, 'utf8');
-  const esHtml = readFileSync(esFile, 'utf8');
+    const enHtml = readFileSync(enFile, 'utf8');
+    const esHtml = readFileSync(esFile, 'utf8');
+    const en = `https://mlorente.dev/${section}/`;
+    const es = `https://mlorente.dev/es/${section}/`;
 
-  // Both have correct self-canonical
-  assert.ok(enHtml.includes('<link rel="canonical" href="https://mlorente.dev/lab/">'));
-  assert.ok(esHtml.includes('<link rel="canonical" href="https://mlorente.dev/es/lab/">'));
+    // Both have correct self-canonical
+    assert.ok(enHtml.includes(`<link rel="canonical" href="${en}">`));
+    assert.ok(esHtml.includes(`<link rel="canonical" href="${es}">`));
 
-  // Both have identical hreflang pairs
-  for (const html of [enHtml, esHtml]) {
-    assert.ok(html.includes('<link rel="alternate" hreflang="en" href="https://mlorente.dev/lab/">'));
-    assert.ok(html.includes('<link rel="alternate" hreflang="es" href="https://mlorente.dev/es/lab/">'));
-    assert.ok(html.includes('<link rel="alternate" hreflang="x-default" href="https://mlorente.dev/lab/">'));
-  }
-});
+    // Both have identical hreflang pairs
+    for (const html of [enHtml, esHtml]) {
+      assert.ok(html.includes(`<link rel="alternate" hreflang="en" href="${en}">`));
+      assert.ok(html.includes(`<link rel="alternate" hreflang="es" href="${es}">`));
+      assert.ok(html.includes(`<link rel="alternate" hreflang="x-default" href="${en}">`));
+    }
+  });
+}
 
 test('Main navigation links in header carry trailing slashes', () => {
   const enIndex = readFileSync(join(distDir, 'index.html'), 'utf8');
   const esIndex = readFileSync(join(distDir, 'es/index.html'), 'utf8');
 
-  for (const section of ['lab', 'ai', 'notes', 'contact']) {
+  for (const section of ['lab', 'ai', 'projects', 'notes', 'contact']) {
     assert.ok(
       enIndex.includes(`href="/${section}/"`),
       `English header must link to /${section}/ with trailing slash`

@@ -25,7 +25,7 @@ import { labBaseUrl } from './lib/serve.mjs';
 const WIDTHS = [320, 375, 390, 454, 639, 640, 768, 1440];
 const SM = 640;
 const WIDE_COLUMN = ['/', '/es/', '/lab/', '/es/lab/', '/ai/', '/es/ai/'];
-const OTHERS = ['/notes/', '/es/notes/', '/contact/', '/es/contact/', '/projects/', '/notes/building-a-homelab-idp/'];
+const OTHERS = ['/notes/', '/es/notes/', '/contact/', '/es/contact/', '/projects/', '/es/projects/', '/notes/building-a-homelab-idp/'];
 
 function measure() {
   const box = (element) => {

@@ -19,6 +19,7 @@ export const ui = {
     // the nav row is already at its 320px limit (see Header.astro).
     'nav.ai': 'AI',
     'nav.lab': 'Lab',
+    'nav.projects': 'Projects',
     'nav.notes': 'Notes',
     'nav.contact': 'Contact',
     'nav.menu': 'Menu',
@@ -307,6 +308,7 @@ export const ui = {
     // Nav
     'nav.ai': 'IA',
     'nav.lab': 'Lab',
+    'nav.projects': 'Proyectos',
     'nav.notes': 'Notas',
     'nav.contact': 'Contacto',
     'nav.menu': 'Menú',
