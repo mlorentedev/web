@@ -32,16 +32,19 @@ const files = (dir) =>
 // One opening tag, quote- and brace-aware, so a `>` inside a value does not end it.
 const TAG = /<(a|button|Button)\b((?:[^>"'{]|"[^"]*"|'[^']*'|\{(?:[^{}]|\{[^{}]*\})*\})*)>/g;
 // `class="…"`, `class='…'`, and the expression in `class={…}` or `class:list={…}`.
-const CLASS = /\bclass(?::list)?=(?:"([^"]*)"|'([^']*)'|\{((?:[^{}]|\{[^{}]*\})*)\})/g;
+const CLASS = /\bclass(?::list)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{((?:[^{}]|\{[^{}]*\})*)\})/g;
 // What `Button`'s `class` must not carry: its colour and size are the variant's.
-const LOOK = /(?<![\w:-])(?:[a-z]+:)*(?:bg|text|px|py|p|border|shadow|rounded)-/;
+// Bare (`rounded`, `border`, `shadow`) or with a value, after any variant prefix (`md:`, `2xl:`, `hover:`).
+const LOOK = /(?<![\w-])(?:[a-z0-9]+:)*(?:(?:bg|text|px|py|pl|pr|ps|pe|p)-|(?:border|shadow|rounded)(?![\w]))/;
+// Horizontal padding, from any utility that sets it.
+const PAD_X = /(?<![\w:-])(?:p|px|pl|pr|ps|pe)-/;
 
 /** The tags in `source` that style a CTA by hand, or restyle `Button` from outside. */
 function handRolled(source) {
   return [...source.matchAll(TAG)].flatMap(([, tag, attrs]) => {
     const classes = [...attrs.matchAll(CLASS)].map((m) => (m[1] ?? m[2] ?? m[3]).replace(/\s+/g, ' ').trim()).join(' ');
     if (tag === 'Button') return LOOK.test(classes) ? [`<Button class="${classes}">`] : [];
-    return FILLS.test(classes) && /(?<![\w:-])px-/.test(classes) ? [classes] : [];
+    return FILLS.test(classes) && PAD_X.test(classes) ? [classes] : [];
   });
 }
 
@@ -60,6 +63,11 @@ test('the detector reads past a > in a value, reads class:list, and checks what 
   assert.equal(handRolled('<Button href="/" class="bg-cyan-700">x</Button>').length, 1);
   assert.equal(handRolled('<Button href="/" class="md:px-6">x</Button>').length, 1);
   assert.equal(handRolled('<Button href="/" class="w-fit shrink-0">x</Button>').length, 0);
+  assert.equal(handRolled('<a class = "px-4 bg-ink-900">x</a>').length, 1);
+  assert.equal(handRolled('<a class="p-4 bg-ink-900">x</a>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="rounded">x</Button>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="2xl:px-6">x</Button>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="w-full md:w-auto self-start">x</Button>').length, 0);
 });
 
 test('every CTA button on the site is Button.astro', () => {
