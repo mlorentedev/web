@@ -44,7 +44,9 @@ const TAG = /<(a|button|Button)\b((?:[^>"'{]|"[^"]*"|'[^']*'|\{(?:[^{}]|\{[^{}]*
 const CLASS = /\bclass(?::list)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{((?:[^{}]|\{[^{}]*\})*)\})/g;
 // What `Button`'s `class` must not carry: its colour and size are the variant's.
 // Bare (`rounded`, `border`, `shadow`) or with a value, after any variant prefix (`md:`, `2xl:`, `hover:`).
-const LOOK = /(?<![\w-])(?:[a-z0-9]+:)*(?:(?:bg|text|px|py|pl|pr|ps|pe|p)-|(?:border|shadow|rounded)(?![\w]))/;
+// `text-` is colour or size, except the alignment and wrapping utilities, which are the caller's layout.
+const TEXT_LAYOUT = '(?:left|center|right|justify|start|end|balance|pretty|wrap|nowrap|ellipsis|clip)(?![\\w-])';
+const LOOK = new RegExp(`(?<![\\w-])(?:[a-z0-9]+:)*(?:text-(?!${TEXT_LAYOUT})|(?:bg|leading|px|py|pt|pb|pl|pr|ps|pe|p)-|(?:border|shadow|rounded)(?![\\w]))`);
 // Horizontal padding, from any utility that sets it.
 const PAD_X = new RegExp(`(?<![\\w:-])${BREAKPOINT}(?:p|px|pl|pr|ps|pe)-`);
 // Markdown code is a quoted example, not markup: fences at any indentation (in a
@@ -81,6 +83,11 @@ test('the detector reads past a > in a value, reads class:list, and checks what 
   assert.equal(handRolled('<Button href="/" class="rounded">x</Button>').length, 1);
   assert.equal(handRolled('<Button href="/" class="2xl:px-6">x</Button>').length, 1);
   assert.equal(handRolled('<Button href="/" class="w-full md:w-auto self-start">x</Button>').length, 0);
+  assert.equal(handRolled('<Button href="/" class="text-balance md:text-center">x</Button>').length, 0);
+  assert.equal(handRolled('<Button href="/" class="text-sm">x</Button>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="hover:text-white">x</Button>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="pt-4">x</Button>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="leading-6">x</Button>').length, 1);
   assert.equal(handRolled('<a href="/x" class="md:px-6 md:bg-ink-900">x</a>').length, 1);
   assert.equal(handRolled(withoutFences('Example:\n\n```html\n<a href="/" class="px-6 py-3 bg-cyan-700">x</a>\n```\n')).length, 0);
   assert.equal(handRolled(withoutFences('```html\nquoted\n```\n<a class="px-4 bg-ink-900">x</a>\n')).length, 1);
