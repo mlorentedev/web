@@ -5,11 +5,13 @@
  * which no browser runs. This held for every page, but was asserted for `/ai/`
  * alone, so a script added anywhere else passed every check.
  *
- * A page runs code four ways, and each is refused here, naming the page:
+ * These are the ways a page runs code, and each is refused here, naming the page:
  * - a `<script>` whose own `type` is not `application/ld+json` (read from the
  *   element's attribute, so a JSON-LD string that mentions the type does not count);
  * - an inline event handler (`onclick="…"`, any `on*` attribute);
- * - a `javascript:` URL in an `href`, `src` or `action`;
+ * - a `javascript:` URL, or a `data:` HTML, XHTML or SVG document, in a URL
+ *   attribute (`href`, `src`, `action`, `formaction`, `data`);
+ * - an iframe `srcdoc`, read as the document it is;
  * - a `.js` or `.mjs` file anywhere in `dist/`.
  *
  *   npm run build && npm test
@@ -61,6 +63,8 @@ function clientCode(html) {
     for (const { name, value } of el.attrs) {
       if (name.startsWith('on')) found.push(`${name} handler`);
       if (URL_ATTRS.has(name) && /^javascript:/i.test(scheme(value))) found.push(`javascript: ${name}`);
+      // A `data:` document in a frame or an object runs its own scripts.
+      if (URL_ATTRS.has(name) && /^data:\s*(text\/html|application\/xhtml\+xml|image\/svg\+xml)/i.test(scheme(value))) found.push(`data: document in ${name}`);
       // An iframe's `srcdoc` is a whole document, run same-origin: read it the same way.
       if (name === 'srcdoc') found.push(...clientCode(value).map((what) => `srcdoc: ${what}`));
     }
@@ -95,6 +99,8 @@ test('the detector reads a URL and a repeated attribute the way the browser does
   assert.deepEqual(clientCode('<a href="java\nscript:x()">a</a>'), ['javascript: href']);
   assert.deepEqual(clientCode('<svg><a xlink:href="javascript:x()"><text>x</text></a></svg>'), ['javascript: href']);
   assert.deepEqual(clientCode('<object data="javascript:y()"></object>'), ['javascript: data']);
+  assert.deepEqual(clientCode('<iframe src="data:text/html,<script>x()</script>"></iframe>'), ['data: document in src']);
+  assert.deepEqual(clientCode('<img src="data:image/png;base64,iVBORw0KGgo=" alt="">'), []);
   assert.deepEqual(clientCode('<a href="javascript:x()" href="/safe/">a</a>'), ['javascript: href']);
   assert.deepEqual(clientCode('<a href="/safe/" href="javascript:x()">a</a>'), []);
   assert.deepEqual(clientCode('<script type="text/javascript" type="application/ld+json">x()</script>'), ['<script type="text/javascript">']);
