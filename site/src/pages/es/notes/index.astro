@@ -21,8 +21,8 @@ const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data 
   <main id="main-content" class="grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">
       <div class="max-w-3xl mx-auto px-4">
-        <h1 class="sr-only">{t('notes.title')}</h1>
-        <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-10">{t('notes.articles')}</h2>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-ink-900 tracking-tight mb-3">{t('notes.title')}</h1>
+        <p class="text-gray-600 mb-10">{t('notes.description')}</p>
         {notes.length === 0 ? (
           <p data-notes-in-english class="text-gray-500">{t('notes.inEnglish')} <a href="/notes/" lang="en" class="text-accent-700 hover:text-accent-800 underline">Notes</a></p>
         ) : (
@@ -31,9 +31,9 @@ const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data 
                 <div class="py-6 first:pt-0 last:pb-0">
                   <a href={translatePath(`/notes/${note.id}`)} class="group block">
                     <time datetime={isoDate(note.data.pubDate)} class="text-xs text-gray-500">{formatDate(note.data.pubDate, lang)}</time>
-                    <h3 class="font-bold text-gray-800 mt-1 group-hover:text-cyan-700 transition-colors">
+                    <h2 class="font-bold text-gray-800 mt-1 group-hover:text-cyan-700 transition-colors">
                       {note.data.title}
-                    </h3>
+                    </h2>
                     <p class="text-gray-600 text-sm mt-1.5 leading-relaxed">{note.data.description}</p>
                   </a>
                   <div class="flex flex-wrap gap-1.5 mt-3">
