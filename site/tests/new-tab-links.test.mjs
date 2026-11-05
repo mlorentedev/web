@@ -5,8 +5,9 @@
  * and none said so. The decision recorded on the ticket is to open nothing in a
  * new tab (WCAG G200: only when necessary), so today no page has one. This holds
  * the rule for the next one: a link whose `target` opens a new tab must announce
- * it in its accessible name, through its text (visible or `sr-only`) or its
- * `aria-label` (WCAG G201), in either locale.
+ * it in its accessible name, through its text (visible or `sr-only`), an
+ * image's `alt`, its `aria-label` or `aria-labelledby` (WCAG G201), in either
+ * locale.
  *
  *   npm run build && npm test
  */
@@ -33,13 +34,23 @@ const files = (dir) =>
 
 const elements = (node) => [...(node.attrs ? [node] : []), ...(node.childNodes ?? []).flatMap(elements)];
 const attr = (el, name) => el.attrs.find((a) => a.name === name)?.value;
-const text = (node) => (node.nodeName === '#text' ? node.value : (node.childNodes ?? []).map(text).join(''));
+// The text a screen reader reads from inside a link: text nodes, and an image's `alt`.
+const text = (node) =>
+  node.nodeName === '#text' ? node.value : node.nodeName === 'img' ? ` ${attr(node, 'alt') ?? ''} ` : (node.childNodes ?? []).map(text).join('');
+
+/** Every way a link's accessible name can be given, joined: the check needs only to find the announcement in it. */
+const accessibleName = (el, byId) => {
+  const labelledBy = (attr(el, 'aria-labelledby') ?? '').split(/\s+/).filter(Boolean).map((id) => (byId.has(id) ? text(byId.get(id)) : ''));
+  return [...labelledBy, attr(el, 'aria-label') ?? '', text(el)].join(' ');
+};
 
 /** The new-tab links in `html` whose accessible name does not say they open one. */
 function silentNewTabs(html) {
-  return elements(parse(html))
+  const all = elements(parse(html));
+  const byId = new Map(all.filter((el) => attr(el, 'id')).map((el) => [attr(el, 'id'), el]));
+  return all
     .filter((el) => el.nodeName === 'a' && attr(el, 'target') !== undefined && !SAME_TAB.has(attr(el, 'target').trim().toLowerCase()))
-    .filter((el) => !ANNOUNCED.test(`${attr(el, 'aria-label') ?? ''} ${text(el)}`))
+    .filter((el) => !ANNOUNCED.test(accessibleName(el, byId)))
     .map((el) => attr(el, 'href'));
 }
 
@@ -50,6 +61,10 @@ test('the detector flags an unannounced new-tab link and passes an announced one
   assert.deepEqual(silentNewTabs('<a href="https://x.dev" target="_blank" aria-label="x (se abre en una nueva pestaña)">x</a>'), []);
   assert.deepEqual(silentNewTabs('<a href="https://x.dev" target="docs">x</a>'), ['https://x.dev']);
   assert.deepEqual(silentNewTabs('<a href="https://x.dev">x</a><a href="/y/" target="_self">y</a><a href="/z/" target="_TOP">z</a>'), []);
+  assert.deepEqual(silentNewTabs('<a href="https://x.dev" target="_blank"><img src="/c.svg" alt="Chart (opens in a new tab)"></a>'), []);
+  assert.deepEqual(silentNewTabs('<a href="https://x.dev" target="_blank"><img src="/c.svg" alt="Chart"></a>'), ['https://x.dev']);
+  assert.deepEqual(silentNewTabs('<span id="n">opens in a new tab</span><a href="https://x.dev" target="_blank" aria-labelledby="n">x</a>'), []);
+  assert.deepEqual(silentNewTabs('<a href="https://x.dev" target="_blank" aria-labelledby="missing">x</a>'), ['https://x.dev']);
 });
 
 test('every link that opens a new tab says so', () => {
