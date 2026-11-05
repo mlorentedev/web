@@ -16,9 +16,10 @@
  * counted. The faces painted there are printed, then two checks over the
  * whole sample:
  * - every preloaded face is painted above the fold on at least one page;
- * - every face painted above the fold on any page is preloaded.
+ * - every face a first screen paints is preloaded on that screen, so a preload
+ *   scoped by `media` to other widths does not count for it.
  *
- * The check is over the sample, not per width, on purpose. Bold is painted
+ * The first check is over the sample, not per width, on purpose. Bold is painted
  * above the fold at 640 and up (the nav row's current link), and at 639 too on
  * the note, where a `<strong>` reflows into the first screen. Which faces a
  * first screen paints follows the content as well as the breakpoint, so a
@@ -129,6 +130,12 @@ try {
         }
         painted.forEach((f) => used.add(f));
         preloaded.forEach((f) => preloads.add(f));
+        // Painted means preloaded on this screen: a `media` preload another width
+        // matches does not reach this one.
+        for (const file of painted.filter((f) => !preloaded.includes(f))) {
+          console.error(`✗ ${path} @ ${width}px paints ${name(file)}, and does not preload it`);
+          failures++;
+        }
         console.log(`  ${path} @ ${width}px paints ${painted.map(name).join(', ')}`);
       }
       await page.close();
@@ -142,12 +149,6 @@ try {
 for (const file of preloads) {
   if (!used.has(file)) {
     console.error(`✗ ${name(file)} is preloaded, and no first screen in the sample paints it`);
-    failures++;
-  }
-}
-for (const file of used) {
-  if (!preloads.has(file)) {
-    console.error(`✗ ${name(file)} is painted above the fold, and not preloaded`);
     failures++;
   }
 }
