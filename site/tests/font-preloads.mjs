@@ -57,7 +57,15 @@ function firstScreen() {
   for (const sheet of document.styleSheets) {
     // A relative `url()` resolves against its stylesheet, not the page.
     const base = sheet.href ?? location.href;
-    for (const rule of fontFaces(sheet.cssRules)) {
+    // A cross-origin sheet hides its rules. Skipping it would read its faces as
+    // having no file, and pass them, so the run stops and names the sheet.
+    let rules;
+    try {
+      rules = sheet.cssRules;
+    } catch {
+      throw new Error(`cannot read the @font-face rules of ${sheet.href}: a cross-origin stylesheet`);
+    }
+    for (const rule of fontFaces(rules)) {
       // Only upright faces: `pick` reads those, and an italic face of the same weight is another file.
       if ((rule.style.getPropertyValue('font-style') || 'normal') !== 'normal') continue;
       const src = /url\(["']?([^"')]+)/.exec(rule.style.getPropertyValue('src'))?.[1];
@@ -118,7 +126,10 @@ function firstScreen() {
   }
   // A preload with a `media` the viewport does not match is never fetched.
   // An empty `media` scopes nothing: the same reading as the scope check below.
+  // A font preload without `crossorigin` is fetched in another mode than the
+  // font itself, so the browser discards it: it preloads nothing.
   const preloaded = [...document.querySelectorAll('link[rel="preload"][as="font"]')]
+    .filter((l) => l.crossOrigin !== null)
     .filter((l) => !l.media.trim() || matchMedia(l.media).matches)
     .map((l) => new URL(l.href).pathname);
   return { painted: [...painted].sort(), preloaded: preloaded.sort(), unloaded: [...unloaded].sort() };
