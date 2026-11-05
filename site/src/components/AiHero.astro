@@ -5,6 +5,7 @@
  * Establishes the engineering posture: foundation models as stochastic execution
  * engines operating inside a deterministic, bounded platform harness.
  */
+import Button from './Button.astro';
 import SectionHeading from './SectionHeading.astro';
 import { getLocale, useTranslations } from '../i18n/utils';
 
@@ -41,13 +42,10 @@ const noteHref = '/notes/fail-closed-agent-harnesses/';
   </p>
 
   <div class="mt-6 flex flex-wrap items-center gap-3">
-    <a
-      href={noteHref}
-      class="inline-flex items-center gap-2 rounded-md bg-ink-900 hover:bg-accent-700 text-white px-4 py-2.5 text-sm font-medium transition-colors shadow-xs"
-    >
+    <Button href={noteHref}>
       <span>{lang === 'es' ? 'Leer la nota técnica fundacional' : 'Read foundational technical note'}</span>
       <span class="font-mono">→</span>
-    </a>
+    </Button>
     <span class="text-xs text-ink-600 font-mono" translate="no">
       fail-closed-agent-harnesses
     </span>
