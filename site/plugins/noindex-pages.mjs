@@ -23,7 +23,8 @@ export function noindexPages() {
     /** For the sitemap's `filter`: false for a page whose HTML says noindex. */
     indexable(url) {
       if (!read) throw new Error('noindex-pages: the sitemap asked before the build was read; list this integration before sitemap()');
-      return !paths.has(new URL(url).pathname);
+      // The sitemap's URL is percent-encoded; the paths are read from the file system.
+      return !paths.has(decodeURIComponent(new URL(url).pathname));
     },
     integration: {
       name: 'noindex-pages',

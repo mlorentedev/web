@@ -61,11 +61,15 @@ const tagPages = () =>
         const html = readFileSync(file, 'utf8');
         const main = /<main[\s\S]*?<\/main>/.exec(html)?.[0] ?? '';
         return {
+          get items() {
+            return this.projects + this.notes;
+          },
           path: `/${relative(DIST, file)}`,
           title: head(html, /<title>([^<]*)<\/title>/),
           description: head(html, /<meta name="description" content="([^"]*)"/),
           noindex: /<meta name="robots" content="noindex/.test(html),
-          items: (main.match(/data-project-title/g) ?? []).length + (main.match(/href="(?:\/es)?\/notes\/[^"/]+\/"/g) ?? []).length,
+          projects: (main.match(/data-project-title/g) ?? []).length,
+          notes: (main.match(/href="(?:\/es)?\/notes\/[^"/]+\/"/g) ?? []).length,
         };
       })
     : [];
@@ -78,6 +82,16 @@ test('no two tag pages share a title or a description', () => {
     for (const page of pages) seen.set(page[field], [...(seen.get(page[field]) ?? []), page.path]);
     assert.deepEqual([...seen].filter(([, paths]) => paths.length > 1), [], `duplicate ${field}s`);
   }
+});
+
+test('a tag page names only what it lists', () => {
+  const pages = tagPages();
+  assert.ok(pages.length > 0, 'no tag pages in dist: run the build first');
+  const wrong = pages.flatMap((p) => [
+    ...(p.notes === 0 && /\b(notes|notas)\b/i.test(`${p.title} ${p.description}`) ? [`${p.path} names notes and lists none`] : []),
+    ...(p.projects === 0 && /\b(projects|proyectos)\b/i.test(`${p.title} ${p.description}`) ? [`${p.path} names projects and lists none`] : []),
+  ]);
+  assert.deepEqual(wrong, []);
 });
 
 test('a tag page with fewer than MIN_ITEMS items is noindex, and only that one', () => {

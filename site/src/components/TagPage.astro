@@ -21,9 +21,14 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const displayTag = tagName(tag);
 const items = [...matchingNotes.map((n) => n.data.title), ...matchingProjects.map((p) => localize(p, lang).title)];
-const title = t('tags.title').replace('{tag}', displayTag);
+// Name only what the page lists: Spanish tag pages list projects alone while no note is in Spanish.
+const [titleKey, descriptionKey] =
+  matchingNotes.length === 0 ? (['tags.titleProjects', 'tags.descriptionProjects'] as const)
+  : matchingProjects.length === 0 ? (['tags.titleNotes', 'tags.descriptionNotes'] as const)
+  : (['tags.title', 'tags.description'] as const);
+const title = t(titleKey).replace('{tag}', displayTag);
 // The items' titles make each description unique; cut at a word near 155 characters.
-const fullDescription = t('tags.description').replace('{tag}', displayTag).replace('{author}', site.author).replace('{items}', items.join(', '));
+const fullDescription = t(descriptionKey).replace('{tag}', displayTag).replace('{author}', site.author).replace('{items}', items.join(', '));
 const description = fullDescription.length <= 155 ? fullDescription : `${fullDescription.slice(0, 154).replace(/[\s,]+\S*$/, '')}…`;
 const schema = [breadcrumbs([
   { name: site.author, path: translatePath('/') },
