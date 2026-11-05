@@ -77,12 +77,13 @@ function printed({ chrome, minContrast }) {
   const prose = document.querySelector('article .prose');
   const outside = Object.assign(document.createElement('a'), { href: 'https://example.com/doc', textContent: 'a doc' });
   const inside = Object.assign(document.createElement('a'), { href: '/notes/', textContent: 'the notes' });
-  prose.append(outside, inside);
+  const absolute = Object.assign(document.createElement('a'), { href: 'https://mlorente.dev/notes/', textContent: 'the notes' });
+  prose.append(outside, inside, absolute);
   const after = (a) => getComputedStyle(a, '::after').content;
   if (!after(outside).includes('https://example.com/doc')) problems.push(`a link to another site prints no address (::after is ${after(outside)})`);
   if (after(inside).includes('/notes/')) problems.push('a link inside the site prints its bare path');
-  outside.remove();
-  inside.remove();
+  if (after(absolute).includes('/notes/')) problems.push('an absolute link to this site prints its address');
+  [outside, inside, absolute].forEach((a) => a.remove());
   return problems;
 }
 

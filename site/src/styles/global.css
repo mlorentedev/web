@@ -100,7 +100,7 @@ html {
     overflow: visible !important;
   }
 
-  .prose a[href^='http']::after {
+  .prose a[href^='http']:not([href^='https://mlorente.dev/'])::after {
     content: ' (' attr(href) ')';
     overflow-wrap: anywhere;
   }
