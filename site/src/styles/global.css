@@ -70,3 +70,38 @@ html {
   max-width: 100%;
   height: auto;
 }
+
+/* Paper (WEB-133). A printed note is the note: the site chrome around it is for
+   navigating a screen, and paper cannot be navigated. Code blocks print in one
+   dark ink, because browsers drop backgrounds when printing and the dark
+   theme's light tokens would land on white at under 1.3:1. Lines wrap, since
+   paper cannot scroll. A link to another site prints its address; a link
+   inside the site does not, since a bare path is no use on paper.
+   tests/print-styles.mjs holds each of these. */
+@media print {
+  body > a[href='#main-content'],
+  body > header,
+  body > footer,
+  main > nav,
+  [aria-labelledby='note-closing-heading'] {
+    display: none !important;
+  }
+
+  .astro-code,
+  .astro-code span {
+    color: #1f2328 !important;
+    background: transparent !important;
+  }
+
+  .astro-code {
+    border: 1px solid #d1d9e0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow: visible !important;
+  }
+
+  .prose a[href^='http']:not([href^='https://mlorente.dev/'])::after {
+    content: ' (' attr(href) ')';
+    overflow-wrap: anywhere;
+  }
+}
