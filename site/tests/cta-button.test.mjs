@@ -24,7 +24,12 @@ const SRC = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
 // A fill, bare or behind a breakpoint (`md:`): a CTA from some width up is still a CTA.
 // State prefixes (`hover:`, `focus:`) are not fills: a chip that turns accent on hover is no button.
 const BREAKPOINT = '(?:(?:sm|md|lg|xl|2xl):)?';
-const FILLS = new RegExp(`(?<![\\w:-])${BREAKPOINT}bg-(ink-900|accent-700|cyan-700|panel-800\\/80)(?![\\w-])`);
+// The fills are read from Button.astro, every `bg-*` its variants paint at rest
+// or on hover, so a new variant widens the guard with it. `cyan-700` is the
+// retired 404 treatment, kept so it cannot come back by hand.
+const BUTTON = readFileSync(join(SRC, 'components/Button.astro'), 'utf8');
+const FILL_TOKENS = [...new Set([...BUTTON.matchAll(/(?<![\w-])(?:[a-z]+:)?bg-([a-z]+-\d+(?:\/\d+)?)/g)].map(([, token]) => token)), 'cyan-700'];
+const FILLS = new RegExp(`(?<![\\w:-])${BREAKPOINT}bg-(${FILL_TOKENS.map((t) => t.replace('/', '\\/')).join('|')})(?![\\w/-])`);
 
 const files = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -42,8 +47,10 @@ const CLASS = /\bclass(?::list)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{((?:[^{}]|\{[^{}
 const LOOK = /(?<![\w-])(?:[a-z0-9]+:)*(?:(?:bg|text|px|py|pl|pr|ps|pe|p)-|(?:border|shadow|rounded)(?![\w]))/;
 // Horizontal padding, from any utility that sets it.
 const PAD_X = new RegExp(`(?<![\\w:-])${BREAKPOINT}(?:p|px|pl|pr|ps|pe)-`);
-// Markdown code fences are quoted examples, not markup.
-const withoutFences = (source) => source.replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '');
+// Markdown code is a quoted example, not markup: fences at any indentation (in a
+// list or a blockquote too), and inline code spans.
+const withoutFences = (source) =>
+  source.replace(/^([ \t>]*)(```|~~~)[^\n]*\n[\s\S]*?^[ \t>]*\2[^\n]*$/gm, '').replace(/(`+)[^`\n][\s\S]*?\1/g, '');
 
 /** The tags in `source` that style a CTA by hand, or restyle `Button` from outside. */
 function handRolled(source) {
@@ -77,6 +84,11 @@ test('the detector reads past a > in a value, reads class:list, and checks what 
   assert.equal(handRolled('<a href="/x" class="md:px-6 md:bg-ink-900">x</a>').length, 1);
   assert.equal(handRolled(withoutFences('Example:\n\n```html\n<a href="/" class="px-6 py-3 bg-cyan-700">x</a>\n```\n')).length, 0);
   assert.equal(handRolled(withoutFences('```html\nquoted\n```\n<a class="px-4 bg-ink-900">x</a>\n')).length, 1);
+  assert.equal(handRolled(withoutFences('- step\n\n    ```html\n    <a class="px-4 bg-ink-900">x</a>\n    ```\n')).length, 0);
+  assert.equal(handRolled(withoutFences('> ```html\n> <a class="px-4 bg-ink-900">x</a>\n> ```\n')).length, 0);
+  assert.equal(handRolled(withoutFences('Use `<a class="px-4 bg-ink-900">` no more.')).length, 0);
+  assert.equal(handRolled('<a class="px-4 py-2 bg-panel-800 text-white">x</a>').length, 1);
+  assert.equal(handRolled('<a class="px-4 py-2 bg-accent-600 text-white">x</a>').length, 1);
 });
 
 test('every CTA button on the site is Button.astro', () => {
