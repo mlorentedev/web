@@ -50,8 +50,8 @@ const newTab = internal ? {} : { target: '_blank', rel: 'noopener noreferrer' };
   <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-ink-100">
     {project.tags.map((tag) => (
       <a
-        href={translatePath(`/tags/${tag.toLowerCase()}`)}
-        class="px-2 py-0.5 text-xs rounded bg-ink-100 text-ink-600 hover:bg-accent-700 hover:text-white transition-colors"
+        href={translatePath(`/tags/${tag.toLowerCase()}`)} data-tag-chip
+        class="inline-flex min-h-7 min-w-6 items-center justify-center px-2 text-xs rounded bg-ink-100 text-ink-600 hover:bg-accent-700 hover:text-white transition-colors"
       >
         {tag}
       </a>

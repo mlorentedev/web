@@ -9,11 +9,12 @@ tags: [web, lessons, index]
 
 # Lessons
 
-71 lessons, one file each, newest first. Numbers are assigned in the order
+72 lessons, one file each, newest first. Numbers are assigned in the order
 lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 072 | [A target-size check without the spacing exception counts 2641 failures the standard does not](lesson-072-a-target-size-check-without-the-spacing-exc.md) | 2026-11-04 | `#accessibility` `#testing` |
 | 071 | [expires beside add_header Cache-Control sends two headers, and immutable on a stable name keeps a new file away for a year](lesson-071-expires-beside-add-header-cache-control-send.md) | 2026-11-04 | `#nginx` `#caching` `#testing` |
 | 070 | [A build-time fallback hid a validator that rejected the real upstream response](lesson-070-a-build-time-fallback-hid-a-validator-that-r.md) | 2026-11-04 | `#build` `#testing` `#privacy` |
 | 069 | [A contrast check that compares NaN passes every page](lesson-069-a-contrast-check-that-compares-nan-passes-ev.md) | 2026-11-04 | `#testing` `#accessibility` |
