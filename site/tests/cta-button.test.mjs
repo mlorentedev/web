@@ -29,11 +29,20 @@ const files = (dir) =>
     return entry.name.endsWith('.astro') ? [path] : [];
   });
 
-/** The `<a>` and `<button>` tags in `source` that are styled as a CTA by hand. */
+// One opening tag, quote- and brace-aware, so a `>` inside a value does not end it.
+const TAG = /<(a|button|Button)\b((?:[^>"'{]|"[^"]*"|'[^']*'|\{(?:[^{}]|\{[^{}]*\})*\})*)>/g;
+// `class="…"`, `class='…'`, and the expression in `class={…}` or `class:list={…}`.
+const CLASS = /\bclass(?::list)?=(?:"([^"]*)"|'([^']*)'|\{((?:[^{}]|\{[^{}]*\})*)\})/g;
+// What `Button`'s `class` must not carry: its colour and size are the variant's.
+const LOOK = /(?<![\w:-])(?:[a-z]+:)*(?:bg|text|px|py|p|border|shadow|rounded)-/;
+
+/** The tags in `source` that style a CTA by hand, or restyle `Button` from outside. */
 function handRolled(source) {
-  return [...source.matchAll(/<(a|button)\b[^>]*?\bclass=(["'`])([\s\S]*?)\2/g)]
-    .map(([, , , classes]) => classes.replace(/\s+/g, ' ').trim())
-    .filter((classes) => FILLS.test(classes) && /(?<![\w:-])px-/.test(classes));
+  return [...source.matchAll(TAG)].flatMap(([, tag, attrs]) => {
+    const classes = [...attrs.matchAll(CLASS)].map((m) => (m[1] ?? m[2] ?? m[3]).replace(/\s+/g, ' ').trim()).join(' ');
+    if (tag === 'Button') return LOOK.test(classes) ? [`<Button class="${classes}">`] : [];
+    return FILLS.test(classes) && /(?<![\w:-])px-/.test(classes) ? [classes] : [];
+  });
 }
 
 test('the detector finds a hand-styled CTA and passes chips and hover-only fills', () => {
@@ -43,6 +52,14 @@ test('the detector finds a hand-styled CTA and passes chips and hover-only fills
   assert.equal(handRolled('<a class="px-2 text-xs rounded bg-ink-100 hover:bg-accent-700">tag</a>').length, 0);
   assert.equal(handRolled('<a class="text-xs font-mono px-3 bg-panel-900 text-white">chip</a>').length, 0);
   assert.equal(handRolled('<a class="sr-only focus:bg-accent-700 focus:px-4">skip</a>').length, 0);
+});
+
+test('the detector reads past a > in a value, reads class:list, and checks what a caller passes to Button', () => {
+  assert.equal(handRolled('<a aria-label="Go > home" class="px-4 bg-ink-900">x</a>').length, 1);
+  assert.equal(handRolled("<a class:list={['px-4', cond && 'bg-ink-900']}>x</a>").length, 1);
+  assert.equal(handRolled('<Button href="/" class="bg-cyan-700">x</Button>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="md:px-6">x</Button>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="w-fit shrink-0">x</Button>').length, 0);
 });
 
 test('every CTA button on the site is Button.astro', () => {
