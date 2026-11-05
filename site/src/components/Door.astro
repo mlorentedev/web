@@ -1,7 +1,7 @@
 ---
-// The one way in (WEB-137): a mail whose body is the written filter, three
-// lines, plus the busy line while a project is running. Placed from the contact
-// markdown, so the order of the page stays Manu's to edit.
+// The one way in (WEB-137): a plain mail, nothing prefilled (Manu, #586), plus
+// the busy line while a project is running and LinkedIn as the second door.
+// Placed from the contact markdown, so the order of the page stays Manu's to edit.
 import { site } from '../data/site';
 import { busyMonth } from '../data/availability.mjs';
 import { getLocale, getDateLocale, useTranslations } from '../i18n/utils';
@@ -9,9 +9,7 @@ import { getLocale, getDateLocale, useTranslations } from '../i18n/utils';
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 
-// RFC 6068 wants CRLF line breaks in a mailto body.
-const body = t('door.body').replace(/\n/g, '\r\n');
-const mailto = `mailto:${site.social.email}?subject=${encodeURIComponent(t('door.subject'))}&body=${encodeURIComponent(body)}`;
+const mailto = `mailto:${site.social.email}`;
 
 // Judged at build time; the inline script below hides the line in the browser
 // once the date passes, so a page built before it cannot keep saying it after.
@@ -33,6 +31,13 @@ const month = busyMonth(site.nextStart, new Date(), getDateLocale(lang));
   >
     {t('door.cta')}
   </a>
+  <a
+    data-linkedin
+    href={site.social.linkedin}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="ml-4 text-sm text-ink-600 underline hover:text-accent-700"
+  >{t('door.linkedin')}</a>
   {month && (
     <script is:inline>
       document.querySelectorAll('[data-busy]').forEach((el) => {
