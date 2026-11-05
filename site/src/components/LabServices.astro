@@ -239,7 +239,7 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
               </td>
 
               <td class="py-2.5 px-3 text-ink-600 font-sans text-xs leading-relaxed">
-                <p>{isEs ? svc.descriptionEs : svc.description}</p>
+                <p class="text-sm">{isEs ? svc.descriptionEs : svc.description}</p>
                 {svc.tech && svc.tech.length > 0 && (
                   <div class="mt-1 flex flex-wrap gap-1">
                     {svc.tech.map((tech) => (

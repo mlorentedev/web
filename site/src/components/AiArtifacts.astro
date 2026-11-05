@@ -50,7 +50,7 @@ const badgeColors: Record<string, string> = {
               {lang === 'es' ? artifact.titleEs : artifact.title}
             </h3>
 
-            <p class="text-xs text-ink-600 leading-relaxed mb-4">
+            <p class="text-sm text-ink-600 leading-relaxed mb-4">
               {lang === 'es' ? artifact.descriptionEs : artifact.description}
             </p>
 
@@ -96,7 +96,7 @@ const badgeColors: Record<string, string> = {
       <h4 class="text-base sm:text-lg font-bold text-ink-900" lang="en" translate="no">
         Fail-Closed Harnesses for Autonomous Coding Agents
       </h4>
-      <p class="text-xs sm:text-sm text-ink-600 mt-1 leading-relaxed sm:leading-5">
+      <p class="text-sm text-ink-600 mt-1 leading-relaxed sm:leading-5">
         {lang === 'es'
           ? 'Qué se rompe cuando los LLMs tocan infraestructura real y las fronteras Unix necesarias para contenerlos: aislamiento de worktree, locks en el kernel y colas de triaje mecánico.'
           : 'What breaks when LLMs touch real infrastructure, and the Unix boundaries required to contain them: worktree isolation, kernel flock, and mechanical triage queues.'}
