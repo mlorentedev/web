@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 import { rehypeMermaid } from './plugins/rehype-mermaid.mjs';
-import { buildClock, publishedIn } from './src/lib/note-dates.mjs';
+import { buildNow, publishedIn } from './src/lib/note-dates.mjs';
 import rehypeScrollableTables from './plugins/scrollable-tables.mjs';
 import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
 
@@ -16,7 +16,7 @@ import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
 const notesDir = new URL(`${process.env.NOTES_DIR ?? 'src/content/notes'}/`, new URL('./', import.meta.url));
 // A Spanish note counts once it is published: not a draft, and not dated after
 // this build, as in the collection filters (src/lib/note-dates.mjs).
-const now = buildClock();
+const now = buildNow();
 const hasSpanishNotes = readdirSync(notesDir).some((f) => publishedIn(readFileSync(new URL(f, notesDir), 'utf8'), 'es', now));
 
 export default defineConfig({

@@ -25,7 +25,7 @@ import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { buildClock, isPublished, publishedIn, shownWrittenDate, writtenDateValid } from '../src/lib/note-dates.mjs';
+import { buildClock, buildNow, isPublished, publishedIn, shownWrittenDate, writtenDateValid } from '../src/lib/note-dates.mjs';
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(SITE, 'src');
@@ -50,6 +50,15 @@ test('the build clock is now, unless NOTES_NOW sets it, and a bad NOTES_NOW fail
   assert.ok(now >= before && now <= Date.now());
   assert.equal(buildClock({ NOTES_NOW: '2030-06-01' }).toISOString(), '2030-06-01T00:00:00.000Z');
   assert.throws(() => buildClock({ NOTES_NOW: 'tomorrow' }), /NOTES_NOW/);
+});
+
+test('the build reads its clock once: every caller gets the same instant', async () => {
+  const env = {};
+  const first = buildNow(env);
+  assert.equal(env.NOTES_NOW, first.toISOString(), 'the instant is handed on through NOTES_NOW');
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal(buildNow(env).toISOString(), first.toISOString(), 'a second reading would let two parts of one build disagree');
+  assert.equal(buildNow({ NOTES_NOW: '2030-06-01' }).toISOString(), '2030-06-01T00:00:00.000Z', 'a set NOTES_NOW still wins');
 });
 
 test('writtenDate is shown only before pubDate, and refused after it', () => {

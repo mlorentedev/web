@@ -18,6 +18,19 @@ export function buildClock(env = process.env) {
   return now;
 }
 
+// One instant for the whole build. The config (the sitemap's Spanish-notes check)
+// and the pages load as separate module graphs, so each reading the clock would
+// let a build across 00:00 UTC list a note on a page the sitemap has already
+// judged empty. The first reading is written to `NOTES_NOW`, so every later one,
+// in this process or one it starts, gets the same instant.
+
+/** The build's clock, read once: every later caller, in this process or a child, gets the same instant. */
+export function buildNow(env = process.env) {
+  const now = buildClock(env);
+  env.NOTES_NOW ??= now.toISOString();
+  return now;
+}
+
 /** Whether a note's frontmatter makes it part of a build made at `now`. */
 export const isPublished = (data, now) => !data.draft && data.pubDate.valueOf() <= now.valueOf();
 

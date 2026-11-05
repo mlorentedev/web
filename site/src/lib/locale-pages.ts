@@ -5,7 +5,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { projects, type Project } from '../data/portfolio';
 import type { Lang } from '../i18n/ui';
-import { buildClock, isPublished } from './note-dates.mjs';
+import { buildNow, isPublished } from './note-dates.mjs';
 
 export type Note = CollectionEntry<'notes'>;
 export type NoteLink = { id: string; title: string } | null;
@@ -13,7 +13,7 @@ export type NoteLink = { id: string; title: string } | null;
 export const otherLang = (lang: Lang): Lang => (lang === 'en' ? 'es' : 'en');
 
 // Read once per build, so every page agrees on which notes exist.
-const now = buildClock();
+const now = buildNow();
 
 /**
  * The published notes written in `lang`, newest first: not drafts, and not
