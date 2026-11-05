@@ -98,7 +98,6 @@ export const ui = {
     // The door (WEB-137): the one way in, the same button on the hero and on
     // /contact/. The mail it opens is the written filter, three lines.
     'door.cta': 'Write to me',
-    'door.linkedin': 'or find me on LinkedIn',
     'door.busy': 'Currently on a project; the next one starts in {month}.',
 
     // IDP Catalog (KubeLab IDP)
@@ -374,7 +373,6 @@ export const ui = {
     'hero.subtitle':
       'Con los años me he convertido en un full stack de verdad, pero no el de frontend y backend: empecé caracterizando sensores de imagen en la industria de semiconductores, que es física, datos y código a partes iguales, pasé por el firmware en FPGA y microcontroladores y he llegado hasta la aplicación en la nube y la conversación con el cliente. Más de diez años de ingeniería con clientes de Europa, Asia y Norteamérica; hoy diseño y opero plataformas con Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo.',
     'door.cta': 'Escríbeme',
-    'door.linkedin': 'o búscame en LinkedIn',
     'door.busy': 'Ahora mismo en un proyecto; el siguiente arranca en {month}.',
 
     // IDP Catalog (KubeLab IDP)

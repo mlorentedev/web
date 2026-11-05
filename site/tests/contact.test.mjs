@@ -113,9 +113,9 @@ for (const { lang, contact, home, href } of pages) {
     assert.equal(mailto, 'mailto:manu@mlorente.dev', `dist/${contact}: the door mail carries a subject or body`);
   });
 
-  test(`[${lang}] the door offers LinkedIn as the second way in`, () => {
-    const door = element(dist(contact), 'data-door');
-    assert.match(door, /<a\b[^>]*data-linkedin[^>]*href="https:\/\/www\.linkedin\.com\/in\/manloralm\/"/, `dist/${contact}: no LinkedIn link in the door`);
+  test(`[${lang}] the footer links LinkedIn`, () => {
+    const footer = dist(contact).match(/<footer[\s\S]*<\/footer>/)?.[0] ?? '';
+    assert.match(footer, /href="https:\/\/www\.linkedin\.com\/in\/manloralm\/"/, `dist/${contact}: no LinkedIn icon in the footer`);
   });
 
   test(`[${lang}] the home opens on a button to the contact page`, () => {
