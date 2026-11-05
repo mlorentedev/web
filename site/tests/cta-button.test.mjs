@@ -15,7 +15,7 @@
  */
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { dirname, join, relative } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -29,7 +29,7 @@ const BREAKPOINT = '(?:(?:sm|md|lg|xl|2xl):)?';
 // retired 404 treatment, kept so it cannot come back by hand.
 const BUTTON = readFileSync(join(SRC, 'components/Button.astro'), 'utf8');
 const FILL_TOKENS = [...new Set([...BUTTON.matchAll(/(?<![\w-])(?:[a-z]+:)?bg-([a-z]+-\d+(?:\/\d+)?)/g)].map(([, token]) => token)), 'cyan-700'];
-const FILLS = new RegExp(`(?<![\\w:-])${BREAKPOINT}bg-(${FILL_TOKENS.map((t) => t.replace('/', '\\/')).join('|')})(?![\\w/-])`);
+const FILLS = new RegExp(`(?<![\\w:-])${BREAKPOINT}bg-(${FILL_TOKENS.map((t) => t.replace('/', '\\/')).join('|')})(?:\\/\\d+)?(?![\\w/-])`);
 
 const files = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -100,11 +100,13 @@ test('the detector reads past a > in a value, reads class:list, and checks what 
   assert.equal(handRolled(withoutFences('Use `<a class="px-4 bg-ink-900">` no more.')).length, 0);
   assert.equal(handRolled('<a class="px-4 py-2 bg-panel-800 text-white">x</a>').length, 1);
   assert.equal(handRolled('<a class="px-4 py-2 bg-accent-600 text-white">x</a>').length, 1);
+  assert.equal(handRolled('<a class="px-6 py-3 bg-ink-900/90 text-white">x</a>').length, 1);
+  assert.equal(handRolled('<a class="px-6 bg-ink-9000">x</a>').length, 0);
 });
 
 test('every CTA button on the site is Button.astro', () => {
   const found = files(SRC)
-    .filter((file) => !file.endsWith('/components/Button.astro'))
+    .filter((file) => relative(SRC, file).split(sep).join('/') !== 'components/Button.astro')
     .flatMap((file) => handRolled(/\.mdx?$/.test(file) ? withoutFences(readFileSync(file, 'utf8')) : readFileSync(file, 'utf8')).map((classes) => `${relative(SRC, file)}: ${classes}`));
   assert.deepEqual(found, [], 'use <Button variant=…> instead of styling a CTA by hand');
 });
