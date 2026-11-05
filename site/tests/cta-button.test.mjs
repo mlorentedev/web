@@ -38,10 +38,49 @@ const files = (dir) =>
     return /\.(astro|mdx?)$/.test(entry.name) ? [path] : [];
   });
 
-// One opening tag, quote- and brace-aware, so a `>` inside a value does not end it.
-const TAG = /<(a|button|Button)\b((?:[^>"'{]|"[^"]*"|'[^']*'|\{(?:[^{}]|\{[^{}]*\})*\})*)>/g;
-// `class="…"`, `class='…'`, and the expression in `class={…}` or `class:list={…}`.
-const CLASS = /\bclass(?::list)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{((?:[^{}]|\{[^{}]*\})*)\})/g;
+// Opening tags and their `class` values are read by a scanner, not a regex: an
+// attribute can hold `{…}` nested to any depth, with quotes inside, and a tag the
+// pattern could not match would be a CTA nobody checked.
+
+/** From `source[i]`, a quote or a `{`, the index just past the value it opens. */
+function valueEnd(source, i) {
+  const open = source[i];
+  if (open !== '{') {
+    const close = source.indexOf(open, i + 1);
+    return close < 0 ? source.length : close + 1;
+  }
+  let depth = 0;
+  for (let j = i; j < source.length; j++) {
+    const c = source[j];
+    if (c === '"' || c === "'" || c === '`') j = valueEnd(source, j) - 1;
+    else if (c === '{') depth++;
+    else if (c === '}' && --depth === 0) return j + 1;
+  }
+  return source.length;
+}
+
+/** Every `<a>`, `<button>` and `<Button>` opening tag: its name and its attribute text. */
+function openingTags(source) {
+  const tags = [];
+  for (const m of source.matchAll(/<(a|button|Button)\b/g)) {
+    let j = m.index + m[0].length;
+    while (j < source.length && source[j] !== '>') j = /["'{]/.test(source[j]) ? valueEnd(source, j) : j + 1;
+    tags.push([m[1], source.slice(m.index + m[0].length, j)]);
+  }
+  return tags;
+}
+
+/** `class="…"`, `class='…'`, and the expression in `class={…}` or `class:list={…}`, joined. */
+function classesOf(attrs) {
+  return [...attrs.matchAll(/\bclass(?::list)?\s*=\s*(?=["'{])/g)]
+    .map((m) => {
+      const start = m.index + m[0].length;
+      return attrs.slice(start + 1, valueEnd(attrs, start) - 1);
+    })
+    .map((value) => value.replace(/\s+/g, ' ').trim())
+    .join(' ');
+}
+
 // What `Button`'s `class` must not carry: its colour and size are the variant's.
 // Bare (`rounded`, `border`, `shadow`) or with a value, after any variant prefix (`md:`, `2xl:`, `hover:`).
 // `text-` is colour or size, except the alignment and wrapping utilities, which are the caller's layout.
@@ -57,8 +96,8 @@ const withoutFences = (source) =>
 
 /** The tags in `source` that style a CTA by hand, or restyle `Button` from outside. */
 function handRolled(source) {
-  return [...source.matchAll(TAG)].flatMap(([, tag, attrs]) => {
-    const classes = [...attrs.matchAll(CLASS)].map((m) => (m[1] ?? m[2] ?? m[3]).replace(/\s+/g, ' ').trim()).join(' ');
+  return openingTags(source).flatMap(([tag, attrs]) => {
+    const classes = classesOf(attrs);
     if (tag === 'Button') return LOOK.test(classes) ? [`<Button class="${classes}">`] : [];
     return FILLS.test(classes) && PAD_X.test(classes) ? [classes] : [];
   });
@@ -102,6 +141,9 @@ test('the detector reads past a > in a value, reads class:list, and checks what 
   assert.equal(handRolled('<a class="px-4 py-2 bg-accent-600 text-white">x</a>').length, 1);
   assert.equal(handRolled('<a class="px-6 py-3 bg-ink-900/90 text-white">x</a>').length, 1);
   assert.equal(handRolled('<a class="px-6 bg-ink-9000">x</a>').length, 0);
+  assert.equal(handRolled('<a data-x={() => { if (ok) { go(); } }} class="bg-ink-900 px-4">x</a>').length, 1);
+  assert.equal(handRolled('<a class={cond ? { a: "bg-ink-900 px-4" }.a : ""}>x</a>').length, 1);
+  assert.equal(handRolled('<a title="a > b" data-s=\'{\' class="bg-ink-900 px-4">x</a>').length, 1);
 });
 
 test('every CTA button on the site is Button.astro', () => {
