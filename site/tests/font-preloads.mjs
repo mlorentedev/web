@@ -55,9 +55,17 @@ function firstScreen() {
     // A relative `url()` resolves against its stylesheet, not the page.
     const base = sheet.href ?? location.href;
     for (const rule of fontFaces(sheet.cssRules)) {
+      // Only upright faces: `pick` reads those, and an italic face of the same weight is another file.
+      if ((rule.style.getPropertyValue('font-style') || 'normal') !== 'normal') continue;
       const src = /url\(["']?([^"')]+)/.exec(rule.style.getPropertyValue('src'))?.[1];
+      // A `local()`-only face has no file to preload.
+      if (!src) continue;
       const family = rule.style.getPropertyValue('font-family').replace(/["']/g, '').trim();
-      files.set(`${family}|${weightOf(rule.style.getPropertyValue('font-weight') || 'normal')}`, new URL(src, base).pathname);
+      const key = `${family}|${weightOf(rule.style.getPropertyValue('font-weight') || 'normal')}`;
+      const file = new URL(src, base).pathname;
+      // Two files for one face (a unicode-range split) would need the glyphs read to tell apart.
+      if (files.has(key) && files.get(key) !== file) throw new Error(`${key} is served by ${files.get(key)} and ${file}: this check cannot tell which a glyph uses`);
+      files.set(key, file);
     }
   }
   // CSS Fonts 4 §5.2: a face whose range holds the weight wins; otherwise
