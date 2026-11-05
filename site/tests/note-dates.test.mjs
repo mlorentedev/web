@@ -5,10 +5,12 @@
  * `pubDate` shipped on the next build, with a future date printed on it. Now:
  * - a note whose `pubDate` is after the build clock is in no file of the build,
  *   and is in them once the clock passes it, with no other change;
- * - a note with a `writtenDate` shows it, with a line saying when it was
- *   published, and RSS orders it by `pubDate`;
- * - only `src/lib/locale-pages.ts` reads the notes collection, so no consumer
- *   can skip the filter.
+ * - a note with a `writtenDate` before its `pubDate` shows both dates, and RSS
+ *   orders it by `pubDate`;
+ * - /es/notes/ stays noindex and out of the sitemap until a Spanish note is
+ *   published, by the same rule;
+ * - only `src/lib/locale-pages.ts` reads a collection other than `pages`, so
+ *   no consumer can skip the filter.
  *
  * The build test runs `astro build` twice over `tests/fixtures/notes/`, with
  * the clock set before and after the future note's date, into scratch dirs.
@@ -23,7 +25,7 @@ import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { buildClock, isPublished } from '../src/lib/note-dates.mjs';
+import { buildClock, isPublished, publishedIn, shownWrittenDate, writtenDateValid } from '../src/lib/note-dates.mjs';
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(SITE, 'src');
@@ -50,12 +52,49 @@ test('the build clock is now, unless NOTES_NOW sets it, and a bad NOTES_NOW fail
   assert.throws(() => buildClock({ NOTES_NOW: 'tomorrow' }), /NOTES_NOW/);
 });
 
-test('only src/lib/locale-pages.ts reads the notes collection', () => {
+test('writtenDate is shown only before pubDate, and refused after it', () => {
+  const pubDate = new Date('2021-01-01');
+  assert.equal(shownWrittenDate({ pubDate }), undefined);
+  assert.equal(shownWrittenDate({ pubDate, writtenDate: new Date('2021-01-01') }), undefined);
+  assert.equal(shownWrittenDate({ pubDate, writtenDate: new Date('2019-03-01') })?.toISOString(), '2019-03-01T00:00:00.000Z');
+  assert.equal(writtenDateValid({ pubDate }), true);
+  assert.equal(writtenDateValid({ pubDate, writtenDate: pubDate }), true);
+  assert.equal(writtenDateValid({ pubDate, writtenDate: new Date('2021-01-02') }), false);
+});
+
+test('a raw note file is read by the same rule: language, draft and date', () => {
+  const note = (fm) => `---\ntitle: "x"\n${fm}\n---\n\nbody`;
+  const now = new Date('2030-06-01');
+  assert.equal(publishedIn(note('pubDate: 2030-06-01\nlang: es'), 'es', now), true);
+  assert.equal(publishedIn(note("pubDate: '2030-06-02'\nlang: \"es\""), 'es', now), false);
+  assert.equal(publishedIn(note('pubDate: 2020-01-01\nlang: es\ndraft: true'), 'es', now), false);
+  assert.equal(publishedIn(note('pubDate: 2020-01-01'), 'es', now), false);
+  assert.equal(publishedIn(note('pubDate: 2020-01-01'), 'en', now), true);
+  assert.equal(publishedIn(note('lang: es'), 'es', now), false);
+});
+
+// Any content-layer read: the notes are only ever read through notesIn().
+const CONTENT_READ = /\b(?:getCollection|getEntry|getEntries|getLiveCollection|getLiveEntry)\(\s*([^,)\s]*)/g;
+
+test('only src/lib/locale-pages.ts reads a collection other than pages', () => {
   const readers = files(SRC)
-    .filter((file) => /\.(astro|ts|mjs|js)$/.test(file))
-    .filter((file) => /getCollection\(\s*['"`]notes['"`]/.test(readFileSync(file, 'utf8')))
-    .map((file) => relative(SRC, file));
-  assert.deepEqual(readers, ['lib/locale-pages.ts'], 'read notes through notesIn() so the date filter applies');
+    .filter((file) => /\.(astro|ts|mjs|js)$/.test(file) && !file.endsWith('/lib/locale-pages.ts'))
+    .flatMap((file) => {
+      const text = readFileSync(file, 'utf8');
+      const reads = [...text.matchAll(CONTENT_READ)].filter(([, first]) => !/^['"`]pages['"`]$/.test(first));
+      const paths = !file.endsWith('/content.config.ts') && /content\/notes/.test(text) ? ['content/notes'] : [];
+      return [...reads.map(([call]) => call), ...paths].map((what) => `${relative(SRC, file)}: ${what}`);
+    });
+  assert.deepEqual(readers, [], 'read notes through notesIn() so the date filter applies');
+});
+
+test('the content-read scan sees every call shape', () => {
+  const found = (src) => [...src.matchAll(CONTENT_READ)].filter(([, first]) => !/^['"`]pages['"`]$/.test(first)).length;
+  assert.equal(found("getCollection('notes')"), 1);
+  assert.equal(found("getCollection(\n  'pages',\n  ({ id }) => id)"), 0);
+  assert.equal(found("getEntry('notes', 'x')"), 1);
+  assert.equal(found('getCollection(name)'), 1);
+  assert.equal(found("getEntries([{ collection: 'notes', id: 'x' }])"), 1);
 });
 
 /** Builds the site over the fixture notes as of `now`; returns each file's text, by path. */
@@ -89,6 +128,9 @@ test('a note dated after the build is in no file, and ships once the clock passe
   await t.test('before its date: no page, listing, tag page, feed entry or sitemap url', () => {
     assert.deepEqual(mentions(before, 'fixture-future-note'), []);
     assert.deepEqual(mentions(before, 'a note dated 2030-06-01'), []);
+    // A tag only the future note carries names no slug: look for its URL instead.
+    assert.equal(before.has('/tags/kustomize/index.html'), false, 'a tag page for a note not yet published');
+    assert.deepEqual(mentions(before, '/tags/kustomize/'), []);
   });
 
   await t.test('on its date: its page, the index, its tag page, the feed and the sitemap', () => {
@@ -96,16 +138,30 @@ test('a note dated after the build is in no file, and ships once the clock passe
     for (const path of ['/notes/fixture-future-note/index.html', '/notes/index.html', '/tags/homelab/index.html', '/rss.xml', '/sitemap-0.xml', '/index.html']) {
       assert.ok(where.includes(path), `${path} does not list the note`);
     }
+    assert.ok(after.has('/tags/kustomize/index.html'), 'its own tag page');
   });
 
   await t.test('a backdated note shows when it was written, says when it was published, and RSS orders it by pubDate', () => {
     const page = after.get('/notes/fixture-backdated-note/index.html');
-    assert.match(page, /<time datetime="2019-03-01"/);
-    assert.match(page, /data-note-published[^>]*>[^<]*2021/);
+    assert.match(page, /<time datetime="2019-03-01">/);
+    assert.match(page, /<span data-note-published> · published <time datetime="2021-01-01">January 1, 2021<\/time><\/span>/);
     assert.match(page, /"dateCreated":"2019-03-01"/);
     assert.match(page, /"datePublished":"2021-01-01"/);
+    assert.doesNotMatch(after.get('/notes/fixture-past-note/index.html'), /data-note-published/, 'a note with one date shows one');
     const feed = after.get('/rss.xml');
     const order = ['fixture-future-note', 'fixture-backdated-note', 'fixture-past-note'].map((slug) => feed.indexOf(slug));
     assert.ok(order.every((i, n) => i > -1 && (n === 0 || i > order[n - 1])), `feed order by pubDate: ${order}`);
+  });
+
+  const indexed = (site, path) => !/<meta name="robots" content="noindex/.test(site.get(`${path}index.html`) ?? '');
+  const listed = (site, path) => site.get('/sitemap-0.xml').includes(`<loc>https://mlorente.dev${path}</loc>`);
+
+  await t.test('/es/notes/ is noindex and out of the sitemap until a Spanish note is published', () => {
+    assert.deepEqual(mentions(before, 'fixture-es-future-note'), []);
+    assert.equal(indexed(before, '/es/notes/'), false);
+    assert.equal(listed(before, '/es/notes/'), false);
+    assert.ok(mentions(after, 'fixture-es-future-note').includes('/es/notes/index.html'));
+    assert.equal(indexed(after, '/es/notes/'), true);
+    assert.equal(listed(after, '/es/notes/'), true);
   });
 });

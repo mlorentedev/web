@@ -2,6 +2,8 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+import { writtenDateValid } from './lib/note-dates.mjs';
+
 const notes = defineCollection({
   // NOTES_DIR lets tests/note-dates.test.mjs build over fixture notes (WEB-138).
   loader: glob({ pattern: '**/*.{md,mdx}', base: process.env.NOTES_DIR ?? 'src/content/notes' }),
@@ -24,7 +26,7 @@ const notes = defineCollection({
         summary: z.string(),
       })
       .optional(),
-  }).refine((note) => !note.writtenDate || note.writtenDate <= note.pubDate, {
+  }).refine(writtenDateValid, {
     message: 'writtenDate is after pubDate: a note cannot be written from notes it has not taken yet',
     path: ['writtenDate'],
   }),

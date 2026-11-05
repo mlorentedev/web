@@ -20,3 +20,26 @@ export function buildClock(env = process.env) {
 
 /** Whether a note's frontmatter makes it part of a build made at `now`. */
 export const isPublished = (data, now) => !data.draft && data.pubDate.valueOf() <= now.valueOf();
+
+/**
+ * A `writtenDate` is shown only when it is earlier than `pubDate`. One after
+ * `pubDate` is refused by the schema; one on the same day says nothing new.
+ */
+export const shownWrittenDate = (data) =>
+  data.writtenDate && data.writtenDate.valueOf() < data.pubDate.valueOf() ? data.writtenDate : undefined;
+
+/** Whether a `writtenDate` is allowed: absent, or not after `pubDate`. */
+export const writtenDateValid = (data) => !data.writtenDate || data.writtenDate.valueOf() <= data.pubDate.valueOf();
+
+/**
+ * Whether a raw note file, read before the content layer exists (the sitemap
+ * config, the tests), is a published note in `lang` at `now`. It reads the
+ * frontmatter the way the collection does: `lang` defaults to English.
+ */
+export function publishedIn(text, lang, now) {
+  const fm = text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
+  const field = (name) => fm.match(new RegExp(`^${name}:\\s*['"]?([^'"\\n#]*?)['"]?\\s*$`, 'm'))?.[1];
+  const pubDate = new Date(field('pubDate') ?? 'invalid');
+  if (Number.isNaN(pubDate.valueOf())) return false;
+  return (field('lang') ?? 'en') === lang && isPublished({ draft: field('draft') === 'true', pubDate }, now);
+}

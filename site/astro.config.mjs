@@ -7,18 +7,17 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 import { rehypeMermaid } from './plugins/rehype-mermaid.mjs';
+import { buildClock, publishedIn } from './src/lib/note-dates.mjs';
 import rehypeScrollableTables from './plugins/scrollable-tables.mjs';
 import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
 
 // /es/notes/ is noindex while no note is written in Spanish; keep it out of the
 // sitemap for as long, so the two signals agree.
-const notesDir = new URL(`./${process.env.NOTES_DIR ?? 'src/content/notes'}/`, import.meta.url);
-const frontMatter = (text) => text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
-// A Spanish note counts once it is published: drafts are not built, as in the collection filters.
-const isSpanishPublished = (fm) => /^lang:\s*['"]?es\b/m.test(fm) && !/^draft:\s*true\b/m.test(fm);
-const hasSpanishNotes = readdirSync(notesDir).some((f) =>
-  isSpanishPublished(frontMatter(readFileSync(new URL(f, notesDir), 'utf8'))),
-);
+const notesDir = new URL(`${process.env.NOTES_DIR ?? 'src/content/notes'}/`, new URL('./', import.meta.url));
+// A Spanish note counts once it is published: not a draft, and not dated after
+// this build, as in the collection filters (src/lib/note-dates.mjs).
+const now = buildClock();
+const hasSpanishNotes = readdirSync(notesDir).some((f) => publishedIn(readFileSync(new URL(f, notesDir), 'utf8'), 'es', now));
 
 export default defineConfig({
   site: 'https://mlorente.dev',

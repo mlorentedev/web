@@ -29,34 +29,15 @@ owner: manu
 - [x] [AC4] [AC1] `notesIn` filters through `isPublished(…, buildClock())`. Route `LatestNotesSection` and `rss.xml.ts` through `notesIn`. Expected: the scan passes, and `npm run build && npm test` stays green.
 - [x] [AC1] [AC2] [AC3] Failing fixture-build test: `NOTES_DIR=tests/fixtures/notes NOTES_NOW=<t> astro build --outDir <tmp>` at two clocks. The future note is absent from every file before its date, and present after it. Expected: FAIL, `NOTES_DIR` is not read.
 - [x] [AC1] [AC2] `content.config.ts` (and the sitemap's Spanish-notes probe in `astro.config.mjs`) read `NOTES_DIR`. Expected: the fixture test passes for AC1 and AC2.
-- [x] [AC3] Schema: optional `writtenDate`, which must not be after `pubDate`. `NotePage` shows it in `<time>`, with the published line (new keys `notes.writtenFrom`, EN and ES). JSON-LD gets `dateCreated`. Expected: the fixture assertions for AC3 pass, and RSS order follows `pubDate`.
+- [x] [AC3] Schema: optional `writtenDate`, which must not be after `pubDate`. `NotePage` shows both dates when `writtenDate` is earlier, as `<date> · published <date>` (new key `notes.published`, EN and ES). JSON-LD gets `dateCreated`. Expected: the fixture assertions for AC3 pass, and RSS order follows `pubDate`.
+- [x] [AC1] [AC4] Review fix: the sitemap's Spanish-notes check in `astro.config.mjs` and `es-notes-fallback.test.mjs` read the same date-aware rule (`publishedIn`). A Spanish fixture dated 2030-06-01 proves `/es/notes/` is noindex and out of the sitemap before its date, and indexable and listed after. The AC4 scan covers every content-layer call and `content/notes` paths.
 
 ## Closing
 
-- [ ] Every acceptance criterion from `proposal.md` is covered by at least one test
-- [ ] Every acceptance criterion has a matching entry in `features.json` (see below) with a non-vacuous verification command
-- [ ] Type checks pass
-- [ ] Lint passes
-- [ ] No unrelated changes in the diff (no scope creep)
-- [ ] `verification.md` filled in
-- [ ] PR opened referencing this spec folder
-
-## Machine-readable features
-
-This spec emits a sibling `features.json` (alongside this file) following [[pattern-feature-list-as-primitive]]. The JSON is the harness-facing contract: each acceptance criterion maps to ≥1 feature with `id`, `behavior`, `verification` (executable command), `state` (lifecycle), and `evidence` (harness-captured output).
-
-**Pass-state gating:** the agent CANNOT write `"state": "passing"` — only the harness, after running `verification` and capturing exit code 0, may set that terminal state. Reviewers must reject PRs where features.json contains `passing` entries with empty `evidence`.
-
-Minimal `features.json` skeleton (drop into `<repo>/specs/WEB-138-note-publish-dates/features.json`):
-
-```json
-[
-  {
-    "id": "WEB-138-note-publish-dates-f1",
-    "behavior": "<one-line copy of an acceptance criterion>",
-    "verification": "<single shell command; exit 0 means pass>",
-    "state": "pending",
-    "evidence": ""
-  }
-]
-```
+- [x] Every acceptance criterion from `proposal.md` is covered by at least one test
+- [x] Every acceptance criterion has a matching entry in `features.json` with a non-vacuous verification command (state stays `pending`: only the harness sets `passing`)
+- [x] Type checks pass: none: `site/` has no type-check script; `npm run build` compiles the TypeScript and passes
+- [x] Lint passes: none: `site/` has no lint script; pre-commit hooks pass
+- [x] No unrelated changes in the diff (no scope creep)
+- [x] `verification.md` filled in
+- [x] PR opened referencing this spec folder

@@ -23,7 +23,9 @@ cache would have served a fake note until then.
 
 **Solution**: `astro.config.mjs` reads `cacheDir: process.env.ASTRO_CACHE_DIR`, and the test
 gives each build its own scratch cache next to its scratch output, then removes both. After
-the test, the shared store has no fixture.
+the test, the shared store has no fixture. `site/.astro/content-modules.mjs` still names the
+fixture files until the next real build rewrites it; that directory is per worktree and
+gitignored, and `npm run build` regenerates it before anything reads it.
 
 **Rule**: A test that builds over substitute content redirects every place the build writes,
 not only the output: the content store (`cacheDir`) as well as `outDir`. Check the store

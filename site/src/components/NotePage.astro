@@ -11,6 +11,7 @@ import type { Lang } from '../i18n/ui';
 import { site } from '../data/site';
 import { blogPosting, breadcrumbs } from '../data/structured-data';
 import type { Note, NoteLink } from '../lib/locale-pages';
+import { shownWrittenDate } from '../lib/note-dates.mjs';
 
 interface Props {
   lang: Lang;
@@ -25,12 +26,10 @@ const { Content } = await render(note);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-// A note written from older notes shows that date, and says when it shipped.
-const { pubDate, writtenDate } = note.data;
+// A note written before it shipped shows when it was written, then when it was published.
+const { pubDate } = note.data;
+const writtenDate = shownWrittenDate(note.data);
 const shownDate = writtenDate ?? pubDate;
-const publishedLine = writtenDate
-  ? t('notes.writtenFrom').replace('{written}', formatDate(writtenDate, lang)).replace('{published}', formatDate(pubDate, lang))
-  : undefined;
 const path = translatePath(`/notes/${note.id}`);
 const schema = [
   blogPosting({
@@ -57,8 +56,12 @@ const schema = [
       <div class="max-w-3xl mx-auto px-4">
         <article>
           <header class="mb-10">
-            <time datetime={isoDate(shownDate)} class="text-sm text-gray-500">{formatDate(shownDate, lang)}</time>
-            {publishedLine && <p data-note-published class="text-sm text-gray-500 mt-1">{publishedLine}</p>}
+            <p class="text-sm text-gray-500">
+              <time datetime={isoDate(shownDate)}>{formatDate(shownDate, lang)}</time>
+              {writtenDate && (
+                <span data-note-published> · {t('notes.published')} <time datetime={isoDate(pubDate)}>{formatDate(pubDate, lang)}</time></span>
+              )}
+            </p>
             <h1 class="text-3xl font-extrabold text-gray-800 mt-3">{note.data.title}</h1>
             <div class="flex flex-wrap gap-2 mt-4">
               {note.data.tags.map((tag: string) => (
