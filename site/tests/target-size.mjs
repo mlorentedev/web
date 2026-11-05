@@ -69,8 +69,10 @@ function undersized(min) {
   };
   const targets = [...document.querySelectorAll(TARGETS)]
     .filter((el) => {
-      const style = getComputedStyle(el);
-      if (style.visibility === 'hidden' || style.display === 'none' || el.closest('.sr-only')) return false;
+      // checkVisibility, not display alone: the links in a closed <details> keep
+      // a layout box (Chromium hides them with content-visibility) but are not
+      // on screen to tap.
+      if (!el.checkVisibility({ visibilityProperty: true }) || el.closest('.sr-only')) return false;
       const { width, height } = el.getBoundingClientRect();
       return width > 0 && height > 0; // the skip link is 0 × 0 until focused
     })
