@@ -3,6 +3,7 @@
  * The artifact cards on /ai (WEB-091): each quotes a public file verbatim and
  * links to it at the commit the quote was taken from (see `data/ai-artifacts.ts`).
  */
+import Button from './Button.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { aiArtifacts, sourceHref, sourceLabel } from '../data/ai-artifacts';
@@ -102,12 +103,9 @@ const badgeColors: Record<string, string> = {
           : 'What breaks when LLMs touch real infrastructure, and the Unix boundaries required to contain them: worktree isolation, kernel flock, and mechanical triage queues.'}
       </p>
     </div>
-    <a
-      href={noteHref}
-      class="shrink-0 inline-flex items-center gap-2 rounded-md bg-ink-900 hover:bg-accent-700 text-white px-4 py-2.5 text-sm font-medium transition-colors shadow-xs"
-    >
+    <Button href={noteHref} class="shrink-0">
       <span>{lang === 'es' ? 'Leer la nota técnica' : 'Read technical note'}</span>
       <span class="font-mono">→</span>
-    </a>
+    </Button>
   </div>
 </Section>
