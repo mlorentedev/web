@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { site } from '../../../data/site';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
@@ -16,7 +17,7 @@ const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data 
 
 {/* No Spanish notes yet: point to the English ones and stay out of the index,
     so search does not list an empty page (#499). */}
-<BaseLayout title="Lo que pienso" description={t('notes.description')} noindex={notes.length === 0}>
+<BaseLayout title={`${t('notes.title')} — ${site.author}`} description={t('notes.description')} noindex={notes.length === 0}>
   <Header />
   <main id="main-content" class="grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../data/site';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
@@ -18,7 +19,7 @@ const notes: CollectionEntry<'notes'>[] = (await getCollection('notes', ({ data 
 
 {/* /es/notes/ is noindex until a note is written in Spanish, so no alternate
     may point at it until then. */}
-<BaseLayout title="What I think" description={t('notes.description')} hasAlternates={hasSpanish}>
+<BaseLayout title={`${t('notes.title')} — ${site.author}`} description={t('notes.description')} hasAlternates={hasSpanish}>
   <Header />
   <main id="main-content" class="grow">
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">

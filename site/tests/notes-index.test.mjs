@@ -34,6 +34,11 @@ for (const [lang, { file, title }] of Object.entries(pages)) {
     assert.equal(text.trim(), title);
   });
 
+  test(`${lang}: the tab title names the page the H1 names`, () => {
+    const tab = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '';
+    assert.ok(tab.startsWith(`${title} — `), `dist/${file}: <title> is "${tab}", the H1 is "${title}"`);
+  });
+
   test(`${lang}: the headings of the notes index skip no level`, () => {
     const levels = [...main.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]));
     for (let i = 1; i < levels.length; i++) {
