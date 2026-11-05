@@ -292,6 +292,8 @@ export const ui = {
     'tags.projects': 'Projects',
     'tags.notes': 'Notes',
     'tags.all': 'All notes',
+    'tags.title': '{tag}: notes and projects',
+    'tags.description': 'Notes and projects on {tag} by {author}: {items}.',
 
     // Meta
     'meta.title': 'Manu Lorente — SRE & AI Platform Engineer',
@@ -565,6 +567,8 @@ export const ui = {
     'tags.projects': 'Proyectos',
     'tags.notes': 'Notas',
     'tags.all': 'Todas las notas',
+    'tags.title': '{tag}: notas y proyectos',
+    'tags.description': 'Notas y proyectos sobre {tag} de {author}: {items}.',
 
     // Meta
     'meta.title': 'Manu Lorente — SRE e ingeniero de plataformas de IA',
