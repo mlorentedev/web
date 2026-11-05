@@ -35,8 +35,14 @@ import { labBaseUrl } from './lib/serve.mjs';
 // The Spanish pages share the layout, not the copy, so a line that wraps
 // differently can paint another weight on the first screen. No note is in Spanish yet.
 const PAGES = ['/', '/lab/', '/ai/', '/notes/building-a-homelab-idp/', '/es/', '/es/lab/', '/es/ai/'];
-const WIDTHS = [320, 640, 1440];
-const HEIGHT = 800;
+// Each width with a first screen of its own height: 320 × 568 is the smallest
+// phone, so a face only a taller window shows is not counted as above the fold.
+const VIEWPORTS = [
+  { width: 320, height: 568 },
+  { width: 640, height: 800 },
+  { width: 1440, height: 800 },
+];
+const WIDTHS = VIEWPORTS.map((v) => v.width);
 
 /** Runs in the page: the font files the first viewport paints with, and the ones the head preloads. */
 function firstScreen() {
@@ -80,14 +86,17 @@ function firstScreen() {
     }
   }
   // CSS Fonts 4 §5.2: a face whose range holds the weight wins; otherwise
-  // below 400 look lighter then heavier, above 500 heavier then lighter.
+  // below 400 look lighter then heavier; from 400 to 500, heavier up to 500,
+  // then lighter, then heavier past 500; above 500 heavier then lighter.
   const pick = (family, weight) => {
     const candidates = faces.filter((f) => f.family === family && f.style === 'normal');
     const hit = candidates.find((f) => weight >= f.min && weight <= f.max);
     if (hit) return hit;
     const lighter = candidates.filter((f) => f.max < weight).sort((a, b) => b.max - a.max);
     const heavier = candidates.filter((f) => f.min > weight).sort((a, b) => a.min - b.min);
-    return (weight <= 500 ? [...lighter, ...heavier] : [...heavier, ...lighter])[0];
+    if (weight < 400) return [...lighter, ...heavier][0];
+    if (weight > 500) return [...heavier, ...lighter][0];
+    return [...heavier.filter((f) => f.min <= 500), ...lighter, ...heavier.filter((f) => f.min > 500)][0];
   };
   // The part of a text box the reader can see: cut by the viewport and by every
   // ancestor that clips. An `sr-only` label keeps a 1×1 box and a collapsed
@@ -143,8 +152,8 @@ const preloads = new Set();
 let failures = 0;
 try {
   for (const path of PAGES) {
-    for (const width of WIDTHS) {
-      const page = await browser.newPage({ viewport: { width, height: HEIGHT } });
+    for (const { width, height } of VIEWPORTS) {
+      const page = await browser.newPage({ viewport: { width, height } });
       const response = await page.goto(`${BASE}${path}`, { waitUntil: 'load' });
       if (!response?.ok()) {
         console.error(`✗ ${path} @ ${width}px: HTTP ${response?.status()}`);

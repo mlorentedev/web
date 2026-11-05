@@ -24,9 +24,10 @@ lead: the home page's bold `HARDWARE`/`SOFTWARE` labels are `font-mono`, the sys
 so they need no Roboto file at all.
 
 The test that ships samples more than that first measurement: seven pages (`/`, `/lab/`,
-`/ai/`, the note, and the three Spanish twins) at 320, 640 and 1440 px, 21 screens. There,
-Medium is painted on 20 (all but the note at 320), and Bold on 10, at 640 and 1440 on
-`/lab/`, `/ai/`, the note and their twins, and never at 320.
+`/ai/`, the note, and the three Spanish twins) at 320, 640 and 1440 px, 21 screens, with a
+first screen 568 px tall at 320 (the smallest phone) and 800 px at the other two. There,
+Medium is painted on 18 (all but `/`, `/es/` and the note at 320), and Bold on 10, at 640
+and 1440 on `/lab/`, `/ai/`, the note and their twins, and never at 320.
 
 **Solution**: Medium is preloaded. All four faces are preloaded with no `media`.
 `site/tests/font-preloads.mjs` (in `test:browser`) prints the faces each sample screen
