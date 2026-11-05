@@ -15,6 +15,7 @@ lessons were filed and never change, so a citation stays valid.
 | # | Lesson | Date | Tags |
 |---|---|---|---|
 | 076 | [A noindex page named as a twin's alternate is a hreflang error, and a per-page noindex rule misses it](lesson-076-a-noindex-page-named-as-a-twin-s-alternate-i.md) | 2026-11-04 | `#seo` `#i18n` |
+| 075 | [Each review round found a new hole in a regex HTML tokenizer; the parser already in the tree closed them all](lesson-075-each-review-round-found-a-new-hole-in-a-rege.md) | 2026-11-04 | `#testing` `#html` |
 | 073 | [Two PRs that make the same edit to a line merge without a conflict, so a hand-kept count ends one short](lesson-073-two-prs-that-make-the-same-edit-to-a-line-me.md) | 2026-11-04 | `#git` `#ci` `#testing` |
 | 072 | [A target-size check without the spacing exception counts 2641 failures the standard does not](lesson-072-a-target-size-check-without-the-spacing-exc.md) | 2026-11-04 | `#accessibility` `#testing` |
 | 071 | [expires beside add_header Cache-Control sends two headers, and immutable on a stable name keeps a new file away for a year](lesson-071-expires-beside-add-header-cache-control-send.md) | 2026-11-04 | `#nginx` `#caching` `#testing` |

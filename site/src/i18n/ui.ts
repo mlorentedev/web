@@ -98,8 +98,7 @@ export const ui = {
     // The door (WEB-137): the one way in, the same button on the hero and on
     // /contact/. The mail it opens is the written filter, three lines.
     'door.cta': 'Write to me',
-    'door.subject': 'Let\'s talk',
-    'door.body': "Who I am:\nWhat I need:\nWhen I need it:\n",
+    'door.subject': 'Contact via mlorente.dev',
     'door.busy': 'Currently on a project; the next one starts in {month}.',
 
     // IDP Catalog (KubeLab IDP)
@@ -241,7 +240,6 @@ export const ui = {
     'lab.provenance': 'Figures last reconciled against the cluster on',
 
     // Home sections
-    'home.stack': 'What I work with',
     'home.skills': 'What I do',
     'home.languages': 'Languages',
     'home.activity': 'On GitHub',
@@ -381,8 +379,7 @@ export const ui = {
     'hero.subtitle':
       'Con los años me he convertido en un full stack de verdad, pero no el de frontend y backend: empecé caracterizando sensores de imagen en la industria de semiconductores, que es física, datos y código a partes iguales, pasé por el firmware en FPGA y microcontroladores y he llegado hasta la aplicación en la nube y la conversación con el cliente. Más de diez años de ingeniería con clientes de Europa, Asia y Norteamérica; hoy diseño y opero plataformas con Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo.',
     'door.cta': 'Escríbeme',
-    'door.subject': 'Hablemos',
-    'door.body': 'Quién soy:\nQué necesito:\nPara cuándo:\n',
+    'door.subject': 'Contacto desde mlorente.dev',
     'door.busy': 'Ahora mismo en un proyecto; el siguiente arranca en {month}.',
 
     // IDP Catalog (KubeLab IDP)
@@ -524,7 +521,6 @@ export const ui = {
     'lab.provenance': 'Cifras reconciliadas contra el clúster por última vez el',
 
     // Home sections
-    'home.stack': 'Con qué trabajo',
     'home.skills': 'Qué hago',
     'home.languages': 'Lenguajes',
     'home.activity': 'En GitHub',

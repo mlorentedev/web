@@ -36,6 +36,7 @@ export const site = {
     // so old links and old threads still have to arrive.
     email: 'manu@mlorente.dev',
     github: 'https://github.com/mlorentedev',
+    linkedin: 'https://www.linkedin.com/in/manloralm/',
     x: 'https://x.com/mlorentedev',
     xHandle: '@mlorentedev',
     // Real URL; footer visibility is gated by `features.youtube` (WEB-027), not by this value.
