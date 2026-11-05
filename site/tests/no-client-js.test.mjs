@@ -7,7 +7,7 @@
  *
  * A page runs code four ways, and each is refused here, naming the page:
  * - a `<script>` whose own `type` is not `application/ld+json` (read from the
- *   opening tag, so a JSON-LD string that mentions the type does not count);
+ *   element's attribute, so a JSON-LD string that mentions the type does not count);
  * - an inline event handler (`onclick="…"`, any `on*` attribute);
  * - a `javascript:` URL in an `href`, `src` or `action`;
  * - a `.js` or `.mjs` file anywhere in `dist/`.
@@ -20,6 +20,8 @@ import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { parse } from 'parse5';
+
 const DIST = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 
 const files = (dir) =>
@@ -28,48 +30,32 @@ const files = (dir) =>
     return entry.isDirectory() ? files(path) : [path];
   });
 
-// One attribute, and one opening tag, read with their quotes: a `>` or an
-// `onclick=` inside a quoted value is part of the value, not markup.
-const VALUE = String.raw`(?:"[^"]*"|'[^']*'|[^\s"'=<>\x60]+)`;
-const ATTR = new RegExp(String.raw`([^\s"'<>/=]+)(?:\s*=\s*(${VALUE}))?`, 'g');
-const TAG = new RegExp(String.raw`<([a-zA-Z][\w-]*)((?:\s+[^\s"'<>/=]+(?:\s*=\s*${VALUE})?)*)\s*/?>`, 'g');
 const URL_ATTRS = new Set(['href', 'src', 'action', 'formaction']);
-const NAMED = { colon: ':', tab: '\t', newline: '\n', amp: '&' };
 
-/**
- * A URL the way the browser reads its scheme: entities decoded, then tabs and
- * newlines dropped, so `&#106;avascript:` and `java\nscript:` are `javascript:`.
- */
-const urlOf = (value) =>
-  value
-    .replace(/&#x([0-9a-f]+);?/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
-    .replace(/&#(\d+);?/g, (_, dec) => String.fromCodePoint(Number(dec)))
-    .replace(/&(colon|tab|newline|amp);/gi, (_, name) => NAMED[name.toLowerCase()])
-    .replace(/[\t\n\r]/g, '');
+// The browser's own reading of the page. An HTML5 parser settles what a regex
+// over the markup kept getting wrong: a repeated attribute keeps its first
+// value, entities in a value are decoded, a `>` or `<script>` inside a quoted
+// value is text, and a script body is not markup.
+const elements = (node) => [
+  ...(node.attrs ? [node] : []),
+  ...(node.childNodes ?? []).flatMap(elements),
+  ...(node.content ? elements(node.content) : []),
+];
 
-/** The tag's attributes, lower-cased; a repeated one keeps its first value, as the parser does. */
-function attributesOf(attrs) {
-  const values = new Map();
-  for (const [, key, value = ''] of attrs.matchAll(ATTR)) {
-    if (!values.has(key.toLowerCase())) values.set(key.toLowerCase(), value.replace(/^["']|["']$/g, ''));
-  }
-  return values;
-}
+/** A URL the way the browser reads its scheme: leading spaces and every tab or newline dropped. */
+const scheme = (value) => value.replace(/[\t\n\r]/g, '').replace(/^[\x00-\x20]+/, '');
 
 /** Every way the HTML would run code in a browser, as a short description. */
 function clientCode(html) {
   const found = [];
-  // A comment runs nothing, and a script body is text, not tags: keep only the
-  // script's opening tag. An unclosed script keeps its tag too, so it is read.
-  const markup = html
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(new RegExp(String.raw`(<script\b(?:${VALUE}|[^"'>])*>)[\s\S]*?(</script>)`, 'gi'), '$1$2');
-  for (const [tag, name, attrs] of markup.matchAll(TAG)) {
-    const values = attributesOf(attrs);
-    if (name.toLowerCase() === 'script' && values.get('type')?.toLowerCase() !== 'application/ld+json') found.push(tag);
-    for (const [key, value] of values) {
-      if (key.startsWith('on')) found.push(`${key} handler`);
-      if (URL_ATTRS.has(key) && /^\s*javascript:/i.test(urlOf(value))) found.push(`javascript: ${key}`);
+  for (const el of elements(parse(html))) {
+    const type = el.attrs.find((a) => a.name === 'type')?.value.trim().toLowerCase();
+    if (el.nodeName === 'script' && type !== 'application/ld+json') {
+      found.push(`<script${el.attrs.map((a) => ` ${a.name}="${a.value}"`).join('')}>`);
+    }
+    for (const { name, value } of el.attrs) {
+      if (name.startsWith('on')) found.push(`${name} handler`);
+      if (URL_ATTRS.has(name) && /^javascript:/i.test(scheme(value))) found.push(`javascript: ${name}`);
     }
   }
   return found;
@@ -102,8 +88,12 @@ test('the detector reads a URL and a repeated attribute the way the browser does
   assert.deepEqual(clientCode('<a href="java\nscript:x()">a</a>'), ['javascript: href']);
   assert.deepEqual(clientCode('<a href="javascript:x()" href="/safe/">a</a>'), ['javascript: href']);
   assert.deepEqual(clientCode('<a href="/safe/" href="javascript:x()">a</a>'), []);
-  assert.deepEqual(clientCode('<script type="text/javascript" type="application/ld+json">x()</script>'), ['<script type="text/javascript" type="application/ld+json">']);
+  assert.deepEqual(clientCode('<script type="text/javascript" type="application/ld+json">x()</script>'), ['<script type="text/javascript">']);
   assert.deepEqual(clientCode('<a href="/notes/?a=1&amp;b=2">a</a>'), []);
+  assert.deepEqual(clientCode('<script type=>alert(1)</script>'), ['<script type="">']);
+  // After a bare `=` the next word is the value: this href is `onclick="x()"`, and no handler exists.
+  assert.deepEqual(clientCode('<a href= onclick="x()">a</a>'), []);
+  assert.deepEqual(clientCode('<div data-code="<script>">a</div><button onclick="x()">b</button><script type="application/ld+json">{}</script>'), ['onclick handler']);
 });
 
 test('no page ships client JavaScript', () => {
