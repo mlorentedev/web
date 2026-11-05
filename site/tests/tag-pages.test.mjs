@@ -18,7 +18,7 @@
  */
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { dirname, join, relative } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -31,6 +31,9 @@ const files = (dir) =>
     const path = join(dir, entry.name);
     return entry.isDirectory() ? files(path) : [path];
   });
+
+/** A built file's URL path, `/` on every OS, the way the sitemap names it. */
+const route = (file) => `/${relative(DIST, file).split(sep).join('/')}`;
 
 const decode = (s) => s.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 const head = (html, re) => decode(re.exec(html)?.[1] ?? '');
@@ -57,14 +60,14 @@ test('every tag a project or a note carries has a display name', async () => {
 
 const tagPages = () =>
   existsSync(DIST)
-    ? files(DIST).filter((f) => /\/tags\/[^/]+\/index\.html$/.test(f)).map((file) => {
+    ? files(DIST).filter((f) => /\/tags\/[^/]+\/index\.html$/.test(route(f))).map((file) => {
         const html = readFileSync(file, 'utf8');
         const main = /<main[\s\S]*?<\/main>/.exec(html)?.[0] ?? '';
         return {
           get items() {
             return this.projects + this.notes;
           },
-          path: `/${relative(DIST, file)}`,
+          path: route(file),
           title: head(html, /<title>([^<]*)<\/title>/),
           description: head(html, /<meta name="description" content="([^"]*)"/),
           noindex: /<meta name="robots" content="noindex/.test(html),
@@ -104,7 +107,7 @@ test('a tag page with fewer than MIN_ITEMS items is noindex, and only that one',
 
 test('no page names a noindex page as its alternate', () => {
   assert.ok(existsSync(DIST), 'no dist/: run the build first');
-  const html = new Map(files(DIST).filter((f) => f.endsWith('/index.html')).map((f) => [`/${relative(DIST, f)}`.replace(/index\.html$/, ''), readFileSync(f, 'utf8')]));
+  const html = new Map(files(DIST).filter((f) => route(f).endsWith('/index.html')).map((f) => [route(f).replace(/index\.html$/, ''), readFileSync(f, 'utf8')]));
   const noindex = (path) => /<meta name="robots" content="noindex/.test(html.get(path) ?? '');
   const wrong = [...html].flatMap(([path, page]) =>
     [...page.matchAll(/<link rel="alternate" hreflang="[^"]+" href="https:\/\/mlorente\.dev([^"]*)"/g)]
@@ -120,8 +123,8 @@ test('the sitemap lists every indexable page and no noindex one', () => {
   assert.ok(existsSync(join(DIST, 'sitemap-0.xml')), 'no sitemap: run the build first');
   const listed = new Set([...readFileSync(join(DIST, 'sitemap-0.xml'), 'utf8').matchAll(/<loc>https:\/\/mlorente\.dev([^<]*)<\/loc>/g)].map(([, p]) => p));
   const pages = files(DIST)
-    .filter((f) => f.endsWith('/index.html'))
-    .map((f) => ({ path: `/${relative(DIST, f)}`.replace(/index\.html$/, ''), noindex: /<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8')) }));
+    .filter((f) => route(f).endsWith('/index.html'))
+    .map((f) => ({ path: route(f).replace(/index\.html$/, ''), noindex: /<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8')) }));
   assert.deepEqual(pages.filter((p) => p.noindex && listed.has(p.path)).map((p) => p.path), [], 'noindex pages in the sitemap');
   assert.deepEqual(pages.filter((p) => !p.noindex && !listed.has(p.path)).map((p) => p.path), [], 'indexable pages missing from the sitemap');
 });
