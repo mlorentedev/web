@@ -15,7 +15,8 @@
  *   npm run build && npm test
  */
 import assert from 'node:assert/strict';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -36,6 +37,8 @@ const URL_ATTRS = new Set(['href', 'src', 'action', 'formaction']);
 // over the markup kept getting wrong: a repeated attribute keeps its first
 // value, entities in a value are decoded, a `>` or `<script>` inside a quoted
 // value is text, and a script body is not markup.
+// A `<template>`'s content is scanned too, on purpose: it is inert only until a
+// script clones it, and a handler waiting there is code the site meant to run.
 const elements = (node) => [
   ...(node.attrs ? [node] : []),
   ...(node.childNodes ?? []).flatMap(elements),
@@ -56,6 +59,8 @@ function clientCode(html) {
     for (const { name, value } of el.attrs) {
       if (name.startsWith('on')) found.push(`${name} handler`);
       if (URL_ATTRS.has(name) && /^javascript:/i.test(scheme(value))) found.push(`javascript: ${name}`);
+      // An iframe's `srcdoc` is a whole document, run same-origin: read it the same way.
+      if (name === 'srcdoc') found.push(...clientCode(value).map((what) => `srcdoc: ${what}`));
     }
   }
   return found;
@@ -91,17 +96,39 @@ test('the detector reads a URL and a repeated attribute the way the browser does
   assert.deepEqual(clientCode('<script type="text/javascript" type="application/ld+json">x()</script>'), ['<script type="text/javascript">']);
   assert.deepEqual(clientCode('<a href="/notes/?a=1&amp;b=2">a</a>'), []);
   assert.deepEqual(clientCode('<script type=>alert(1)</script>'), ['<script type="">']);
+  assert.deepEqual(clientCode('<iframe srcdoc="&lt;script&gt;x()&lt;/script&gt;"></iframe>'), ['srcdoc: <script>']);
+  assert.deepEqual(clientCode('<iframe srcdoc="&lt;p&gt;text&lt;/p&gt;"></iframe>'), []);
   // After a bare `=` the next word is the value: this href is `onclick="x()"`, and no handler exists.
   assert.deepEqual(clientCode('<a href= onclick="x()">a</a>'), []);
   assert.deepEqual(clientCode('<div data-code="<script>">a</div><button onclick="x()">b</button><script type="application/ld+json">{}</script>'), ['onclick handler']);
 });
 
+/** Every script, handler, `javascript:` URL or JS file under `root`, named by its path. */
+function violations(root) {
+  const all = files(root);
+  const found = all
+    .filter((file) => file.endsWith('.html'))
+    .flatMap((file) => clientCode(readFileSync(file, 'utf8')).map((what) => `/${relative(root, file)}: ${what}`));
+  const bundles = all.filter((file) => /\.m?js$/.test(file)).map((file) => `/${relative(root, file)}`);
+  return [...found, ...bundles];
+}
+
+test('the scan descends into every directory and names each file it refuses', () => {
+  const root = mkdtempSync(join(tmpdir(), 'no-client-js-'));
+  try {
+    mkdirSync(join(root, 'a', 'b'), { recursive: true });
+    writeFileSync(join(root, 'index.html'), '<p>fine</p>');
+    writeFileSync(join(root, 'a', 'b', 'index.html'), '<button onclick="x()">b</button>');
+    writeFileSync(join(root, 'a', 'app.mjs'), 'x()');
+    writeFileSync(join(root, 'a', 'data.json'), '{}');
+    assert.deepEqual(violations(root), ['/a/b/index.html: onclick handler', '/a/app.mjs']);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('no page ships client JavaScript', () => {
   assert.ok(existsSync(DIST), 'no dist/: run the build first');
-  const all = files(DIST);
-  const pages = all.filter((file) => file.endsWith('.html'));
-  assert.ok(pages.length > 0, 'no pages in dist: run the build first');
-  const found = pages.flatMap((file) => clientCode(readFileSync(file, 'utf8')).map((what) => `/${relative(DIST, file)}: ${what}`));
-  const bundles = all.filter((file) => /\.m?js$/.test(file)).map((file) => `/${relative(DIST, file)}`);
-  assert.deepEqual([...found, ...bundles], [], 'the site is static: no script, handler, javascript: URL or JS file ships');
+  assert.ok(files(DIST).some((file) => file.endsWith('.html')), 'no pages in dist: run the build first');
+  assert.deepEqual(violations(DIST), [], 'the site is static: no script, handler, javascript: URL or JS file ships');
 });

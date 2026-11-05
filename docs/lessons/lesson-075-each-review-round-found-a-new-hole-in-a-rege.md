@@ -26,7 +26,7 @@ HTML5 tokenizer one rule at a time, and the reviewer could always name the next 
 **Solution**: Parse with `parse5`, the HTML5 parser that `hast-util-from-html` already
 installed (7.3.0, now declared as a dev dependency; the lockfile gains one line). The parser
 applies the tokenizer's rules: first attribute wins, entities are decoded, script bodies
-are raw text, and a bare `=` takes the next word as its value. All 25 detector cases pass,
+are raw text, and a bare `=` takes the next word as its value. Every detector case passes,
 including `<a href= onclick="x()">`. The browser reads that as an `href` whose value is
 `onclick="x()"`, with no handler, and the regex version had the case wrong. A built page
 with an injected handler and script still fails, naming the page and both findings.
