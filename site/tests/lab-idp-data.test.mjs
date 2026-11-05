@@ -265,7 +265,7 @@ for (const [locale, pagePath, expectedBackPath] of IDP_HTML_PAGES) {
     const externalLinks = [...html.matchAll(/<a\b[^>]*href="https?:\/\/[^"]*"[^>]*>/g)];
     assert.ok(externalLinks.length > 0, `expected public external links on ${locale} IDP page`);
     for (const [linkTag] of externalLinks) {
-      assert.ok(!/\starget=/.test(linkTag), `external link opens a new tab: ${linkTag}`);
+      assert.ok(!/\starget=/.test(linkTag), `external link carries a target (the page sets none, so no rel either): ${linkTag}`);
     }
   });
 }
