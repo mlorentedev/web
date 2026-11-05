@@ -240,7 +240,6 @@ export const ui = {
     'lab.provenance': 'Figures last reconciled against the cluster on',
 
     // Home sections
-    'home.stack': 'What I work with',
     'home.skills': 'What I do',
     'home.languages': 'Languages',
     'home.activity': 'On GitHub',
@@ -516,7 +515,6 @@ export const ui = {
     'lab.provenance': 'Cifras reconciliadas contra el clúster por última vez el',
 
     // Home sections
-    'home.stack': 'Con qué trabajo',
     'home.skills': 'Qué hago',
     'home.languages': 'Lenguajes',
     'home.activity': 'En GitHub',
