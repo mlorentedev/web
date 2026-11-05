@@ -160,6 +160,15 @@ try {
           console.error(`✗ ${path} @ ${width}px preloads ${name(link)}: a font preload is never scoped by media`);
           failures++;
         }
+        // Failed on the link itself: the painted-face check sees only a face in use,
+        // and a discarded preload of an unused face would pass it.
+        const noCors = await page.evaluate(() =>
+          [...document.querySelectorAll('link[rel="preload"][as="font"]')].filter((l) => l.crossOrigin === null).map((l) => l.href),
+        );
+        for (const link of noCors) {
+          console.error(`✗ ${path} @ ${width}px preloads ${name(link)} without crossorigin: the browser discards it`);
+          failures++;
+        }
         for (const face of unloaded) {
           console.error(`✗ ${path} @ ${width}px paints with ${name(face)}, which did not load`);
           failures++;
