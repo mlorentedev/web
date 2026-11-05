@@ -4,9 +4,9 @@
  * External links opened a new tab by default, 349 of them across the built site,
  * and none said so. The decision recorded on the ticket is to open nothing in a
  * new tab (WCAG G200: only when necessary), so today no page has one. This holds
- * the rule for the next one: a `target="_blank"` link must announce it in its
- * accessible name, through its text (visible or `sr-only`) or its `aria-label`
- * (WCAG G201), in either locale.
+ * the rule for the next one: a link whose `target` opens a new tab must announce
+ * it in its accessible name, through its text (visible or `sr-only`) or its
+ * `aria-label` (WCAG G201), in either locale.
  *
  *   npm run build && npm test
  */
@@ -20,6 +20,10 @@ import { parse } from 'parse5';
 
 const DIST = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 const ANNOUNCED = /new (tab|window)|nueva (pestaña|ventana)/i;
+// Any other target opens a new browsing context: `_blank`, and a name no frame
+// carries, which the browser creates as a new tab (HTML, "rules for choosing a
+// navigable"). An empty target is the same tab.
+const SAME_TAB = new Set(['', '_self', '_parent', '_top']);
 
 const files = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -34,7 +38,7 @@ const text = (node) => (node.nodeName === '#text' ? node.value : (node.childNode
 /** The new-tab links in `html` whose accessible name does not say they open one. */
 function silentNewTabs(html) {
   return elements(parse(html))
-    .filter((el) => el.nodeName === 'a' && attr(el, 'target')?.toLowerCase() === '_blank')
+    .filter((el) => el.nodeName === 'a' && attr(el, 'target') !== undefined && !SAME_TAB.has(attr(el, 'target').trim().toLowerCase()))
     .filter((el) => !ANNOUNCED.test(`${attr(el, 'aria-label') ?? ''} ${text(el)}`))
     .map((el) => attr(el, 'href'));
 }
@@ -44,7 +48,8 @@ test('the detector flags an unannounced new-tab link and passes an announced one
   assert.deepEqual(silentNewTabs('<a href="https://x.dev" target="_BLANK" rel="noopener">x</a>'), ['https://x.dev']);
   assert.deepEqual(silentNewTabs('<a href="https://x.dev" target="_blank">x <span class="sr-only">(opens in a new tab)</span></a>'), []);
   assert.deepEqual(silentNewTabs('<a href="https://x.dev" target="_blank" aria-label="x (se abre en una nueva pestaña)">x</a>'), []);
-  assert.deepEqual(silentNewTabs('<a href="https://x.dev">x</a><a href="/y/" target="_self">y</a>'), []);
+  assert.deepEqual(silentNewTabs('<a href="https://x.dev" target="docs">x</a>'), ['https://x.dev']);
+  assert.deepEqual(silentNewTabs('<a href="https://x.dev">x</a><a href="/y/" target="_self">y</a><a href="/z/" target="_TOP">z</a>'), []);
 });
 
 test('every link that opens a new tab says so', () => {
