@@ -21,6 +21,23 @@ interface Props {
 const { hasAlternates = true } = Astro.props;
 const currentPath = Astro.url.pathname;
 const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
+
+// Rendered twice, as the row from sm up and as the menu below it; only one is
+// displayed at a time, so only one is in the accessibility tree.
+const links = navItems.map((item) => {
+  const here = currentPath === item.href;
+  const within = currentPath.startsWith(item.href);
+  return { ...item, within, current: here ? ('page' as const) : within ? ('true' as const) : undefined };
+});
+// The accessible name holds the full name and the code, so it contains the
+// visible label wherever it is shown (WCAG 2.5.3).
+const langLinks = hasAlternates
+  ? otherLangs.map(([l, label]) => ({
+      href: switchLangUrl(Astro.url, l as keyof typeof languages),
+      label,
+      ariaLabel: `${label} ${l.toUpperCase()}`,
+    }))
+  : [];
 ---
 
 <header class="bg-accent-50 text-ink-700 sticky top-0 w-full border-b border-accent-100 z-50">
@@ -43,41 +60,67 @@ const otherLangs = Object.entries(languages).filter(([l]) => l !== lang);
       <span translate="no" class="sr-only sm:not-sr-only">Manu Lorente</span>
     </a>
 
-    <!-- Tighter gaps below sm: the fourth nav item pushes the row past a 320px
-         viewport at the desktop spacing. A real mobile menu is WEB-042. -->
-    <div data-header-links class="flex items-center space-x-2 sm:space-x-4">
-      {navItems.map((item) => {
-        const here = currentPath === item.href;
-        const within = currentPath.startsWith(item.href);
-        return (
+    <!-- From sm up the items sit in one row. Below sm they go behind a
+         disclosure (WEB-042): five items fit a 320px row only with the first
+         one touching the portrait. <details> keeps the page free of client
+         JS and exposes its open state to assistive tech by itself; the cost
+         is no close on Escape or on a tap outside. -->
+    <div data-header-links class="hidden sm:flex items-center space-x-4">
+      {links.map((item) => (
+        <a
+          href={item.href}
+          translate={item.name ? 'no' : undefined}
+          aria-current={item.current}
+          class:list={[
+            'inline-flex min-h-6 min-w-6 items-center justify-center hover:text-accent-700 transition-colors duration-200 text-sm',
+            item.within ? 'text-accent-700 font-bold no-underline' : '',
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+      {langLinks.map((l) => (
+        <a
+          href={l.href}
+          aria-label={l.ariaLabel}
+          class="inline-flex min-h-6 min-w-6 items-center justify-center text-xs text-ink-500 hover:text-accent-700 transition-colors uppercase tracking-wide"
+        >
+          {l.label}
+        </a>
+      ))}
+    </div>
+
+    <details data-header-menu class="relative sm:hidden">
+      <summary class="flex min-h-11 min-w-11 cursor-pointer list-none items-center gap-2 rounded px-2 text-sm hover:text-accent-700 [&::-webkit-details-marker]:hidden">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        {t('nav.menu')}
+      </summary>
+      <div class="absolute right-0 top-full mt-2 flex w-48 flex-col rounded-lg border border-accent-100 bg-white py-1 shadow-lg">
+        {links.map((item) => (
           <a
             href={item.href}
             translate={item.name ? 'no' : undefined}
-            aria-current={here ? 'page' : within ? 'true' : undefined}
+            aria-current={item.current}
             class:list={[
-              'inline-flex min-h-6 min-w-6 items-center justify-center hover:text-accent-700 transition-colors duration-200 text-sm',
-              within ? 'text-accent-700 font-bold no-underline' : '',
+              'flex min-h-11 items-center px-4 text-sm hover:bg-accent-50 hover:text-accent-700',
+              item.within ? 'text-accent-700 font-bold' : '',
             ]}
           >
             {item.label}
           </a>
-        );
-      })}
-      {hasAlternates && otherLangs.map(([l, label]) => (
-        <a
-          href={switchLangUrl(Astro.url, l as keyof typeof languages)}
-          aria-label={`${label} ${l.toUpperCase()}`}
-          class="inline-flex min-h-6 min-w-6 items-center justify-center text-xs text-ink-500 hover:text-accent-700 transition-colors uppercase tracking-wide"
-        >
-          {/* The code below sm — the full name does not fit a 320px viewport
-              once the nav carries four items. The accessible name carries both
-              the name and the code, so whichever one is on screen is part of it
-              (WCAG 2.5.3, axe label-content-name-mismatch). No brackets around
-              the code: axe 4.14 matches whole words, and "(ES)" is not "es". */}
-          <span class="sm:hidden" aria-hidden="true">{l}</span>
-          <span class="hidden sm:inline">{label}</span>
-        </a>
-      ))}
-    </div>
+        ))}
+        {langLinks.map((l) => (
+          <a
+            href={l.href}
+            aria-label={l.ariaLabel}
+            class="flex min-h-11 items-center border-t border-accent-100 px-4 text-xs uppercase tracking-wide text-ink-500 hover:bg-accent-50 hover:text-accent-700"
+          >
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </details>
   </nav>
 </header>

@@ -11,12 +11,19 @@
  * the same axis as the h1 of the pages set in that column. The narrow reading
  * pages centre a 768px column inside it, and a header that changed width
  * between pages would jump on every navigation.
+ *
+ * Below sm (640px) the nav items sit behind a `<details>` menu (WEB-042), and
+ * from sm up in a row: exactly one of the two is displayed at every width. At
+ * 320px the menu is driven by keyboard alone: Tab reaches the toggle, Enter
+ * opens it, the next Tab lands on a menu link at least 44px tall, and Enter on
+ * the toggle closes it again.
  */
 import { chromium } from 'playwright';
 
 import { labBaseUrl } from './lib/serve.mjs';
 
-const WIDTHS = [320, 375, 390, 454, 768, 1440];
+const WIDTHS = [320, 375, 390, 454, 639, 640, 768, 1440];
+const SM = 640;
 const WIDE_COLUMN = ['/', '/es/', '/lab/', '/es/lab/', '/ai/', '/es/ai/'];
 const OTHERS = ['/notes/', '/es/notes/', '/contact/', '/es/contact/', '/projects/', '/notes/building-a-homelab-idp/'];
 
@@ -27,7 +34,10 @@ function measure() {
   };
   const header = document.querySelector('header');
   const brand = header.querySelector('[data-header-brand]');
-  const links = header.querySelector('[data-header-links]');
+  const row = header.querySelector('[data-header-links]');
+  const toggle = header.querySelector('[data-header-menu] > summary');
+  const shown = (element) => element && element.getBoundingClientRect().width > 0;
+  const links = shown(row) ? row : toggle;
   const avatar = brand.querySelector('img');
   const positioned = [];
   for (let node = avatar; node !== header; node = node.parentElement) {
@@ -39,14 +49,19 @@ function measure() {
     links: links && box(links),
     avatar: box(avatar),
     positioned,
+    rowShown: shown(row),
+    toggleShown: shown(toggle),
     h1: box(document.querySelector('main h1')),
     overflow: document.documentElement.scrollWidth - innerWidth,
   };
 }
 
-function problems(m, { alignsWithH1 }) {
+function problems(m, { alignsWithH1, width }) {
   if (!m.brand || !m.links) return ['header has no brand or links group'];
   const found = [];
+  if (m.rowShown === m.toggleShown) found.push(`row shown: ${m.rowShown}, menu toggle shown: ${m.toggleShown}; exactly one should be`);
+  if (width < SM && m.rowShown) found.push(`the row is shown below ${SM}px, where the menu belongs`);
+  if (width >= SM && m.toggleShown) found.push(`the menu toggle is shown at ${SM}px and up, where the row belongs`);
   if (m.positioned.some((position) => position === 'fixed' || position === 'absolute')) {
     found.push('avatar is out of the flow');
   }
@@ -76,13 +91,62 @@ for (const path of [...WIDE_COLUMN, ...OTHERS]) {
     } else {
       await page.evaluate(() => document.fonts.ready);
       checks++;
-      const found = problems(await page.evaluate(measure), { alignsWithH1: WIDE_COLUMN.includes(path) });
+      const found = problems(await page.evaluate(measure), { alignsWithH1: WIDE_COLUMN.includes(path), width });
       if (found.length > 0) {
         console.error(`✗ ${where}: ${found.join('; ')}`);
         failures++;
       }
     }
     await page.close();
+  }
+}
+
+/** The menu at 320px, by keyboard alone: what each step leaves focused and open. */
+async function keyboardPass(path) {
+  const page = await browser.newPage({ viewport: { width: 320, height: 800 } });
+  await page.goto(`${BASE}${path}`, { waitUntil: 'load' });
+  const state = () =>
+    page.evaluate(() => {
+      const menu = document.querySelector('[data-header-menu]');
+      const active = document.activeElement;
+      return {
+        open: menu.open,
+        onToggle: active === menu.querySelector('summary'),
+        inMenu: menu.contains(active) && active.tagName === 'A',
+        height: active.getBoundingClientRect().height,
+      };
+    });
+  const found = [];
+  let step;
+  for (let i = 0; i < 6; i++) {
+    await page.keyboard.press('Tab');
+    step = await state();
+    if (step.onToggle) break;
+  }
+  if (!step.onToggle) {
+    // Enter on whatever has focus instead would follow a link.
+    await page.close();
+    return ['Tab never reached the menu toggle'];
+  }
+  await page.keyboard.press('Enter');
+  if (!(await state()).open) found.push('Enter on the toggle did not open the menu');
+  await page.keyboard.press('Tab');
+  step = await state();
+  if (!step.inMenu) found.push('the Tab after opening did not land on a menu link');
+  else if (step.height < 44) found.push(`a menu link is ${step.height}px tall, under 44px`);
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Enter');
+  if ((await state()).open) found.push('Enter on the toggle did not close the menu');
+  await page.close();
+  return found;
+}
+
+for (const path of ['/', '/es/']) {
+  checks++;
+  const found = await keyboardPass(path);
+  if (found.length > 0) {
+    console.error(`✗ ${path} menu by keyboard at 320px: ${found.join('; ')}`);
+    failures++;
   }
 }
 
@@ -93,4 +157,4 @@ if (failures > 0) {
   console.error(`\n${failures} of ${checks} header layouts failed`);
   process.exit(1);
 }
-console.log(`header layout: ${checks} page and width pairs`);
+console.log(`header layout: ${checks} checks, one nav control shown at each width, the menu works by keyboard`);
