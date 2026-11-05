@@ -11,9 +11,10 @@
  * - an inline event handler (`onclick="…"`, any `on*` attribute);
  * - a `javascript:` URL in a URL attribute (`href`, `src`, `action`,
  *   `formaction`, `data`);
- * - a `data:` HTML, XHTML or SVG document loaded by a frame, an embed or an
- *   object, which runs its scripts (an `<img>` does not, and a link cannot
- *   navigate to one);
+ * - a `data:` HTML, XHTML or SVG document where it can load as a document and
+ *   run its scripts: a frame's or an embed's `src`, an object's `data`, and a
+ *   link's or a form's target URL, which can load into a frame. An `<img>` runs
+ *   no script, so a `data:` SVG there is allowed;
  * - an iframe `srcdoc`, read as the document it is;
  * - a `.js` or `.mjs` file anywhere in `dist/`.
  *
@@ -39,8 +40,19 @@ const files = (dir) =>
 // `data` is <object>'s URL. SVG's `xlink:href` needs no entry: the parser
 // reads it as `href` in the xlink namespace.
 const URL_ATTRS = new Set(['href', 'src', 'action', 'formaction', 'data']);
-// The elements that load a `data:` document as a document, scripts and all.
-const DOCUMENT_HOSTS = new Set(['iframe', 'frame', 'embed', 'object']);
+// Where a `data:` document loads as a document, scripts and all: each element
+// and the one attribute it loads from. A link or a form can target a frame.
+const DOCUMENT_HOSTS = new Map([
+  ['iframe', ['src']],
+  ['frame', ['src']],
+  ['embed', ['src']],
+  ['object', ['data']],
+  ['a', ['href']],
+  ['area', ['href']],
+  ['form', ['action']],
+  ['button', ['formaction']],
+  ['input', ['formaction']],
+]);
 
 // The browser's own reading of the page. An HTML5 parser settles what a regex
 // over the markup kept getting wrong: a repeated attribute keeps its first
@@ -68,8 +80,8 @@ function clientCode(html) {
     for (const { name, value } of el.attrs) {
       if (name.startsWith('on')) found.push(`${name} handler`);
       if (URL_ATTRS.has(name) && /^javascript:/i.test(scheme(value))) found.push(`javascript: ${name}`);
-      // A `data:` document in a frame or an object runs its own scripts.
-      if (DOCUMENT_HOSTS.has(el.nodeName) && (name === 'src' || name === 'data') && /^data:\s*(text\/html|application\/xhtml\+xml|image\/svg\+xml)/i.test(scheme(value))) found.push(`data: document in ${name}`);
+      // A `data:` document loaded as one runs its own scripts.
+      if (DOCUMENT_HOSTS.get(el.nodeName)?.includes(name) && /^data:\s*(text\/html|application\/xhtml\+xml|image\/svg\+xml)/i.test(scheme(value))) found.push(`data: document in ${name}`);
       // An iframe's `srcdoc` is a whole document, run same-origin: read it the same way.
       if (name === 'srcdoc') found.push(...clientCode(value).map((what) => `srcdoc: ${what}`));
     }
@@ -109,6 +121,11 @@ test('the detector reads a URL and a repeated attribute the way the browser does
   assert.deepEqual(clientCode('<img src="data:image/svg+xml,%3Csvg%3E%3C/svg%3E" alt="">'), []);
   assert.deepEqual(clientCode('<object data="data:image/svg+xml,%3Csvg onload=x()%3E%3C/svg%3E"></object>'), ['data: document in data']);
   assert.deepEqual(clientCode('<embed src="data:text/html,x">'), ['data: document in src']);
+  assert.deepEqual(clientCode('<img src="data:image/svg+xml,%3Csvg%20onload=x()%3E%3C/svg%3E" alt="">'), []);
+  assert.deepEqual(clientCode('<iframe data="data:text/html,x"></iframe>'), []);
+  assert.deepEqual(clientCode('<object src="data:text/html,x"></object>'), []);
+  assert.deepEqual(clientCode('<iframe name="f"></iframe><a href="data:text/html,x" target="f">a</a>'), ['data: document in href']);
+  assert.deepEqual(clientCode('<form action="data:text/html,x" target="f"></form>'), ['data: document in action']);
   assert.deepEqual(clientCode('<a href="javascript:x()" href="/safe/">a</a>'), ['javascript: href']);
   assert.deepEqual(clientCode('<a href="/safe/" href="javascript:x()">a</a>'), []);
   assert.deepEqual(clientCode('<script type="text/javascript" type="application/ld+json">x()</script>'), ['<script type="text/javascript">']);
