@@ -14,7 +14,9 @@
  * - a `data:` HTML, XHTML or SVG document where it can load as a document and
  *   run its scripts: a frame's or an embed's `src`, an object's `data`, and a
  *   link's or a form's target URL, which can load into a frame. An `<img>` runs
- *   no script, so a `data:` SVG there is allowed;
+ *   no script, so a `data:` SVG there is allowed. Out of scope on purpose: an
+ *   SVG `<use>` or a CSS `url()` naming a `data:` document, which load it as a
+ *   resource, not as a document that runs its scripts;
  * - an iframe `srcdoc`, read as the document it is;
  * - a `.js` or `.mjs` file anywhere in `dist/`.
  *
