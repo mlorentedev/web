@@ -45,10 +45,9 @@ for (const [page, lab] of [
     assert.equal(title.href, lab);
   });
 
-  test(`/${page}: only links that leave the site open a new tab`, () => {
+  test(`/${page}: no link opens a new tab (WEB-167)`, () => {
     for (const a of anchors(read(page))) {
-      const external = /^https?:\/\//.test(a.href);
-      assert.equal(/\starget="_blank"/.test(a.attributes), external, `${a.href} ("${a.text}")`);
+      assert.ok(!/\starget=/.test(a.attributes), `${a.href} ("${a.text}")`);
     }
   });
 }

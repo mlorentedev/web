@@ -261,18 +261,11 @@ for (const [locale, pagePath, expectedBackPath] of IDP_HTML_PAGES) {
     const kubelabHrefs = [...html.matchAll(/href="(https?:[^"]*)"/g)].map((m) => m[1].replace(/&amp;/g, '&')).filter(targetsKubelab);
     assert.deepEqual(kubelabHrefs, [], `links targeting kubelab.live on ${locale} IDP page`);
 
-    // All external links have rel="noopener noreferrer"
+    // External links open in the same tab (WEB-167): no `target`, so no `rel` to pair with it.
     const externalLinks = [...html.matchAll(/<a\b[^>]*href="https?:\/\/[^"]*"[^>]*>/g)];
     assert.ok(externalLinks.length > 0, `expected public external links on ${locale} IDP page`);
     for (const [linkTag] of externalLinks) {
-      assert.ok(
-        linkTag.includes('rel="noopener noreferrer"'),
-        `external link missing rel="noopener noreferrer": ${linkTag}`
-      );
-      assert.ok(
-        linkTag.includes('target="_blank"'),
-        `external link missing target="_blank": ${linkTag}`
-      );
+      assert.ok(!/\starget=/.test(linkTag), `external link opens a new tab: ${linkTag}`);
     }
   });
 }
