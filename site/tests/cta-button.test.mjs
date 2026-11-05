@@ -46,13 +46,14 @@ const CLASS = /\bclass(?::list)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{((?:[^{}]|\{[^{}
 // Bare (`rounded`, `border`, `shadow`) or with a value, after any variant prefix (`md:`, `2xl:`, `hover:`).
 // `text-` is colour or size, except the alignment and wrapping utilities, which are the caller's layout.
 const TEXT_LAYOUT = '(?:left|center|right|justify|start|end|balance|pretty|wrap|nowrap|ellipsis|clip)(?![\\w-])';
-const LOOK = new RegExp(`(?<![\\w-])(?:[a-z0-9]+:)*(?:text-(?!${TEXT_LAYOUT})|(?:bg|leading|px|py|pt|pb|pl|pr|ps|pe|p)-|(?:border|shadow|rounded)(?![\\w]))`);
+const LOOK = new RegExp(`(?<![\\w-])(?:[a-z0-9]+:)*(?:text-(?!${TEXT_LAYOUT})|(?:bg|leading|h|min-h|max-h|px|py|pt|pb|pl|pr|ps|pe|p)-|(?:border|shadow|rounded)(?![\\w]))`);
 // Horizontal padding, from any utility that sets it.
 const PAD_X = new RegExp(`(?<![\\w:-])${BREAKPOINT}(?:p|px|pl|pr|ps|pe)-`);
 // Markdown code is a quoted example, not markup: fences at any indentation (in a
-// list or a blockquote too), and inline code spans.
+// list or a blockquote too), and inline code spans on one line: a stray backtick
+// must not hide the lines after it. A span across lines stays, and fails closed.
 const withoutFences = (source) =>
-  source.replace(/^([ \t>]*)(```|~~~)[^\n]*\n[\s\S]*?^[ \t>]*\2[^\n]*$/gm, '').replace(/(`+)[^`\n][\s\S]*?\1/g, '');
+  source.replace(/^([ \t>]*)(```|~~~)[^\n]*\n[\s\S]*?^[ \t>]*\2[^\n]*$/gm, '').replace(/(`+)[^`\n][^\n]*?\1/g, '');
 
 /** The tags in `source` that style a CTA by hand, or restyle `Button` from outside. */
 function handRolled(source) {
@@ -88,9 +89,12 @@ test('the detector reads past a > in a value, reads class:list, and checks what 
   assert.equal(handRolled('<Button href="/" class="hover:text-white">x</Button>').length, 1);
   assert.equal(handRolled('<Button href="/" class="pt-4">x</Button>').length, 1);
   assert.equal(handRolled('<Button href="/" class="leading-6">x</Button>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="min-h-12">x</Button>').length, 1);
+  assert.equal(handRolled('<Button href="/" class="h-14">x</Button>').length, 1);
   assert.equal(handRolled('<a href="/x" class="md:px-6 md:bg-ink-900">x</a>').length, 1);
   assert.equal(handRolled(withoutFences('Example:\n\n```html\n<a href="/" class="px-6 py-3 bg-cyan-700">x</a>\n```\n')).length, 0);
   assert.equal(handRolled(withoutFences('```html\nquoted\n```\n<a class="px-4 bg-ink-900">x</a>\n')).length, 1);
+  assert.equal(handRolled(withoutFences('Run `npm test.\n\n<a class="px-4 bg-ink-900">x</a>\n\nThen `done`.\n')).length, 1);
   assert.equal(handRolled(withoutFences('- step\n\n    ```html\n    <a class="px-4 bg-ink-900">x</a>\n    ```\n')).length, 0);
   assert.equal(handRolled(withoutFences('> ```html\n> <a class="px-4 bg-ink-900">x</a>\n> ```\n')).length, 0);
   assert.equal(handRolled(withoutFences('Use `<a class="px-4 bg-ink-900">` no more.')).length, 0);
