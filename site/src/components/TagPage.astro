@@ -1,0 +1,71 @@
+---
+// A tag page for one locale: the projects and that locale's notes that carry
+// the tag. Its paths come from `tagPaths` in lib/locale-pages.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import ProjectCard from './ProjectCard.astro';
+
+import { localize } from '../data/portfolio';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+import { site } from '../data/site';
+import { breadcrumbs } from '../data/structured-data';
+import type { TagProps } from '../lib/locale-pages';
+
+type Props = TagProps & { lang: Lang };
+
+const { lang, tag, hasAlternates, matchingProjects, matchingNotes } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const displayTag = matchingProjects.find((p) => p.tags.some((t) => t.toLowerCase() === tag))
+  ?.tags.find((t) => t.toLowerCase() === tag)
+  || matchingNotes[0]?.data.tags.find((t: string) => t.toLowerCase() === tag)
+  || tag;
+const schema = [breadcrumbs([
+  { name: site.author, path: translatePath('/') },
+  { name: displayTag, path: translatePath(`/tags/${tag}`) },
+])];
+---
+
+<BaseLayout title={`${displayTag}`} description={`${t('tags.projects')} & ${t('tags.notes')} — ${displayTag}.`} hasAlternates={hasAlternates} schema={schema}>
+  <Header hasAlternates={hasAlternates} />
+  <main id="main-content" class="grow">
+    <section class="pt-12 pb-6 md:pt-16 md:pb-10">
+      <div class="max-w-3xl mx-auto px-4">
+        <a href={translatePath('/notes/')} class="text-sm text-gray-500 hover:text-cyan-700 transition-colors">&larr; {t('tags.all')}</a>
+        <h1 class="text-2xl font-extrabold text-gray-800 mt-4">{displayTag}</h1>
+      </div>
+    </section>
+
+    {matchingProjects.length > 0 && (
+      <section class="py-12 md:py-16">
+        <div class="max-w-3xl mx-auto px-4">
+          <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-8">{t('tags.projects')}</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {matchingProjects.map((rawProject) => (
+              <ProjectCard project={localize(rawProject, lang)} lang={lang} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {matchingNotes.length > 0 && (
+      <section class="py-12 md:py-16">
+        <div class="max-w-3xl mx-auto px-4">
+          <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-8">{t('tags.notes')}</h2>
+          <div class="divide-y divide-gray-100">
+            {matchingNotes.map((note) => (
+              <a href={translatePath(`/notes/${note.id}`)} class="group block py-3 first:pt-0">
+                <span class="text-xs text-gray-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
+                <span class="text-sm text-gray-700 group-hover:text-cyan-700 transition-colors">{note.data.title}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+  <Footer />
+</BaseLayout>

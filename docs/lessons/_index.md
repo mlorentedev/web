@@ -14,6 +14,7 @@ lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 075 | [Each review round found a new hole in a regex HTML tokenizer; the parser already in the tree closed them all](lesson-075-each-review-round-found-a-new-hole-in-a-rege.md) | 2026-11-04 | `#testing` `#html` |
 | 074 | [Which font faces a first screen paints follows the content, so a preload scoped to a breakpoint misses](lesson-074-which-font-faces-a-first-screen-paints-follo.md) | 2026-11-04 | `#performance` `#fonts` `#testing` |
 | 073 | [Two PRs that make the same edit to a line merge without a conflict, so a hand-kept count ends one short](lesson-073-two-prs-that-make-the-same-edit-to-a-line-me.md) | 2026-11-04 | `#git` `#ci` `#testing` |
 | 072 | [A target-size check without the spacing exception counts 2641 failures the standard does not](lesson-072-a-target-size-check-without-the-spacing-exc.md) | 2026-11-04 | `#accessibility` `#testing` |

@@ -10,6 +10,7 @@ const translatePath = useTranslatedPath(lang);
 const navItems: { label: string; href: string; name?: boolean }[] = [
   { label: t('nav.lab'), href: translatePath('/lab/'), name: true },
   { label: t('nav.ai'), href: translatePath('/ai/') },
+  { label: t('nav.projects'), href: translatePath('/projects/') },
   { label: t('nav.notes'), href: translatePath('/notes/') },
   { label: t('nav.contact'), href: translatePath('/contact/') },
 ];
@@ -97,7 +98,9 @@ const langLinks = hasAlternates
         </svg>
         {t('nav.menu')}
       </summary>
-      <div class="absolute right-0 top-full mt-2 flex w-48 flex-col rounded-lg border border-accent-100 bg-white py-1 shadow-lg">
+      {/* The header is sticky, so scrolling the page never reveals the panel's
+          last rows on a short screen: the panel scrolls itself instead. */}
+      <div class="absolute right-0 top-full mt-2 flex max-h-[calc(100dvh-4.5rem)] w-48 flex-col overflow-y-auto rounded-lg border border-accent-100 bg-white py-1 shadow-lg">
         {links.map((item) => (
           <a
             href={item.href}

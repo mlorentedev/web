@@ -60,9 +60,6 @@ export function switchLangUrl(url: URL, targetLang: Lang): string {
     if (pathname.startsWith('/notes/')) {
       return '/es/notes/';
     }
-    if (pathname === '/projects' || pathname === '/projects/') {
-      return '/es/';
-    }
   }
 
   if (currentLang === defaultLang) {

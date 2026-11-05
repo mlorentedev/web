@@ -32,10 +32,10 @@ const anchors = (html) =>
     text: inner.replace(/<[^>]*>/g, '').trim(),
   }));
 
-// `/projects` is English-only (`hasAlternates={false}`); the card reaches Spanish
-// readers through the tag pages, which render the same `ProjectCard`.
+// The tag pages render the same `ProjectCard` as `/projects`, in both locales.
 for (const [page, lab] of [
   ['projects', '/lab/'],
+  ['es/projects', '/es/lab/'],
   ['tags/kubernetes', '/lab/'],
   ['es/tags/kubernetes', '/es/lab/'],
 ]) {
