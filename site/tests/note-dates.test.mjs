@@ -71,6 +71,10 @@ test('a raw note file is read by the same rule: language, draft and date', () =>
   assert.equal(publishedIn(note('pubDate: 2020-01-01'), 'es', now), false);
   assert.equal(publishedIn(note('pubDate: 2020-01-01'), 'en', now), true);
   assert.equal(publishedIn(note('lang: es'), 'es', now), false);
+  // A trailing comment is YAML, not part of the value.
+  assert.equal(publishedIn(note('pubDate: 2020-01-01 # first\nlang: es # Spanish'), 'es', now), true);
+  assert.equal(publishedIn(note('pubDate: 2020-01-01\nlang: es\ndraft: true # not yet'), 'es', now), false);
+  assert.equal(publishedIn(note('pubDate: "2020-01-01" # quoted\nlang: \'es\''), 'es', now), true);
 });
 
 // Any content-layer read: the notes are only ever read through notesIn().

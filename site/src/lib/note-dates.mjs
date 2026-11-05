@@ -38,8 +38,12 @@ export const writtenDateValid = (data) => !data.writtenDate || data.writtenDate.
  */
 export function publishedIn(text, lang, now) {
   const fm = text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
-  const field = (name) => fm.match(new RegExp(`^${name}:\\s*['"]?([^'"\\n#]*?)['"]?\\s*$`, 'm'))?.[1];
+  // A scalar the way YAML reads one here: quoted, or plain up to a ` #` comment.
+  const field = (name) => {
+    const m = fm.match(new RegExp(`^${name}:[ \\t]*(?:"([^"]*)"|'([^']*)'|([^\\n]*?))[ \\t]*(?:[ \\t]#[^\\n]*)?$`, 'm'));
+    return m ? (m[1] ?? m[2] ?? m[3]) : undefined;
+  };
   const pubDate = new Date(field('pubDate') ?? 'invalid');
   if (Number.isNaN(pubDate.valueOf())) return false;
-  return (field('lang') ?? 'en') === lang && isPublished({ draft: field('draft') === 'true', pubDate }, now);
+  return (field('lang') || 'en') === lang && isPublished({ draft: field('draft') === 'true', pubDate }, now);
 }
