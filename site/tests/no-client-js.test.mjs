@@ -31,7 +31,9 @@ const files = (dir) =>
     return entry.isDirectory() ? files(path) : [path];
   });
 
-const URL_ATTRS = new Set(['href', 'src', 'action', 'formaction']);
+// `data` is <object>'s URL. SVG's `xlink:href` needs no entry: the parser
+// reads it as `href` in the xlink namespace.
+const URL_ATTRS = new Set(['href', 'src', 'action', 'formaction', 'data']);
 
 // The browser's own reading of the page. An HTML5 parser settles what a regex
 // over the markup kept getting wrong: a repeated attribute keeps its first
@@ -91,6 +93,8 @@ test('the detector reads a URL and a repeated attribute the way the browser does
   assert.deepEqual(clientCode('<a href="&#106;avascript:alert(1)">a</a>'), ['javascript: href']);
   assert.deepEqual(clientCode('<a href="&#x6A;avascript&colon;x()">a</a>'), ['javascript: href']);
   assert.deepEqual(clientCode('<a href="java\nscript:x()">a</a>'), ['javascript: href']);
+  assert.deepEqual(clientCode('<svg><a xlink:href="javascript:x()"><text>x</text></a></svg>'), ['javascript: href']);
+  assert.deepEqual(clientCode('<object data="javascript:y()"></object>'), ['javascript: data']);
   assert.deepEqual(clientCode('<a href="javascript:x()" href="/safe/">a</a>'), ['javascript: href']);
   assert.deepEqual(clientCode('<a href="/safe/" href="javascript:x()">a</a>'), []);
   assert.deepEqual(clientCode('<script type="text/javascript" type="application/ld+json">x()</script>'), ['<script type="text/javascript">']);
