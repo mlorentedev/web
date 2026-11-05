@@ -17,7 +17,7 @@
  *   npm run build && npm test
  */
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -35,6 +35,7 @@ const pages = (dir) =>
   });
 
 test('every page stays within the raw and the gzipped HTML budget', () => {
+  assert.ok(existsSync(DIST), 'no dist/: run the build first');
   const files = pages(DIST);
   assert.ok(files.length > 0, 'no pages in dist: run the build first');
   const over = files.flatMap((file) => {
