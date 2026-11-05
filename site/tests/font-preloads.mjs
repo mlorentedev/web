@@ -56,13 +56,17 @@ function firstScreen() {
     return { family: face.family.replace(/["']/g, ''), style: face.style, weight, min, max, status: face.status };
   });
   // Every @font-face, wherever it sits: Tailwind can nest them in @layer,
-  // and a @media or @supports block nests them too.
+  // a @media or @supports block nests them too, and an @import brings a sheet.
   const fontFaces = (rules) =>
-    [...rules].flatMap((rule) => (rule instanceof CSSFontFaceRule ? [rule] : rule.cssRules ? fontFaces(rule.cssRules) : []));
+    [...rules].flatMap((rule) =>
+      rule instanceof CSSFontFaceRule
+        ? [rule]
+        : rule instanceof CSSImportRule
+          ? rule.styleSheet ? fontFaces(rule.styleSheet.cssRules) : []
+          : rule.cssRules ? fontFaces(rule.cssRules) : [],
+    );
   const files = new Map();
   for (const sheet of document.styleSheets) {
-    // A relative `url()` resolves against its stylesheet, not the page.
-    const base = sheet.href ?? location.href;
     // A cross-origin sheet hides its rules. Skipping it would read its faces as
     // having no file, and pass them, so the run stops and names the sheet.
     let rules;
@@ -79,7 +83,8 @@ function firstScreen() {
       if (!src) continue;
       const family = rule.style.getPropertyValue('font-family').replace(/["']/g, '').trim();
       const key = `${family}|${weightOf(rule.style.getPropertyValue('font-weight') || 'normal')}`;
-      const file = new URL(src, base).pathname;
+      // A relative `url()` resolves against the sheet that holds it, an imported one included.
+      const file = new URL(src, rule.parentStyleSheet?.href ?? location.href).pathname;
       // Two files for one face (a unicode-range split) would need the glyphs read to tell apart.
       if (files.has(key) && files.get(key) !== file) throw new Error(`${key} is served by ${files.get(key)} and ${file}: this check cannot tell which a glyph uses`);
       files.set(key, file);
