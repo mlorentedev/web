@@ -21,7 +21,10 @@ import { fileURLToPath } from 'node:url';
 
 // `.astro` and the MDX and Markdown content, which can carry raw anchors.
 const SRC = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
-const FILLS = /(?<![\w:-])bg-(ink-900|accent-700|cyan-700|panel-800\/80)(?![\w-])/;
+// A fill, bare or behind a breakpoint (`md:`): a CTA from some width up is still a CTA.
+// State prefixes (`hover:`, `focus:`) are not fills: a chip that turns accent on hover is no button.
+const BREAKPOINT = '(?:(?:sm|md|lg|xl|2xl):)?';
+const FILLS = new RegExp(`(?<![\\w:-])${BREAKPOINT}bg-(ink-900|accent-700|cyan-700|panel-800\\/80)(?![\\w-])`);
 
 const files = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -38,7 +41,9 @@ const CLASS = /\bclass(?::list)?\s*=\s*(?:"([^"]*)"|'([^']*)'|\{((?:[^{}]|\{[^{}
 // Bare (`rounded`, `border`, `shadow`) or with a value, after any variant prefix (`md:`, `2xl:`, `hover:`).
 const LOOK = /(?<![\w-])(?:[a-z0-9]+:)*(?:(?:bg|text|px|py|pl|pr|ps|pe|p)-|(?:border|shadow|rounded)(?![\w]))/;
 // Horizontal padding, from any utility that sets it.
-const PAD_X = /(?<![\w:-])(?:p|px|pl|pr|ps|pe)-/;
+const PAD_X = new RegExp(`(?<![\\w:-])${BREAKPOINT}(?:p|px|pl|pr|ps|pe)-`);
+// Markdown code fences are quoted examples, not markup.
+const withoutFences = (source) => source.replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '');
 
 /** The tags in `source` that style a CTA by hand, or restyle `Button` from outside. */
 function handRolled(source) {
@@ -69,11 +74,14 @@ test('the detector reads past a > in a value, reads class:list, and checks what 
   assert.equal(handRolled('<Button href="/" class="rounded">x</Button>').length, 1);
   assert.equal(handRolled('<Button href="/" class="2xl:px-6">x</Button>').length, 1);
   assert.equal(handRolled('<Button href="/" class="w-full md:w-auto self-start">x</Button>').length, 0);
+  assert.equal(handRolled('<a href="/x" class="md:px-6 md:bg-ink-900">x</a>').length, 1);
+  assert.equal(handRolled(withoutFences('Example:\n\n```html\n<a href="/" class="px-6 py-3 bg-cyan-700">x</a>\n```\n')).length, 0);
+  assert.equal(handRolled(withoutFences('```html\nquoted\n```\n<a class="px-4 bg-ink-900">x</a>\n')).length, 1);
 });
 
 test('every CTA button on the site is Button.astro', () => {
   const found = files(SRC)
     .filter((file) => !file.endsWith('/components/Button.astro'))
-    .flatMap((file) => handRolled(readFileSync(file, 'utf8')).map((classes) => `${relative(SRC, file)}: ${classes}`));
+    .flatMap((file) => handRolled(/\.mdx?$/.test(file) ? withoutFences(readFileSync(file, 'utf8')) : readFileSync(file, 'utf8')).map((classes) => `${relative(SRC, file)}: ${classes}`));
   assert.deepEqual(found, [], 'use <Button variant=…> instead of styling a CTA by hand');
 });
