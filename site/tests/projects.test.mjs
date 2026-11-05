@@ -47,10 +47,10 @@ for (const [page, lab] of [
 
   test(`/${page}: no link opens a new tab (WEB-167)`, () => {
     for (const a of anchors(read(page))) {
-      // `_self`, `_top` and `_parent` stay in this tab; `_blank` or a named context opens another.
+      // An empty value, `_self`, `_top` and `_parent` stay in this tab; `_blank` or a named context opens another.
       const m = /\starget\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(a.attributes);
-      const target = m ? (m[1] ?? m[2] ?? m[3]).trim().toLowerCase() : '_self';
-      assert.ok(['_self', '_top', '_parent'].includes(target), `${a.href} ("${a.text}") opens a new tab`);
+      const target = m ? (m[1] ?? m[2] ?? m[3]).trim().toLowerCase() : '';
+      assert.ok(['', '_self', '_top', '_parent'].includes(target), `${a.href} ("${a.text}") opens a new tab`);
     }
   });
 }
