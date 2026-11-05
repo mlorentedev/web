@@ -83,7 +83,8 @@ fi
 # (2026-11-04, WEB-185). The files are the count, so the index states none.
 root_index="$LESSONS_DIR/_index.md"
 if [ "$total" -gt 0 ] && [ -f "$root_index" ]; then
-  if grep -qE '^[0-9]+ lessons,' "$root_index"; then
+  # Any wording, outside the table rows: a row's title may mention lessons.
+  if grep -qE '^[^|]*[0-9]+ lessons' "$root_index"; then
     echo "check-lessons: ${root_index#"$ROOT"/} states a lesson count; the files are the count (WEB-185)"
     rc=1
   fi

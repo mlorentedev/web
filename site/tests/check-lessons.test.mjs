@@ -86,11 +86,42 @@ test('two lesson PRs, each green, merge into a master the lesson check passes', 
 
     git(root, 'switch', '-q', 'master');
     git(root, 'merge', '-q', '--no-edit', 'a');
-    const merged = spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', 'merge', '-q', '--no-edit', 'b'], { cwd: root });
-    if (merged.status !== 0) resolveIndex(root);
+    const merged = spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', '-c', 'commit.gpgsign=false', 'merge', '-q', '--no-edit', 'b'], {
+      cwd: root,
+      encoding: 'utf8',
+    });
+    if (merged.status !== 0) {
+      // Only the row conflict is resolved by hand; any other failure is the replay breaking.
+      assert.equal(git(root, 'diff', '--name-only', '--diff-filter=U').trim(), 'docs/lessons/_index.md', merged.stderr);
+      resolveIndex(root);
+    }
+    const lessons = readdirSync(join(root, 'docs/lessons'));
+    assert.ok(['900', '901'].every((n) => lessons.includes(`lesson-${n}-replayed.md`)), 'both lessons reached master');
 
     const result = check(root);
     assert.equal(result.status, 0, `master after both merges: ${result.stdout}`);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('the check rejects a lesson count however it is worded, and not a row that mentions one', () => {
+  const root = mkdtempSync(join(tmpdir(), 'check-lessons-'));
+  try {
+    mkdirSync(join(root, 'scripts'));
+    cpSync(join(repo, 'docs/lessons'), join(root, 'docs/lessons'), { recursive: true });
+    cpSync(join(repo, 'scripts/check-lessons.sh'), join(root, 'scripts/check-lessons.sh'));
+    const path = join(root, 'docs/lessons/_index.md');
+    const original = readFileSync(path, 'utf8');
+    const opening = 'One file per lesson, newest first.';
+    assert.ok(original.includes(opening), 'the index opens the way this test edits it');
+    for (const line of ['73 lessons, one file each, newest first.', 'There are 73 lessons here, newest first.', 'Lesson count: 73 lessons.']) {
+      writeFileSync(path, original.replace(opening, line));
+      assert.equal(check(root).status, 1, `accepted: "${line}"`);
+    }
+    const first = original.split('\n').find((l) => ROW.test(l));
+    writeFileSync(path, original.replace(first, first.replace('](', ' across 3 lessons](')));
+    assert.equal(check(root).status, 0, `a row title that mentions lessons is not a count: ${check(root).stdout}`);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
