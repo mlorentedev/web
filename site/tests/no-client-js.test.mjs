@@ -15,7 +15,7 @@
  *   npm run build && npm test
  */
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -76,6 +76,7 @@ test('the detector reads attributes with their quotes, and an unclosed script st
 });
 
 test('no page ships client JavaScript', () => {
+  assert.ok(existsSync(DIST), 'no dist/: run the build first');
   const all = files(DIST);
   const pages = all.filter((file) => file.endsWith('.html'));
   assert.ok(pages.length > 0, 'no pages in dist: run the build first');
