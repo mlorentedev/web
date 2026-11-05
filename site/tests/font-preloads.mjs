@@ -33,17 +33,25 @@ const HEIGHT = 800;
 
 /** Runs in the page: the font files the first viewport paints with, and the ones the head preloads. */
 function firstScreen() {
+  // `normal` and `bold` are 400 and 700; a range keeps both ends. The face and
+  // its rule are matched on this, so a rule that writes `bold` still matches.
+  const weightOf = (value) =>
+    value.trim().split(/\s+/).map((w) => ({ normal: '400', bold: '700' })[w] ?? w).join(' ');
   const faces = [...document.fonts].map((face) => {
-    const [min, max = min] = face.weight.split(/\s+/).map(Number);
-    return { family: face.family.replace(/["']/g, ''), style: face.style, weight: face.weight, min, max };
+    const weight = weightOf(face.weight);
+    const [min, max = min] = weight.split(' ').map(Number);
+    return { family: face.family.replace(/["']/g, ''), style: face.style, weight, min, max, status: face.status };
   });
+  // Every @font-face, wherever it sits: Tailwind can nest them in @layer,
+  // and a @media or @supports block nests them too.
+  const fontFaces = (rules) =>
+    [...rules].flatMap((rule) => (rule instanceof CSSFontFaceRule ? [rule] : rule.cssRules ? fontFaces(rule.cssRules) : []));
   const files = new Map();
   for (const sheet of document.styleSheets) {
-    for (const rule of sheet.cssRules) {
-      if (!(rule instanceof CSSFontFaceRule)) continue;
+    for (const rule of fontFaces(sheet.cssRules)) {
       const src = /url\(["']?([^"')]+)/.exec(rule.style.getPropertyValue('src'))?.[1];
       const family = rule.style.getPropertyValue('font-family').replace(/["']/g, '').trim();
-      files.set(`${family}|${rule.style.getPropertyValue('font-weight').trim()}`, new URL(src, location.href).pathname);
+      files.set(`${family}|${weightOf(rule.style.getPropertyValue('font-weight') || 'normal')}`, new URL(src, location.href).pathname);
     }
   }
   // CSS Fonts 4 §5.2: a face whose range holds the weight wins; otherwise
@@ -57,6 +65,7 @@ function firstScreen() {
     return (weight <= 500 ? [...lighter, ...heavier] : [...heavier, ...lighter])[0];
   };
   const painted = new Set();
+  const unloaded = new Set();
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     const el = node.parentElement;
@@ -69,13 +78,17 @@ function firstScreen() {
     const family = style.fontFamily.split(',')[0].replace(/["']/g, '').trim();
     const face = pick(family, Number(style.fontWeight));
     if (!face) continue; // a system family: no file to preload
-    painted.add(files.get(`${face.family}|${face.weight}`) ?? `${face.family} ${face.weight} (no src)`);
+    const file = files.get(`${face.family}|${face.weight}`) ?? `${face.family} ${face.weight} (no src)`;
+    painted.add(file);
+    // A face the page paints with and never loaded is drawn in a fallback:
+    // the check would count a file the visitor does not get.
+    if (face.status !== 'loaded') unloaded.add(`${file} (${face.status})`);
   }
   // A preload with a `media` the viewport does not match is never fetched.
   const preloaded = [...document.querySelectorAll('link[rel="preload"][as="font"]')]
     .filter((l) => !l.media || matchMedia(l.media).matches)
     .map((l) => new URL(l.href).pathname);
-  return { painted: [...painted].sort(), preloaded: preloaded.sort() };
+  return { painted: [...painted].sort(), preloaded: preloaded.sort(), unloaded: [...unloaded].sort() };
 }
 
 const { url: BASE, server } = await labBaseUrl();
@@ -94,7 +107,11 @@ try {
         failures++;
       } else {
         await page.evaluate(() => document.fonts.ready);
-        const { painted, preloaded } = await page.evaluate(firstScreen);
+        const { painted, preloaded, unloaded } = await page.evaluate(firstScreen);
+        for (const face of unloaded) {
+          console.error(`✗ ${path} @ ${width}px paints with ${name(face)}, which did not load`);
+          failures++;
+        }
         painted.forEach((f) => used.add(f));
         preloaded.forEach((f) => preloads.add(f));
         console.log(`  ${path} @ ${width}px paints ${painted.map(name).join(', ')}`);
