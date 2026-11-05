@@ -9,7 +9,8 @@
  * preload waits for the stylesheet before it is requested.
  *
  * On each page in PAGES at each width, every visible text box inside the first
- * viewport is read for its computed family and weight, and the weight is
+ * viewport (cut by any ancestor that clips, so an `sr-only` label paints nothing)
+ * is read for its computed family and weight, and the weight is
  * matched to the `@font-face` that serves it, the way the browser picks it
  * (CSS Fonts 4 §5.2). A system family (`font-mono`) has no file and is not
  * counted. The faces painted there are printed, then two checks over the
@@ -64,15 +65,29 @@ function firstScreen() {
     const heavier = candidates.filter((f) => f.min > weight).sort((a, b) => a.min - b.min);
     return (weight <= 500 ? [...lighter, ...heavier] : [...heavier, ...lighter])[0];
   };
+  // The part of a text box the reader can see: cut by the viewport and by every
+  // ancestor that clips. An `sr-only` label keeps a 1×1 box and a collapsed
+  // `max-height: 0` panel keeps its layout position; neither paints a glyph.
+  const shown = (rect, el) => {
+    let { left, top, right, bottom } = rect;
+    [left, top, right, bottom] = [Math.max(left, 0), Math.max(top, 0), Math.min(right, innerWidth), Math.min(bottom, innerHeight)];
+    for (let a = el; a && a !== document.documentElement; a = a.parentElement) {
+      const s = getComputedStyle(a);
+      if (s.overflowX === 'visible' && s.overflowY === 'visible' && s.clipPath === 'none' && s.clip === 'auto') continue;
+      const box = a.getBoundingClientRect();
+      [left, top, right, bottom] = [Math.max(left, box.left), Math.max(top, box.top), Math.min(right, box.right), Math.min(bottom, box.bottom)];
+    }
+    return { width: right - left, height: bottom - top };
+  };
   const painted = new Set();
   const unloaded = new Set();
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     const el = node.parentElement;
-    if (!node.textContent.trim() || !el?.checkVisibility({ visibilityProperty: true, opacityProperty: true })) continue;
+    if (!node.textContent.trim() || !el?.checkVisibility({ visibilityProperty: true, opacityProperty: true, contentVisibilityAuto: true })) continue;
     const range = document.createRange();
     range.selectNodeContents(node);
-    const onScreen = [...range.getClientRects()].some((r) => r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth);
+    const onScreen = [...range.getClientRects()].map((r) => shown(r, el)).some((r) => r.width > 1 && r.height > 1);
     if (!onScreen) continue;
     const style = getComputedStyle(el);
     const family = style.fontFamily.split(',')[0].replace(/["']/g, '').trim();
