@@ -19,6 +19,7 @@ import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+// `.astro` and the MDX and Markdown content, which can carry raw anchors.
 const SRC = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
 const FILLS = /(?<![\w:-])bg-(ink-900|accent-700|cyan-700|panel-800\/80)(?![\w-])/;
 
@@ -26,7 +27,7 @@ const files = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) return files(path);
-    return entry.name.endsWith('.astro') ? [path] : [];
+    return /\.(astro|mdx?)$/.test(entry.name) ? [path] : [];
   });
 
 // One opening tag, quote- and brace-aware, so a `>` inside a value does not end it.
