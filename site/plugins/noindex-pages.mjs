@@ -32,8 +32,9 @@ export function noindexPages() {
       hooks: {
         'astro:build:done': ({ dir }) => {
           const root = fileURLToPath(dir);
-          for (const file of files(root).filter((f) => f.endsWith('/index.html'))) {
-            if (NOINDEX.test(readFileSync(file, 'utf8'))) paths.add(`/${relative(root, file).split(sep).join('/')}`.replace(/index\.html$/, ''));
+          for (const file of files(root)) {
+            const route = `/${relative(root, file).split(sep).join('/')}`;
+            if (route.endsWith('/index.html') && NOINDEX.test(readFileSync(file, 'utf8'))) paths.add(route.replace(/index\.html$/, ''));
           }
           read = true;
         },
