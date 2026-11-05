@@ -109,15 +109,17 @@ function firstScreen() {
     const family = style.fontFamily.split(',')[0].replace(/["']/g, '').trim();
     const face = pick(family, Number(style.fontWeight));
     if (!face) continue; // a system family: no file to preload
-    const file = files.get(`${face.family}|${face.weight}`) ?? `${face.family} ${face.weight} (no src)`;
-    painted.add(file);
+    const file = files.get(`${face.family}|${face.weight}`);
     // A face the page paints with and never loaded is drawn in a fallback:
     // the check would count a file the visitor does not get.
-    if (face.status !== 'loaded') unloaded.add(`${file} (${face.status})`);
+    if (face.status !== 'loaded') unloaded.add(`${file ?? `${face.family} ${face.weight}`} (${face.status})`);
+    if (!file) continue; // a `local()`-only face: no file to preload
+    painted.add(file);
   }
   // A preload with a `media` the viewport does not match is never fetched.
+  // An empty `media` scopes nothing: the same reading as the scope check below.
   const preloaded = [...document.querySelectorAll('link[rel="preload"][as="font"]')]
-    .filter((l) => !l.media || matchMedia(l.media).matches)
+    .filter((l) => !l.media.trim() || matchMedia(l.media).matches)
     .map((l) => new URL(l.href).pathname);
   return { painted: [...painted].sort(), preloaded: preloaded.sort(), unloaded: [...unloaded].sort() };
 }
@@ -139,7 +141,10 @@ try {
       } else {
         await page.evaluate(() => document.fonts.ready);
         const { painted, preloaded, unloaded } = await page.evaluate(firstScreen);
-        const scoped = await page.evaluate(() => [...document.querySelectorAll('link[rel="preload"][as="font"][media]')].map((l) => `${l.href} (${l.media})`));
+        // Any `media` but an empty one, `all` included: a preload is for every screen or it is wrong.
+        const scoped = await page.evaluate(() =>
+          [...document.querySelectorAll('link[rel="preload"][as="font"]')].filter((l) => l.media.trim()).map((l) => `${l.href} (${l.media})`),
+        );
         for (const link of scoped) {
           console.error(`✗ ${path} @ ${width}px preloads ${name(link)}: a font preload is never scoped by media`);
           failures++;
