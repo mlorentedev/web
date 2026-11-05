@@ -4,7 +4,7 @@
 # 2. Every lesson file is listed in its _index.md and every indexed file exists.
 # 3. When lessons live in category directories, docs/lessons/_index.md (the root index the
 #    pointer stub links) must still exist.
-# 4. The root index's "N lessons" counter matches the files, and its rows run newest first.
+# 4. The root index's rows run newest first, and it states no lesson count of its own.
 # Lessons may live flat in docs/lessons/ or one level down in category directories
 # (docs/lessons/<category>/ with a per-category _index.md); both layouts are checked.
 # Portable: bash and zsh, GNU and BSD find (no -printf), filenames compared as literal
@@ -75,15 +75,16 @@ if [ "$total" -gt 0 ] && [ ! -f "$LESSONS_DIR/_index.md" ]; then
   rc=1
 fi
 
-# --- 4. the root index's counter and row order, when it has them ---
-# Parallel lesson PRs all edit the same opening line and first rows, and each resolves
-# the conflict by hand; two merges on 2026-09-27 left "61 lessons" over 62 files, with
-# 062 listed above 063. Neither broke a link, so checks 1-3 stayed green.
+# --- 4. the root index's row order, and no hand-kept count ---
+# Parallel lesson PRs all edit the first rows, and each resolves the conflict by hand;
+# two merges on 2026-09-27 listed 062 above 063, and no link broke, so checks 1-3
+# stayed green. The index also used to say "N lessons": two PRs each moved it from
+# 69 to 70, git merged the identical edits silently, and master said 70 over 71 files
+# (2026-11-04, WEB-185). The files are the count, so the index states none.
 root_index="$LESSONS_DIR/_index.md"
 if [ "$total" -gt 0 ] && [ -f "$root_index" ]; then
-  stated="$(grep -m1 -oE '^[0-9]+ lessons,' "$root_index" | grep -oE '^[0-9]+' || true)"
-  if [ -n "$stated" ] && [ "$stated" -ne "$total" ]; then
-    echo "check-lessons: ${root_index#"$ROOT"/} says $stated lessons, found $total"
+  if grep -qE '^[0-9]+ lessons,' "$root_index"; then
+    echo "check-lessons: ${root_index#"$ROOT"/} states a lesson count; the files are the count (WEB-185)"
     rc=1
   fi
   prev=""
