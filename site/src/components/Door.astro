@@ -1,5 +1,6 @@
 ---
-// The one way in (WEB-137): a plain mail, nothing prefilled (Manu, #586), plus
+// The one way in (WEB-137): a mail with only a neutral subject, so mail from the
+// site can be filtered, and an empty body (Manu, #586), plus
 // the busy line while a project is running. LinkedIn lives in the footer only.
 // Placed from the contact markdown, so the order of the page stays Manu's to edit.
 import { site } from '../data/site';
@@ -9,7 +10,7 @@ import { getLocale, getDateLocale, useTranslations } from '../i18n/utils';
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 
-const mailto = `mailto:${site.social.email}`;
+const mailto = `mailto:${site.social.email}?subject=${encodeURIComponent(t('door.subject'))}`;
 
 // Judged at build time; the inline script below hides the line in the browser
 // once the date passes, so a page built before it cannot keep saying it after.

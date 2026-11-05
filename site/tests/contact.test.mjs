@@ -106,11 +106,13 @@ for (const { lang, contact } of pages) {
 // ── One door ───────────────────────────────────────────────────────────────
 
 for (const { lang, contact, home, href } of pages) {
-  test(`[${lang}] the door is a plain mailto with nothing prefilled`, () => {
+  test(`[${lang}] the door is a mailto with a subject and no body`, () => {
     const door = element(dist(contact), 'data-door');
-    const mailto = door.match(/href="(mailto:[^"]+)"/)?.[1] ?? '';
-    // Manu, #586: "que no salga nada escrito, es un simple email".
-    assert.equal(mailto, 'mailto:manu@mlorente.dev', `dist/${contact}: the door mail carries a subject or body`);
+    const mailto = (door.match(/href="(mailto:[^"]+)"/)?.[1] ?? '').replace(/&amp;/g, '&');
+    // Manu, #586: "que no salga nada escrito, es un simple email" — a subject
+    // to filter mail from the site, nothing for the sender to delete.
+    assert.match(mailto, /^mailto:manu@mlorente\.dev\?subject=[^&]+$/, `dist/${contact}: expected only a subject, got ${mailto}`);
+    assert.match(decodeURIComponent(mailto.split('subject=')[1]), /mlorente\.dev/);
   });
 
   test(`[${lang}] the footer links LinkedIn`, () => {
