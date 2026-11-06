@@ -266,6 +266,7 @@ export const ui = {
 
     // Notes page
     'lab.notes.label': 'Notes on this:',
+    'lab.notes.inEnglish': 'Notes (in English)',
     'notes.title': 'Notes',
     'notes.description': 'Platform engineering notes — from hardware to Kubernetes.',
     'notes.empty': 'Coming soon.',
@@ -553,6 +554,7 @@ export const ui = {
 
     // Notes page
     'lab.notes.label': 'Notas sobre esto:',
+    'lab.notes.inEnglish': 'Notas (en inglés)',
     'notes.title': 'Notas',
     'notes.description': 'Notas de ingeniería de plataformas — del hardware a Kubernetes.',
     'notes.empty': 'Próximamente.',

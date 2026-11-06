@@ -1,9 +1,9 @@
 ---
 /**
  * "Notes on this" under a Lab section (#592): the notes `lab-notes.ts` maps
- * to its number, published ones only. Notes are written in English, so on
- * the Spanish page each title keeps its language and links to the English
- * note, the way the Spanish notes index sends readers there.
+ * to its number, published ones only. A locale with no notes of its own (the
+ * Spanish one, today) shows one link to the English notes instead, as the
+ * Spanish notes index does, rather than English titles in Spanish prose.
  */
 import { labNotes } from '../data/lab-notes';
 import { notesIn } from '../lib/locale-pages';
@@ -20,8 +20,8 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
 const own = await notesIn(lang);
-const source = own.length > 0 ? own : await notesIn('en');
-const fallback = source !== own;
+const fallback = own.length === 0;
+const source = fallback ? await notesIn('en') : own;
 const byId = new Map(source.map((note) => [note.id, note]));
 const notes = (labNotes[number] ?? []).flatMap((id) => byId.get(id) ?? []);
 ---
@@ -30,17 +30,16 @@ const notes = (labNotes[number] ?? []).flatMap((id) => byId.get(id) ?? []);
   <div data-lab-notes={number} class="max-w-6xl mx-auto px-4 -mt-4 pb-10">
     <p class="text-sm text-ink-600">
       <span class="font-mono text-ink-500">{t('lab.notes.label')}</span>{' '}
-      {notes.map((note, i) => (
-        <>
-          {i > 0 && <span aria-hidden="true"> · </span>}
-          <a
-            href={fallback ? `/notes/${note.id}/` : translatePath(`/notes/${note.id}`)}
-            lang={fallback ? 'en' : undefined}
-            translate={fallback ? 'no' : undefined}
-            class="text-accent-700 hover:text-accent-800 underline"
-          >{note.data.title}</a>
-        </>
-      ))}
+      {fallback ? (
+        <a href="/notes/" hreflang="en" class="text-accent-700 hover:text-accent-800 underline">{t('lab.notes.inEnglish')}</a>
+      ) : (
+        notes.map((note, i) => (
+          <>
+            {i > 0 && <span aria-hidden="true"> · </span>}
+            <a href={translatePath(`/notes/${note.id}`)} class="text-accent-700 hover:text-accent-800 underline">{note.data.title}</a>
+          </>
+        ))
+      )}
     </p>
   </div>
 )}
