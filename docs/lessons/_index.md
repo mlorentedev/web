@@ -15,6 +15,7 @@ lessons were filed and never change, so a citation stays valid.
 | # | Lesson | Date | Tags |
 |---|---|---|---|
 | 080 | [A generated asset under public/ ships before the note it belongs to is published](lesson-080-a-generated-asset-under-public-ships-before.md) | 2026-11-06 | `#astro` `#publishing` `#testing` |
+| 078 | [An allowlist for upstream input refused the site's own fallback, so the test failed under the wrong message](lesson-078-an-allowlist-for-upstream-input-refused-the.md) | 2026-11-05 | `#testing` `#ci` `#security` |
 | 077 | [A second astro build over fixture content writes the fixtures into the content store the next real build reads](lesson-077-a-second-astro-build-over-fixture-content-wr.md) | 2026-11-04 | `#astro` `#testing` |
 | 076 | [A noindex page named as a twin's alternate is a hreflang error, and a per-page noindex rule misses it](lesson-076-a-noindex-page-named-as-a-twin-s-alternate-i.md) | 2026-11-04 | `#seo` `#i18n` |
 | 075 | [Each review round found a new hole in a regex HTML tokenizer; the parser already in the tree closed them all](lesson-075-each-review-round-found-a-new-hole-in-a-rege.md) | 2026-11-04 | `#testing` `#html` |
