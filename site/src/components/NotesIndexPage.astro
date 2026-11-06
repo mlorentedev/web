@@ -9,6 +9,7 @@ import { site } from '../data/site';
 import { useTranslations, useTranslatedPath, formatDate, isoDate } from '../i18n/utils';
 import type { Lang } from '../i18n/ui';
 import { notesIn, otherLang, type Note } from '../lib/locale-pages';
+import { series, startHere } from '../data/series';
 
 interface Props {
   lang: Lang;
@@ -20,6 +21,17 @@ const translatePath = useTranslatedPath(lang);
 
 const notes: Note[] = await notesIn(lang);
 const twinHasNotes = (await notesIn(otherLang(lang))).length > 0;
+
+// Series and "Start here" name note ids; only the ones published in this
+// locale are shown, so a draft or an untranslated note never links to a 404.
+const byId = new Map(notes.map((note) => [note.id, note]));
+const pick = (ids: string[]) => ids.flatMap((id) => byId.get(id) ?? []);
+const pinned = pick(startHere);
+const shelves = series.map((s) => ({ ...s, members: pick(s.notes) })).filter((s) => s.members.length > 0);
+
+// The archive, newest year first; `notes` is already newest first.
+const years = [...new Set(notes.map((note) => note.data.pubDate.getUTCFullYear()))];
+const inYear = (year: number) => notes.filter((note) => note.data.pubDate.getUTCFullYear() === year);
 ---
 
 <BaseLayout title={`${t('notes.title')} — ${site.author}`} description={t('notes.description')} noindex={notes.length === 0} hasAlternates={twinHasNotes}>
@@ -36,26 +48,64 @@ const twinHasNotes = (await notesIn(otherLang(lang))).length > 0;
             <p class="text-gray-500">{t('notes.empty')}</p>
           )
         ) : (
-          <div class="divide-y divide-gray-200">
-            {notes.map((note) => (
-                <div class="py-6 first:pt-0 last:pb-0">
-                  <a href={translatePath(`/notes/${note.id}`)} class="group block">
-                    <time datetime={isoDate(note.data.pubDate)} class="text-xs text-gray-500">{formatDate(note.data.pubDate, lang)}</time>
-                    <h2 class="font-bold text-gray-800 mt-1 group-hover:text-cyan-700 transition-colors">
-                      {note.data.title}
-                    </h2>
-                    <p class="text-gray-600 text-sm mt-1.5 leading-relaxed">{note.data.description}</p>
-                  </a>
-                  <div class="flex flex-wrap gap-1.5 mt-3">
-                    {note.data.tags.map((tag: string) => (
-                      <a href={translatePath(`/tags/${tag.toLowerCase()}`)} data-tag-chip class="inline-flex min-h-7 min-w-6 items-center justify-center px-2 text-xs rounded bg-gray-100 text-gray-600 hover:bg-cyan-700 hover:text-white transition-colors">
-                        {tag}
-                      </a>
+          <>
+            {pinned.length > 0 && (
+              <section data-start-here aria-labelledby="start-here" class="mb-12">
+                <h2 id="start-here" class="text-lg font-bold text-ink-900 mb-4">{t('notes.startHere')}</h2>
+                <ul class="space-y-2">
+                  {pinned.map((note) => (
+                    <li><a href={translatePath(`/notes/${note.id}`)} class="text-accent-700 hover:text-accent-800 underline">{note.data.title}</a></li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {shelves.length > 0 && (
+              <section data-series aria-labelledby="series" class="mb-12">
+                <h2 id="series" class="text-lg font-bold text-ink-900 mb-4">{t('notes.series')}</h2>
+                <div class="grid gap-6 sm:grid-cols-2">
+                  {shelves.map((shelf) => (
+                    <div data-series-id={shelf.id}>
+                      <h3 class="font-bold text-gray-800">{shelf.title[lang]}</h3>
+                      <p class="text-xs font-mono text-gray-500 mb-2">{t('notes.seriesCount').replace('{n}', String(shelf.members.length))}</p>
+                      <ol class="list-decimal list-inside space-y-1 text-sm text-gray-700">
+                        {shelf.members.map((note) => (
+                          <li><a href={translatePath(`/notes/${note.id}`)} class="hover:text-accent-700 underline">{note.data.title}</a></li>
+                        ))}
+                      </ol>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+            <section data-archive aria-labelledby="archive">
+              <h2 id="archive" class="text-lg font-bold text-ink-900 mb-4">{t('notes.archive')}</h2>
+              {years.map((year) => (
+                <div data-year={year} class="mb-8">
+                  <h3 class="text-sm font-mono text-gray-500 mb-2">{year}</h3>
+                  <div class="divide-y divide-gray-200">
+                    {inYear(year).map((note) => (
+                      <div class="py-6 first:pt-2 last:pb-0">
+                        <a href={translatePath(`/notes/${note.id}`)} class="group block">
+                          <time datetime={isoDate(note.data.pubDate)} class="text-xs text-gray-500">{formatDate(note.data.pubDate, lang)}</time>
+                          <h4 class="font-bold text-gray-800 mt-1 group-hover:text-cyan-700 transition-colors">
+                            {note.data.title}
+                          </h4>
+                          <p class="text-gray-600 text-sm mt-1.5 leading-relaxed">{note.data.description}</p>
+                        </a>
+                        <div class="flex flex-wrap gap-1.5 mt-3">
+                          {note.data.tags.map((tag: string) => (
+                            <a href={translatePath(`/tags/${tag.toLowerCase()}`)} data-tag-chip class="inline-flex min-h-7 min-w-6 items-center justify-center px-2 text-xs rounded bg-gray-100 text-gray-600 hover:bg-cyan-700 hover:text-white transition-colors">
+                              {tag}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
-            ))}
-          </div>
+              ))}
+            </section>
+          </>
         )}
       </div>
     </section>
