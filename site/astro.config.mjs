@@ -16,6 +16,10 @@ const noindex = noindexPages();
 export default defineConfig({
   site: 'https://mlorente.dev',
   output: 'static',
+  // The content store lives here. tests/note-dates.test.mjs builds over fixture
+  // notes, and points this at a scratch dir so the fixtures never enter the
+  // store the next real build reads (WEB-138).
+  cacheDir: process.env.ASTRO_CACHE_DIR,
   // Tailwind 4 runs as a Vite plugin, configured in `src/styles/tailwind.css`
   // (WEB-022). It replaced a PostCSS config that had replaced the deprecated
   // `@astrojs/tailwind` integration, and it prefixes CSS itself.

@@ -1,9 +1,9 @@
 ---
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Lang } from '../i18n/ui';
 import { useTranslations, useTranslatedPath } from '../i18n/utils';
+import { notesIn, type Note } from '../lib/locale-pages';
 
 interface Props {
   lang: Lang;
@@ -13,16 +13,13 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-const latest = async (l: Lang) =>
-  (await getCollection('notes', ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === l))
-    .sort((a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-    .slice(0, 3);
+const latest = async (l: Lang) => (await notesIn(l)).slice(0, 3);
 
 // A locale with no notes of its own shows the English ones, marked as English,
 // rather than an empty "coming soon" band on the home (#499).
 const own = await latest(lang);
 const fallback = own.length === 0 && lang !== 'en';
-const notes: CollectionEntry<'notes'>[] = fallback ? await latest('en') : own;
+const notes: Note[] = fallback ? await latest('en') : own;
 const noteHref = (id: string) => (fallback ? `/notes/${id}/` : translatePath(`/notes/${id}/`));
 const allHref = fallback ? '/notes/' : translatePath('/notes/');
 ---

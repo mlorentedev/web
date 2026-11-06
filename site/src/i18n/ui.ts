@@ -268,6 +268,7 @@ export const ui = {
     'notes.articles': 'What I think',
     'notes.empty': 'Coming soon.',
     'notes.inEnglish': 'For now I write in English.',
+    'notes.published': 'published',
     'notes.all': 'All notes',
 
     // Note detail
@@ -549,6 +550,7 @@ export const ui = {
     'notes.articles': 'Lo que pienso',
     'notes.empty': 'Próximamente.',
     'notes.inEnglish': 'Por ahora escribo en inglés.',
+    'notes.published': 'publicada el',
     'notes.all': 'Todas las notas',
 
     // Note detail
