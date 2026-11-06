@@ -3,9 +3,18 @@ name: Repo hygiene
 # Four guards that need no toolchain: lesson numbering/index integrity,
 # SHA-pinned actions, docs paths that exist, and the AGENTS.md stack majors.
 # All four run under bash and zsh and print what failed.
+#
+# Two callers, as with test.yml (WEB-124):
+#   - pr-validation.yml calls it as `hygiene`, a job in `gate.needs`, so a red
+#     check here blocks the merge. With its own `pull_request` trigger it ran in
+#     a workflow `gate` cannot observe, and a red square beside a green gate
+#     blocked nothing.
+#   - the push to master runs it again after a merge, where no gate applies.
+# No `pull_request` trigger of its own: it would run each check twice per PR,
+# under two names.
 
 on:
-  pull_request:
+  workflow_call:
   push:
     branches: [master]
 
