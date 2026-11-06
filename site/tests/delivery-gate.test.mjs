@@ -213,3 +213,24 @@ test('every test script in package.json runs in the shared suite', () => {
     );
   }
 });
+
+test('Chromium comes from a cache keyed on the Playwright version, and each install step fails on its own budget (WEB-201)', () => {
+  // An uncached download once took 7 of the job's 10 minutes, and the gate said only "test (cancelled)".
+  const installs = suite
+    .split('\n')
+    .filter((l) => l.trim().startsWith('- name: '))
+    .map((l) => step(suite, l.trim().slice('- name: '.length)))
+    .filter((body) => /run:\s*npx playwright install/.test(body));
+  assert.ok(installs.length > 0, 'test.yml installs no browser: the build renders diagrams with one');
+  for (const body of installs) {
+    assert.match(body, /^ {8}timeout-minutes:\s*\d+\s*$/m, `this step has no budget of its own:\n${body}`);
+  }
+  const cache = step(suite, 'Restore Chromium from the cache');
+  assert.ok(cache, 'test.yml has no Chromium cache step');
+  assert.match(cache, /uses:\s*actions\/cache@[0-9a-f]{40}\b/, 'the cache action is pinned by sha');
+  assert.match(cache, /path:\s*~\/\.cache\/ms-playwright/);
+  assert.match(cache, /key:.*steps\.playwright\.outputs\.version/, 'a key without the version restores a Chromium the new Playwright does not use');
+  const download = installs.find((body) => /run:\s*npx playwright install chromium\s*$/m.test(body));
+  assert.ok(download, 'no step downloads the browser on a cache miss');
+  assert.match(download, /if:\s*steps\.chromium-cache\.outputs\.cache-hit != 'true'/, 'the download runs even on a cache hit');
+});

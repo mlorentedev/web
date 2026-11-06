@@ -78,11 +78,38 @@ jobs:
       # (#176), so it needs one — `npm ci` installs the Playwright package but
       # never its browsers. The image build has the same requirement and meets
       # it in the Dockerfile with `install-deps chromium` as root followed by
-      # `playwright install chromium`; `--with-deps` is the runner's equivalent.
-      # Without this the build dies on the first .mdx with a diagram in it.
-      - name: Install Chromium for the diagram renderer
+      # `playwright install chromium`; the two steps below are the runner's
+      # equivalent. Without them the build dies on the first .mdx with a diagram.
+      #
+      # The browser is cached, keyed on the Playwright version npm resolved, since
+      # each version pins its own Chromium build. Downloading it uncached once
+      # took 7 min of the job's 10 (WEB-201), so the job was cancelled and the
+      # gate said only "test (cancelled)". Each install step has its own budget,
+      # so a stalled download now fails on the step that stalled, by name.
+      - name: Resolve the Playwright version
+        id: playwright
         working-directory: site
-        run: npx playwright install --with-deps chromium
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Restore Chromium from the cache
+        id: chromium-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
+
+      - name: Download Chromium for the diagram renderer
+        if: steps.chromium-cache.outputs.cache-hit != 'true'
+        working-directory: site
+        timeout-minutes: 4
+        run: npx playwright install chromium
+
+      # The system libraries are not in the cache: apt installs them outside the
+      # user's home, and they come from the runner image's own mirror.
+      - name: Install Chromium's system libraries
+        working-directory: site
+        timeout-minutes: 4
+        run: npx playwright install-deps chromium
 
       # `npm run build` must come first and is not redundant with the Docker
       # build: the audit tests read `dist/`, and the image build produces it
