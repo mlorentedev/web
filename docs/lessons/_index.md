@@ -14,6 +14,7 @@ lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 082 | [Per-request gzip on a static site is CPU the pod pays on every view](lesson-082-per-request-gzip-on-a-static-site-is-cpu-the.md) | 2026-11-06 | `#nginx` `#performance` `#capacity` |
 | 078 | [An allowlist for upstream input refused the site's own fallback, so the test failed under the wrong message](lesson-078-an-allowlist-for-upstream-input-refused-the.md) | 2026-11-05 | `#testing` `#ci` `#security` |
 | 077 | [A second astro build over fixture content writes the fixtures into the content store the next real build reads](lesson-077-a-second-astro-build-over-fixture-content-wr.md) | 2026-11-04 | `#astro` `#testing` |
 | 076 | [A noindex page named as a twin's alternate is a hreflang error, and a per-page noindex rule misses it](lesson-076-a-noindex-page-named-as-a-twin-s-alternate-i.md) | 2026-11-04 | `#seo` `#i18n` |
