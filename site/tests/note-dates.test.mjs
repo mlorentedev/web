@@ -140,7 +140,8 @@ function buildAsOf(now) {
       env: { ...process.env, NOTES_DIR: 'tests/fixtures/notes', NOTES_NOW: now, ASTRO_CACHE_DIR: join(scratch, 'cache') },
       stdio: 'pipe',
     });
-    return new Map(files(out).filter((f) => /\.(html|xml|json|txt)$/.test(f)).map((f) => [`/${relative(out, f)}`, readFileSync(f, 'utf8')]));
+    // Every file, by path; a binary one (a note's card) is there by name, with no text.
+    return new Map(files(out).map((f) => [`/${relative(out, f)}`, /\.(html|xml|json|txt)$/.test(f) ? readFileSync(f, 'utf8') : '']));
   } finally {
     rmSync(scratch, { recursive: true, force: true });
   }
@@ -160,6 +161,7 @@ test('a note dated after the build is in no file, and ships once the clock passe
   await t.test('before its date: no page, listing, tag page, feed entry or sitemap url', () => {
     assert.deepEqual(mentions(before, 'fixture-future-note'), []);
     assert.deepEqual(mentions(before, 'a note dated 2030-06-01'), []);
+    assert.deepEqual([...before.keys()].filter((path) => path.includes('fixture-future-note')), [], 'a file named for the note, such as its card');
     // A tag only the future note carries names no slug: look for its URL instead.
     assert.equal(before.has('/tags/kustomize/index.html'), false, 'a tag page for a note not yet published');
     assert.deepEqual(mentions(before, '/tags/kustomize/'), []);
@@ -171,6 +173,7 @@ test('a note dated after the build is in no file, and ships once the clock passe
       assert.ok(where.includes(path), `${path} does not list the note`);
     }
     assert.ok(after.has('/tags/kustomize/index.html'), 'its own tag page');
+    assert.ok(after.has('/og/notes/fixture-future-note.png'), 'its card');
   });
 
   await t.test('a backdated note shows when it was written, says when it was published, and RSS orders it by pubDate', () => {

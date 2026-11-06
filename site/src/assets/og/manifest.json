@@ -1,0 +1,70 @@
+{
+  "bios-auto-power-on": {
+    "hash": "8163f06f52025065",
+    "title": "BIOS Auto-Power-On: The Dumbest Problem That Took Hours"
+  },
+  "bootstrapping-k3s-ansible": {
+    "hash": "f3dc9b61714f8b44",
+    "title": "Bootstrapping K3s with Ansible"
+  },
+  "building-a-homelab-idp": {
+    "hash": "762628a3de544d9a",
+    "title": "The Homelab IDP I Planned, and the One I Actually Run"
+  },
+  "debugging-dns-systematic": {
+    "hash": "bf43e70368a28f75",
+    "title": "Debugging DNS: My Systematic Approach"
+  },
+  "fail-closed-agent-harnesses": {
+    "hash": "963f9ab22eaf8385",
+    "title": "Fail-Closed Harnesses for Autonomous Coding Agents"
+  },
+  "first-week-traefik": {
+    "hash": "aa81d95ee2f7842c",
+    "title": "My First Week with Traefik: Things Nobody Tells You"
+  },
+  "headscale-self-hosted-tailscale": {
+    "hash": "dbf907ce22017366",
+    "title": "Headscale: Self-Hosted Tailscale and Why It Matters"
+  },
+  "iac-homelab-overkill": {
+    "hash": "0b77d5ecdf65c5c6",
+    "title": "Infrastructure as Code for a Homelab: Overkill or Essential?"
+  },
+  "k3s-vs-k8s-lightweight": {
+    "hash": "bf1eac867c293a84",
+    "title": "K3s vs K8s: Why Lightweight Wins at Home"
+  },
+  "kustomize-good-bad-ugly": {
+    "hash": "b23e697fdc190166",
+    "title": "Kustomize: The Good, the Bad, and the Ugly"
+  },
+  "network-topology-hybrid": {
+    "hash": "d6ae6d05ebea88d9",
+    "title": "Network Topology for a Hybrid Homelab-Cloud Setup"
+  },
+  "picking-hardware-budget-k3s": {
+    "hash": "63868f8283388fd8",
+    "title": "Picking Hardware for a Budget K3s Cluster"
+  },
+  "pihole-broke-vpn": {
+    "hash": "08b2c9351966dc72",
+    "title": "The Day Pi-hole Broke My VPN"
+  },
+  "proxmox-mini-pcs": {
+    "hash": "8b9655555cb51689",
+    "title": "Proxmox on Mini PCs: First Impressions"
+  },
+  "rpi4-gateway-pihole-coredns": {
+    "hash": "65f94ec1dde8f8ac",
+    "title": "The RPi4 Gateway: Pi-hole, CoreDNS, and DNS Is Always the Problem"
+  },
+  "split-dns-broke-everything": {
+    "hash": "d2b89419112a2574",
+    "title": "Split DNS: When Your Laptop Can't Reach Your Cluster"
+  },
+  "why-build-homelab": {
+    "hash": "3209c28089cf314e",
+    "title": "Why I'm Building a Homelab in 2025"
+  }
+}
