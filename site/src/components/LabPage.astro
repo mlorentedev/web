@@ -27,6 +27,7 @@ import LabIdpTeaser from './LabIdpTeaser.astro';
 import LabProvenance from './LabProvenance.astro';
 import LabAiBridge from './LabAiBridge.astro';
 import ProofBlock from './ProofBlock.astro';
+import LabSectionNotes from './LabSectionNotes.astro';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -46,10 +47,13 @@ const t = useTranslations(lang);
     <ProofBlock id="kubelab" />
 
     <LabStory number="01" />
+    <LabSectionNotes number="01" />
 
     <LabServices number="02" />
+    <LabSectionNotes number="02" />
 
     <LabInfra number="03" />
+    <LabSectionNotes number="03" />
 
     <LabDiagram
       name="topology"
@@ -59,6 +63,7 @@ const t = useTranslations(lang);
       counted
       legend={t('lab.diagram.topology.legend')}
     />
+    <LabSectionNotes number="04" />
 
     <LabDiagram
       name="flows"
@@ -67,10 +72,12 @@ const t = useTranslations(lang);
       caption={t('lab.diagram.flows.caption')}
       legend={t('lab.diagram.flows.legend')}
     />
+    <LabSectionNotes number="05" />
 
     <LabIdpTeaser number="06" />
 
     <LabAiBridge number="07" lang={lang} />
+    <LabSectionNotes number="07" />
 
     <LabProvenance />
   </main>
