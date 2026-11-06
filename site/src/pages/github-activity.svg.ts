@@ -24,7 +24,8 @@ async function chart(): Promise<string> {
     if (refused) throw new Error(`refused: ${refused}`);
     return body;
   } catch (error) {
-    const reason = (error as Error).message;
+    // Not every throw is an Error: the fallback must not fail on its own reason.
+    const reason = error instanceof Error ? error.message : String(error);
     console.warn(`[github-activity] ${ghchartUpstream}: ${reason}; serving an empty chart`);
     return emptyChart(reason);
   }
