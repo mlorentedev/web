@@ -237,7 +237,7 @@ export const ui = {
 
     'lab.diagram.source': 'Rendered at build from {file}',
     'lab.diagram.scroll': 'Scrollable diagram: {label}',
-    'lab.provenance': 'Figures last reconciled against the cluster on',
+    'lab.provenance': 'Inventory reconciled against the cluster on',
 
     // Home sections
     'home.skills': 'What I do',
@@ -265,7 +265,6 @@ export const ui = {
     // Notes page
     'notes.title': 'Notes',
     'notes.description': 'Platform engineering notes — from hardware to Kubernetes.',
-    'notes.articles': 'What I think',
     'notes.empty': 'Coming soon.',
     'notes.inEnglish': 'For now I write in English.',
     'notes.published': 'published',
@@ -519,7 +518,7 @@ export const ui = {
 
     'lab.diagram.source': 'Generado en el build desde {file}',
     'lab.diagram.scroll': 'Diagrama desplazable: {label}',
-    'lab.provenance': 'Cifras reconciliadas contra el clúster por última vez el',
+    'lab.provenance': 'Inventario reconciliado contra el clúster el',
 
     // Home sections
     'home.skills': 'Qué hago',
@@ -547,7 +546,6 @@ export const ui = {
     // Notes page
     'notes.title': 'Notas',
     'notes.description': 'Notas de ingeniería de plataformas — del hardware a Kubernetes.',
-    'notes.articles': 'Lo que pienso',
     'notes.empty': 'Próximamente.',
     'notes.inEnglish': 'Por ahora escribo en inglés.',
     'notes.published': 'publicada el',
