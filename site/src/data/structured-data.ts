@@ -20,6 +20,7 @@ export function blogPosting(post: {
   title: string;
   description: string;
   datePublished: string;
+  dateModified: string;
   dateCreated?: string;
   tags: string[];
   lang: Lang;
@@ -33,6 +34,7 @@ export function blogPosting(post: {
     headline: post.title,
     description: post.description,
     datePublished: post.datePublished,
+    dateModified: post.dateModified,
     ...(post.dateCreated && { dateCreated: post.dateCreated }),
     author,
     publisher: author,
