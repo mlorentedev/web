@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "diagrams": "node scripts/diagrams.mjs generate",
     "fonts": "node scripts/subset-fonts.mjs",
+    "og:cards": "node scripts/og-cards.mjs",
     "prebuild": "node scripts/diagrams.mjs verify",
     "build": "astro check && astro build",
     "postbuild": "node scripts/precompress.mjs",

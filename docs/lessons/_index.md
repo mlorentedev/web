@@ -15,6 +15,8 @@ lessons were filed and never change, so a citation stays valid.
 | # | Lesson | Date | Tags |
 |---|---|---|---|
 | 082 | [Per-request gzip on a static site is CPU the pod pays on every view](lesson-082-per-request-gzip-on-a-static-site-is-cpu-the.md) | 2026-11-06 | `#nginx` `#performance` `#capacity` |
+| 081 | [A node_modules symlink slips past an ignore pattern with a trailing slash](lesson-081-a-node-modules-symlink-slips-past-a-trailing.md) | 2026-11-06 | `#git` `#worktrees` |
+| 080 | [A generated asset under public/ ships before the note it belongs to is published](lesson-080-a-generated-asset-under-public-ships-before.md) | 2026-11-06 | `#astro` `#publishing` `#testing` |
 | 079 | [grep -q at the end of a pipe under pipefail fails at random once its input outgrows one pipe write](lesson-079-grep-q-at-the-end-of-a-pipe-under-pipefail-fa.md) | 2026-11-05 | `#bash` `#ci` `#testing` |
 | 078 | [An allowlist for upstream input refused the site's own fallback, so the test failed under the wrong message](lesson-078-an-allowlist-for-upstream-input-refused-the.md) | 2026-11-05 | `#testing` `#ci` `#security` |
 | 077 | [A second astro build over fixture content writes the fixtures into the content store the next real build reads](lesson-077-a-second-astro-build-over-fixture-content-wr.md) | 2026-11-04 | `#astro` `#testing` |
