@@ -27,7 +27,17 @@ import { fileURLToPath } from 'node:url';
 
 import { z } from 'astro/zod';
 
-import { buildClock, buildNow, isPublished, noteDate, publishedIn, shownWrittenDate, writtenDateValid } from '../src/lib/note-dates.mjs';
+import {
+  buildClock,
+  buildNow,
+  isPublished,
+  modifiedDate,
+  noteDate,
+  publishedIn,
+  shownWrittenDate,
+  updatedDateValid,
+  writtenDateValid,
+} from '../src/lib/note-dates.mjs';
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(SITE, 'src');
@@ -88,6 +98,15 @@ test('writtenDate is shown only before pubDate, and refused after it', () => {
   assert.equal(writtenDateValid({ pubDate }), true);
   assert.equal(writtenDateValid({ pubDate, writtenDate: pubDate }), true);
   assert.equal(writtenDateValid({ pubDate, writtenDate: new Date('2021-01-02') }), false);
+});
+
+test('updatedDate is optional, is the modified date when set, and is refused before pubDate', () => {
+  const pubDate = new Date('2021-01-01');
+  assert.equal(modifiedDate({ pubDate }).toISOString(), pubDate.toISOString(), 'a note never revised was last modified when published');
+  assert.equal(modifiedDate({ pubDate, updatedDate: new Date('2022-02-02') }).toISOString(), '2022-02-02T00:00:00.000Z');
+  assert.equal(updatedDateValid({ pubDate }), true);
+  assert.equal(updatedDateValid({ pubDate, updatedDate: pubDate }), true);
+  assert.equal(updatedDateValid({ pubDate, updatedDate: new Date('2020-12-31') }), false);
 });
 
 test('a raw note file is read by the same rule: language, draft and date', () => {
@@ -179,6 +198,10 @@ test('a note dated after the build is in no file, and ships once the clock passe
     assert.match(page, /<span data-note-published> · published <time datetime="2021-01-01">January 1, 2021<\/time><\/span>/);
     assert.match(page, /"dateCreated":"2019-03-01"/);
     assert.match(page, /"datePublished":"2021-01-01"/);
+    // Revised after it shipped: the modified date is its updatedDate, in the meta, the graph and the sitemap.
+    assert.match(page, /<meta property="article:modified_time" content="2022-02-02"/);
+    assert.match(page, /"dateModified":"2022-02-02"/);
+    assert.match(after.get('/sitemap-0.xml'), /<loc>https:\/\/mlorente\.dev\/notes\/fixture-backdated-note\/<\/loc><lastmod>2022-02-02/);
     assert.doesNotMatch(after.get('/notes/fixture-past-note/index.html'), /data-note-published/, 'a note with one date shows one');
     const feed = after.get('/rss.xml');
     const order = ['fixture-future-note', 'fixture-backdated-note', 'fixture-past-note'].map((slug) => feed.indexOf(slug));
