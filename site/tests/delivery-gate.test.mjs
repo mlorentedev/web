@@ -225,6 +225,17 @@ test('Chromium and its system packages come from caches keyed on the Playwright 
   for (const body of installs) {
     assert.match(body, /^ {8}timeout-minutes:\s*\d+\s*$/m, `this step has no budget of its own:\n${body}`);
   }
+  // A step budget names the stalled step only if it fires first: every install at its limit,
+  // plus the measured 3 minutes of build and tests and a margin, must fit in the job's budget.
+  const jobBudget = Number(job(suite, 'test')?.match(/^ {4}timeout-minutes:\s*(\d+)/m)?.[1]);
+  const stepBudgets = installs.reduce((sum, body) => sum + Number(body.match(/timeout-minutes:\s*(\d+)/)[1]), 0);
+  const REST_OF_THE_JOB = 3 + 3;
+  assert.ok(
+    stepBudgets + REST_OF_THE_JOB <= jobBudget,
+    `install budgets ${stepBudgets} min + ${REST_OF_THE_JOB} min of work exceed the job's ${jobBudget}: the job would time out first`,
+  );
+  const resolve = step(suite, 'Resolve the Playwright version');
+  assert.match(resolve, /\$\{version:\?/, 'an unresolved Playwright version is written as an empty key part');
   const cache = step(suite, 'Restore Chromium from the cache');
   assert.ok(cache, 'test.yml has no Chromium cache step');
   assert.match(cache, /uses:\s*actions\/cache\/restore@[0-9a-f]{40}\b/, 'the restore action is pinned by sha');
