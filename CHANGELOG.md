@@ -1,5 +1,85 @@
 # Changelog
 
+## [1.17.0](https://github.com/mlorentedev/web/compare/v1.16.3...v1.17.0) (2026-11-06)
+
+
+### Features
+
+* **contact:** drop the paid session and keep one way to write ([#518](https://github.com/mlorentedev/web/issues/518)) ([af0adee](https://github.com/mlorentedev/web/commit/af0adee1c2af0e6778515012626661b3a876104f))
+* **contact:** list the work I take on and keep the door mail to a subject ([#598](https://github.com/mlorentedev/web/issues/598)) ([10d7660](https://github.com/mlorentedev/web/commit/10d76604da82ce4659a2335844431744aba66811))
+* **contact:** one way in, and a fixed-price session after a yes ([#510](https://github.com/mlorentedev/web/issues/510)) ([26ddb7e](https://github.com/mlorentedev/web/commit/26ddb7e78196a0d0f229a96b51e6eb11a6bf32b6))
+* **footer:** show the build that served the page as a sync chip ([#541](https://github.com/mlorentedev/web/issues/541)) ([21687b8](https://github.com/mlorentedev/web/commit/21687b8694ae5b196c5204d74491e536682e503d))
+* **home:** draw the career on the DevOps loop under the hero ([#537](https://github.com/mlorentedev/web/issues/537)) ([a1b054f](https://github.com/mlorentedev/web/commit/a1b054fa7c55b71ed614be57c8f48440e2ffeb62))
+* **home:** draw the timeline as a line and state the current role ([#530](https://github.com/mlorentedev/web/issues/530)) ([d98112c](https://github.com/mlorentedev/web/commit/d98112c9b900c8903152124eb998d1a22b162eaa))
+* **home:** label each skills layer with a path-style key ([#538](https://github.com/mlorentedev/web/issues/538)) ([77338a7](https://github.com/mlorentedev/web/commit/77338a786ea99186c8ccddf0ef8d59b6dafe3984))
+* **home:** mark the ongoing role with a HEAD ref ([#539](https://github.com/mlorentedev/web/issues/539)) ([d11a914](https://github.com/mlorentedev/web/commit/d11a9146b42091cbcff603495fd72cace5539f81))
+* **home:** name the employer in the timeline and leave the current role open ([#523](https://github.com/mlorentedev/web/issues/523)) ([3a1b1ed](https://github.com/mlorentedev/web/commit/3a1b1edfb816394bf8a44bb660ba4ae0fbe4c17f))
+* **home:** open on the full-stack path and the way in, then the parallel track ([#543](https://github.com/mlorentedev/web/issues/543)) ([8fc2870](https://github.com/mlorentedev/web/commit/8fc287028c505132731874aa362bb29f0487635c))
+* **home:** rewrite the home around the career timeline and skill layers ([#509](https://github.com/mlorentedev/web/issues/509)) ([ebcf3bc](https://github.com/mlorentedev/web/commit/ebcf3bc5df0e376b051f72d496c9fedb80b62ee6))
+* **home:** tell each role in the timeline in Manu's words ([#561](https://github.com/mlorentedev/web/issues/561)) ([efd9753](https://github.com/mlorentedev/web/commit/efd975328d32946873e793ea878b045e5f8b6f9f))
+* **home:** tell each skill layer as a short story and fold the GitHub chart into it ([#549](https://github.com/mlorentedev/web/issues/549)) ([59194cf](https://github.com/mlorentedev/web/commit/59194cf1ac4491f9184412dc9fa0c58d78d046c1))
+* **lab:** link each Lab section to the notes behind it ([#625](https://github.com/mlorentedev/web/issues/625)) ([b9d2ebb](https://github.com/mlorentedev/web/commit/b9d2ebbda7cd6f91b2a0df76890d3a8f99a48a83))
+* **nav:** put the nav behind a menu below sm, with no client script ([#578](https://github.com/mlorentedev/web/issues/578)) ([9035aaf](https://github.com/mlorentedev/web/commit/9035aaf45104b91b079234719483597a81f54c1b))
+* **notes:** declare when each note was last modified, in its meta, its BlogPosting and the sitemap ([#618](https://github.com/mlorentedev/web/issues/618)) ([8a6496e](https://github.com/mlorentedev/web/commit/8a6496e9f08e0acc58f99e4a48316b383e7a02d1))
+* **notes:** give each note its own social card, in og:image, twitter:image and its BlogPosting ([#612](https://github.com/mlorentedev/web/issues/612)) ([ffb6413](https://github.com/mlorentedev/web/commit/ffb6413a9359cd0174f38f30a134d136ffc64d45))
+* **notes:** ship a note on its date, and let it say when it was written ([#602](https://github.com/mlorentedev/web/issues/602)) ([a337197](https://github.com/mlorentedev/web/commit/a337197c5d7513cde54d535c988ca50f96c2ffd3))
+* **notes:** show each note's reading time, and a table of contents on long notes ([#621](https://github.com/mlorentedev/web/issues/621)) ([b7b5f54](https://github.com/mlorentedev/web/commit/b7b5f549a482bf8438ca62d3d8e74d29b7378643))
+* **notes:** show the series and an archive by year on the notes index ([#624](https://github.com/mlorentedev/web/issues/624)) ([8449aaa](https://github.com/mlorentedev/web/commit/8449aaae53494bd5fdcfabe2eabc55ab233fda68))
+* **projects:** add the Spanish intro for /es/projects ([#574](https://github.com/mlorentedev/web/issues/574)) ([5385caa](https://github.com/mlorentedev/web/commit/5385caac3845e872a976289f9029d0cfdb51e6b6))
+* **projects:** show each card's state, start year and install line ([#614](https://github.com/mlorentedev/web/issues/614)) ([f29d98b](https://github.com/mlorentedev/web/commit/f29d98b79c527c81344b713bf0ab92be924fde23))
+* **projects:** show five projects, Hive first, with year and install line ([#603](https://github.com/mlorentedev/web/issues/603)) ([471583e](https://github.com/mlorentedev/web/commit/471583e5fe8b84841ed54698a5cf99d6c965b1aa))
+* **seo:** describe notes, projects and tag pages in JSON-LD ([#552](https://github.com/mlorentedev/web/issues/552)) ([5d047fb](https://github.com/mlorentedev/web/commit/5d047fb8476189ce8dd7ebbb8de0dcfc23c254b9))
+
+
+### Bug Fixes
+
+* **a11y:** announce the current page in the header nav ([#514](https://github.com/mlorentedev/web/issues/514)) ([780d424](https://github.com/mlorentedev/web/commit/780d42492903dafacf2b2010e0591f5b27e7c5ec))
+* **a11y:** audit every built page with axe, and fix what it finds ([#544](https://github.com/mlorentedev/web/issues/544)) ([982dd0b](https://github.com/mlorentedev/web/commit/982dd0b2705e31f181e429c3e5c963e5eb93c63a))
+* **a11y:** bring nav links, language switch and tag chips to 24 px on their own box ([#569](https://github.com/mlorentedev/web/issues/569)) ([30e2566](https://github.com/mlorentedev/web/commit/30e25663ce9e11738ea20be4b3d2bed7b7303bb4))
+* **a11y:** draw one visible focus indicator on every keyboard stop ([#500](https://github.com/mlorentedev/web/issues/500)) ([5068949](https://github.com/mlorentedev/web/commit/506894970c42090dd003b160ccd1e4ce1c7ee3e5))
+* **a11y:** give every page one leading h1 and an unbroken heading outline ([#497](https://github.com/mlorentedev/web/issues/497)) ([7dfa2ab](https://github.com/mlorentedev/web/commit/7dfa2ab2486d38539a6547ea0a42b5a5abd74a91))
+* **a11y:** open every link in the same tab ([#599](https://github.com/mlorentedev/web/issues/599)) ([e06e2ea](https://github.com/mlorentedev/web/commit/e06e2ea8d0056c432ee916f6ccd565667c477971))
+* **a11y:** set descriptive copy at text-sm, keep text-xs for metadata ([#570](https://github.com/mlorentedev/web/issues/570)) ([b1d5663](https://github.com/mlorentedev/web/commit/b1d56637ab4ceacc4108543b19a2775990c86b70))
+* **a11y:** set diagram captions at 14 px, and check every text block for 12 px sentences ([#583](https://github.com/mlorentedev/web/issues/583)) ([7cc8e55](https://github.com/mlorentedev/web/commit/7cc8e55e56ef7e1774b80bb841d67d50375d7065))
+* **ci:** drop the hand-kept lesson count that two green PRs merged wrong ([#575](https://github.com/mlorentedev/web/issues/575)) ([2a658cb](https://github.com/mlorentedev/web/commit/2a658cb623e585003861d0739f5cab450817284e))
+* **ci:** resolve the latest Node 22 instead of the runner's cached one ([#508](https://github.com/mlorentedev/web/issues/508)) ([75f891a](https://github.com/mlorentedev/web/commit/75f891aa54c864abc4ccb940c60a5da2670d63f2))
+* **ci:** run the repo hygiene checks as a job of the PR gate ([#622](https://github.com/mlorentedev/web/issues/622)) ([d659eab](https://github.com/mlorentedev/web/commit/d659eab0b06385e6fc72c06b48794af78a150787))
+* **ci:** scan pull-request image builds with Trivy, and date the non-blocking exception ([#623](https://github.com/mlorentedev/web/issues/623)) ([656d9a7](https://github.com/mlorentedev/web/commit/656d9a74727deb2c0fa4b125b198165691797f2c))
+* **contact:** drop the address repeated under the button ([#531](https://github.com/mlorentedev/web/issues/531)) ([1290183](https://github.com/mlorentedev/web/commit/1290183c627cbc64ec5cae113ffbe19e643367e2))
+* **diagrams:** paint type labels with a text shade at AA, not the line shade ([#565](https://github.com/mlorentedev/web/issues/565)) ([e6c003f](https://github.com/mlorentedev/web/commit/e6c003f0df6dce3ec91fc790540e364710fb9132))
+* **diagrams:** pin archify to v2.16.0 ([#515](https://github.com/mlorentedev/web/issues/515)) ([f75cd66](https://github.com/mlorentedev/web/commit/f75cd6610ceae49c2eecc520b46f3672bfa68b31))
+* **fonts:** declare the weights in use and preload the headline's face ([#520](https://github.com/mlorentedev/web/issues/520)) ([7761416](https://github.com/mlorentedev/web/commit/77614167a2760e2cd5afc7eb5a28f10c53898ea8))
+* **footer:** link the privacy policy and the feed from every page ([#503](https://github.com/mlorentedev/web/issues/503)) ([77b2ba6](https://github.com/mlorentedev/web/commit/77b2ba658568ffda4849a77cb70334c4c7a8458d))
+* **footer:** ship the build chip's deployed variant within the site's rules ([#542](https://github.com/mlorentedev/web/issues/542)) ([7ff67c5](https://github.com/mlorentedev/web/commit/7ff67c53597581f91fd645e4933a6db7dee17e19))
+* **github-chart:** tell the empty chart apart from upstream, and fail CI only when upstream was refused ([#608](https://github.com/mlorentedev/web/issues/608)) ([b41836f](https://github.com/mlorentedev/web/commit/b41836f6fbfe8a40ed280583c5bbacdc545d8815))
+* **header:** lay out the avatar instead of floating it over the nav ([#504](https://github.com/mlorentedev/web/issues/504)) ([4b395ac](https://github.com/mlorentedev/web/commit/4b395acc767b4d9523abcd3c94f1da76bde79c3a))
+* **home:** keep the phone loop labels at size and name the bio region ([#548](https://github.com/mlorentedev/web/issues/548)) ([f925359](https://github.com/mlorentedev/web/commit/f925359655977ba4b86435333968b78e407c8de3))
+* **home:** name the hardware layer embedded systems ([#540](https://github.com/mlorentedev/web/issues/540)) ([5b5d74f](https://github.com/mlorentedev/web/commit/5b5d74fb574cd13afba4d1abe5d5715b090ddbed))
+* **i18n:** serve a Spanish 404 from markup instead of swapping strings in the browser ([#502](https://github.com/mlorentedev/web/issues/502)) ([2d8b5e7](https://github.com/mlorentedev/web/commit/2d8b5e7743608e10089374098e7d8cb02b83b10a))
+* **lessons:** stop check-lessons reporting a listed lesson as missing when grep -q closes the pipe early ([#610](https://github.com/mlorentedev/web/issues/610)) ([0ca8c98](https://github.com/mlorentedev/web/commit/0ca8c981b4db3be52b5683af5fed90476a611608))
+* **llms:** describe the site as it is and drop the paid session ([#524](https://github.com/mlorentedev/web/issues/524)) ([7436ed4](https://github.com/mlorentedev/web/commit/7436ed46058be51033a94006b0279abdc29a6c05))
+* **nav:** link /projects from the header in both locales and fail the build on orphan pages ([#579](https://github.com/mlorentedev/web/issues/579)) ([7c16949](https://github.com/mlorentedev/web/commit/7c169498ab94c6d4be10cbdd32233d873c97c254))
+* **nginx:** send one Cache-Control per response, immutable only on hashed names ([#564](https://github.com/mlorentedev/web/issues/564)) ([e7a2898](https://github.com/mlorentedev/web/commit/e7a2898c30d497d29b321f339cb086b8d5439083))
+* **nginx:** serve gzip precompressed at build, not per request ([#616](https://github.com/mlorentedev/web/issues/616)) ([b8a4760](https://github.com/mlorentedev/web/commit/b8a47604b764e69678d0015e0a20b7c849b93b1c))
+* **notes,lab:** show the notes title and say which figures the lab footer dates ([#597](https://github.com/mlorentedev/web/issues/597)) ([acf8b62](https://github.com/mlorentedev/web/commit/acf8b62f6e27bfa01e6784abbea63b87bde568f4))
+* **notes:** print a note without the site chrome, with legible code ([#596](https://github.com/mlorentedev/web/issues/596)) ([4e6c5b1](https://github.com/mlorentedev/web/commit/4e6c5b1a8ab56bedb4663f6dd49e9805c037b5ec))
+* **notes:** show the English notes on the Spanish home and keep the empty /es/notes out of search ([#526](https://github.com/mlorentedev/web/issues/526)) ([675c164](https://github.com/mlorentedev/web/commit/675c1644eacefa56e1c43a486f55c27c6d9497ef))
+* **privacy:** name only what the site uses, the same in both locales ([#568](https://github.com/mlorentedev/web/issues/568)) ([0a16777](https://github.com/mlorentedev/web/commit/0a16777ad1640cfa72af71f0418123198a480ea9))
+* **privacy:** serve the GitHub chart from the site instead of a third party ([#566](https://github.com/mlorentedev/web/issues/566)) ([0be6c74](https://github.com/mlorentedev/web/commit/0be6c747b4525b270a480ab2ef6de361ba023eb3))
+* **projects:** drop the unpublished Hive figure and point pdf-modifier at live pages ([#525](https://github.com/mlorentedev/web/issues/525)) ([a7ba15a](https://github.com/mlorentedev/web/commit/a7ba15afd0882e86f248e6103ca79b7d8c8db6d8))
+* **seo:** give every page one URL, with its links, nginx and the sitemap agreeing ([#505](https://github.com/mlorentedev/web/issues/505)) ([b2f76aa](https://github.com/mlorentedev/web/commit/b2f76aa0ae5f92c74d0248437635d8c2a935625c))
+* **seo:** give tag pages their own names, titles and descriptions, and keep thin ones out of the index ([#601](https://github.com/mlorentedev/web/issues/601)) ([d4acb4d](https://github.com/mlorentedev/web/commit/d4acb4d7e5fd8b5493d8724fb0ca1f2587685d77))
+* **subscribe:** keep the address out of the URL when the script has not run ([#512](https://github.com/mlorentedev/web/issues/512)) ([9e05e85](https://github.com/mlorentedev/web/commit/9e05e858c3c1c1d67d054a9a32f95fb9eb03cb7b))
+* **subscribe:** restore the button label after a failed submit ([#506](https://github.com/mlorentedev/web/issues/506)) ([fad6676](https://github.com/mlorentedev/web/commit/fad6676d209db82d39d524b6ab996e8cd989f995))
+* **ui:** draw every call-to-action with one Button component ([#600](https://github.com/mlorentedev/web/issues/600)) ([797ceee](https://github.com/mlorentedev/web/commit/797ceeeade1007320ff5681f0a229777a3685142))
+
+
+### Performance Improvements
+
+* **fonts:** preload Medium and check every preload against the faces the first screen paints ([#581](https://github.com/mlorentedev/web/issues/581)) ([b7937ad](https://github.com/mlorentedev/web/commit/b7937adb82eac63dbfc46d3870229ee94d0e1f1d))
+* **fonts:** subset the Roboto faces from a script ([#519](https://github.com/mlorentedev/web/issues/519)) ([80764c1](https://github.com/mlorentedev/web/commit/80764c1bd253a90ac5ec9f7fb2c2d86312cdad03))
+* **nginx:** compress HTML and text assets ([#527](https://github.com/mlorentedev/web/issues/527)) ([d44adb7](https://github.com/mlorentedev/web/commit/d44adb71d8a948040fdd4f187394a882dab17edb))
+
 ## [1.16.3](https://github.com/mlorentedev/web/compare/v1.16.2...v1.16.3) (2026-10-23)
 
 
