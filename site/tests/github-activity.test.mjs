@@ -51,6 +51,8 @@ test('the empty chart is told apart from upstream, and only a refusal fails CI',
   assert.equal(fallbackReason(emptyChart('refused: attribute "x" on <svg> & more')), 'refused: attribute "x" on <svg> & more');
   assert.doesNotMatch(emptyChart('refused: element <script>'), /<script/, 'the reason is escaped in the attribute');
   assert.equal(fallbackReason(emptyChart(String(undefined))), 'undefined', 'a reason that is not a message still builds the chart');
+  assert.equal(fallbackReason(emptyChart('refused: element <a\u0001b>')), 'refused: element <a?b>', 'XML forbids control characters, escaped or not');
+  assert.doesNotMatch(emptyChart('x\u0001\u001f'), /[\x00-\x08\x0B\x0C\x0E-\x1F]/);
   // Only the exact empty chart skips the allowlist: the attribute alone does not.
   const smuggled = emptyChart('HTTP 500').replace('></svg>', '><script>x()</script></svg>');
   assert.equal(fallbackReason(smuggled), null);

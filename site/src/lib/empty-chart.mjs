@@ -14,7 +14,9 @@
 export const WIDTH = 663;
 export const HEIGHT = 104;
 
-const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// XML forbids most control characters even escaped, so they become `?`: an
+// upstream element name carrying one must not make the empty chart unreadable.
+const escape = (text) => text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\uFFFE\uFFFF]/g, '?').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const unescape = (text) => text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&');
 
 /** @param {string} reason why the build fell back @returns {string} */
@@ -23,7 +25,7 @@ export const emptyChart = (reason) =>
 
 // The whole document, with the reason as the one variable part: a body that
 // only contains `data-fallback` somewhere is not the empty chart.
-const SHAPE = new RegExp(`^${emptyChart('\0').replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace('\0', '([^"<>]*)')}$`);
+const SHAPE = new RegExp(`^${emptyChart('REASON').replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace('REASON', '([^"<>]*)')}$`);
 
 /** @param {string} svg @returns {string | null} the reason, when `svg` is exactly an empty chart */
 export function fallbackReason(svg) {
