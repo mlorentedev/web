@@ -30,7 +30,9 @@ function pages(dir) {
 
 test('every link to a directory ends in a slash, on every built page', () => {
   const html = pages(dist);
-  assert.ok(html.length > 80, `walked only ${html.length} pages`);
+  // A floor that proves the walk found the site, not a page count to defend:
+  // dropping projects drops their tag pages too (#587).
+  assert.ok(html.length > 50, `walked only ${html.length} pages`);
   const slashless = html.flatMap((file) =>
     [...readFileSync(file, 'utf8').matchAll(/href="(?:https:\/\/mlorente\.dev)?(\/[^"#?]*)/g)]
       .map((match) => match[1])
