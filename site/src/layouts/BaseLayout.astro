@@ -12,6 +12,8 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogType?: string;
+  /** An article's dates (`og:type` `article`): ISO dates, published and last modified. */
+  article?: { publishedTime: string; modifiedTime: string };
   jsonLd?: boolean;
   noindex?: boolean;
   hasAlternates?: boolean;
@@ -27,6 +29,7 @@ const {
   description = t('meta.description'),
   ogImage = '/images/og-image.png',
   ogType = 'website',
+  article,
   jsonLd = true,
   noindex = false,
   hasAlternates = true,
@@ -135,6 +138,8 @@ const schemaGraph = {
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(ogImage, site.url)} />
+    {article && <meta property="article:published_time" content={article.publishedTime} />}
+    {article && <meta property="article:modified_time" content={article.modifiedTime} />}
 
     <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
 

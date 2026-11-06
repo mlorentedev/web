@@ -2,7 +2,7 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-import { noteDate, writtenDateValid } from './lib/note-dates.mjs';
+import { noteDate, updatedDateValid, writtenDateValid } from './lib/note-dates.mjs';
 
 const notes = defineCollection({
   // NOTES_DIR lets tests/note-dates.test.mjs build over fixture notes (WEB-138).
@@ -16,6 +16,9 @@ const notes = defineCollection({
     // The date of the lesson or ADR a note was written from, when that is
     // earlier. The page shows it, and says when the note was published.
     writtenDate: noteDate(z, { optional: true }),
+    // The day the note was last revised, when it was. Without one it was last
+    // modified when it was published (WEB-050).
+    updatedDate: noteDate(z, { optional: true }),
     tags: z.array(z.string()).default([]),
     lang: z.enum(['en', 'es']).default('en'),
     draft: z.boolean().default(false),
@@ -29,6 +32,9 @@ const notes = defineCollection({
   }).refine(writtenDateValid, {
     message: 'writtenDate is after pubDate: a note cannot be written from notes it has not taken yet',
     path: ['writtenDate'],
+  }).refine(updatedDateValid, {
+    message: 'updatedDate is before pubDate: a note cannot be revised before it is published',
+    path: ['updatedDate'],
   }),
 });
 

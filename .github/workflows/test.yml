@@ -57,9 +57,13 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    # The suite is Node's built-in runner over `site/tests/*.test.mjs`; the
-    # slowest job here is the Astro build it depends on, which takes ~10 s.
-    timeout-minutes: 10
+    # Measured 2026-11-06: the build, the suite, containment and axe take about
+    # 3 minutes together. The step that varies is
+    # `playwright install --with-deps`: its apt fetch from the runner's Ubuntu
+    # mirror took 7 to 8 minutes on three runs (21 MB at 53 kB/s), and at 10
+    # minutes the job was cancelled during axe with nothing failing. 20 leaves
+    # room for a slow mirror and still stops a hung job.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -78,14 +82,17 @@ jobs:
       # (#176), so it needs one — `npm ci` installs the Playwright package but
       # never its browsers. The image build has the same requirement and meets
       # it in the Dockerfile with `install-deps chromium` as root followed by
-      # `playwright install chromium`; the two steps below are the runner's
+      # `playwright install chromium`; the steps below are the runner's
       # equivalent. Without them the build dies on the first .mdx with a diagram.
       #
-      # The browser is cached, keyed on the Playwright version npm resolved, since
-      # each version pins its own Chromium build. Downloading it uncached once
-      # took 7 min of the job's 10 (WEB-201), so the job was cancelled and the
-      # gate said only "test (cancelled)". Each install step has its own budget,
-      # so a stalled download now fails on the step that stalled, by name.
+      # Both halves are cached, keyed on the Playwright version npm resolved,
+      # since each version pins its own Chromium build and its own package list.
+      # The slow half was apt: on three runs it fetched 21 MB of fonts from the
+      # runner's Ubuntu mirror at 53 kB/s, 7 to 8 minutes of a job that was then
+      # cancelled during axe, and the gate said only "test (cancelled)" (WEB-201).
+      # apt is pointed at a cached directory and told to keep what it downloads,
+      # so a warm run installs from local .deb files. Each install step has its
+      # own budget, under the job's, so a stalled fetch fails on its own name.
       - name: Resolve the Playwright version
         id: playwright
         working-directory: site
@@ -104,12 +111,26 @@ jobs:
         timeout-minutes: 4
         run: npx playwright install chromium
 
-      # The system libraries are not in the cache: apt installs them outside the
-      # user's home, and they come from the runner image's own mirror.
+      - name: Restore Chromium's system packages from the cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/playwright-apt
+          # The runner image pins the package versions, so a new image saves a
+          # fresh cache, and starts from the last one: most .deb files carry over.
+          key: pw-apt-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}-${{ env.ImageVersion }}
+          restore-keys: pw-apt-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}-
+
+      # 12 minutes: a cold fetch from a slow mirror took 8 and must still pass.
+      # The chown lets the cache step read what apt, as root, wrote.
       - name: Install Chromium's system libraries
         working-directory: site
-        timeout-minutes: 4
-        run: npx playwright install-deps chromium
+        timeout-minutes: 12
+        run: |
+          mkdir -p ~/.cache/playwright-apt/partial
+          printf 'Dir::Cache::Archives "%s";\nBinary::apt::APT::Keep-Downloaded-Packages "true";\n' \
+            "$HOME/.cache/playwright-apt" | sudo tee /etc/apt/apt.conf.d/90-playwright-cache
+          npx playwright install-deps chromium
+          sudo chown -R "$(id -u):$(id -g)" ~/.cache/playwright-apt
 
       # `npm run build` must come first and is not redundant with the Docker
       # build: the audit tests read `dist/`, and the image build produces it

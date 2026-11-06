@@ -214,13 +214,13 @@ test('every test script in package.json runs in the shared suite', () => {
   }
 });
 
-test('Chromium comes from a cache keyed on the Playwright version, and each install step fails on its own budget (WEB-201)', () => {
+test('Chromium and its system packages come from caches keyed on the Playwright version, and each install step fails on its own budget (WEB-201)', () => {
   // An uncached download once took 7 of the job's 10 minutes, and the gate said only "test (cancelled)".
   const installs = suite
     .split('\n')
     .filter((l) => l.trim().startsWith('- name: '))
     .map((l) => step(suite, l.trim().slice('- name: '.length)))
-    .filter((body) => /run:\s*npx playwright install/.test(body));
+    .filter((body) => /npx playwright install/.test(body));
   assert.ok(installs.length > 0, 'test.yml installs no browser: the build renders diagrams with one');
   for (const body of installs) {
     assert.match(body, /^ {8}timeout-minutes:\s*\d+\s*$/m, `this step has no budget of its own:\n${body}`);
@@ -233,4 +233,12 @@ test('Chromium comes from a cache keyed on the Playwright version, and each inst
   const download = installs.find((body) => /run:\s*npx playwright install chromium\s*$/m.test(body));
   assert.ok(download, 'no step downloads the browser on a cache miss');
   assert.match(download, /if:\s*steps\.chromium-cache\.outputs\.cache-hit != 'true'/, 'the download runs even on a cache hit');
+  // apt was the slow half: its .deb files are kept in the directory the second cache saves.
+  const aptCache = step(suite, "Restore Chromium's system packages from the cache");
+  assert.ok(aptCache, 'test.yml has no cache for the system packages');
+  const aptDir = aptCache.match(/path:\s*(\S+)/)?.[1];
+  const deps = installs.find((body) => /npx playwright install-deps chromium/.test(body));
+  assert.ok(deps, 'no step installs the system libraries');
+  assert.ok(aptDir && deps.includes(`Dir::Cache::Archives "%s"`) && deps.includes(aptDir.replace('~', '$HOME')), `apt does not keep its downloads in ${aptDir}`);
+  assert.match(deps, /Keep-Downloaded-Packages "true"/, 'apt deletes what it downloaded, so the cache saves nothing');
 });
