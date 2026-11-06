@@ -33,10 +33,13 @@ export default defineConfig({
       // on every page with alternates, and both surfaces must say the same.
       // The integration shares one `links` array between the two locales' URLs,
       // so this builds a new one: pushing onto it would add `x-default` twice.
+      // `lastmod` is the page's own `article:modified_time` (WEB-050), and only that.
       serialize(item) {
+        const lastmod = noindex.lastmod(item.url);
+        const dated = lastmod ? { ...item, lastmod } : item;
         const english = item.links?.find((link) => link.lang === 'en');
-        if (!english) return item;
-        return { ...item, links: [...item.links, { lang: 'x-default', url: english.url }] };
+        if (!english) return dated;
+        return { ...dated, links: [...item.links, { lang: 'x-default', url: english.url }] };
       },
       i18n: {
         defaultLocale: 'en',

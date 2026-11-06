@@ -76,3 +76,13 @@ export function publishedIn(text, lang, now) {
   if (Number.isNaN(pubDate.valueOf())) return false;
   return (field('lang') || 'en') === lang && isPublished({ draft: field('draft') === 'true', pubDate }, now);
 }
+
+/**
+ * When a note was last changed: its `updatedDate`, or its `pubDate` when it has
+ * none. Set by hand when a note is revised, never read from the file system or
+ * git, where a rebase or a copy would move it without the note changing (WEB-050).
+ */
+export const modifiedDate = (data) => data.updatedDate ?? data.pubDate;
+
+/** Whether an `updatedDate` is allowed: absent, or not before `pubDate`. */
+export const updatedDateValid = (data) => !data.updatedDate || data.updatedDate.valueOf() >= data.pubDate.valueOf();

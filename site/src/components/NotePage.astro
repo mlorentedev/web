@@ -11,7 +11,7 @@ import type { Lang } from '../i18n/ui';
 import { site } from '../data/site';
 import { blogPosting, breadcrumbs } from '../data/structured-data';
 import type { Note, NoteLink } from '../lib/locale-pages';
-import { shownWrittenDate } from '../lib/note-dates.mjs';
+import { modifiedDate, shownWrittenDate } from '../lib/note-dates.mjs';
 import { cardPath } from '../lib/og-cards.mjs';
 
 interface Props {
@@ -34,12 +34,15 @@ const shownDate = writtenDate ?? pubDate;
 const path = translatePath(`/notes/${note.id}`);
 // The note's own social card (WEB-176): og:image, twitter:image and the BlogPosting's image.
 const ogImage = cardPath(note.id);
+// One modified date for the meta, the graph and, read from the meta, the sitemap (WEB-050).
+const article = { publishedTime: isoDate(pubDate), modifiedTime: isoDate(modifiedDate(note.data)) };
 const schema = [
   blogPosting({
     path,
     title: note.data.title,
     description: note.data.description,
-    datePublished: isoDate(pubDate),
+    datePublished: article.publishedTime,
+    dateModified: article.modifiedTime,
     dateCreated: writtenDate && isoDate(writtenDate),
     tags: note.data.tags,
     lang,
@@ -53,7 +56,7 @@ const schema = [
 ];
 ---
 
-<BaseLayout title={note.data.title} description={note.data.description} ogType="article" ogImage={ogImage} hasAlternates={false} schema={schema}>
+<BaseLayout title={note.data.title} description={note.data.description} ogType="article" ogImage={ogImage} article={article} hasAlternates={false} schema={schema}>
   <Header hasAlternates={false} />
   <main id="main-content" class="grow">
     <section class="pt-16 pb-16 md:pt-20 md:pb-20">

@@ -108,7 +108,11 @@ test('every file the immutable paths serve has a content hash in its name', { sk
     const path = join(site, 'dist', dir);
     if (!existsSync(path)) continue;
     const check = typeof hashed === 'function' ? hashed : (name) => hashed.test(name);
-    const unhashed = readdirSync(path).filter((name) => !check(name, readFileSync(join(path, name), 'utf8')));
+    // A `.gz` is the build's compressed copy of its neighbour (#615): it changes
+    // exactly when that file does, so it is judged by that file's name and bytes.
+    const unhashed = readdirSync(path)
+      .filter((name) => !name.endsWith('.gz') || !existsSync(join(path, name.slice(0, -3))))
+      .filter((name) => !check(name, readFileSync(join(path, name), 'utf8')));
     assert.deepEqual(unhashed, [], `dist/${dir}/ holds files whose names do not change with their content`);
   }
 });
