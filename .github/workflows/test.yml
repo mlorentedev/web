@@ -57,9 +57,13 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    # The suite is Node's built-in runner over `site/tests/*.test.mjs`; the
-    # slowest job here is the Astro build it depends on, which takes ~10 s.
-    timeout-minutes: 10
+    # Measured 2026-11-06: the build, the suite, containment and axe take about
+    # 3 minutes together. The step that varies is
+    # `playwright install --with-deps`: its apt fetch from the runner's Ubuntu
+    # mirror took 7 to 8 minutes on three runs (21 MB at 53 kB/s), and at 10
+    # minutes the job was cancelled during axe with nothing failing. 20 leaves
+    # room for a slow mirror and still stops a hung job.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
