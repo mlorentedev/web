@@ -227,12 +227,20 @@ test('Chromium and its system packages come from caches keyed on the Playwright 
   }
   const cache = step(suite, 'Restore Chromium from the cache');
   assert.ok(cache, 'test.yml has no Chromium cache step');
-  assert.match(cache, /uses:\s*actions\/cache@[0-9a-f]{40}\b/, 'the cache action is pinned by sha');
+  assert.match(cache, /uses:\s*actions\/cache\/restore@[0-9a-f]{40}\b/, 'the restore action is pinned by sha');
   assert.match(cache, /path:\s*~\/\.cache\/ms-playwright/);
   assert.match(cache, /key:.*steps\.playwright\.outputs\.version/, 'a key without the version restores a Chromium the new Playwright does not use');
   const download = installs.find((body) => /run:\s*npx playwright install chromium\s*$/m.test(body));
   assert.ok(download, 'no step downloads the browser on a cache miss');
   assert.match(download, /if:\s*steps\.chromium-cache\.outputs\.cache-hit != 'true'/, 'the download runs even on a cache hit');
+  // Saved by its own step, right after the download: a post-step save is skipped when a later step fails.
+  for (const [name, id] of [['Save Chromium to the cache', 'chromium-cache'], ["Save Chromium's system packages to the cache", 'apt-cache']]) {
+    const save = step(suite, name);
+    assert.ok(save, `test.yml has no "${name}" step`);
+    assert.match(save, /uses:\s*actions\/cache\/save@[0-9a-f]{40}\b/, `${name}: not the pinned save action`);
+    assert.match(save, new RegExp(`if:\\s*steps\\.${id}\\.outputs\\.cache-hit != 'true'`), `${name}: saves even on an exact hit`);
+    assert.match(save, new RegExp(`key:\\s*\\$\\{\\{ steps\\.${id}\\.outputs\\.cache-primary-key \\}\\}`), `${name}: saves under another key than it restores`);
+  }
   // apt was the slow half: its .deb files are kept in the directory the second cache saves.
   const aptCache = step(suite, "Restore Chromium's system packages from the cache");
   assert.ok(aptCache, 'test.yml has no cache for the system packages');

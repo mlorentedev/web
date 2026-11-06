@@ -14,7 +14,7 @@ lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
-| 083 | [A job budget spent by one slow download reports a cancelled test, not the download](lesson-083-a-job-budget-spent-by-one-download-reports.md) | 2026-11-06 | `#ci` `#github-actions` |
+| 083 | [A job budget spent by one slow download reports a cancelled test, not the download](lesson-083-a-job-budget-spent-by-one-slow-download-repo.md) | 2026-11-06 | `#ci` `#github-actions` |
 | 082 | [Per-request gzip on a static site is CPU the pod pays on every view](lesson-082-per-request-gzip-on-a-static-site-is-cpu-the.md) | 2026-11-06 | `#nginx` `#performance` `#capacity` |
 | 079 | [grep -q at the end of a pipe under pipefail fails at random once its input outgrows one pipe write](lesson-079-grep-q-at-the-end-of-a-pipe-under-pipefail-fa.md) | 2026-11-05 | `#bash` `#ci` `#testing` |
 | 078 | [An allowlist for upstream input refused the site's own fallback, so the test failed under the wrong message](lesson-078-an-allowlist-for-upstream-input-refused-the.md) | 2026-11-05 | `#testing` `#ci` `#security` |

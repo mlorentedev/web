@@ -102,9 +102,12 @@ jobs:
           echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
           echo "image=${ImageVersion:?the runner does not state its image version}" >> "$GITHUB_OUTPUT"
 
+      # Restore and save are separate steps: the combined action saves in its
+      # post step, which does not run when a later step fails, so a run that
+      # failed would download again next time.
       - name: Restore Chromium from the cache
         id: chromium-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
           key: playwright-chromium-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
@@ -115,8 +118,16 @@ jobs:
         timeout-minutes: 4
         run: npx playwright install chromium
 
+      - name: Save Chromium to the cache
+        if: steps.chromium-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ steps.chromium-cache.outputs.cache-primary-key }}
+
       - name: Restore Chromium's system packages from the cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: apt-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/playwright-apt
           # The runner image pins the package versions, so a new image saves a
@@ -136,6 +147,13 @@ jobs:
             "$HOME/.cache/playwright-apt" | sudo tee /etc/apt/apt.conf.d/90-playwright-cache
           npx playwright install-deps chromium
           sudo chown -R "$(id -u):$(id -g)" ~/.cache/playwright-apt
+
+      - name: Save Chromium's system packages to the cache
+        if: steps.apt-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/playwright-apt
+          key: ${{ steps.apt-cache.outputs.cache-primary-key }}
 
       # `npm run build` must come first and is not redundant with the Docker
       # build: the audit tests read `dist/`, and the image build produces it
