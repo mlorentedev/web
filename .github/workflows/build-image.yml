@@ -120,8 +120,10 @@ jobs:
       # nginx:1.31-alpine base carries 1 CRITICAL and 6 HIGH, all fixed in the
       # digest the tag points at today, and nothing comes from npm, which the
       # runtime image does not contain. Blocking now would fail every PR on a
-      # finding none of them introduced. Set `exit-code: 1` for CRITICAL once
-      # Dependabot's docker bump lands and a PR build scans clean.
+      # finding none of them introduced. Once Dependabot's docker bump lands and
+      # a PR build scans clean, block on CRITICAL: set `exit-code: 1` with
+      # `severity: CRITICAL` and remove `continue-on-error`, which would
+      # otherwise keep the job green whatever the exit code.
       - name: Trivy image scan
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
         continue-on-error: true
