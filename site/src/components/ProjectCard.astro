@@ -22,6 +22,10 @@ const translatePath = useTranslatedPath(lang);
 const target = project.url ?? project.github;
 const internal = target?.startsWith('/') ?? false;
 const link = target && internal ? translatePath(target) : target;
+
+// The state and the start year (#587), one plain line under the name.
+const status = { active: t('projects.status.active') }[project.status];
+const since = t('projects.since').replace('{year}', String(project.since));
 ---
 
 <div class="border border-ink-200 bg-white rounded-lg p-5 hover:border-accent-700 transition-colors flex flex-col shadow-xs">
@@ -43,7 +47,19 @@ const link = target && internal ? translatePath(target) : target;
     </span>
   </div>
 
+  <div data-project-meta class="mb-3 text-xs font-mono text-ink-500">
+    <span data-status={project.status}>{status}</span> · <span>{since}</span>
+  </div>
+
   <p class="text-ink-600 text-sm sm:text-base leading-relaxed mb-4 grow text-pretty sm:leading-6">{project.description}</p>
+
+  {project.install && (
+    // No copy button: the site ships no client JavaScript (WEB-179). One click
+    // selects the whole command instead, and the prompt stays out of the selection.
+    <div data-install class="mb-4 rounded bg-ink-900 px-3 py-2 font-mono text-sm wrap-break-word">
+      <span aria-hidden="true" class="select-none text-ink-400">$ </span><code translate="no" class="select-all text-ink-100">{project.install}</code>
+    </div>
+  )}
 
   <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-ink-100">
     {project.tags.map((tag) => (
