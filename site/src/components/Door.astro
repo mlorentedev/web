@@ -1,7 +1,9 @@
 ---
-// The one way in (WEB-137): a mail whose body is the written filter, three
-// lines, plus the busy line while a project is running. Placed from the contact
-// markdown, so the order of the page stays Manu's to edit.
+// The one way in (WEB-137): a mail with only a neutral subject, so mail from the
+// site can be filtered, and an empty body (Manu, #586), plus
+// the busy line while a project is running. LinkedIn lives in the footer only.
+// Placed from the contact markdown, so the order of the page stays Manu's to edit.
+import Button from './Button.astro';
 import { site } from '../data/site';
 import { busyMonth } from '../data/availability.mjs';
 import { getLocale, getDateLocale, useTranslations } from '../i18n/utils';
@@ -9,9 +11,7 @@ import { getLocale, getDateLocale, useTranslations } from '../i18n/utils';
 const lang = getLocale(Astro.currentLocale);
 const t = useTranslations(lang);
 
-// RFC 6068 wants CRLF line breaks in a mailto body.
-const body = t('door.body').replace(/\n/g, '\r\n');
-const mailto = `mailto:${site.social.email}?subject=${encodeURIComponent(t('door.subject'))}&body=${encodeURIComponent(body)}`;
+const mailto = `mailto:${site.social.email}?subject=${encodeURIComponent(t('door.subject'))}`;
 
 // Judged at build time; the inline script below hides the line in the browser
 // once the date passes, so a page built before it cannot keep saying it after.
@@ -27,12 +27,7 @@ const month = busyMonth(site.nextStart, new Date(), getDateLocale(lang));
   {/* The button alone (Manu, 2026-11-03): the address printed under it said
       the same thing twice. The address is no longer shown as text on this
       page; the button and the footer icon both carry it as a mailto. */}
-  <a
-    href={mailto}
-    class="inline-block px-6 py-2.5 bg-ink-900 text-white rounded-md text-sm font-medium hover:bg-accent-700 transition-colors shadow-xs"
-  >
-    {t('door.cta')}
-  </a>
+  <Button href={mailto}>{t('door.cta')}</Button>
   {month && (
     <script is:inline>
       document.querySelectorAll('[data-busy]').forEach((el) => {

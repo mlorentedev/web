@@ -226,8 +226,6 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
                 {access.url ? (
                   <a
                     href={access.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     class="text-accent-700 hover:text-accent-900 font-semibold hover:underline inline-flex items-center gap-1"
                   >
                     <span translate="no">{access.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>

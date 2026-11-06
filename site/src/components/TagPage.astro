@@ -1,0 +1,79 @@
+---
+// A tag page for one locale: the projects and that locale's notes that carry
+// the tag. Its paths come from `tagPaths` in lib/locale-pages.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import ProjectCard from './ProjectCard.astro';
+
+import { localize } from '../data/portfolio';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+import { site } from '../data/site';
+import { breadcrumbs } from '../data/structured-data';
+import type { TagProps } from '../lib/locale-pages';
+import { tagName } from '../data/tag-names.mjs';
+
+type Props = TagProps & { lang: Lang };
+
+const { lang, tag, noindex, hasAlternates, matchingProjects, matchingNotes } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const displayTag = tagName(tag);
+const items = [...matchingNotes.map((n) => n.data.title), ...matchingProjects.map((p) => localize(p, lang).title)];
+// Name only what the page lists: Spanish tag pages list projects alone while no note is in Spanish.
+const [titleKey, descriptionKey] =
+  matchingNotes.length === 0 ? (['tags.titleProjects', 'tags.descriptionProjects'] as const)
+  : matchingProjects.length === 0 ? (['tags.titleNotes', 'tags.descriptionNotes'] as const)
+  : (['tags.title', 'tags.description'] as const);
+const title = t(titleKey).replace('{tag}', displayTag);
+// The items' titles make each description unique; cut at a word near 155 characters.
+const fullDescription = t(descriptionKey).replace('{tag}', displayTag).replace('{author}', site.author).replace('{items}', items.join(', '));
+const description = fullDescription.length <= 155 ? fullDescription : `${fullDescription.slice(0, 154).replace(/[\s,]+\S*$/, '')}…`;
+const schema = [breadcrumbs([
+  { name: site.author, path: translatePath('/') },
+  { name: displayTag, path: translatePath(`/tags/${tag}`) },
+])];
+---
+
+<BaseLayout title={title} description={description} noindex={noindex} hasAlternates={hasAlternates} schema={schema}>
+  <Header hasAlternates={hasAlternates} />
+  <main id="main-content" class="grow">
+    <section class="pt-12 pb-6 md:pt-16 md:pb-10">
+      <div class="max-w-3xl mx-auto px-4">
+        <a href={translatePath('/notes/')} class="text-sm text-gray-500 hover:text-cyan-700 transition-colors">&larr; {t('tags.all')}</a>
+        <h1 class="text-2xl font-extrabold text-gray-800 mt-4">{displayTag}</h1>
+      </div>
+    </section>
+
+    {matchingProjects.length > 0 && (
+      <section class="py-12 md:py-16">
+        <div class="max-w-3xl mx-auto px-4">
+          <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-8">{t('tags.projects')}</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {matchingProjects.map((rawProject) => (
+              <ProjectCard project={localize(rawProject, lang)} lang={lang} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {matchingNotes.length > 0 && (
+      <section class="py-12 md:py-16">
+        <div class="max-w-3xl mx-auto px-4">
+          <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-8">{t('tags.notes')}</h2>
+          <div class="divide-y divide-gray-100">
+            {matchingNotes.map((note) => (
+              <a href={translatePath(`/notes/${note.id}`)} class="group block py-3 first:pt-0">
+                <span class="text-xs text-gray-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
+                <span class="text-sm text-gray-700 group-hover:text-cyan-700 transition-colors">{note.data.title}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+  <Footer />
+</BaseLayout>

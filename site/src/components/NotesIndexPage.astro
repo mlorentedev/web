@@ -1,0 +1,64 @@
+---
+// The notes index for one locale. A locale with no notes yet is noindex, and
+// the other locale's index points at it only once it has some. The Spanish
+// one, while empty, sends readers to the English notes.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import { site } from '../data/site';
+import { useTranslations, useTranslatedPath, formatDate, isoDate } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+import { notesIn, otherLang, type Note } from '../lib/locale-pages';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+const notes: Note[] = await notesIn(lang);
+const twinHasNotes = (await notesIn(otherLang(lang))).length > 0;
+---
+
+<BaseLayout title={`${t('notes.title')} — ${site.author}`} description={t('notes.description')} noindex={notes.length === 0} hasAlternates={twinHasNotes}>
+  <Header />
+  <main id="main-content" class="grow">
+    <section class="pt-8 pb-12 md:pt-10 md:pb-14">
+      <div class="max-w-3xl mx-auto px-4">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-ink-900 tracking-tight mb-3">{t('notes.title')}</h1>
+        <p class="text-gray-600 mb-10">{t('notes.description')}</p>
+        {notes.length === 0 ? (
+          lang === 'es' ? (
+            <p data-notes-in-english class="text-gray-500">{t('notes.inEnglish')} <a href="/notes/" lang="en" class="text-accent-700 hover:text-accent-800 underline">Notes</a></p>
+          ) : (
+            <p class="text-gray-500">{t('notes.empty')}</p>
+          )
+        ) : (
+          <div class="divide-y divide-gray-200">
+            {notes.map((note) => (
+                <div class="py-6 first:pt-0 last:pb-0">
+                  <a href={translatePath(`/notes/${note.id}`)} class="group block">
+                    <time datetime={isoDate(note.data.pubDate)} class="text-xs text-gray-500">{formatDate(note.data.pubDate, lang)}</time>
+                    <h2 class="font-bold text-gray-800 mt-1 group-hover:text-cyan-700 transition-colors">
+                      {note.data.title}
+                    </h2>
+                    <p class="text-gray-600 text-sm mt-1.5 leading-relaxed">{note.data.description}</p>
+                  </a>
+                  <div class="flex flex-wrap gap-1.5 mt-3">
+                    {note.data.tags.map((tag: string) => (
+                      <a href={translatePath(`/tags/${tag.toLowerCase()}`)} data-tag-chip class="inline-flex min-h-7 min-w-6 items-center justify-center px-2 text-xs rounded bg-gray-100 text-gray-600 hover:bg-cyan-700 hover:text-white transition-colors">
+                        {tag}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

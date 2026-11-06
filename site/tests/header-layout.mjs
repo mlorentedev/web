@@ -25,7 +25,7 @@ import { labBaseUrl } from './lib/serve.mjs';
 const WIDTHS = [320, 375, 390, 454, 639, 640, 768, 1440];
 const SM = 640;
 const WIDE_COLUMN = ['/', '/es/', '/lab/', '/es/lab/', '/ai/', '/es/ai/'];
-const OTHERS = ['/notes/', '/es/notes/', '/contact/', '/es/contact/', '/projects/', '/notes/building-a-homelab-idp/'];
+const OTHERS = ['/notes/', '/es/notes/', '/contact/', '/es/contact/', '/projects/', '/es/projects/', '/notes/building-a-homelab-idp/'];
 
 function measure() {
   const box = (element) => {
@@ -147,6 +147,39 @@ for (const path of ['/', '/es/']) {
   if (found.length > 0) {
     console.error(`✗ ${path} menu by keyboard at 320px: ${found.join('; ')}`);
     failures++;
+  }
+}
+
+/**
+ * The open menu on a short screen: the header is sticky, so the page scrolling
+ * does not bring the panel's last row into view. Every menu link must be
+ * reachable on screen, by scrolling the panel itself if it has to.
+ */
+async function shortScreen(path, viewport) {
+  const page = await browser.newPage({ viewport });
+  await page.goto(`${BASE}${path}`, { waitUntil: 'load' });
+  await page.click('[data-header-menu] > summary');
+  const off = [];
+  for (const link of await page.locator('[data-header-menu] a').all()) {
+    await link.focus();
+    const box = await link.evaluate((el) => {
+      const { top, bottom } = el.getBoundingClientRect();
+      return { top, bottom, text: el.textContent.trim() };
+    });
+    if (box.top < 0 || box.bottom > viewport.height) off.push(`"${box.text}" spans ${Math.round(box.top)}–${Math.round(box.bottom)}px`);
+  }
+  await page.close();
+  return off;
+}
+
+for (const viewport of [{ width: 568, height: 320 }, { width: 320, height: 480 }]) {
+  for (const path of ['/', '/es/']) {
+    checks++;
+    const off = await shortScreen(path, viewport);
+    if (off.length > 0) {
+      console.error(`✗ ${path} open menu at ${viewport.width}×${viewport.height}: off screen when focused: ${off.join('; ')}`);
+      failures++;
+    }
   }
 }
 

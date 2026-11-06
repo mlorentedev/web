@@ -32,10 +32,10 @@ const anchors = (html) =>
     text: inner.replace(/<[^>]*>/g, '').trim(),
   }));
 
-// `/projects` is English-only (`hasAlternates={false}`); the card reaches Spanish
-// readers through the tag pages, which render the same `ProjectCard`.
+// The tag pages render the same `ProjectCard` as `/projects`, in both locales.
 for (const [page, lab] of [
   ['projects', '/lab/'],
+  ['es/projects', '/es/lab/'],
   ['tags/kubernetes', '/lab/'],
   ['es/tags/kubernetes', '/es/lab/'],
 ]) {
@@ -45,10 +45,12 @@ for (const [page, lab] of [
     assert.equal(title.href, lab);
   });
 
-  test(`/${page}: only links that leave the site open a new tab`, () => {
+  test(`/${page}: no link opens a new tab (WEB-167)`, () => {
     for (const a of anchors(read(page))) {
-      const external = /^https?:\/\//.test(a.href);
-      assert.equal(/\starget="_blank"/.test(a.attributes), external, `${a.href} ("${a.text}")`);
+      // An empty value, `_self`, `_top` and `_parent` stay in this tab; `_blank` or a named context opens another.
+      const m = /\starget\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(a.attributes);
+      const target = m ? (m[1] ?? m[2] ?? m[3]).trim().toLowerCase() : '';
+      assert.ok(['', '_self', '_top', '_parent'].includes(target), `${a.href} ("${a.text}") opens a new tab`);
     }
   });
 }
