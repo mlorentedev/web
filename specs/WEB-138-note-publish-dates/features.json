@@ -1,0 +1,30 @@
+[
+  {
+    "id": "WEB-138-note-publish-dates-f1",
+    "behavior": "AC1: a note dated after the build clock is absent from every file in dist",
+    "verification": "cd site && node --test tests/note-dates.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-138-note-publish-dates-f2",
+    "behavior": "AC2: the same note appears once the clock passes its date",
+    "verification": "cd site && node --test tests/note-dates.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-138-note-publish-dates-f3",
+    "behavior": "AC3: a note with writtenDate shows it and the published line; RSS orders by pubDate",
+    "verification": "cd site && node --test tests/note-dates.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  },
+  {
+    "id": "WEB-138-note-publish-dates-f4",
+    "behavior": "AC4: only src/lib/locale-pages.ts reads the notes collection",
+    "verification": "cd site && node --test tests/note-dates.test.mjs",
+    "state": "pending",
+    "evidence": ""
+  }
+]

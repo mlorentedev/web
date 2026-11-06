@@ -98,8 +98,7 @@ export const ui = {
     // The door (WEB-137): the one way in, the same button on the hero and on
     // /contact/. The mail it opens is the written filter, three lines.
     'door.cta': 'Write to me',
-    'door.subject': 'Let\'s talk',
-    'door.body': "Who I am:\nWhat I need:\nWhen I need it:\n",
+    'door.subject': 'Contact via mlorente.dev',
     'door.busy': 'Currently on a project; the next one starts in {month}.',
 
     // IDP Catalog (KubeLab IDP)
@@ -269,6 +268,7 @@ export const ui = {
     'notes.articles': 'What I think',
     'notes.empty': 'Coming soon.',
     'notes.inEnglish': 'For now I write in English.',
+    'notes.published': 'published',
     'notes.all': 'All notes',
 
     // Note detail
@@ -291,6 +291,12 @@ export const ui = {
     'tags.projects': 'Projects',
     'tags.notes': 'Notes',
     'tags.all': 'All notes',
+    'tags.title': '{tag}: notes and projects',
+    'tags.titleNotes': '{tag}: notes',
+    'tags.titleProjects': '{tag}: projects',
+    'tags.description': 'Notes and projects on {tag} by {author}: {items}.',
+    'tags.descriptionNotes': 'Notes on {tag} by {author}: {items}.',
+    'tags.descriptionProjects': 'Projects on {tag} by {author}: {items}.',
 
     // Meta
     'meta.title': 'Manu Lorente — SRE & AI Platform Engineer',
@@ -374,8 +380,7 @@ export const ui = {
     'hero.subtitle':
       'Con los años me he convertido en un full stack de verdad, pero no el de frontend y backend: empecé caracterizando sensores de imagen en la industria de semiconductores, que es física, datos y código a partes iguales, pasé por el firmware en FPGA y microcontroladores y he llegado hasta la aplicación en la nube y la conversación con el cliente. Más de diez años de ingeniería con clientes de Europa, Asia y Norteamérica; hoy diseño y opero plataformas con Kubernetes, AWS, GCP y GitOps, con agentes de IA en el flujo de trabajo.',
     'door.cta': 'Escríbeme',
-    'door.subject': 'Hablemos',
-    'door.body': 'Quién soy:\nQué necesito:\nPara cuándo:\n',
+    'door.subject': 'Contacto desde mlorente.dev',
     'door.busy': 'Ahora mismo en un proyecto; el siguiente arranca en {month}.',
 
     // IDP Catalog (KubeLab IDP)
@@ -545,6 +550,7 @@ export const ui = {
     'notes.articles': 'Lo que pienso',
     'notes.empty': 'Próximamente.',
     'notes.inEnglish': 'Por ahora escribo en inglés.',
+    'notes.published': 'publicada el',
     'notes.all': 'Todas las notas',
 
     // Note detail
@@ -563,6 +569,12 @@ export const ui = {
     'tags.projects': 'Proyectos',
     'tags.notes': 'Notas',
     'tags.all': 'Todas las notas',
+    'tags.title': '{tag}: notas y proyectos',
+    'tags.titleNotes': '{tag}: notas',
+    'tags.titleProjects': '{tag}: proyectos',
+    'tags.description': 'Notas y proyectos sobre {tag} de {author}: {items}.',
+    'tags.descriptionNotes': 'Notas sobre {tag} de {author}: {items}.',
+    'tags.descriptionProjects': 'Proyectos sobre {tag} de {author}: {items}.',
 
     // Meta
     'meta.title': 'Manu Lorente — SRE e ingeniero de plataformas de IA',

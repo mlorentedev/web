@@ -12,23 +12,31 @@ import type { Lang } from '../i18n/ui';
 import { site } from '../data/site';
 import { breadcrumbs } from '../data/structured-data';
 import type { TagProps } from '../lib/locale-pages';
+import { tagName } from '../data/tag-names.mjs';
 
 type Props = TagProps & { lang: Lang };
 
-const { lang, tag, hasAlternates, matchingProjects, matchingNotes } = Astro.props;
+const { lang, tag, noindex, hasAlternates, matchingProjects, matchingNotes } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
-const displayTag = matchingProjects.find((p) => p.tags.some((t) => t.toLowerCase() === tag))
-  ?.tags.find((t) => t.toLowerCase() === tag)
-  || matchingNotes[0]?.data.tags.find((t: string) => t.toLowerCase() === tag)
-  || tag;
+const displayTag = tagName(tag);
+const items = [...matchingNotes.map((n) => n.data.title), ...matchingProjects.map((p) => localize(p, lang).title)];
+// Name only what the page lists: Spanish tag pages list projects alone while no note is in Spanish.
+const [titleKey, descriptionKey] =
+  matchingNotes.length === 0 ? (['tags.titleProjects', 'tags.descriptionProjects'] as const)
+  : matchingProjects.length === 0 ? (['tags.titleNotes', 'tags.descriptionNotes'] as const)
+  : (['tags.title', 'tags.description'] as const);
+const title = t(titleKey).replace('{tag}', displayTag);
+// The items' titles make each description unique; cut at a word near 155 characters.
+const fullDescription = t(descriptionKey).replace('{tag}', displayTag).replace('{author}', site.author).replace('{items}', items.join(', '));
+const description = fullDescription.length <= 155 ? fullDescription : `${fullDescription.slice(0, 154).replace(/[\s,]+\S*$/, '')}…`;
 const schema = [breadcrumbs([
   { name: site.author, path: translatePath('/') },
   { name: displayTag, path: translatePath(`/tags/${tag}`) },
 ])];
 ---
 
-<BaseLayout title={`${displayTag}`} description={`${t('tags.projects')} & ${t('tags.notes')} — ${displayTag}.`} hasAlternates={hasAlternates} schema={schema}>
+<BaseLayout title={title} description={description} noindex={noindex} hasAlternates={hasAlternates} schema={schema}>
   <Header hasAlternates={hasAlternates} />
   <main id="main-content" class="grow">
     <section class="pt-12 pb-6 md:pt-16 md:pb-10">

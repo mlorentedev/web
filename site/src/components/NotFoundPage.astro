@@ -1,4 +1,5 @@
 ---
+import Button from './Button.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
@@ -21,10 +22,7 @@ const translatePath = useTranslatedPath(lang);
       <div class="max-w-3xl mx-auto px-4 text-center">
         <h1 class="text-6xl font-extrabold text-ink-500 mb-6">404</h1>
         <p class="text-gray-500 text-lg mb-10">{t('404.text')}</p>
-        <a
-          href={translatePath('/')}
-          class="inline-block px-6 py-3 bg-cyan-700 hover:bg-cyan-800 text-white font-medium rounded-md transition-colors text-sm"
-        >{t('404.cta')}</a>
+        <Button href={translatePath('/')}>{t('404.cta')}</Button>
       </div>
     </section>
   </main>

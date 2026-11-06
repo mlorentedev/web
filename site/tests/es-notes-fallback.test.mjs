@@ -15,13 +15,15 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { buildClock, publishedIn } from '../src/lib/note-dates.mjs';
+
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = join(siteRoot, 'dist');
 const notesDir = join(siteRoot, 'src/content/notes');
-const frontMatter = (text) => text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
-// A Spanish note counts once it is published: drafts are not built, as in the collection filters.
-const isSpanishPublished = (fm) => /^lang:\s*['"]?es\b/m.test(fm) && !/^draft:\s*true\b/m.test(fm);
-const spanish = readdirSync(notesDir).some((f) => isSpanishPublished(frontMatter(readFileSync(join(notesDir, f), 'utf8'))));
+// A Spanish note counts once it is published, by the rule the build uses: not a
+// draft, and not dated after the build (WEB-138).
+const now = buildClock();
+const spanish = readdirSync(notesDir).some((f) => publishedIn(readFileSync(join(notesDir, f), 'utf8'), 'es', now));
 
 function dist(page) {
   const file = join(distDir, page);

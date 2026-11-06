@@ -1,9 +1,9 @@
 import rss from '@astrojs/rss';
-import { getCollection, type CollectionEntry } from 'astro:content';
 import type { APIContext } from 'astro';
 
 import { site } from '../data/site';
 import { useTranslations } from '../i18n/utils';
+import { notesIn, type Note } from '../lib/locale-pages';
 
 const t = useTranslations('en');
 
@@ -15,22 +15,13 @@ const t = useTranslations('en');
  *
  * @param context - Astro's API context; only `site` is read, resolved from
  *   `site` in `astro.config.mjs`.
- * @returns An RSS 2.0 response listing every non-draft English note, newest
- *   first, with summaries rather than full post content.
+ * @returns An RSS 2.0 response listing every published English note, newest
+ *   first by `pubDate`, with summaries rather than full post content.
  */
 export async function GET(context: APIContext) {
-  // Same predicate as src/pages/notes/index.astro. If the two ever diverge, the
-  // feed starts advertising posts the site does not list, which is worse than
-  // having no feed at all.
-  const notes: CollectionEntry<'notes'>[] = (
-    await getCollection(
-      'notes',
-      ({ data }: CollectionEntry<'notes'>) => !data.draft && data.lang === 'en',
-    )
-  ).sort(
-    (a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) =>
-      b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-  );
+  // The notes index reads the same list, so the feed cannot advertise a note
+  // the site does not list: a draft, or one dated after this build.
+  const notes: Note[] = await notesIn('en');
 
   return rss({
     title: `${site.author} — ${t('notes.title')}`,
@@ -41,7 +32,7 @@ export async function GET(context: APIContext) {
     // Astro resolves this from `site` in astro.config.mjs; the non-null assertion
     // is safe because the build fails earlier without it.
     site: context.site!,
-    items: notes.map((note: CollectionEntry<'notes'>) => ({
+    items: notes.map((note: Note) => ({
       title: note.data.title,
       description: note.data.description,
       pubDate: note.data.pubDate,
