@@ -1,5 +1,5 @@
 .astro/
-node_modules/
+node_modules
 dist/
 
 # Rendered mermaid diagrams — generated from the .mdx sources at build time.
