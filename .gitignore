@@ -17,8 +17,8 @@ docker-compose.override.yml
 Thumbs.db
 
 # Node / Astro build output
-node_modules/
-site/node_modules/
+node_modules
+site/node_modules
 site/dist/
 .astro/
 

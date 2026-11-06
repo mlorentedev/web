@@ -56,17 +56,22 @@ export const shownWrittenDate = (data) =>
 export const writtenDateValid = (data) => !data.writtenDate || data.writtenDate.valueOf() <= data.pubDate.valueOf();
 
 /**
+ * One scalar from a raw note file's frontmatter, the way YAML reads it here:
+ * quoted, or plain up to a ` #` comment. Undefined when the field is absent.
+ */
+export function frontmatterField(text, name) {
+  const fm = text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
+  const m = fm.match(new RegExp(`^${name}:[ \\t]*(?:"([^"]*)"|'([^']*)'|([^\\n]*?))[ \\t]*(?:[ \\t]#[^\\n]*)?$`, 'm'));
+  return m ? (m[1] ?? m[2] ?? m[3]) : undefined;
+}
+
+/**
  * Whether a raw note file, read before the content layer exists (the sitemap
  * config, the tests), is a published note in `lang` at `now`. It reads the
  * frontmatter the way the collection does: `lang` defaults to English.
  */
 export function publishedIn(text, lang, now) {
-  const fm = text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
-  // A scalar the way YAML reads one here: quoted, or plain up to a ` #` comment.
-  const field = (name) => {
-    const m = fm.match(new RegExp(`^${name}:[ \\t]*(?:"([^"]*)"|'([^']*)'|([^\\n]*?))[ \\t]*(?:[ \\t]#[^\\n]*)?$`, 'm'));
-    return m ? (m[1] ?? m[2] ?? m[3]) : undefined;
-  };
+  const field = (name) => frontmatterField(text, name);
   const pubDate = new Date(field('pubDate') ?? 'invalid');
   if (Number.isNaN(pubDate.valueOf())) return false;
   return (field('lang') || 'en') === lang && isPublished({ draft: field('draft') === 'true', pubDate }, now);

@@ -265,3 +265,20 @@ test('Chromium and its system packages come from caches keyed on the Playwright 
   assert.doesNotMatch(suite, /\$\{\{\s*env\.ImageVersion\s*\}\}/, 'env.ImageVersion is always empty in an expression');
   assert.match(aptCache, /key:.*steps\.playwright\.outputs\.image/, 'the apt key does not name the runner image');
 });
+
+test('the repo hygiene checks run inside the PR gate, once per pull request (WEB-124)', () => {
+  // A job in another workflow is outside what `gate` can observe: a red lessons index sat
+  // beside a green gate and blocked nothing. Called from here, it is in `needs` like `test`.
+  const hygiene = workflow('repo-hygiene.yml');
+  const caller = job(validation, 'hygiene');
+  assert.ok(caller, 'pr-validation.yml has no hygiene job');
+  assert.equal(usesOf(caller), './.github/workflows/repo-hygiene.yml', 'the hygiene job does not call repo-hygiene.yml');
+  assert.ok(needsOf(job(validation, 'gate')).includes('hygiene'), 'the gate does not need the hygiene job');
+  assert.match(hygiene, /^ {2}workflow_call:/m, 'repo-hygiene.yml cannot be called');
+  // Its own `pull_request` trigger would run every check twice per PR, under two names.
+  assert.doesNotMatch(hygiene, /^ {2}pull_request:/m, 'repo-hygiene.yml still runs on pull_request by itself');
+  assert.match(hygiene, /^ {2}push:\s*\n {4}branches: \[master\]/m, 'repo-hygiene.yml no longer checks master after a merge');
+  for (const script of ['check-lessons.sh', 'check-actions-pinned.sh', 'check-doc-refs.sh', 'check-agents-stack.sh']) {
+    assert.match(hygiene, new RegExp(`run: bash scripts/${script.replace('.', '\\.')}`), `repo-hygiene.yml no longer runs ${script}`);
+  }
+});

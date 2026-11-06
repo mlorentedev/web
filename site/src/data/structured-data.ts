@@ -24,6 +24,8 @@ export function blogPosting(post: {
   dateCreated?: string;
   tags: string[];
   lang: Lang;
+  /** The note's own card: the same path BaseLayout makes its og:image. */
+  image?: string;
 }) {
   const url = absolute(post.path);
   return {
@@ -40,6 +42,7 @@ export function blogPosting(post: {
     publisher: author,
     inLanguage: inLanguage(post.lang),
     ...(post.tags.length > 0 && { keywords: post.tags.join(', ') }),
+    ...(post.image && { image: absolute(post.image) }),
   };
 }
 

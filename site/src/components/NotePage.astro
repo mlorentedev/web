@@ -12,6 +12,8 @@ import { site } from '../data/site';
 import { blogPosting, breadcrumbs } from '../data/structured-data';
 import type { Note, NoteLink } from '../lib/locale-pages';
 import { modifiedDate, shownWrittenDate } from '../lib/note-dates.mjs';
+import { cardPath } from '../lib/og-cards.mjs';
+import { readingMinutes, tocEntries } from '../lib/note-reading.mjs';
 
 interface Props {
   lang: Lang;
@@ -21,7 +23,10 @@ interface Props {
 }
 
 const { lang, note, prev, next } = Astro.props;
-const { Content } = await render(note);
+const { Content, headings } = await render(note);
+// Before the reader commits (WEB-129): its length, and what a long note covers.
+const minutes = readingMinutes(note.body ?? '');
+const toc = tocEntries(headings);
 
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
@@ -31,6 +36,8 @@ const { pubDate } = note.data;
 const writtenDate = shownWrittenDate(note.data);
 const shownDate = writtenDate ?? pubDate;
 const path = translatePath(`/notes/${note.id}`);
+// The note's own social card (WEB-176): og:image, twitter:image and the BlogPosting's image.
+const ogImage = cardPath(note.id);
 // One modified date for the meta, the graph and, read from the meta, the sitemap (WEB-050).
 const article = { publishedTime: isoDate(pubDate), modifiedTime: isoDate(modifiedDate(note.data)) };
 const schema = [
@@ -43,6 +50,7 @@ const schema = [
     dateCreated: writtenDate && isoDate(writtenDate),
     tags: note.data.tags,
     lang,
+    image: ogImage,
   }),
   breadcrumbs([
     { name: site.author, path: translatePath('/') },
@@ -52,7 +60,7 @@ const schema = [
 ];
 ---
 
-<BaseLayout title={note.data.title} description={note.data.description} ogType="article" article={article} hasAlternates={false} schema={schema}>
+<BaseLayout title={note.data.title} description={note.data.description} ogType="article" ogImage={ogImage} article={article} hasAlternates={false} schema={schema}>
   <Header hasAlternates={false} />
   <main id="main-content" class="grow">
     <section class="pt-16 pb-16 md:pt-20 md:pb-20">
@@ -64,6 +72,7 @@ const schema = [
               {writtenDate && (
                 <span data-note-published> · {t('notes.published')} <time datetime={isoDate(pubDate)}>{formatDate(pubDate, lang)}</time></span>
               )}
+              <span data-reading-time> · {minutes} {t('note.readingTime')}</span>
             </p>
             <h1 class="text-3xl font-extrabold text-gray-800 mt-3">{note.data.title}</h1>
             <div class="flex flex-wrap gap-2 mt-4">
@@ -77,7 +86,19 @@ const schema = [
           {note.data.supersededBy && (
             <NoteSupersededNotice supersededBy={note.data.supersededBy} lang={lang} />
           )}
-          <div class="prose prose-lg max-w-none prose-headings:font-extrabold prose-headings:text-gray-800 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-800">
+          {toc.length > 0 && (
+            <nav data-note-toc aria-labelledby="note-toc-label" class="mb-10 rounded border border-gray-200 bg-gray-50 px-5 py-4">
+              <p id="note-toc-label" class="text-xs font-bold uppercase tracking-wide text-gray-500">{t('note.toc')}</p>
+              <ol class="mt-3 space-y-1 text-sm">
+                {toc.map((h) => (
+                  <li class={h.depth === 3 ? 'pl-4' : ''}>
+                    <a href={`#${h.slug}`} class="inline-block py-0.5 text-gray-700 hover:text-cyan-700 transition-colors">{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
+          <div data-note-body class="prose prose-lg max-w-none prose-headings:font-extrabold prose-headings:text-gray-800 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-800">
             <Content />
           </div>
         </article>

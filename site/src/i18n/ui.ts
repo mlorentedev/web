@@ -279,6 +279,9 @@ export const ui = {
     // and two unnamed ones cannot be told apart in a landmark list (#358).
     'nav.label': 'Main',
     'note.navLabel': 'More notes',
+    // The byline and the table of contents of a note (WEB-129).
+    'note.readingTime': 'min read',
+    'note.toc': 'On this page',
 
     // The exit at the end of a note (WEB-090). Says what the notes are; it does
     // not restate the hero, which is still being decided.
@@ -560,6 +563,8 @@ export const ui = {
     'note.next': 'Siguiente',
     'nav.label': 'Principal',
     'note.navLabel': 'Más notas',
+    'note.readingTime': 'min de lectura',
+    'note.toc': 'En esta página',
 
     'note.closing.eyebrow': 'Quién escribe esto',
     'note.closing.body':
