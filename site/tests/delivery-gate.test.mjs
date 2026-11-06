@@ -282,3 +282,35 @@ test('the repo hygiene checks run inside the PR gate, once per pull request (WEB
     assert.match(hygiene, new RegExp(`run: bash scripts/${script.replace('.', '\\.')}`), `repo-hygiene.yml no longer runs ${script}`);
   }
 });
+
+test('every image build is scanned, pull requests included, and a non-blocking scan says until when (WEB-119)', () => {
+  // `if: inputs.push` scanned only images already published: never the one a PR could still stop.
+  const build = step(imageBuild, 'Build and push');
+  const scan = step(imageBuild, 'Trivy image scan');
+  const upload = step(imageBuild, 'Upload Trivy SARIF');
+  assert.ok(build && scan && upload, 'build-image.yml lost its build, scan or SARIF step');
+  assert.doesNotMatch(scan, /^ {8}if:/m, 'the scan is conditional again: PR builds go unscanned');
+  // A build that is not pushed must be loaded into the runner's docker, or there is nothing to scan.
+  assert.match(build, /^ {10}load: \$\{\{ !inputs\.push \}\}$/m, 'an unpushed build is not loaded, so the scan finds no image');
+  assert.match(upload, /^ {8}if: \$\{\{ hashFiles\('trivy-results\.sarif'\) != '' \}\}$/m, 'the SARIF upload is gated on more than the report existing, so PR builds can be dropped');
+  // The upload sends any file by that name, so one committed in the checkout must be gone before the scan.
+  const discard = imageBuild.indexOf('rm -f trivy-results.sarif');
+  assert.ok(discard !== -1 && discard < imageBuild.indexOf('- name: Trivy image scan'), 'a SARIF committed in the checkout could be uploaded as the scan');
+  assert.match(upload, /continue-on-error: true/, 'a SARIF endpoint hiccup fails the build');
+  // `load` cannot take more than one platform, so every caller that does not push builds one.
+  for (const caller of [validation, release]) {
+    for (const [, body] of caller.matchAll(/uses: \.\/\.github\/workflows\/build-image\.yml\n([\s\S]*?)(?=\n {2}[A-Za-z0-9_-]+:\s*\n|$)/g)) {
+      if (!/push: false/.test(body)) continue;
+      const platforms = body.match(/platforms:\s*(\S+)/)?.[1] ?? '';
+      assert.ok(platforms && !platforms.includes(','), `an unpushed build asks for platforms "${platforms}", which load cannot take`);
+    }
+  }
+  // Blocking needs both: `exit-code: 1` under `continue-on-error: true` still never fails the job.
+  const blocking = /exit-code: ['"]?1/.test(scan) && !/continue-on-error: true/.test(scan);
+  if (!blocking) {
+    // "For now" with no condition is how an exception becomes permanent: name the date and the trigger.
+    const note = imageBuild.slice(0, imageBuild.indexOf('- name: Trivy image scan')).split('\n').slice(-12).join('\n');
+    assert.match(note, /\d{4}-\d{2}-\d{2}/, 'the non-blocking scan has no dated note');
+    assert.match(note, /until|once|when/i, 'the non-blocking scan does not say what would make it block');
+  }
+});
