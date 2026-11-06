@@ -1,44 +1,58 @@
-# Overnight run, armed by Manu before sleeping. Read from the committed copy only.
+# Arming envelope for one unattended run. The run reads this file from the
+# committed copy only, and halts if the working tree differs from it.
 version: 1
-run_id: "web-2026-11-06-overnight"
+run_id: "web-polish-ci-20261106t0655z"
 armed_by: manu
-armed_at: 2026-11-06T06:55:00Z
-expires_at: 2026-11-06T14:55:00Z
-objective: "Land review-ready PRs for the structure and data halves of #590, #592 and #593, and keep #597, #614, #616 and #617 green and triaged."
+armed_at: 2026-11-06T06:55:15Z
+expires_at: 2026-11-06T14:55:15Z
+objective: "Open draft-then-ready PRs, each triaged, for the non-copy polish tickets WEB-133 and WEB-129 and the CI hardening tickets WEB-124, WEB-119 and WEB-165, for the owner to merge."
 scope:
   write_paths:
-    - "site/src/**"
-    - "site/tests/**"
+    - "site/src/components/**"
+    - "site/src/layouts/**"
+    - "site/src/styles/**"
+    - "site/src/lib/**"
+    - "site/src/data/**"
+    - "site/src/pages/**"
+    - "site/src/i18n/ui.ts"          # new keys only: no existing string is rewritten
     - "site/scripts/**"
-    - "docs/lessons/**"
-    - ".agent/**"
+    - "site/plugins/**"
+    - "site/tests/**"
+    - "site/astro.config.mjs"
+    - "site/Dockerfile"
+    - "site/nginx.conf"
+    - ".github/workflows/**"          # CI tickets only; such a PR is never merged by the run
+    - "scripts/**"
+    - "docs/**"
+    - "specs/**"
   frozen_paths:
-    - ".github/**"
+    - ".github/merge-grant.yml"
     - "harness/**"
     - "**/AGENTS.md"
+    - "site/src/content/pages/**"
+    - "site/src/content/notes/**"
     - "kubelab.yaml"
-    - "Dockerfile"
-    - "site/src/content/pages/**"   # page copy is the owner's voice
-  max_files: 12
+    - ".agent/unattended.yml"
+  max_files: 15
   max_loc: 300
-allowed_commands: [dotf, gh, git, npm, npx, node, make, docker]
+allowed_commands: [dotf, gh, git, make, npm, npx, node, actionlint, bash]
 queue:
-  source: bitacora
-  filter: "web#590, web#592, web#593 (structure and data only; copy and figures about the owner stay out)"
-  max_items: 3
+  source: explicit
+  filter: "#360 WEB-133, #356 WEB-129, #351 WEB-124, #346 WEB-119, #501 WEB-165"
+  max_items: 5
+  carry_over: "#619 WEB-201 (open): finish its warm-cache measurement and triage first"
 budget:
   max_iterations: 8
   max_minutes_per_iteration: 60
   max_consecutive_failures: 2
 authority:
-  merge: never          # no .github/merge-grant.yml in web; Manu merges every PR
+  merge: never                       # no .github/merge-grant.yml on master; the owner merges
   push: true
   open_pr: true
   advisor_tier: top
-rules:
-  - "Notes under site/src/content/notes: frontmatter only (series, order, kind), never the body."
-  - "No copy in the owner's voice, no figure or claim about Manu, no \"certified\", no employer IP."
-  - "Data comes from git or the GitHub API, never typed from memory."
-  - "PRs open as drafts; mark ready only when green and triaged."
-  - "Never push to a PR that is not OPEN; resolve conflicts by merging origin/master."
-  - "Peers: fix-focus-visible-c4 owns nav, a11y and UI; feat-load-test-capacity-c4 owns load tests. Ping the load-test peer when #616 reaches staging."
+constraints:
+  - "No copy: never rewrite an existing string in site/src/i18n/ui.ts or anything under site/src/content/."
+  - "No brand or design decision: an item that needs one is parked with two options."
+  - "No kubelab or remote-state change."
+  - "No force-push, no git reset --hard, no bare git stash; check the PR is open before every push."
+  - "GitHub artifacts in English, never naming an agent or this run; never an open issue's #N in a PR body."
