@@ -27,9 +27,20 @@ export function buildClock(env = process.env) {
 /** The build's clock, read once: every later caller, in this process or a child, gets the same instant. */
 export function buildNow(env = process.env) {
   const now = buildClock(env);
-  env.NOTES_NOW ??= now.toISOString();
+  // `||=`, not `??=`: an empty NOTES_NOW reads as unset, so it is replaced too.
+  env.NOTES_NOW ||= now.toISOString();
   return now;
 }
+
+/**
+ * A frontmatter date, given the content layer's zod. A blank field (`writtenDate:`
+ * with no value) reaches the schema as `null`, and `new Date(null)` is 1970-01-01,
+ * so a blank is read as absent: optional where the field is, refused where not.
+ */
+export const noteDate = (z, { optional = false } = {}) => {
+  const date = z.coerce.date();
+  return z.preprocess((v) => (v === null || v === '' ? undefined : v), optional ? date.optional() : date);
+};
 
 /** Whether a note's frontmatter makes it part of a build made at `now`. */
 export const isPublished = (data, now) => !data.draft && data.pubDate.valueOf() <= now.valueOf();

@@ -25,7 +25,9 @@ import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { buildClock, buildNow, isPublished, publishedIn, shownWrittenDate, writtenDateValid } from '../src/lib/note-dates.mjs';
+import { z } from 'astro/zod';
+
+import { buildClock, buildNow, isPublished, noteDate, publishedIn, shownWrittenDate, writtenDateValid } from '../src/lib/note-dates.mjs';
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(SITE, 'src');
@@ -59,6 +61,23 @@ test('the build reads its clock once: every caller gets the same instant', async
   await new Promise((r) => setTimeout(r, 5));
   assert.equal(buildNow(env).toISOString(), first.toISOString(), 'a second reading would let two parts of one build disagree');
   assert.equal(buildNow({ NOTES_NOW: '2030-06-01' }).toISOString(), '2030-06-01T00:00:00.000Z', 'a set NOTES_NOW still wins');
+});
+
+test('an empty NOTES_NOW is unset, and the instant read for it is still handed on', async () => {
+  const env = { NOTES_NOW: '' };
+  const first = buildNow(env);
+  assert.equal(env.NOTES_NOW, first.toISOString());
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal(buildNow(env).toISOString(), first.toISOString());
+});
+
+test('a blank date in the frontmatter is absent, not 1970', () => {
+  const written = noteDate(z, { optional: true });
+  // YAML reads `writtenDate:` with no value as null, and new Date(null) is 1970-01-01.
+  for (const blank of [null, '', undefined]) assert.deepEqual(written.safeParse(blank), { success: true, data: undefined });
+  assert.equal(written.safeParse('2019-03-01').data?.toISOString(), '2019-03-01T00:00:00.000Z');
+  assert.equal(noteDate(z).safeParse(null).success, false, 'a blank pubDate would publish the note as of 1970');
+  assert.equal(noteDate(z).safeParse('2021-01-01').data?.toISOString(), '2021-01-01T00:00:00.000Z');
 });
 
 test('writtenDate is shown only before pubDate, and refused after it', () => {
