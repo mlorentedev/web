@@ -265,6 +265,7 @@ export const ui = {
     'home.allNotes': 'All notes',
 
     // Notes page
+    'lab.notes.label': 'Notes on this:',
     'notes.title': 'Notes',
     'notes.description': 'Platform engineering notes — from hardware to Kubernetes.',
     'notes.empty': 'Coming soon.',
@@ -551,6 +552,7 @@ export const ui = {
     'home.allNotes': 'Todas las notas',
 
     // Notes page
+    'lab.notes.label': 'Notas sobre esto:',
     'notes.title': 'Notas',
     'notes.description': 'Notas de ingeniería de plataformas — del hardware a Kubernetes.',
     'notes.empty': 'Próximamente.',
