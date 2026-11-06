@@ -225,7 +225,16 @@ test('every image build is scanned, pull requests included, and a non-blocking s
   assert.match(build, /^ {10}load: \$\{\{ !inputs\.push \}\}$/m, 'an unpushed build is not loaded, so the scan finds no image');
   assert.doesNotMatch(upload, /inputs\.push/, 'the SARIF of a PR build is dropped');
   assert.match(upload, /continue-on-error: true/, 'a SARIF endpoint hiccup fails the build');
-  const blocking = /exit-code: ['"]?1/.test(scan);
+  // `load` cannot take more than one platform, so every caller that does not push builds one.
+  for (const caller of [validation, release]) {
+    for (const [, body] of caller.matchAll(/uses: \.\/\.github\/workflows\/build-image\.yml\n([\s\S]*?)(?=\n {2}[A-Za-z0-9_-]+:\s*\n|$)/g)) {
+      if (!/push: false/.test(body)) continue;
+      const platforms = body.match(/platforms:\s*(\S+)/)?.[1] ?? '';
+      assert.ok(platforms && !platforms.includes(','), `an unpushed build asks for platforms "${platforms}", which load cannot take`);
+    }
+  }
+  // Blocking needs both: `exit-code: 1` under `continue-on-error: true` still never fails the job.
+  const blocking = /exit-code: ['"]?1/.test(scan) && !/continue-on-error: true/.test(scan);
   if (!blocking) {
     // "For now" with no condition is how an exception becomes permanent: name the date and the trigger.
     const note = imageBuild.slice(0, imageBuild.indexOf('- name: Trivy image scan')).split('\n').slice(-12).join('\n');
