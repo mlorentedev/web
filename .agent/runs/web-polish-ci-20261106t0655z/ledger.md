@@ -9,3 +9,4 @@
 | 5 | 07:28 | #501 WEB-165 | parked (canon vs local fix), board Blocked | comment 6679642285 |
 | 6 | 07:33 | board | #360 Blocked, #501 Blocked, #620 Backlog, #356 In Progress: verified by GraphQL read | |
 | 7 | 07:33 | #619 | triaged, marked ready (CI change: stays for Manu) | comment 6679714649 |
+| 8 | 07:41 | #346 WEB-119 | baseline posted (1 CRITICAL, 6 HIGH, all from the pinned nginx base, clean in the current digest); PR #623 draft (AC1, AC4, AC5); AC3 waits on the Dependabot docker bump (root Dockerfile is outside write_paths) | comment 6679834268; delivery-gate 7/7 |
