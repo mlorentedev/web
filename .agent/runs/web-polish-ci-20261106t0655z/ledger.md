@@ -14,3 +14,4 @@
 | 10 | 08:02 | #621 | PR-Agent 2 findings applied at d845d50 (fenced code, bare <) | 593/594 pass, a11y 0, browser 0 |
 | 11 | 07:50 | #622 | mutation pushed at c7ace46 (lessons row order) | waiting for PR gate |
 | 12 | 07:52 | #623 | PR build scanned: SARIF trivy-web, 53 results on refs/pull/623/merge | code-scanning analyses API |
+| 13 | 09:03 | run | ended queue-empty; report written; retired two merged worktrees | triage-queue exit 1 on #498 only |
