@@ -240,7 +240,10 @@ test('every image build is scanned, pull requests included, and a non-blocking s
   assert.doesNotMatch(scan, /^ {8}if:/m, 'the scan is conditional again: PR builds go unscanned');
   // A build that is not pushed must be loaded into the runner's docker, or there is nothing to scan.
   assert.match(build, /^ {10}load: \$\{\{ !inputs\.push \}\}$/m, 'an unpushed build is not loaded, so the scan finds no image');
-  assert.doesNotMatch(upload, /inputs\.push/, 'the SARIF of a PR build is dropped');
+  assert.match(upload, /^ {8}if: \$\{\{ hashFiles\('trivy-results\.sarif'\) != '' \}\}$/m, 'the SARIF upload is gated on more than the report existing, so PR builds can be dropped');
+  // The upload sends any file by that name, so one committed in the checkout must be gone before the scan.
+  const discard = imageBuild.indexOf('rm -f trivy-results.sarif');
+  assert.ok(discard !== -1 && discard < imageBuild.indexOf('- name: Trivy image scan'), 'a SARIF committed in the checkout could be uploaded as the scan');
   assert.match(upload, /continue-on-error: true/, 'a SARIF endpoint hiccup fails the build');
   // `load` cannot take more than one platform, so every caller that does not push builds one.
   for (const caller of [validation, release]) {

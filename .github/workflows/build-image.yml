@@ -71,6 +71,12 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
+      # The SARIF upload below sends whatever trivy-results.sarif it finds. A
+      # pull request could commit one, and if the scan then failed before
+      # writing its own, the committed file would be uploaded as the scan.
+      - name: Discard a SARIF report the checkout carries
+        run: rm -f trivy-results.sarif
+
       - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
 
