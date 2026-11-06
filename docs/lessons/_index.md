@@ -14,6 +14,7 @@ lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 079 | [grep -q at the end of a pipe under pipefail fails at random once its input outgrows one pipe write](lesson-079-grep-q-at-the-end-of-a-pipe-under-pipefail-fa.md) | 2026-11-05 | `#bash` `#ci` `#testing` |
 | 077 | [A second astro build over fixture content writes the fixtures into the content store the next real build reads](lesson-077-a-second-astro-build-over-fixture-content-wr.md) | 2026-11-04 | `#astro` `#testing` |
 | 076 | [A noindex page named as a twin's alternate is a hreflang error, and a per-page noindex rule misses it](lesson-076-a-noindex-page-named-as-a-twin-s-alternate-i.md) | 2026-11-04 | `#seo` `#i18n` |
 | 075 | [Each review round found a new hole in a regex HTML tokenizer; the parser already in the tree closed them all](lesson-075-each-review-round-found-a-new-hole-in-a-rege.md) | 2026-11-04 | `#testing` `#html` |
