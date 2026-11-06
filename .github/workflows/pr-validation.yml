@@ -23,6 +23,14 @@ jobs:
       contents: read
     uses: ./.github/workflows/test.yml
 
+  # Lessons index, pinned actions, doc paths and stack majors (WEB-124). In its
+  # own workflow it was outside what `gate` can see; called here, it is in `needs`.
+  hygiene:
+    name: Repo hygiene
+    permissions:
+      contents: read
+    uses: ./.github/workflows/repo-hygiene.yml
+
   validate:
     name: Validate build
     permissions:
@@ -151,7 +159,7 @@ jobs:
     # the job is skipped when a dependency fails, and a skipped required check
     # does not block a merge — it reports neutral. The job has to *run* and fail.
     if: always()
-    needs: [test, validate, closing-refs]
+    needs: [test, hygiene, validate, closing-refs]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
