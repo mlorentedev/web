@@ -96,7 +96,11 @@ jobs:
       - name: Resolve the Playwright version
         id: playwright
         working-directory: site
-        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+        # `image` is the runner's own ImageVersion, read in the shell: the
+        # `env` context of an expression holds only what a workflow sets.
+        run: |
+          echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "image=${ImageVersion:?the runner does not state its image version}" >> "$GITHUB_OUTPUT"
 
       - name: Restore Chromium from the cache
         id: chromium-cache
@@ -117,8 +121,9 @@ jobs:
           path: ~/.cache/playwright-apt
           # The runner image pins the package versions, so a new image saves a
           # fresh cache, and starts from the last one: most .deb files carry over.
-          key: pw-apt-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}-${{ env.ImageVersion }}
-          restore-keys: pw-apt-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}-
+          # The image names the OS too, so `runner.os` would only repeat it.
+          key: pw-apt-${{ runner.arch }}-${{ steps.playwright.outputs.version }}-${{ steps.playwright.outputs.image }}
+          restore-keys: pw-apt-${{ runner.arch }}-${{ steps.playwright.outputs.version }}-
 
       # 12 minutes: a cold fetch from a slow mirror took 8 and must still pass.
       # The chown lets the cache step read what apt, as root, wrote.

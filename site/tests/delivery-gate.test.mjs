@@ -241,4 +241,8 @@ test('Chromium and its system packages come from caches keyed on the Playwright 
   assert.ok(deps, 'no step installs the system libraries');
   assert.ok(aptDir && deps.includes(`Dir::Cache::Archives "%s"`) && deps.includes(aptDir.replace('~', '$HOME')), `apt does not keep its downloads in ${aptDir}`);
   assert.match(deps, /Keep-Downloaded-Packages "true"/, 'apt deletes what it downloaded, so the cache saves nothing');
+  // The `env` context holds only what the workflow sets, never the runner's own variables:
+  // `env.ImageVersion` was empty, and the key was saved ending in a bare `-`.
+  assert.doesNotMatch(suite, /\$\{\{\s*env\.ImageVersion\s*\}\}/, 'env.ImageVersion is always empty in an expression');
+  assert.match(aptCache, /key:.*steps\.playwright\.outputs\.image/, 'the apt key does not name the runner image');
 });
