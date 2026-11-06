@@ -1,23 +1,17 @@
-import { readdirSync, readFileSync } from 'node:fs';
-
 import { defineConfig } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
+import { noindexPages } from './plugins/noindex-pages.mjs';
 import { rehypeMermaid } from './plugins/rehype-mermaid.mjs';
-import { buildNow, publishedIn } from './src/lib/note-dates.mjs';
 import rehypeScrollableTables from './plugins/scrollable-tables.mjs';
 import rehypeTrailingSlash from './plugins/trailing-slash.mjs';
 
-// /es/notes/ is noindex while no note is written in Spanish; keep it out of the
-// sitemap for as long, so the two signals agree.
-const notesDir = new URL(`${process.env.NOTES_DIR ?? 'src/content/notes'}/`, new URL('./', import.meta.url));
-// A Spanish note counts once it is published: not a draft, and not dated after
-// this build, as in the collection filters (src/lib/note-dates.mjs).
-const now = buildNow();
-const hasSpanishNotes = readdirSync(notesDir).some((f) => publishedIn(readFileSync(new URL(f, notesDir), 'utf8'), 'es', now));
+// A noindex page stays out of the sitemap, so the two signals agree: /es/notes/
+// while no note is in Spanish, and a tag page listing a single item (WEB-052).
+const noindex = noindexPages();
 
 export default defineConfig({
   site: 'https://mlorente.dev',
@@ -31,9 +25,10 @@ export default defineConfig({
   // `@astrojs/tailwind` integration, and it prefixes CSS itself.
   vite: { plugins: [tailwindcss()] },
   integrations: [
+    noindex.integration,
     sitemap({
       // The integration drops `/404` but not a localised one.
-      filter: (page) => !page.endsWith('/404/') && (hasSpanishNotes || !page.endsWith('/es/notes/')),
+      filter: (page) => !page.endsWith('/404/') && noindex.indexable(page),
       // The integration writes the locales. The HTML also declares `x-default`
       // on every page with alternates, and both surfaces must say the same.
       // The integration shares one `links` array between the two locales' URLs,

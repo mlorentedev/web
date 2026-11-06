@@ -169,8 +169,6 @@ const WHY: Record<Exclude<IdpAccess, 'public'>, string> = {
                       {isPublic ? (
                         <a
                           href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           class="inline-flex items-center gap-1 text-xs font-medium text-accent-700 hover:text-accent-900 transition-colors"
                         >
                           <span>{t('idp.action.open')}</span>

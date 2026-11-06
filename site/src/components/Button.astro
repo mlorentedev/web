@@ -1,0 +1,39 @@
+---
+/**
+ * The site's call-to-action button (WEB-133 AC2).
+ *
+ * The primary CTA had four hand-typed treatments: ink at two paddings, cyan on
+ * the 404 page, and accent on the dark lab panel. Nothing told them apart by
+ * meaning. This holds one treatment per background, in one size:
+ * - `primary`: on a light background, ink that turns accent on hover;
+ * - `on-dark`: the primary on the dark panel, where ink would not show;
+ * - `on-dark-secondary`: the quieter choice beside `on-dark`.
+ *
+ * The label is the slot, so its copy stays with the caller. `class` is for the
+ * caller's layout only (`w-fit`, `shrink-0`), never colour or size:
+ * tests/cta-button.test.mjs fails on a CTA styled anywhere else.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+const VARIANTS = {
+  primary: 'bg-ink-900 hover:bg-accent-700 text-white',
+  'on-dark': 'bg-accent-700 hover:bg-accent-600 text-white',
+  'on-dark-secondary': 'border border-panel-700 bg-panel-800/80 hover:bg-panel-800 hover:border-panel-600 text-panel-200 hover:text-white',
+} as const;
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: keyof typeof VARIANTS;
+}
+
+const { variant = 'primary', class: layout, ...attrs } = Astro.props;
+---
+
+<a
+  {...attrs}
+  class:list={[
+    'inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors shadow-xs',
+    VARIANTS[variant],
+    layout,
+  ]}
+><slot /></a>

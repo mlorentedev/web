@@ -291,6 +291,12 @@ export const ui = {
     'tags.projects': 'Projects',
     'tags.notes': 'Notes',
     'tags.all': 'All notes',
+    'tags.title': '{tag}: notes and projects',
+    'tags.titleNotes': '{tag}: notes',
+    'tags.titleProjects': '{tag}: projects',
+    'tags.description': 'Notes and projects on {tag} by {author}: {items}.',
+    'tags.descriptionNotes': 'Notes on {tag} by {author}: {items}.',
+    'tags.descriptionProjects': 'Projects on {tag} by {author}: {items}.',
 
     // Meta
     'meta.title': 'Manu Lorente — SRE & AI Platform Engineer',
@@ -563,6 +569,12 @@ export const ui = {
     'tags.projects': 'Proyectos',
     'tags.notes': 'Notas',
     'tags.all': 'Todas las notas',
+    'tags.title': '{tag}: notas y proyectos',
+    'tags.titleNotes': '{tag}: notas',
+    'tags.titleProjects': '{tag}: proyectos',
+    'tags.description': 'Notas y proyectos sobre {tag} de {author}: {items}.',
+    'tags.descriptionNotes': 'Notas sobre {tag} de {author}: {items}.',
+    'tags.descriptionProjects': 'Proyectos sobre {tag} de {author}: {items}.',
 
     // Meta
     'meta.title': 'Manu Lorente — SRE e ingeniero de plataformas de IA',

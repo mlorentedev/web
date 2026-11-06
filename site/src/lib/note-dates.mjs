@@ -18,11 +18,11 @@ export function buildClock(env = process.env) {
   return now;
 }
 
-// One instant for the whole build. The config (the sitemap's Spanish-notes check)
-// and the pages load as separate module graphs, so each reading the clock would
-// let a build across 00:00 UTC list a note on a page the sitemap has already
-// judged empty. The first reading is written to `NOTES_NOW`, so every later one,
-// in this process or one it starts, gets the same instant.
+// One instant for the whole build. Astro can load a module more than once in a
+// build (the config, the prerender graph), so each reading the clock would let a
+// build across 00:00 UTC list a note on one page and leave it off another. The
+// first reading is written to `NOTES_NOW`, so every later one, in this process or
+// one it starts, gets the same instant.
 
 /** The build's clock, read once: every later caller, in this process or a child, gets the same instant. */
 export function buildNow(env = process.env) {
