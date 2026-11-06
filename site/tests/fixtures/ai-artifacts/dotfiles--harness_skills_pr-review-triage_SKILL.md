@@ -1,0 +1,231 @@
+---
+generated: true
+generated_from: 00_meta/skills/pr-review-triage/SKILL.md
+generated_sha: 8026a9275faf9db6
+id: pr-review-triage-skill
+type: skill
+status: active
+created: '2026-08-08'
+owner: manu
+name: pr-review-triage
+description: Triage an open pull request after its checks and reviewers have run —
+  read the CI result, read every review comment, and give each one a disposition (apply
+  / skip / defer) with a one-line reason. Triggers on /pr-review-triage, "triage the
+  PR", "review the review", "what did the reviewer say", "revisa los comentarios de
+  la PR", "check CI and the bot comments", and by default once a PR you opened has
+  come back — from its checks and from its reviewers, whichever lands later, because
+  checks finishing is not the end of the window. Never applies a change or merges
+  without explicit human confirmation.
+allowed-tools: [Bash, Read, Grep]
+keywords: [pr review triage, triage pr, review bot comments, revisa comentarios pr,
+  ci triage]
+paths: [.github/workflows/**]
+requires: [adversarial-review]
+---
+# /pr-review-triage — dispose of what the PR came back with
+
+Opening a pull request is not the end of a change. Its checks report, its reviewers comment, and both are then routinely ignored because nothing says when to come back. This skill is that moment: read what came back, decide per item, and leave nothing floating.
+
+It is the **Review** item of the Definition of Done (`pattern-change-lifecycle.md`) made executable, and it applies the two-exits rule from [[pattern-track-or-fix]] to a reviewer's comments rather than to your own findings.
+
+The "by default" in the trigger list is a judgement you make, not a call something makes for you: nothing invokes this skill automatically. What binds is the `pr-stewardship` obligation to disposition what came back; this skill is how you meet it, and you are the one who decides the moment has arrived.
+
+## Preconditions
+
+- An open PR, and `gh` authenticated. Everything here is `gh` plus shell — no agent-specific primitive, so every harness runs it identically.
+- The change is yours to act on. Triaging someone else's PR is review, not this.
+
+## Protocol
+
+### 1. Wait for the run to finish, once — unless the repository says not to
+
+**Check the repository's own rule first, and let it win.** Some projects forbid
+the watch loop outright and make the human the one who reports a red build (this
+repo does, in `AGENTS.md`). Where such a rule exists, do not run the command
+below: hand the PR over, and come back when the human or a hook tells you the
+result is in. That is not a shortcut past the obligation — the `pr-stewardship`
+region still requires every check and comment to be dispositioned; it only says
+who watches in the meantime, and the answer there is nobody.
+
+Absent such a rule:
+
+```bash
+gh pr checks <N> --repo <owner>/<repo> --watch --interval 30
+```
+
+Watch it once rather than polling in a loop. If a reviewer bot is still pending after the checks settle, wait for that one specific thing — a triage run against half the comments produces a disposition table you will have to redo.
+
+### 1b. Batch Workflow (High-Velocity PR Creation)
+
+When resolving multiple backlog items in a single session:
+- **Do not block local progress waiting for reviews.** Open each atomic PR in series and let CI and autonomous reviewers (PR-Agent) process them asynchronously in parallel.
+- Non-slash comments (`## Review triage`, conversation) are filtered out at the workflow level, so posting triage tables does not trigger review loops or consume inference quota.
+- **Batch sweep before closing:** Run `dotf pr triage-queue` to list all PRs whose reviews have finished across the batch, then iterate through each pending PR, apply needed fixes via TDD, push updates, and record `## Review triage`.
+
+### 1c. A push re-opens the question, and a merged PR is no longer a change
+
+Two ways the queue and the PR stop matching what you believe you are doing. Both measured in
+`mlorentedev/garsync` on 2026-09-23, both silent:
+
+- **A triage done before the push is already stale.** `synchronize` is precisely the event that makes an
+autonomous reviewer run again, so a disposition recorded an hour ago describes a head that no longer
+exists. Measured: PR-Agent re-reviewed the same PR three times in one session — twice after a
+*comment-only* commit — and each run put the PR back in the queue, so the queue went clear, non-zero,
+clear, non-zero. **Re-run `dotf pr triage-queue` in the same turn as the push**, and read the new output
+before calling the PR finished. A human reminding you to look is the signal that this step was skipped.
+- **A push after the merge never reaches the merge, and nothing tells you.** Fix commits pushed once
+GitHub has recorded the merge land on a branch that is already history: the PR still shows them, the queue
+still lists the PR as awaiting a disposition, and the base branch keeps the **unfixed** version. Measured:
+two verified review fixes (the `gitleaks` path allowlists removed, a too-narrow `files:` pattern widened)
+were stranded this way in `#103`, and had to be re-landed in a separate PR (ticket `#112`, PR `#113`) —
+verified work, reviewed and approved, one `gh pr view` away from being lost without anyone noticing.
+**Check `gh pr view <N> --json state` before pushing a fix.** If it is `MERGED`, open a fresh branch, say
+in the body what you are re-landing and why the original merge missed it, and file the ticket when the
+stranding itself deserves a record.
+
+### 2. Report CI honestly
+
+```bash
+gh pr view <N> --repo <owner>/<repo> --json state,mergeable,statusCheckRollup
+```
+
+Green: say so in one line and move to the comments. Red: name the failing check and read its log before theorising.
+
+```bash
+gh run view --repo <owner>/<repo> --job <job-id> --log-failed
+```
+
+A failing check is a finding about the change, not an obstacle to the triage. Two of them are worth recognising on sight:
+
+- **A guard firing on a deliberate change.** A pinned count, an exhaustive list, a discipline gate. It is doing its job; update the guard's expectation in this PR, do not route around it.
+- **A gate demanding process, not code.** Fill the artifact it asks for. Reaching for the skip label is a decision that needs a stated reason, and "the gate was inconvenient" is not one.
+
+### 2b. Bot-Regenerated PRs — Verify the SHA, not the PR number
+
+Bot PRs (such as `release-please` or dependabot rebases) force-update the PR head on every push to the base branch.
+* **The failure mode:** The PR number is stable, but the head SHA moves. Checks verified earlier belonged to a commit no longer in the PR, and the new head may sit stalled behind GitHub's manual approval gate (`action_required` for bot-authored workflow runs), which sends no notification.
+* **Discipline:** Treat the head SHA (`.head.sha` / `headRefOid`) as the true identity of what was verified. Re-query `gh pr view <N> --json headRefOid,statusCheckRollup` before repeating a "checks are green" claim.
+
+### 3. Give the reviewers time, then check the review actually happened
+
+Review comments arrive **asynchronously**, from whoever is configured to produce them — a review service today, a different one tomorrow, a scanner, a human, one of your own automations. **The author does not matter and must not drive the triage**: a finding is judged by whether the claim is true, not by who signed it. Automated and human comments get the same three exits; the only thing an author's identity earns is a reply address.
+
+**Wait a couple of minutes before reading.** Reading the instant the PR opens gets you a partial review and a disposition table you will redo. Two minutes is the working default, or let the CI watch in step 1 absorb the wait — the checks usually outlast the reviewers. Those two minutes sit *inside* the ten-minute window the `pr-stewardship` region sets, they do not compete with it: two minutes is when you first look, ten is when the obligation to keep looking expires.
+
+**Then confirm the review ran at all.** A comment that lands seconds after the PR opens is almost never a review; it is a status notice, and it reads exactly like a pass. Measured on this repo: a reviewer posted **9 seconds** after PR creation with the body *"Review limit reached — next review available in 11 minutes"*. Quota, queue, error and skip all produce that shape.
+
+Tell them apart by **content, not by author**: a real review names files, lines, or specific claims. A notice talks about the review itself — limits, retries, queues, waiting.
+
+```bash
+gh api repos/<owner>/<repo>/pulls/<N> --jq '.created_at'
+gh api repos/<owner>/<repo>/issues/<N>/comments --jq '.[] | "\(.created_at)\t\(.user.login)\t\(.body[0:120])"'
+gh api repos/<owner>/<repo>/pulls/<N>/comments --jq '.[] | "\(.created_at)\t\(.user.login)\t\(.path):\(.line)"'
+```
+
+**A summary is not the whole review.** A reviewer that publishes findings inline moves them out of its summary comment: PR-Agent with `inline_key_issues` posts each finding that names a file and lines as an inline review comment and drops it from its Guide, so a Guide whose findings all went inline has no findings row at all. That absence is not "nothing to say"; the second call above is where those findings are.
+
+Three outcomes, and only one means "no findings":
+
+- **Reviewed, findings** → triage them (step 4).
+- **Reviewed, nothing to say** → record that a review ran and found nothing.
+- **Never ran** (quota, queue, error, not configured) → say so plainly, and either wait for the stated window or proceed **without** claiming review coverage you do not have.
+
+Note the asymmetry: some checks are configured to comment, others only to set a check status. Anything that never comments is triaged in step 2, not here — an empty comment list is not evidence that nothing scanned the change.
+
+**Skip to step 7 when there is nothing to dispose of.** Green checks and no comments — or only status notices, or only remarks with no bearing on the change — is the common case, and for the human in front of you it ends in one line: *"CI green, no review findings."* Do not manufacture findings for an empty review, do not reply to noise, and do not invent work to look thorough. Steps 4 to 6 exist for when a review actually said something.
+
+You still record the outcome on the PR. **"Nothing to dispose of" is a disposition**, and step 7 says why it has to be written down rather than said: an unrecorded empty triage leaves the PR in the queue permanently, which is indistinguishable from nobody having looked.
+
+### 4. Read every comment, including the resolved-looking ones
+
+```bash
+gh pr view <N> --repo <owner>/<repo> --comments
+gh api repos/<owner>/<repo>/pulls/<N>/comments --jq '.[] | "\(.path):\(.line)\t\(.user.login)\t\(.body)"'
+```
+
+Both calls: the first returns issue-level review bodies, the second the inline threads, and a suggestion that only exists inline is the one most often lost.
+
+### 5. Give every comment a disposition
+
+Three exits, and every comment takes exactly one; a REAL finding has a fourth, **refuted**, below. A comment you neither applied nor recorded is a comment you silently overruled.
+
+| Disposition | When | What it costs you |
+|---|---|---|
+| **apply** | Correct, and small enough to belong in this PR's scope | A commit on the branch, in the same voice as the change |
+| **defer** | Correct, but out of this PR's scope, or it needs a decision | A ticket with the root cause and a link back to the comment |
+| **skip** | Wrong, irrelevant, or right in general but not here | One line saying why. Reply on the PR only when someone is waiting on the answer — a human reviewer, or a thread the next reader will hit. Noise gets a row in your table and nothing else |
+
+**A finding marked `Class: REAL` is reproduced before it is applied** (TOOL-017; the owner's ruling on #1062). A reproduction is a committed failing test, or a command whose non-zero exit is recorded; anything else, your own judgement included, is not one. Run the check with `dotf pr reproduce -- <cmd>` (add `--probe <patch>` for a mutation that removes a fix) and paste the line it prints into that finding's row:
+
+| Its reproduction | Its disposition |
+|---|---|
+| `Reproduction: reproduced …` | **apply**, or **defer** |
+| `Reproduction: did-not-reproduce …` | **refuted**: the claim is wrong, recorded with its evidence. It is not a skip, because the probe may still have found something real |
+| `could-not-run`, `did-not-land`, or none | **defer** to a human |
+
+A REAL finding is never **skip**ped. `dotf pr triage-queue` holds a PR whose record breaks this, and `dotf pr land` then refuses it. It finds a finding's row by `path:line` (the base name will do), and reads the disposition from the first cell after that one which opens with apply, defer, refuted or skip. THEORETICAL and SPECULATIVE findings are not gated.
+
+Two judgements this table does not make for you:
+
+- **Scope.** "While I'm here" is how an atomic PR stops being reviewable. If applying a comment would change the diff's subject, defer it.
+- **Correctness.** A reviewer — human or model — can be confidently wrong. Check the claim against the code before applying it; a suggestion that reads well and is wrong costs more than one you skipped.
+
+### 6. Present the table, then act
+
+Print one row per comment with its proposed disposition and reason, and **wait for confirmation before applying anything**. What the human is confirming is your judgement, not your typing.
+
+```
+#12 src/deploy.sh:44  apply  — the guard misses the CRLF case, real defect
+#13 tests/foo.bats:8  defer  — valid, but it is a second behaviour → filed as #NNN
+#14 README.md:2       skip   — suggests a convention this repo decided against in ADR-012
+```
+
+After confirmation: apply the accepted ones as commits, file the deferred ones as tickets, reply to the skipped ones with the reason. Then say what you did, with the ticket numbers.
+
+### 7. Record the disposition on the PR — always, including the empty case
+
+A disposition that lives only in this conversation evaporates when the session ends, and the Definition of Done's **Review** item then rests on a claim nobody can check. Post the table as a comment on the PR, under this exact heading:
+
+```markdown
+## Review triage
+
+| Item | Disposition | Reason |
+|---|---|---|
+| #12 `src/deploy.sh:44` | apply | the guard misses the CRLF case, real defect |
+| #13 `tests/foo.bats:8` | defer | valid, but a second behaviour → filed as #NNN |
+| #14 `README.md:2` | skip | suggests a convention ADR-012 decided against |
+| #15 `cli/x.go:9` (REAL) | apply | Reproduction: reproduced (exit 1) on 0123456789ab: `go test ./cli/x -run TestY` |
+
+Reviewer output dispositioned: <reviewer login>, <timestamp of their newest comment>.
+```
+
+```bash
+dotf forge pr comment <N> --body-file <file>    # run inside the repo's checkout: the repository comes from origin
+```
+
+**The heading is a contract, not a formatting choice.** `dotf pr triage-queue` reads it back to decide whether a PR is still pending: a PR is pending when its newest reviewer output is newer than its newest triage record. The string is declared once, in `harness/review-attestation.json` under `triage.marker` — this skill writes it and the queue reads it. Match it exactly, at the start of a line.
+
+**Post it as a conversation comment, from an account with standing.** The queue counts a record only when its author's GitHub association is listed under `triage.standing` in the same file (default: `OWNER`, `MEMBER`, `COLLABORATOR`). A `gh` that posts as a GitHub App gets `NONE`, and a triage submitted as a review body is review output, not a record: neither takes the PR out of the queue, and `dotf pr land` refuses. The queue's pending reason names an ignored record and its association.
+
+**Record the empty case too.** *"CI green, no review findings"* is a disposition and it must be written down like any other — one row saying so is enough. Skipping it because there was nothing to apply leaves the PR in the queue forever, and a queue that never drains is one nobody reads. The queue re-opens by itself the moment a reviewer speaks again, so recording early costs nothing.
+
+**Re-triage with a new comment, never an edit.** `dotf pr triage-queue` dates a triage by when its comment was *created*: an edit must not be able to clear findings a reviewer added after the table was written, so an edited table never takes a PR out of the queue (measured on #1974, #1985). When a reviewer speaks again after your triage, post a fresh `## Review triage` comment covering the new output.
+
+### 8. Never
+
+- **Never merge.** Merging is a supervised human action, and auto-merge is forbidden in every repository. This skill ends at a triaged PR, never at a merged one.
+- **Never apply in bulk without reading.** Accepting a whole review because it is long is the same failure as ignoring it.
+- **Never claim a review you did not get.** "No findings" and "the review never ran" are different statements, and only one of them is evidence.
+
+## Output
+
+One line when there was nothing to dispose of. Otherwise: the disposition table, the actions taken after confirmation, and the ticket numbers for everything deferred. If CI was red, the failing check and what you did about it.
+
+Either way the `## Review triage` comment lands on the PR (step 7). The conversation output is for the human in front of you; the comment is what survives the session and what the queue reads.
+
+## Pairs with
+
+- [[pattern-track-or-fix]] — the two-exits rule this applies to someone else's findings
+- [[pattern-change-lifecycle]] — the Definition of Done whose **Review** item this executes
+- [[pattern-git-workflow]] — merge policy: human-reviewed, never automatic
+- `adversarial-review`, "Evidence before claims" — evidence before claiming the triage is done

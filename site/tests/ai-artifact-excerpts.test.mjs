@@ -71,6 +71,12 @@ const SOURCES = [
     path: 'docs/adr/adr-053-platform-product-repos.md',
     blob: 'f9cd89df001a4aa7a0a7ed7e41cc58fce9a29600',
   },
+  {
+    repo: 'mlorentedev/dotfiles',
+    commit: 'c3ff137e84a5d5f2b79b5eb83362a85d7419af41',
+    path: 'harness/skills/pr-review-triage/SKILL.md',
+    blob: '396d8eab9ca369045e34eaa8f08418ebf060c6ca',
+  },
 ].map((source) => ({
   ...source,
   fixture: join(here, 'fixtures/ai-artifacts', `${source.repo.split('/')[1]}--${source.path.replaceAll('/', '_')}`),
