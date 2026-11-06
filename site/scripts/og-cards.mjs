@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 
 import { chromium } from 'playwright';
 
-import { cardHash, cardInputs, HEIGHT, WIDTH } from '../src/lib/og-cards.mjs';
+import { assetsDigest, cardHash, cardInputs, HEIGHT, WIDTH } from '../src/lib/og-cards.mjs';
 import { ACCENT, PROSE_HEADING } from '../src/theme/tokens.mjs';
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -79,7 +79,8 @@ const notes = readdirSync(NOTES)
   .map((f) => cardInputs(f.replace(/\.mdx?$/, ''), readFileSync(join(NOTES, f), 'utf8')))
   .filter(Boolean);
 
-const next = Object.fromEntries(notes.map((inputs) => [inputs.id, { hash: cardHash(inputs), title: inputs.title }]));
+const assets = assetsDigest((path) => readFileSync(join(SITE, path)));
+const next = Object.fromEntries(notes.map((inputs) => [inputs.id, { hash: cardHash(inputs, assets), title: inputs.title }]));
 const todo = notes.filter((n) => all || manifest[n.id]?.hash !== next[n.id].hash || !existsSync(join(CARDS, `${n.id}.png`)));
 
 if (todo.length) {
@@ -89,6 +90,11 @@ if (todo.length) {
     for (const inputs of todo) {
       await page.setContent(cardHtml(inputs));
       await page.evaluate(() => document.fonts.ready);
+      // A long title over many tags can push the block past the card: refuse rather than ship it clipped.
+      const box = await page.locator('.text').boundingBox();
+      if (!box || box.y < 6 || box.y + box.height > HEIGHT - 6) {
+        throw new Error(`og-cards: ${inputs.id}: the text does not fit inside the card; shorten its title or tags`);
+      }
       writeFileSync(join(CARDS, `${inputs.id}.png`), await page.screenshot({ type: 'png' }));
       console.log(`og-cards: ${inputs.id}`);
     }

@@ -45,6 +45,21 @@ export function cardInputs(id, text) {
   return { id, lang: field('lang') || 'en', title, date: new Date(date).toISOString().slice(0, 10), tags };
 }
 
-/** The stamp a card was rendered from: its inputs and the template's version. */
-export const cardHash = (inputs) =>
-  createHash('sha256').update(JSON.stringify({ v: TEMPLATE_VERSION, ...inputs })).digest('hex').slice(0, 16);
+/** The files the card inlines besides the note: the site card its logo is cropped from, and the fonts. */
+export const CARD_ASSETS = [
+  'public/images/og-image.png',
+  'public/fonts/Roboto-Regular.woff2',
+  'public/fonts/Roboto-Medium.woff2',
+  'public/fonts/Roboto-Bold.woff2',
+];
+
+/** One digest of `CARD_ASSETS`, given a reader of a site-relative path, so a new logo or font makes every card stale. */
+export const assetsDigest = (read) => {
+  const hash = createHash('sha256');
+  for (const path of CARD_ASSETS) hash.update(read(path));
+  return hash.digest('hex').slice(0, 16);
+};
+
+/** The stamp a card was rendered from: its inputs, the template's version and the assets it inlines. */
+export const cardHash = (inputs, assets) =>
+  createHash('sha256').update(JSON.stringify({ v: TEMPLATE_VERSION, assets, ...inputs })).digest('hex').slice(0, 16);

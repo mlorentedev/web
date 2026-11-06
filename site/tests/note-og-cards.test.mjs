@@ -15,7 +15,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { cardHash, cardInputs, cardPath, HEIGHT, WIDTH } from '../src/lib/og-cards.mjs';
+import { assetsDigest, cardHash, cardInputs, cardPath, HEIGHT, WIDTH } from '../src/lib/og-cards.mjs';
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(SITE, 'dist');
@@ -61,19 +61,23 @@ test('the card inputs are read from the frontmatter, and a draft has none', () =
   assert.throws(() => cardInputs('x', note("title: \"a\"\npubDate: 2026-09-04\ntags: ['dns']")), /double-quoted/);
   assert.throws(() => cardInputs('x', note('pubDate: 2026-09-04')), /no title/);
   const inputs = cardInputs('x', note('title: "a"\npubDate: 2026-09-04'));
-  assert.notEqual(cardHash(inputs), cardHash({ ...inputs, title: 'b' }), 'a new title makes the card stale');
+  assert.notEqual(cardHash(inputs, 'a'), cardHash({ ...inputs, title: 'b' }, 'a'), 'a new title makes the card stale');
+  assert.notEqual(cardHash(inputs, 'a'), cardHash(inputs, 'b'), 'a new logo or font makes the card stale');
+  const files = { 'public/fonts/Roboto-Bold.woff2': 'new' };
+  assert.notEqual(assetsDigest((p) => files[p] ?? 'x'), assetsDigest(() => 'x'), 'every inlined asset is in the digest');
 });
 
 test('every note in source has a card rendered from its current title, date and tags', () => {
   const manifest = existsSync(join(CARDS, 'manifest.json')) ? JSON.parse(readFileSync(join(CARDS, 'manifest.json'), 'utf8')) : {};
   const notes = readdirSync(NOTES).filter((f) => /\.mdx?$/.test(f));
   assert.ok(notes.length > 0, 'no notes in source');
+  const assets = assetsDigest((path) => readFileSync(join(SITE, path)));
   const problems = notes.flatMap((file) => {
     const id = file.replace(/\.mdx?$/, '');
     const inputs = cardInputs(id, readFileSync(join(NOTES, file), 'utf8'));
     if (!inputs) return [];
     if (!existsSync(join(CARDS, `${id}.png`))) return [`${id}: no card`];
-    if (manifest[id]?.hash !== cardHash(inputs)) return [`${id}: its card is stale`];
+    if (manifest[id]?.hash !== cardHash(inputs, assets)) return [`${id}: its card is stale`];
     return [];
   });
   assert.deepEqual(problems, [], REGENERATE);
