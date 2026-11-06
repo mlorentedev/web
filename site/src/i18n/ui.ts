@@ -256,6 +256,8 @@ export const ui = {
 
     // Projects
     'projects.viewProject': 'View project',
+    'projects.status.active': 'Active',
+    'projects.since': 'since {year}',
 
     // Experience timeline (WEB-012)
     'home.experience': 'My path',
@@ -537,6 +539,8 @@ export const ui = {
 
     // Projects
     'projects.viewProject': 'Ver proyecto',
+    'projects.status.active': 'Activo',
+    'projects.since': 'desde {year}',
 
     // Experience timeline (WEB-012)
     'home.experience': 'Mi camino',

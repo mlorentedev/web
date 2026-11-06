@@ -57,4 +57,20 @@ for (const page of ['projects', 'es/projects']) {
     );
     assert.deepEqual(titles, expected);
   });
+
+  test(`/${page}/ shows each project's state and start year`, () => {
+    const html = readFileSync(join(siteRoot, 'dist', page, 'index.html'), 'utf8');
+    const metas = [...html.matchAll(/data-project-meta[^>]*>([\s\S]*?)<\/div>/g)].map(([, inner]) =>
+      inner.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
+    );
+    const [state, since] = page.startsWith('es/') ? ['Activo', 'desde'] : ['Active', 'since'];
+    assert.deepEqual(metas, entries.map((e) => `${state} · ${since} ${e.since}`));
+  });
+
+  test(`/${page}/ prints an install line only where one exists, selectable in one click`, () => {
+    const html = readFileSync(join(siteRoot, 'dist', page, 'index.html'), 'utf8');
+    const lines = [...html.matchAll(/data-install[\s\S]*?<code\b([^>]*)>([^<]*)<\/code>/g)];
+    assert.deepEqual(lines.map(([, , cmd]) => cmd), entries.filter((e) => e.install).map((e) => e.install));
+    for (const [, attrs] of lines) assert.match(attrs, /\bselect-all\b/, 'the command selects whole, without the prompt');
+  });
 }
