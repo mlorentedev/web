@@ -10,20 +10,14 @@ export const tagNames = {
   ansible: 'Ansible',
   architecture: 'Architecture',
   automation: 'Automation',
-  cli: 'CLI',
-  devex: 'DevEx',
   dns: 'DNS',
   go: 'Go',
   hardware: 'Hardware',
   homelab: 'Homelab',
   iac: 'IaC',
-  iot: 'IoT',
-  'jetson-nano': 'Jetson Nano',
   kubernetes: 'Kubernetes',
   kustomize: 'Kustomize',
-  llm: 'LLM',
   mcp: 'MCP',
-  neovim: 'Neovim',
   networking: 'Networking',
   obsidian: 'Obsidian',
   pdf: 'PDF',
@@ -35,7 +29,6 @@ export const tagNames = {
   terraform: 'Terraform',
   traefik: 'Traefik',
   vpn: 'VPN',
-  youtube: 'YouTube',
 };
 
 /** The display name of the tag with slug `slug`; a tag with none fails the build. */
