@@ -213,3 +213,23 @@ test('every test script in package.json runs in the shared suite', () => {
     );
   }
 });
+
+test('every image build is scanned, pull requests included, and a non-blocking scan says until when (WEB-119)', () => {
+  // `if: inputs.push` scanned only images already published: never the one a PR could still stop.
+  const build = step(imageBuild, 'Build and push');
+  const scan = step(imageBuild, 'Trivy image scan');
+  const upload = step(imageBuild, 'Upload Trivy SARIF');
+  assert.ok(build && scan && upload, 'build-image.yml lost its build, scan or SARIF step');
+  assert.doesNotMatch(scan, /^ {8}if:/m, 'the scan is conditional again: PR builds go unscanned');
+  // A build that is not pushed must be loaded into the runner's docker, or there is nothing to scan.
+  assert.match(build, /^ {10}load: \$\{\{ !inputs\.push \}\}$/m, 'an unpushed build is not loaded, so the scan finds no image');
+  assert.doesNotMatch(upload, /inputs\.push/, 'the SARIF of a PR build is dropped');
+  assert.match(upload, /continue-on-error: true/, 'a SARIF endpoint hiccup fails the build');
+  const blocking = /exit-code: ['"]?1/.test(scan);
+  if (!blocking) {
+    // "For now" with no condition is how an exception becomes permanent: name the date and the trigger.
+    const note = imageBuild.slice(0, imageBuild.indexOf('- name: Trivy image scan')).split('\n').slice(-12).join('\n');
+    assert.match(note, /\d{4}-\d{2}-\d{2}/, 'the non-blocking scan has no dated note');
+    assert.match(note, /until|once|when/i, 'the non-blocking scan does not say what would make it block');
+  }
+});

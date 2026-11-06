@@ -100,6 +100,9 @@ jobs:
           file: ./Dockerfile
           platforms: ${{ inputs.platforms }}
           push: ${{ inputs.push }}
+          # A PR build is not pushed, so it is loaded into the runner's docker
+          # for the scan below. PR builds are single-platform, which `load` needs.
+          load: ${{ !inputs.push }}
           tags: ${{ env.IMAGE }}:${{ inputs.tag }}
           build-args: |
             SITE_COMMIT=${{ inputs.commit }}
@@ -110,11 +113,16 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ inputs.tag }}
 
-      # Image security scan — non-blocking for now (known npm vulns tracked in
-      # WEB-022); the SARIF still lands in the Security tab. Flip to a blocking
-      # gate once the deps are clean.
+      # Image security scan, on every build: a PR build is scanned from the
+      # runner's docker before it can reach master (WEB-119).
+      #
+      # Non-blocking as of 2026-11-06, on a measured baseline: the pinned
+      # nginx:1.31-alpine base carries 1 CRITICAL and 6 HIGH, all fixed in the
+      # digest the tag points at today, and nothing comes from npm, which the
+      # runtime image does not contain. Blocking now would fail every PR on a
+      # finding none of them introduced. Set `exit-code: 1` for CRITICAL once
+      # Dependabot's docker bump lands and a PR build scans clean.
       - name: Trivy image scan
-        if: inputs.push
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
         continue-on-error: true
         with:
@@ -125,7 +133,7 @@ jobs:
           ignore-unfixed: true
 
       - name: Upload Trivy SARIF
-        if: ${{ inputs.push && hashFiles('trivy-results.sarif') != '' }}
+        if: ${{ hashFiles('trivy-results.sarif') != '' }}
         uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
         continue-on-error: true
         with:
