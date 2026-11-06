@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 
 import { ghchartUpstream } from '../data/site';
+import { emptyChart } from '../lib/empty-chart.mjs';
 import { unsafeSvg } from '../lib/safe-svg.mjs';
 
 /**
@@ -10,13 +11,10 @@ import { unsafeSvg } from '../lib/safe-svg.mjs';
  *
  * The chart is decorative, so a failed fetch must not block a release: the
  * build warns and serves an empty chart with the same size, and the image
- * still links to the profile. A body that is not an SVG of rectangles and text
+ * still links to the profile; the empty chart says why (`lib/empty-chart.mjs`). A body that is not an SVG of rectangles and text
  * counts as a failure (`lib/safe-svg.mjs`), so neither an error page nor a
  * script from upstream is ever served from this origin.
  */
-const WIDTH = 663;
-const HEIGHT = 104;
-
 async function chart(): Promise<string> {
   try {
     const response = await fetch(ghchartUpstream, { signal: AbortSignal.timeout(15_000) });
@@ -26,8 +24,9 @@ async function chart(): Promise<string> {
     if (refused) throw new Error(`refused: ${refused}`);
     return body;
   } catch (error) {
-    console.warn(`[github-activity] ${ghchartUpstream}: ${(error as Error).message}; serving an empty chart`);
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}" data-fallback="true"></svg>\n`;
+    const reason = (error as Error).message;
+    console.warn(`[github-activity] ${ghchartUpstream}: ${reason}; serving an empty chart`);
+    return emptyChart(reason);
   }
 }
 
