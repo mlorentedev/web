@@ -228,6 +228,8 @@ test('the repo hygiene checks run inside the PR gate, once per pull request (WEB
   assert.match(hygiene, /^ {2}push:\s*\n {4}branches: \[master\]/m, 'repo-hygiene.yml no longer checks master after a merge');
   for (const script of ['check-lessons.sh', 'check-actions-pinned.sh', 'check-doc-refs.sh', 'check-agents-stack.sh']) {
     assert.match(hygiene, new RegExp(`run: bash scripts/${script.replace('.', '\\.')}`), `repo-hygiene.yml no longer runs ${script}`);
+  }
+});
 
 test('every image build is scanned, pull requests included, and a non-blocking scan says until when (WEB-119)', () => {
   // `if: inputs.push` scanned only images already published: never the one a PR could still stop.
