@@ -8,14 +8,17 @@ export const WORDS_PER_MINUTE = 230;
 export const TOC_MIN_HEADINGS = 6;
 
 /**
- * Minutes to read an MDX body, from its words: MDX `import`/`export` lines and
- * JSX or HTML tags are not prose, so they are dropped first. Never under one.
+ * Minutes to read an MDX body, from its prose words. Fenced code blocks, MDX
+ * `import`/`export` lines and JSX or HTML tags are not prose, so they are
+ * dropped first; a tag starts with a letter or `/`, so `i < n` stays prose.
+ * Never under one.
  * @param {string} body the note's source, without its frontmatter
  */
 export function readingMinutes(body) {
   const prose = body
+    .replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, ' ')
     .replace(/^(import|export)\s.*$/gm, ' ')
-    .replace(/<[^>]*>/g, ' ');
+    .replace(/<\/?[A-Za-z][^>]*>/g, ' ');
   const words = prose.match(/[\p{L}\p{N}][\p{L}\p{N}'’.-]*/gu)?.length ?? 0;
   return Math.max(1, Math.round(words / WORDS_PER_MINUTE));
 }

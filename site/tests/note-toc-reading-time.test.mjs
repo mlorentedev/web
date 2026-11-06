@@ -36,6 +36,14 @@ test('reading time does not count MDX imports, JSX tags or markup', () => {
   assert.equal(readingMinutes(mdx), readingMinutes(prose));
 });
 
+test('reading time counts prose only: fenced code is left out, and a bare < in prose is not a tag', () => {
+  const prose = words(WORDS_PER_MINUTE * 2);
+  const code = '```js\nimport x from "y";\n' + words(WORDS_PER_MINUTE * 3) + '\n```';
+  assert.equal(readingMinutes(`${prose}\n\n${code}\n`), readingMinutes(prose), 'a code block counted as prose');
+  const comparison = `while i < n ${words(WORDS_PER_MINUTE * 2)} and n > 0`;
+  assert.equal(readingMinutes(comparison), 2, 'the text between a bare < and a later > was dropped');
+});
+
 test('a table of contents lists h2 and h3 only, and only from the stated threshold', () => {
   const h = (depth, i) => ({ depth, slug: `s${i}`, text: `S ${i}` });
   const few = [h(2, 1), h(3, 2), h(2, 3), h(4, 4), h(2, 5), h(2, 6), h(1, 7)];
