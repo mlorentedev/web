@@ -81,7 +81,8 @@ test('two lesson PRs, each green, merge into a master the lesson check passes', 
       addLesson(root, number);
       git(root, 'add', '.');
       git(root, 'commit', '-q', '-m', number);
-      assert.equal(check(root).status, 0, `branch ${branch} passes on its own: ${check(root).stdout}`);
+      const alone = check(root);
+      assert.equal(alone.status, 0, `branch ${branch} passes on its own: ${alone.stdout}${alone.stderr}`);
     }
 
     git(root, 'switch', '-q', 'master');
@@ -99,7 +100,32 @@ test('two lesson PRs, each green, merge into a master the lesson check passes', 
     assert.ok(['900', '901'].every((n) => lessons.includes(`lesson-${n}-replayed.md`)), 'both lessons reached master');
 
     const result = check(root);
-    assert.equal(result.status, 0, `master after both merges: ${result.stdout}`);
+    assert.equal(result.status, 0, `master after both merges: ${result.stdout}${result.stderr}`);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+// The check piped the index's link targets into `grep -q` under
+// pipefail. grep exits on its first match; once the targets outgrow one pipe write
+// (4 KiB; the real index passed that at 77 lessons), printf can still be writing,
+// dies of SIGPIPE, and the pipeline fails: a listed lesson reported as missing, on
+// some runs only. With the targets past the 64 KiB pipe buffer, it fails every run.
+test('an index too large for one pipe write still finds every listed lesson', () => {
+  const root = mkdtempSync(join(tmpdir(), 'check-lessons-'));
+  try {
+    mkdirSync(join(root, 'scripts'));
+    mkdirSync(join(root, 'docs/lessons'), { recursive: true });
+    cpSync(join(repo, 'scripts/check-lessons.sh'), join(root, 'scripts/check-lessons.sh'));
+    const rows = [];
+    for (let n = 700; n >= 1; n -= 1) {
+      const name = `lesson-${String(n).padStart(4, '0')}-a-long-name-so-the-link-targets-of-the-index-outgrow-the-sixty-four-kib-pipe-buffer.md`;
+      writeFileSync(join(root, 'docs/lessons', name), '# x\n');
+      rows.push(`| ${n} | [x](${name}) | 2026-11-05 | \`#t\` |`);
+    }
+    writeFileSync(join(root, 'docs/lessons/_index.md'), `# Lessons\n\n| # | Lesson | Date | Tags |\n|---|---|---|---|\n${rows.join('\n')}\n`);
+    const result = check(root);
+    assert.equal(result.status, 0, `${result.stdout}${result.stderr}`.split('\n').slice(0, 3).join('\n'));
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

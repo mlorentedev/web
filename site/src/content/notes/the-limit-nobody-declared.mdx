@@ -1,0 +1,67 @@
+---
+title: "The Limit Nobody Declared: Load-Testing My Own Ingress"
+description: "I load-tested staging's edge expecting to hit CPU. It died three times first, each time at a limit nobody had sized."
+pubDate: 2026-11-18
+tags: ["kubernetes", "traefik", "platform-engineering"]
+draft: true
+lang: en
+---
+
+{/* DRAFT for Manu to rewrite by hand (#591). Every figure below comes from
+    kubelab docs/load-test/report-2026-11-02.md and lessons kubernetes 696,
+    698, 701, 703 and 708; the link next to each claim is its source. The
+    quoted result and its provenance paragraph stay together and verbatim.
+    Not to be implied: production capacity, application capacity, concurrent
+    users, sustained load, availability, a clean tail, exactly 1,000/s, or a
+    fixed ceiling (report, "What can be published"). */}
+
+I wanted one number: how many requests per second staging's ingress could take before it degraded. I expected the answer to be CPU, at the 500m limit on the pods behind it. It took four rounds to get there, and the first three ended at limits nobody had sized.
+
+## The setup
+
+One Intel N95 mini PC, 4 cores and 12 GB, running single-node K3s with Traefik as the only ingress replica. k6 on a second N95 on the same LAN, 0.45 ms away, firing a fixed arrival rate in 60-second steps at two trivial targets: a Go `/health` that touches nothing and an nginx static page of about 20 KB. Three ramps per target. A step fails at 1% errors, p95 over 250 ms, or under 95% of the requested rate. ([report, "What was measured"](https://github.com/mlorentedev/kubelab/blob/master/docs/load-test/report-2026-11-02.md#what-was-measured))
+
+The rate limiter was not turned off. A route that only exists during the run, matched on a header, carries the real middleware chain minus `rate-limit`, and it is deleted at the end. So the figures describe the path without the limiter, which real traffic always crosses.
+
+## First wall: a memory limit nobody wrote
+
+At about 1,600 requests per second errors passed 80%. The node sat at 25 to 65% CPU with 8 GB free, and the API never restarted. Traefik had been OOMKilled at 384 MiB.
+
+Its Deployment declares no resources. The 384 MiB came from the namespace's `LimitRange`, so `kubectl get deploy` showed `{}` and only the pod spec showed the number. Then it got worse: the next ramps read as the web app failing at 50 requests per second. That was Traefik in CrashLoopBackOff, not the app. ([lesson 696](https://github.com/mlorentedev/kubelab/blob/master/docs/lessons/kubernetes/lesson-696-a-load-tests-limit-can-be-a-limit-nobody-declared.md))
+
+The fix to the tool came before the fix to the edge: a step now records the edge's restarts, and the run waits for the edge to stay up 120 seconds before the next ramp. With that, six ramps gave a real range instead of a false floor.
+
+## Second wall: memory follows connections, not rate
+
+I gave Traefik its own limit, 768 MiB, sized from an estimate of 120 KiB per connection. It was OOMKilled again, in 2 of 4 ramps.
+
+The estimate was divided from a run that held far fewer connections than the peak. Traefik's memory follows open connections. When a backend stalls, an arrival-rate generator opens more connections to keep up, so memory climbs fastest exactly when the edge is already failing. At 1,536 MiB no ramp was OOMKilled, and the highest sample was 973 MiB. ([lesson 698](https://github.com/mlorentedev/kubelab/blob/master/docs/lessons/kubernetes/lesson-698-an-ingress-memory-limit-is-a-connection-limit.md))
+
+## Third wall: the probe that killed a busy edge
+
+At 1,600/s Traefik still restarted, at 3.6 cores, with exit code 0 and `failed liveness probe` in the pod events. It was busy, not stuck. `/ping` is answered by the same process that carries the traffic, and with the chart's 2-second timeout and three failures the kubelet restarted the only replica at the moment load was highest. One replica means a restart drops every open connection. The probe turned a slow edge into a dead one. ([lesson 701](https://github.com/mlorentedev/kubelab/blob/master/docs/lessons/kubernetes/lesson-701-a-liveness-probe-on-the-only-replica-must-outlast-saturation.md))
+
+Liveness now waits 5 seconds and restarts after six failures 15 seconds apart, 75 to 120 seconds in all, and a test holds that window between 60 and 180 seconds. The repeat run reached 2,000/s with zero Traefik restarts.
+
+## Fourth: the ceiling was CPU after all
+
+With memory and probes out of the way I pushed past 2,000/s, expecting memory to hit the new limit. It did not. Offered 2,000 or 3,200 requests per second, the node delivered about 1,100 to 1,300. Traefik used 3.4 to 3.8 of the 4 cores and timed everything else out at 5 seconds. Memory peaked at 94% of the limit without an OOMKill. The connection cap I was about to add would have bounded the wrong resource. ([lesson 708](https://github.com/mlorentedev/kubelab/blob/master/docs/lessons/kubernetes/lesson-708-an-ingress-memory-ceiling-measured-turned-out-to-be-cpu.md))
+
+## The result, as measured
+
+> On a single Intel N95 mini PC running K3s (4 cores, 12 GB), a repeatable k6 test from the LAN measured 1,000 requests per second through the Traefik ingress to trivial endpoints, with 0 errors, p95 under 3 ms and p99 under 150 ms, in 60-second steps. In later runs with the rate limiter out of the path, Traefik's own 1,536 MiB memory limit and probes that tolerate saturation, the ingress delivered at most about 1,300 requests per second: Traefik used 3.5 to 3.8 of the 4 cores, and its memory reached 94% of the limit without being OOMKilled.
+
+The two halves come from different runs and configurations. The 1,000/s figures are run `7ccf57f4` (2026-11-02, Traefik at the inherited 384 MiB limit), raw file [`2026-11-02-7ccf57f4.json`](https://github.com/mlorentedev/kubelab/blob/master/docs/load-test/2026-11-02-7ccf57f4.json). The ceiling is run `0e224c0f` at 3,200/s offered (2026-11-04, 1,536 MiB), raw file [`2026-11-04-0e224c0f.json`](https://github.com/mlorentedev/kubelab/blob/master/docs/load-test/2026-11-04-0e224c0f.json).
+
+The history behind it, from 384 MiB to liveness restarts to CPU, is in the report's ["Traefik limit after these runs"](https://github.com/mlorentedev/kubelab/blob/master/docs/load-test/report-2026-11-02.md#traefik-limit-after-these-runs).
+
+## What this does not say
+
+This is staging, on different hardware from production, with the limiter out of the path. Production has never been load-tested, and these figures do not transfer to it. Whether and how to measure it is [kubelab#3103](https://github.com/mlorentedev/kubelab/issues/3103). The targets touch no database and no auth. It is a request rate from one client, not a count of users, and each step lasted 60 seconds. The failure point moved between 1,200 and 2,000/s across ramps, and why is still open.
+
+## What I keep from it
+
+{/* Manu: the method in your words. Candidate points from the sources:
+    - each wall was measured, fixed with a test, and re-measured;
+    - the tool lied twice before the system did (crash loop read as low capacity; a sampled peak);
+    - a side finding: a rollout during a smoke run lost 0.34% of requests, fixed with a 5 s preStop (lesson 703). */}
