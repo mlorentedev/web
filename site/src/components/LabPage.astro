@@ -28,6 +28,7 @@ import LabProvenance from './LabProvenance.astro';
 import LabAiBridge from './LabAiBridge.astro';
 import ProofBlock from './ProofBlock.astro';
 import LabSectionNotes from './LabSectionNotes.astro';
+import LabContract from './LabContract.astro';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 const lang = getLocale(Astro.currentLocale);
@@ -79,6 +80,7 @@ const t = useTranslations(lang);
     <LabAiBridge number="07" lang={lang} />
     <LabSectionNotes number="07" />
 
+    <LabContract />
     <LabProvenance />
   </main>
 

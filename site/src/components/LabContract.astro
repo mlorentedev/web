@@ -1,0 +1,27 @@
+---
+/**
+ * web's own platform contract, `kubelab.yaml`, as the build read it (#592).
+ * Closed by default: it is evidence for the reader who wants it, not a section.
+ * Linked at the commit the page was built from when the build knows it.
+ */
+import { PLATFORM_CONTRACT } from '../data/contract';
+import { SITE_COMMIT } from '../data/version';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const ref = SITE_COMMIT === 'local' ? 'master' : SITE_COMMIT;
+const href = `https://github.com/mlorentedev/web/blob/${ref}/kubelab.yaml`;
+---
+
+<details data-lab-contract class="max-w-6xl mx-auto px-4 pb-6 text-sm text-ink-600">
+  <summary class="cursor-pointer font-mono text-ink-500">
+    {t('lab.contract.label')} <span translate="no">kubelab.yaml</span>
+  </summary>
+  <pre
+    translate="no"
+    class="mt-3 rounded-lg bg-panel-950 border border-panel-800 p-4 font-mono text-xs text-panel-100 leading-relaxed whitespace-pre-wrap break-words">{PLATFORM_CONTRACT}</pre>
+  <p class="mt-2 font-mono">
+    <a href={href} class="text-accent-700 hover:text-accent-900 underline underline-offset-2">{t('lab.contract.source')}</a>
+  </p>
+</details>

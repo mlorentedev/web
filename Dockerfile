@@ -70,6 +70,10 @@ COPY --chown=node:node site/ ./
 # or the site would keep serving the previous release's number.
 COPY --chown=node:node version.txt /version.txt
 
+# web's platform contract, shown on the Lab as it is (site/src/data/contract.ts).
+# Read like version.txt, from one level above the Astro project.
+COPY --chown=node:node kubelab.yaml /kubelab.yaml
+
 # The commit this image is tagged with, minus `sha-` (WEB-150). release.yml
 # passes it; a build without it states `"commit": "local"`. Declared here, last,
 # because its value changes on every commit: anything above it stays cached.

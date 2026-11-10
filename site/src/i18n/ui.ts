@@ -238,6 +238,8 @@ export const ui = {
     'lab.diagram.source': 'Rendered at build from {file}',
     'lab.diagram.scroll': 'Scrollable diagram: {label}',
     'lab.provenance': 'Inventory reconciled against the cluster on',
+    'lab.contract.label': 'The contract this site deploys under:',
+    'lab.contract.source': 'The file on GitHub',
 
     // Home sections
     'home.skills': 'What I do',
@@ -531,6 +533,8 @@ export const ui = {
     'lab.diagram.source': 'Generado en el build desde {file}',
     'lab.diagram.scroll': 'Diagrama desplazable: {label}',
     'lab.provenance': 'Inventario reconciliado contra el clúster el',
+    'lab.contract.label': 'El contrato con el que se despliega esta web:',
+    'lab.contract.source': 'El fichero en GitHub',
 
     // Home sections
     'home.skills': 'Qué hago',
