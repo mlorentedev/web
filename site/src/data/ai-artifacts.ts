@@ -131,4 +131,28 @@ export const aiArtifacts: AiArtifact[] = [
    - Each product's CI publishes an immutable \`sha-<short>\` image, then fires a **\`repository_dispatch\`** to kubelab, whose workflow runs \`toolkit deployment promote\` (ADR-046).
    - **Rejected — registry polling** (Argo CD Image Updater *or* an n8n registry poller). It reintroduces exactly what ADR-046 descoped (#692): a pull loop and non-git-honest state; for n8n it would also put a non-critical service on the delivery path (n8n down → no deploys). We control the image producers, so push is strictly better than pull.`,
   },
+  {
+    id: 'review-triage',
+    badge: 'Procedure',
+    badgeEs: 'Procedimiento',
+    title: 'What an agent does once the review comes back',
+    titleEs: 'Qué hace un agente cuando vuelve la revisión',
+    description: 'The skill an agent runs after the checks and reviewers of its pull request report: every comment is applied, deferred or skipped with a reason, and a review that never ran is not counted as one.',
+    descriptionEs: 'El procedimiento que sigue un agente cuando vuelven las comprobaciones y los revisores de su cambio: cada comentario se aplica, se aplaza o se descarta con un motivo, y una revisión que nunca corrió no cuenta como revisión.',
+    language: 'markdown',
+    repo: 'mlorentedev/dotfiles',
+    commit: 'c3ff137e84a5d5f2b79b5eb83362a85d7419af41',
+    path: 'harness/skills/pr-review-triage/SKILL.md',
+    codeSnippet: `Three outcomes, and only one means "no findings":
+
+- **Reviewed, findings** → triage them (step 4).
+- **Reviewed, nothing to say** → record that a review ran and found nothing.
+- **Never ran** (quota, queue, error, not configured) → say so plainly, and either wait for the stated window or proceed **without** claiming review coverage you do not have.
+[…]
+### 8. Never
+
+- **Never merge.** Merging is a supervised human action, and auto-merge is forbidden in every repository. This skill ends at a triaged PR, never at a merged one.
+- **Never apply in bulk without reading.** Accepting a whole review because it is long is the same failure as ignoring it.
+- **Never claim a review you did not get.** "No findings" and "the review never ran" are different statements, and only one of them is evidence.`,
+  },
 ];
