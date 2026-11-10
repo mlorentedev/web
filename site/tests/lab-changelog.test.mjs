@@ -13,7 +13,9 @@ import { fileURLToPath } from 'node:url';
 
 const site = join(dirname(fileURLToPath(import.meta.url)), '..');
 const source = readFileSync(join(site, 'src/data/lab-changelog.ts'), 'utf8');
-const list = source.slice(source.indexOf('labChangelog: LabChange[] = ['));
+const start = source.search(/labChangelog:\s*LabChange\[\]\s*=\s*\[/);
+assert.notEqual(start, -1, 'labChangelog declaration not found in lab-changelog.ts');
+const list = source.slice(start);
 const rows = [...list.matchAll(/\{([\s\S]*?)\}/g)].map(([, body]) => ({
   date: body.match(/date:\s*'([^']*)'/)?.[1],
   pr: Number(body.match(/pr:\s*(\d+)/)?.[1]),
@@ -22,6 +24,8 @@ const rows = [...list.matchAll(/\{([\s\S]*?)\}/g)].map(([, body]) => ({
 }));
 
 test('every row is a real date, one kubelab PR and both locales, newest first', () => {
+  // A parse that lost rows would make every check below vacuous (#631 review).
+  assert.equal(rows.length, (list.match(/\bdate:/g) ?? []).length, 'rows were lost in parsing: keep summaries free of { and }');
   for (const row of rows) {
     assert.match(row.date ?? '', /^\d{4}-\d{2}-\d{2}$/);
     assert.equal(new Date(`${row.date}T00:00:00Z`).toISOString().slice(0, 10), row.date, `${row.date} is not a day`);
