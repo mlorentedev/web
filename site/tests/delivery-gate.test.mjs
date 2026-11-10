@@ -214,6 +214,58 @@ test('every test script in package.json runs in the shared suite', () => {
   }
 });
 
+test('Chromium and its system packages come from caches keyed on the Playwright version, and each install step fails on its own budget (WEB-201)', () => {
+  // An uncached download once took 7 of the job's 10 minutes, and the gate said only "test (cancelled)".
+  const installs = suite
+    .split('\n')
+    .filter((l) => l.trim().startsWith('- name: '))
+    .map((l) => step(suite, l.trim().slice('- name: '.length)))
+    .filter((body) => /npx playwright install/.test(body));
+  assert.ok(installs.length > 0, 'test.yml installs no browser: the build renders diagrams with one');
+  for (const body of installs) {
+    assert.match(body, /^ {8}timeout-minutes:\s*\d+\s*$/m, `this step has no budget of its own:\n${body}`);
+  }
+  // A step budget names the stalled step only if it fires first: every install at its limit,
+  // plus the measured 3 minutes of build and tests and a margin, must fit in the job's budget.
+  const jobBudget = Number(job(suite, 'test')?.match(/^ {4}timeout-minutes:\s*(\d+)/m)?.[1]);
+  const stepBudgets = installs.reduce((sum, body) => sum + Number(body.match(/timeout-minutes:\s*(\d+)/)[1]), 0);
+  const REST_OF_THE_JOB = 3 + 3;
+  assert.ok(
+    stepBudgets + REST_OF_THE_JOB <= jobBudget,
+    `install budgets ${stepBudgets} min + ${REST_OF_THE_JOB} min of work exceed the job's ${jobBudget}: the job would time out first`,
+  );
+  const resolve = step(suite, 'Resolve the Playwright version');
+  assert.match(resolve, /\$\{version:\?/, 'an unresolved Playwright version is written as an empty key part');
+  const cache = step(suite, 'Restore Chromium from the cache');
+  assert.ok(cache, 'test.yml has no Chromium cache step');
+  assert.match(cache, /uses:\s*actions\/cache\/restore@[0-9a-f]{40}\b/, 'the restore action is pinned by sha');
+  assert.match(cache, /path:\s*~\/\.cache\/ms-playwright/);
+  assert.match(cache, /key:.*steps\.playwright\.outputs\.version/, 'a key without the version restores a Chromium the new Playwright does not use');
+  const download = installs.find((body) => /run:\s*npx playwright install chromium\s*$/m.test(body));
+  assert.ok(download, 'no step downloads the browser on a cache miss');
+  assert.match(download, /if:\s*steps\.chromium-cache\.outputs\.cache-hit != 'true'/, 'the download runs even on a cache hit');
+  // Saved by its own step, right after the download: a post-step save is skipped when a later step fails.
+  for (const [name, id] of [['Save Chromium to the cache', 'chromium-cache'], ["Save Chromium's system packages to the cache", 'apt-cache']]) {
+    const save = step(suite, name);
+    assert.ok(save, `test.yml has no "${name}" step`);
+    assert.match(save, /uses:\s*actions\/cache\/save@[0-9a-f]{40}\b/, `${name}: not the pinned save action`);
+    assert.match(save, new RegExp(`if:\\s*steps\\.${id}\\.outputs\\.cache-hit != 'true'`), `${name}: saves even on an exact hit`);
+    assert.match(save, new RegExp(`key:\\s*\\$\\{\\{ steps\\.${id}\\.outputs\\.cache-primary-key \\}\\}`), `${name}: saves under another key than it restores`);
+  }
+  // apt was the slow half: its .deb files are kept in the directory the second cache saves.
+  const aptCache = step(suite, "Restore Chromium's system packages from the cache");
+  assert.ok(aptCache, 'test.yml has no cache for the system packages');
+  const aptDir = aptCache.match(/path:\s*(\S+)/)?.[1];
+  const deps = installs.find((body) => /npx playwright install-deps chromium/.test(body));
+  assert.ok(deps, 'no step installs the system libraries');
+  assert.ok(aptDir && deps.includes(`Dir::Cache::Archives "%s"`) && deps.includes(aptDir.replace('~', '$HOME')), `apt does not keep its downloads in ${aptDir}`);
+  assert.match(deps, /Keep-Downloaded-Packages "true"/, 'apt deletes what it downloaded, so the cache saves nothing');
+  // The `env` context holds only what the workflow sets, never the runner's own variables:
+  // `env.ImageVersion` was empty, and the key was saved ending in a bare `-`.
+  assert.doesNotMatch(suite, /\$\{\{\s*env\.ImageVersion\s*\}\}/, 'env.ImageVersion is always empty in an expression');
+  assert.match(aptCache, /key:.*steps\.playwright\.outputs\.image/, 'the apt key does not name the runner image');
+});
+
 test('the repo hygiene checks run inside the PR gate, once per pull request (WEB-124)', () => {
   // A job in another workflow is outside what `gate` can observe: a red lessons index sat
   // beside a green gate and blocked nothing. Called from here, it is in `needs` like `test`.
@@ -228,5 +280,37 @@ test('the repo hygiene checks run inside the PR gate, once per pull request (WEB
   assert.match(hygiene, /^ {2}push:\s*\n {4}branches: \[master\]/m, 'repo-hygiene.yml no longer checks master after a merge');
   for (const script of ['check-lessons.sh', 'check-actions-pinned.sh', 'check-doc-refs.sh', 'check-agents-stack.sh']) {
     assert.match(hygiene, new RegExp(`run: bash scripts/${script.replace('.', '\\.')}`), `repo-hygiene.yml no longer runs ${script}`);
+  }
+});
+
+test('every image build is scanned, pull requests included, and a non-blocking scan says until when (WEB-119)', () => {
+  // `if: inputs.push` scanned only images already published: never the one a PR could still stop.
+  const build = step(imageBuild, 'Build and push');
+  const scan = step(imageBuild, 'Trivy image scan');
+  const upload = step(imageBuild, 'Upload Trivy SARIF');
+  assert.ok(build && scan && upload, 'build-image.yml lost its build, scan or SARIF step');
+  assert.doesNotMatch(scan, /^ {8}if:/m, 'the scan is conditional again: PR builds go unscanned');
+  // A build that is not pushed must be loaded into the runner's docker, or there is nothing to scan.
+  assert.match(build, /^ {10}load: \$\{\{ !inputs\.push \}\}$/m, 'an unpushed build is not loaded, so the scan finds no image');
+  assert.match(upload, /^ {8}if: \$\{\{ hashFiles\('trivy-results\.sarif'\) != '' \}\}$/m, 'the SARIF upload is gated on more than the report existing, so PR builds can be dropped');
+  // The upload sends any file by that name, so one committed in the checkout must be gone before the scan.
+  const discard = imageBuild.indexOf('rm -f trivy-results.sarif');
+  assert.ok(discard !== -1 && discard < imageBuild.indexOf('- name: Trivy image scan'), 'a SARIF committed in the checkout could be uploaded as the scan');
+  assert.match(upload, /continue-on-error: true/, 'a SARIF endpoint hiccup fails the build');
+  // `load` cannot take more than one platform, so every caller that does not push builds one.
+  for (const caller of [validation, release]) {
+    for (const [, body] of caller.matchAll(/uses: \.\/\.github\/workflows\/build-image\.yml\n([\s\S]*?)(?=\n {2}[A-Za-z0-9_-]+:\s*\n|$)/g)) {
+      if (!/push: false/.test(body)) continue;
+      const platforms = body.match(/platforms:\s*(\S+)/)?.[1] ?? '';
+      assert.ok(platforms && !platforms.includes(','), `an unpushed build asks for platforms "${platforms}", which load cannot take`);
+    }
+  }
+  // Blocking needs both: `exit-code: 1` under `continue-on-error: true` still never fails the job.
+  const blocking = /exit-code: ['"]?1/.test(scan) && !/continue-on-error: true/.test(scan);
+  if (!blocking) {
+    // "For now" with no condition is how an exception becomes permanent: name the date and the trigger.
+    const note = imageBuild.slice(0, imageBuild.indexOf('- name: Trivy image scan')).split('\n').slice(-12).join('\n');
+    assert.match(note, /\d{4}-\d{2}-\d{2}/, 'the non-blocking scan has no dated note');
+    assert.match(note, /until|once|when/i, 'the non-blocking scan does not say what would make it block');
   }
 });

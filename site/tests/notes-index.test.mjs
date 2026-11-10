@@ -10,7 +10,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -46,3 +46,37 @@ for (const [lang, { file, title }] of Object.entries(pages)) {
     }
   });
 }
+
+// Series, "Start here" and the archive by year (#590).
+const seriesSource = readFileSync(join(distDir, '..', 'src/data/series.ts'), 'utf8');
+const noteFiles = readdirSync(join(distDir, '..', 'src/content/notes')).map((f) => f.replace(/\.mdx?$/, ''));
+const idsIn = (block) => [...block.matchAll(/'([a-z0-9-]+)'/g)].map(([, id]) => id);
+
+test('every note a series or "Start here" names exists', () => {
+  const lists = [...seriesSource.matchAll(/notes: \[([\s\S]*?)\]/g), ...seriesSource.matchAll(/startHere: string\[\] = \[([\s\S]*?)\]/g)];
+  assert.ok(lists.length >= 2, 'no series lists found in src/data/series.ts');
+  const missing = lists.flatMap(([, block]) => idsIn(block)).filter((id) => !noteFiles.includes(id));
+  assert.deepEqual(missing, [], 'a series names a note that does not exist');
+});
+
+test('en: each series lists its notes, in order, linking to them', () => {
+  const html = readFileSync(join(distDir, 'notes/index.html'), 'utf8');
+  for (const [, id, block] of seriesSource.matchAll(/id: '([^']+)',[\s\S]*?notes: \[([\s\S]*?)\]/g)) {
+    const shelf = html.match(new RegExp(`data-series-id="${id}"[\\s\\S]*?</ol>`))?.[0] ?? '';
+    const linked = [...shelf.matchAll(/href="\/notes\/([^/"]+)\/?"/g)].map(([, slug]) => slug);
+    assert.deepEqual(linked, idsIn(block), `series ${id}`);
+  }
+});
+
+test('en: the archive groups every published note under its year, newest year first', () => {
+  const html = readFileSync(join(distDir, 'notes/index.html'), 'utf8');
+  const archive = html.slice(html.indexOf('data-archive'));
+  const years = [...archive.matchAll(/data-year="(\d{4})"/g)].map(([, y]) => Number(y));
+  assert.ok(years.length > 1, 'expected notes from more than one year');
+  assert.deepEqual(years, [...years].sort((a, b) => b - a));
+  for (const [i, year] of years.entries()) {
+    const from = archive.indexOf(`data-year="${year}"`);
+    const to = i + 1 < years.length ? archive.indexOf(`data-year="${years[i + 1]}"`) : archive.length;
+    for (const [, iso] of archive.slice(from, to).matchAll(/datetime="(\d{4})-/g)) assert.equal(Number(iso), year);
+  }
+});

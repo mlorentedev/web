@@ -1,0 +1,45 @@
+---
+/**
+ * "Notes on this" under a Lab section (#592): the notes `lab-notes.ts` maps
+ * to its number, published ones only. A locale with no notes of its own (the
+ * Spanish one, today) shows one link to the English notes instead, as the
+ * Spanish notes index does, rather than English titles in Spanish prose.
+ */
+import { labNotes } from '../data/lab-notes';
+import { notesIn } from '../lib/locale-pages';
+import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
+
+interface Props {
+  /** The section number the notes belong to, e.g. "01". */
+  number: string;
+}
+
+const { number } = Astro.props;
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+const own = await notesIn(lang);
+const fallback = own.length === 0;
+const source = fallback ? await notesIn('en') : own;
+const byId = new Map(source.map((note) => [note.id, note]));
+const notes = (labNotes[number] ?? []).flatMap((id) => byId.get(id) ?? []);
+---
+
+{notes.length > 0 && (
+  <div data-lab-notes={number} class="max-w-6xl mx-auto px-4 -mt-4 pb-10">
+    <p class="text-sm text-ink-600">
+      <span class="font-mono text-ink-500">{t('lab.notes.label')}</span>{' '}
+      {fallback ? (
+        <a href="/notes/" hreflang="en" class="text-accent-700 hover:text-accent-800 underline">{t('lab.notes.inEnglish')}</a>
+      ) : (
+        notes.map((note, i) => (
+          <>
+            {i > 0 && <span aria-hidden="true"> · </span>}
+            <a href={translatePath(`/notes/${note.id}`)} class="text-accent-700 hover:text-accent-800 underline">{note.data.title}</a>
+          </>
+        ))
+      )}
+    </p>
+  </div>
+)}

@@ -20,6 +20,9 @@ const notes = defineCollection({
     // modified when it was published (WEB-050).
     updatedDate: noteDate(z, { optional: true }),
     tags: z.array(z.string()).default([]),
+    // Optional until a second kind of note exists: every note today is a long
+    // one (#590, P-10), so nothing reads it yet.
+    kind: z.enum(['essay', 'field-note', 'til']).optional(),
     lang: z.enum(['en', 'es']).default('en'),
     draft: z.boolean().default(false),
     supersededBy: z

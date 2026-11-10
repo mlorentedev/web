@@ -265,10 +265,16 @@ export const ui = {
     'home.allNotes': 'All notes',
 
     // Notes page
+    'lab.notes.label': 'Notes on this:',
+    'lab.notes.inEnglish': 'Notes (in English)',
     'notes.title': 'Notes',
     'notes.description': 'Platform engineering notes — from hardware to Kubernetes.',
     'notes.empty': 'Coming soon.',
     'notes.inEnglish': 'For now I write in English.',
+    'notes.startHere': 'Start here',
+    'notes.series': 'Series',
+    'notes.seriesCount': '{n} notes',
+    'notes.archive': 'All notes',
     'notes.published': 'published',
     'notes.all': 'All notes',
 
@@ -551,10 +557,16 @@ export const ui = {
     'home.allNotes': 'Todas las notas',
 
     // Notes page
+    'lab.notes.label': 'Notas sobre esto:',
+    'lab.notes.inEnglish': 'Notas (en inglés)',
     'notes.title': 'Notas',
     'notes.description': 'Notas de ingeniería de plataformas — del hardware a Kubernetes.',
     'notes.empty': 'Próximamente.',
     'notes.inEnglish': 'Por ahora escribo en inglés.',
+    'notes.startHere': 'Por dónde empezar',
+    'notes.series': 'Series',
+    'notes.seriesCount': '{n} notas',
+    'notes.archive': 'Todas las notas',
     'notes.published': 'publicada el',
     'notes.all': 'Todas las notas',
 
