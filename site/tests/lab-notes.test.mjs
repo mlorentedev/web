@@ -11,6 +11,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { sectionNotes } from '../src/lib/section-notes.mjs';
 
 const site = join(dirname(fileURLToPath(import.meta.url)), '..');
 const source = readFileSync(join(site, 'src/data/lab-notes.ts'), 'utf8');
@@ -45,4 +46,12 @@ test('/es/lab/ points each mapped section at the English notes, with no English 
     assert.deepEqual([...block.matchAll(/href="([^"]+)"/g)].map(([, h]) => h), ['/notes/'], `section ${n}`);
     assert.match(block, /Notas \(en inglés\)/);
   }
+});
+
+test('a partly translated section lists its own notes and still links the English rest', () => {
+  const en = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
+  assert.deepEqual(sectionNotes(['a', 'b', 'c'], [{ id: 'b' }], en), { notes: [{ id: 'b' }], moreInEnglish: true });
+  assert.deepEqual(sectionNotes(['a', 'b'], [], en), { notes: [], moreInEnglish: true });
+  assert.deepEqual(sectionNotes(['a', 'b'], en, en), { notes: [{ id: 'a' }, { id: 'b' }], moreInEnglish: false });
+  assert.deepEqual(sectionNotes(['z'], [], en), { notes: [], moreInEnglish: false });
 });
