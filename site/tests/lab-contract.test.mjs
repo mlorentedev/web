@@ -17,6 +17,13 @@ const contract = readFileSync(join(site, '..', 'kubelab.yaml'), 'utf8').trimEnd(
 const entities = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" };
 const decode = (html) => html.replace(/&(amp|lt|gt|quot|#39);/g, (_, e) => entities[e]);
 
+// The page publishes the whole file, so the file must hold nothing that is not
+// public. A secret here, even a name, needs a decision about what the Lab shows
+// first (#630 review): this test fails until someone makes it.
+test('the contract the page publishes declares no secrets', () => {
+  assert.match(contract, /^secrets:\s*\[\]\s*$/m, 'kubelab.yaml declares secrets: decide what the Lab shows before publishing it');
+});
+
 for (const page of ['lab', 'es/lab']) {
   test(`/${page}/ shows kubelab.yaml verbatim, linked to the file`, () => {
     const file = join(site, 'dist', page, 'index.html');
