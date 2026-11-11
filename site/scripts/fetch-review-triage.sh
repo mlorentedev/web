@@ -16,6 +16,10 @@ for n in $(gh api "repos/$repo/pulls?state=closed&sort=updated&direction=desc&pe
   [ "$count" -gt 0 ] && prs+=("$n")
   [ "${#prs[@]}" -ge "$want" ] && break
 done
+if [ "${#prs[@]}" -lt "$want" ]; then
+  echo "found ${#prs[@]} of $want merged PRs with a triage comment; $out left as it was" >&2
+  exit 1
+fi
 {
   printf '{"repo":"%s","fetchedAt":"%s","pulls":[' "$repo" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   sep=''

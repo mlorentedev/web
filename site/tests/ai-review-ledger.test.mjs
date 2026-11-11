@@ -15,7 +15,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { classify, ledgerRow, reviewerRows } from '../src/lib/review-ledger.mjs';
+import { cells, classify, ledgerRow, reviewerRows } from '../src/lib/review-ledger.mjs';
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const triage = JSON.parse(readFileSync(join(siteRoot, 'src/data/review-triage.json'), 'utf8'));
@@ -48,6 +48,14 @@ test('a disposition counts only when it decides a finding', () => {
 test('reviewer rows are found by the Disposition column, whatever the table shape', () => {
   const body = '## Review triage\n\n| Source | Finding | Disposition |\n|---|---|---|\n| CI | green | none needed |\n| PR-Agent | x | applied |\n';
   assert.deepEqual(reviewerRows(body), [{ reviewer: 'PR-Agent', disposition: 'applied' }]);
+});
+
+test('a pipe inside inline code or escaped does not split a cell', () => {
+  assert.deepEqual(cells('| PR-Agent | `a | b` and a\\|b | skip |'), ['PR-Agent', '`a | b` and a|b', 'skip']);
+});
+
+test('a table without its separator line fails loudly instead of miscounting', () => {
+  assert.throws(() => reviewerRows('| Reviewer | Disposition |\n| PR-Agent | applied |\n'), /separator/);
 });
 
 test('every pinned comment is a triage comment from a merged pull request of this repo', () => {
