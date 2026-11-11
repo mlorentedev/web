@@ -71,6 +71,18 @@ const detail = 'mt-1 text-ink-700 leading-relaxed';
               </dd>
               <dd class="mt-1 text-sm text-ink-500">
                 {t('proof.measured')} <time datetime={proof.result.measured}>{month(proof.result.measured)}</time>
+                {
+                  proof.result.methodHref && (
+                    <>
+                      {' · '}
+                      <a
+                        href={proof.result.methodHref}
+                        class="text-accent-700 underline underline-offset-2 hover:text-accent-800"
+                        data-proof-field="method">{t('proof.method')}</a
+                      >
+                    </>
+                  )
+                }
               </dd>
             </>
           ) : (

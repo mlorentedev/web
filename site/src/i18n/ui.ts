@@ -177,6 +177,7 @@ export const ui = {
     'proof.result': 'Measured result',
     'proof.verify': 'Where to verify',
     'proof.measured': 'Measured in',
+    'proof.method': 'How it was measured',
 
     'lab.hero.eyebrow': 'Where my AI agents run',
     'lab.hero.title': 'KubeLab Platform & Engineering Cockpit',
@@ -473,6 +474,7 @@ export const ui = {
     'proof.result': 'Resultado medido',
     'proof.verify': 'Dónde comprobarlo',
     'proof.measured': 'Medido en',
+    'proof.method': 'Cómo se midió',
 
     'lab.hero.eyebrow': 'Donde corren mis agentes de IA',
     'lab.hero.title': 'Plataforma KubeLab y Cockpit de Ingeniería',
