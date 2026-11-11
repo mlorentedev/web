@@ -292,6 +292,7 @@ export const ui = {
     // The byline and the table of contents of a note (WEB-129).
     'note.readingTime': 'min read',
     'note.toc': 'On this page',
+    'note.related': 'Related notes',
 
     // The exit at the end of a note (WEB-090). Says what the notes are; it does
     // not restate the hero, which is still being decided.
@@ -585,6 +586,7 @@ export const ui = {
     'note.navLabel': 'Más notas',
     'note.readingTime': 'min de lectura',
     'note.toc': 'En esta página',
+    'note.related': 'Notas relacionadas',
 
     'note.closing.eyebrow': 'Quién escribe esto',
     'note.closing.body':

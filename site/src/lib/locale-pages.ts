@@ -6,6 +6,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import { projects, type Project } from '../data/portfolio';
 import type { Lang } from '../i18n/ui';
 import { buildNow, isPublished } from './note-dates.mjs';
+import { resolveRelated } from './note-related.mjs';
 
 export type Note = CollectionEntry<'notes'>;
 export type NoteLink = { id: string; title: string } | null;
@@ -26,13 +27,16 @@ export async function notesIn(lang: Lang): Promise<Note[]> {
   );
 }
 
-/** One page per note in `lang`, each with its neighbours in publication order. */
+/**
+ * One page per note in `lang`, each with its neighbours in publication order
+ * and its related notes, resolved here so a dead one fails the build (WEB-129).
+ */
 export async function notePaths(lang: Lang) {
   const notes = (await notesIn(lang)).sort((a: Note, b: Note) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
   const link = (note?: Note): NoteLink => (note ? { id: note.id, title: note.data.title } : null);
   return notes.map((note, i) => ({
     params: { slug: note.id },
-    props: { note, prev: link(notes[i - 1]), next: link(notes[i + 1]) },
+    props: { note, prev: link(notes[i - 1]), next: link(notes[i + 1]), related: resolveRelated(note, notes) },
   }));
 }
 
