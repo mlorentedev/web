@@ -122,14 +122,9 @@ jobs:
       # Image security scan, on every build: a PR build is scanned from the
       # runner's docker before it can reach master (WEB-119).
       #
-      # Non-blocking as of 2026-11-06, on a measured baseline: the pinned
-      # nginx:1.31-alpine base carries 1 CRITICAL and 6 HIGH, all fixed in the
-      # digest the tag points at today, and nothing comes from npm, which the
-      # runtime image does not contain. Blocking now would fail every PR on a
-      # finding none of them introduced. Once Dependabot's docker bump lands and
-      # a PR build scans clean, block on CRITICAL: set `exit-code: 1` with
-      # `severity: CRITICAL` and remove `continue-on-error`, which would
-      # otherwise keep the job green whatever the exit code.
+      # This step only reports: CRITICAL and HIGH go to the Security tab, and
+      # `continue-on-error` keeps a scanner failure (a database download, say)
+      # from failing the job. Blocking is the gate step after the upload.
       - name: Trivy image scan
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
         continue-on-error: true
@@ -147,3 +142,20 @@ jobs:
         with:
           sarif_file: trivy-results.sarif
           category: trivy-web
+
+      # Blocks on CRITICAL since 2026-11-10 (WEB-119 AC3), once the base image
+      # scanned clean: the nginx digest bump took master from 1 CRITICAL and
+      # 6 HIGH to none. HIGH stays advisory in the report above: a new HIGH in
+      # the base image would otherwise fail every PR until the next bump.
+      # `ignore-unfixed` because no change in this repo can clear a finding
+      # with no fixed version. It runs after the upload, so a blocked build
+      # still shows the finding in the Security tab. The database is cached
+      # by the scan above.
+      - name: Trivy gate on CRITICAL
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
+        with:
+          image-ref: ${{ env.IMAGE }}:${{ inputs.tag }}
+          format: table
+          severity: CRITICAL
+          ignore-unfixed: true
+          exit-code: 1

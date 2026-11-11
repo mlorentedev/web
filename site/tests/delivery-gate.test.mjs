@@ -283,7 +283,7 @@ test('the repo hygiene checks run inside the PR gate, once per pull request (WEB
   }
 });
 
-test('every image build is scanned, pull requests included, and a non-blocking scan says until when (WEB-119)', () => {
+test('every image build is scanned, pull requests included, and a CRITICAL finding blocks it (WEB-119)', () => {
   // `if: inputs.push` scanned only images already published: never the one a PR could still stop.
   const build = step(imageBuild, 'Build and push');
   const scan = step(imageBuild, 'Trivy image scan');
@@ -305,12 +305,16 @@ test('every image build is scanned, pull requests included, and a non-blocking s
       assert.ok(platforms && !platforms.includes(','), `an unpushed build asks for platforms "${platforms}", which load cannot take`);
     }
   }
-  // Blocking needs both: `exit-code: 1` under `continue-on-error: true` still never fails the job.
-  const blocking = /exit-code: ['"]?1/.test(scan) && !/continue-on-error: true/.test(scan);
-  if (!blocking) {
-    // "For now" with no condition is how an exception becomes permanent: name the date and the trigger.
-    const note = imageBuild.slice(0, imageBuild.indexOf('- name: Trivy image scan')).split('\n').slice(-12).join('\n');
-    assert.match(note, /\d{4}-\d{2}-\d{2}/, 'the non-blocking scan has no dated note');
-    assert.match(note, /until|once|when/i, 'the non-blocking scan does not say what would make it block');
-  }
+  // The SARIF scan reports CRITICAL and HIGH and never fails the job; a second step blocks on CRITICAL alone.
+  assert.doesNotMatch(scan, /exit-code: ['"]?1/, 'the report scan blocks, so a HIGH fails the build');
+  const gate = step(imageBuild, 'Trivy gate on CRITICAL');
+  assert.ok(gate, 'no step blocks the build on a CRITICAL finding (WEB-119 AC3)');
+  assert.doesNotMatch(gate, /^ {8}if:/m, 'the gate is conditional: some builds go unblocked');
+  assert.match(gate, /exit-code: ['"]?1['"]?$/m, 'the gate does not fail the job on a finding');
+  assert.match(gate, /severity: ['"]?CRITICAL['"]?$/m, 'the gate blocks on more than CRITICAL; HIGH is advisory');
+  assert.match(gate, /ignore-unfixed: true/, 'the gate blocks on findings no base image can fix yet');
+  // `exit-code: 1` under `continue-on-error: true` never fails the job.
+  assert.doesNotMatch(gate, /continue-on-error/, 'the gate cannot fail the job');
+  // After the upload, so a blocked build still shows what blocked it in the Security tab.
+  assert.ok(imageBuild.indexOf('- name: Trivy gate on CRITICAL') > imageBuild.indexOf('- name: Upload Trivy SARIF'), 'a blocked build uploads no SARIF');
 });
