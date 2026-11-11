@@ -36,5 +36,8 @@ test('the reviewer is the fleet canon, pinned by commit, not a local port', () =
     /^ {4}uses: mlorentedev\/ci-workflows\/\.github\/workflows\/pr-agent\.yml@[0-9a-f]{40} # v\d+\.\d+\.\d+$/m,
     'the review job must call the ci-workflows reusable workflow, pinned to a full commit sha',
   );
-  assert.doesNotMatch(workflow, /^ {6}- (?:name|uses):/m, 'the review job has steps again: a local port of the reviewer');
+  // Only the review job's block, up to the next job or the end, so another job's steps do not trip it.
+  const review = workflow.match(/^ {2}review:\n((?: {4,}.*\n|\s*\n)*)/m)?.[1];
+  assert.ok(review, 'the workflow has no `review` job');
+  assert.doesNotMatch(review, /^ {4}steps:/m, 'the review job has steps again: a local port of the reviewer');
 });
