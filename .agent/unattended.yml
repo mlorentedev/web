@@ -1,0 +1,59 @@
+# Arming envelope for one unattended run. The run reads this file from the
+# committed copy only, and halts if the working tree differs from it.
+version: 1
+run_id: "web-rework-20261111"
+armed_by: manu
+armed_at: 2026-11-11T07:41:23Z
+expires_at: 2026-11-11T19:41:23Z
+objective: >-
+  Open triaged PRs, for the owner to merge, for the structure-and-data parts of the
+  WEB-186 rework (#593 first, then #588 and #594), parking every part that needs
+  copy in the owner's voice or a design decision.
+scope:
+  write_paths:
+    - "site/src/components/**"
+    - "site/src/layouts/**"
+    - "site/src/styles/**"
+    - "site/src/lib/**"
+    - "site/src/data/**"
+    - "site/src/pages/**"
+    - "site/src/i18n/ui.ts"          # new keys only: no existing string is rewritten
+    - "site/scripts/**"
+    - "site/tests/**"
+    - "site/public/fonts/**"
+    - "docs/**"
+  frozen_paths:
+    - ".github/**"
+    - "harness/**"
+    - "**/AGENTS.md"
+    - "site/src/content/pages/**"
+    - "site/src/content/notes/**"
+    - "kubelab.yaml"
+    - "Dockerfile"
+    - ".agent/unattended.yml"
+  max_files: 15
+  max_loc: 300
+allowed_commands: [dotf, gh, git, npm, npx, node, bash, curl]
+queue:
+  source: explicit
+  filter: "#593 WEB-196 (harness tree, PR table), #588 WEB-191, #594 WEB-197"
+  max_items: 5
+  carry_over: >-
+    watch the staging deploy of sha-63a5d55 and later; any release failure caused
+    by this line of work comes first
+budget:
+  max_iterations: 8
+  max_minutes_per_iteration: 60
+  max_consecutive_failures: 2
+authority:
+  merge: never                       # no .github/merge-grant.yml on master; the owner merges
+  push: true
+  open_pr: true
+  advisor_tier: top
+constraints:
+  - "No copy in the owner's voice, no claim or figure about the owner; a figure only with its method."
+  - "No brand or design decision (type families, dark palette): such an item is parked with two options."
+  - "No kubelab or remote-state change. Release #498 is the owner's."
+  - "No force-push, no git reset --hard, no bare git stash; check the PR is open before every push."
+  - "GitHub artifacts in English, never naming an agent or this run."
+  - "Never an open issue's #N in a PR body unless the PR closes it."
