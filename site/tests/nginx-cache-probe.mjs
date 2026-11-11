@@ -12,6 +12,8 @@
  */
 import { request as httpRequest } from 'node:http';
 
+import { probeAssets } from './lib/probe-assets.mjs';
+
 const base = process.argv[2];
 if (!base) {
   console.error('usage: node tests/nginx-cache-probe.mjs <base-url>');
@@ -36,10 +38,7 @@ const request = (path, method = 'GET') =>
   });
 
 // Real asset names come from the served pages, so the probe follows the build.
-const home = await request('/');
-const astro = home.body.match(/\/_astro\/[^"']+\.css/)?.[0];
-const note = (await request('/notes/')).body.match(/href="(\/notes\/[^"#]+\/)"/)?.[1];
-const beoe = note && (await request(note)).body.match(/\/beoe\/[0-9a-z]+\.svg/)?.[0];
+const { astro, beoe } = await probeAssets(async (path) => (await request(path)).body);
 if (!astro || !beoe) {
   console.error(`✗ could not find a served asset to probe (astro: ${astro}, beoe: ${beoe})`);
   process.exit(1);
