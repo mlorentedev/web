@@ -1,13 +1,11 @@
 /**
- * The project cards may not publish a figure the rest of the site withholds.
+ * One Hive figure on the whole site. Its range is the benchmarks guide's,
+ * 46–95%, published in the `/ai` proof with the method behind it
+ * (`data/proofs.ts`). The older "67–82%" may not reappear on any page: /lab
+ * dropped it (`tests/lab-figures.test.mjs`) and the Hive card on /projects
+ * once kept it, so the site held two numbers for one claim.
  *
- * /ai says the Hive figure is published only with the method behind it, and
- * that write-up is not out (`data/proofs.ts`). /lab dropped "67–82%" for the
- * same reason (`tests/lab-figures.test.mjs`). The Hive card on /projects kept
- * it, so the site held two opposite policies on one number.
- *
- * Every built page is checked, in both locales. When the write-up lands and the
- * sentence in `proofs.ts` goes, the test reports itself skipped, not passed.
+ * Every built page is checked, in both locales.
  *
  *   npm run build && npm test
  */
@@ -20,17 +18,9 @@ import { fileURLToPath } from 'node:url';
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = join(siteRoot, 'dist');
-const pending = /The Hive figure is published only with the method behind it/.test(
-  readFileSync(join(siteRoot, 'src/data/proofs.ts'), 'utf8'),
-);
-
-test(
-  'no built page states the Hive token figure while its method is unpublished',
-  { skip: !pending && 'proofs.ts no longer withholds the Hive figure' },
-  () => {
-    assert.ok(existsSync(join(distDir, 'projects/index.html')), 'dist/projects/index.html must exist — run the build first');
-    const pages = readdirSync(distDir, { recursive: true }).filter((f) => f.endsWith('.html'));
-    const stating = pages.filter((f) => /67\s?[–-]\s?82/.test(readFileSync(join(distDir, f), 'utf8')));
-    assert.deepEqual(stating, [], `pages stating the Hive figure: ${stating.join(', ')}`);
-  },
-);
+test('no built page states the retired Hive figure', () => {
+  assert.ok(existsSync(join(distDir, 'projects/index.html')), 'dist/projects/index.html must exist — run the build first');
+  const pages = readdirSync(distDir, { recursive: true }).filter((f) => f.endsWith('.html'));
+  const stating = pages.filter((f) => /\b67\s?[–-]\s?82\s?%/.test(readFileSync(join(distDir, f), 'utf8')));
+  assert.deepEqual(stating, [], `pages stating the retired Hive figure: ${stating.join(', ')}`);
+});

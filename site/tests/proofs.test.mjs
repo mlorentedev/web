@@ -7,10 +7,9 @@
  * so each one is required here, in both locales, and the two locales must differ
  * (`es-no-english.test.mjs` fails on a text node that reads the same on both).
  *
- * The one exception is the `agents` result, which stays empty while the Hive
- * figure waits for its method (#238, WEB-093). It is named here rather than
- * detected: whether an issue is open is not something an offline test can know.
- * While it waits, `pending` says why, so the page never drops the question.
+ * A result may stay empty only for a proof named in `MAY_LACK_RESULT`, while
+ * its figure waits for a method; `pending` then says why, so the page never
+ * drops the question. None waits today: the Hive figure has its method.
  *
  * A result is a measurement, so it carries its method and the ISO date it was
  * measured, and that date may not be in the future (AC9). Where-to-verify is a
@@ -29,9 +28,10 @@ const here = dirname(fileURLToPath(import.meta.url));
 const dist = join(here, '..', 'dist');
 
 const { proofs } = await import('../src/data/proofs.ts');
+const { ui } = await import('../src/i18n/ui.ts');
 
 const IDS = ['kubelab', 'agents'];
-const MAY_LACK_RESULT = new Set(['agents']);
+const MAY_LACK_RESULT = new Set([]);
 const LOCALES = ['en', 'es'];
 const DATE = /^\d{4}-\d{2}(?:-\d{2})?$/;
 
@@ -73,6 +73,10 @@ for (const id of IDS) {
     const measured = Date.parse(proof.result.measured);
     assert.ok(Number.isFinite(measured), `${id}.result.measured is not a real date`);
     assert.ok(measured <= Date.now(), `${id}.result.measured is in the future`);
+  });
+
+  test(`${id}: a method written elsewhere is linked at a pinned commit`, { skip: !proof.result?.methodHref }, () => {
+    assert.match(proof.result.methodHref, /^https:\/\/github\.com\/[^/]+\/[^/]+\/blob\/[0-9a-f]{40}\//);
   });
 
   test(`${id}: where to verify it is a route that exists in both locales`, () => {
@@ -149,6 +153,11 @@ for (const [page, id] of [
         assert.match(result.attributes, /\sdata-figure\b/, 'the result is a figure and must say so');
         const shown = month(proof.result.measured, lang);
         assert.ok(decode(block).includes(shown), `the proof does not say when it was measured ("${shown}")`);
+        if (proof.result.methodHref) {
+          const method = field(block, 'method');
+          assert.equal(method?.text, ui[lang]['proof.method']);
+          assert.match(method.attributes, new RegExp(`\\shref="${proof.result.methodHref}"`));
+        }
       } else {
         assert.equal(field(block, 'pending')?.text, proof.pending[lang]);
         assert.doesNotMatch(block, /\sdata-figure\b/, 'a proof waiting for its result carries no figure');
@@ -156,3 +165,10 @@ for (const [page, id] of [
     });
   }
 }
+
+test('agents: the Hive range is the rounded ends of the guide\'s three session types', () => {
+  const savings = [94.8, 74.4, 46.0]; // focused, broad, heavy: the pinned guide's table
+  const [low, high] = [Math.round(Math.min(...savings)), Math.round(Math.max(...savings))];
+  assert.match(proofs.agents.result.text.en, new RegExp(`\\b${low}–${high}%`));
+  assert.match(proofs.agents.result.text.es, new RegExp(`entre un ${low} y un ${high} %`));
+});

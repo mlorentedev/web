@@ -28,6 +28,11 @@ export interface ProofResult {
   method: string;
   /** ISO date (`YYYY-MM` or `YYYY-MM-DD`) of the measurement. */
   measured: string;
+  /**
+   * Where the method is written down, when it lives outside this site: an
+   * absolute URL pinned to a commit, so the page links the method it quotes.
+   */
+  methodHref?: string;
 }
 
 export interface Proof {
@@ -36,9 +41,8 @@ export interface Proof {
   /** What constrained the solution. */
   constraint: Localized;
   /**
-   * The measured result. Only `agents` may leave it empty, and only while the
-   * Hive figure waits for its method (#238, WEB-093): the page then shows the
-   * claim with no figure, and `pending` says so.
+   * The measured result. A proof may leave it empty only while its figure
+   * waits for a method, and then `pending` says so.
    */
   result: ProofResult | null;
   /** Why there is no result yet. Required exactly when `result` is null. */
@@ -81,10 +85,19 @@ export const proofs: Record<ProofId, Proof> = {
       en: 'A rule with no mechanical guard gets broken, so each rule is a lock, a filter, a limit or a review, never a prompt.',
       es: 'Una regla sin un mecanismo que la haga cumplir acaba rota, así que cada regla es un bloqueo, un filtro, un límite o una revisión, nunca un prompt.',
     },
-    result: null,
-    pending: {
-      en: 'The Hive figure is published only with the method behind it, and that write-up is not out yet.',
-      es: 'La cifra de Hive solo se publica junto al método que la respalda, y ese texto aún no ha salido.',
+    // The range of Hive's benchmarks guide, decided 2026-11-04: 94.8%, 74.4%
+    // and 46.0% fewer tokens for a focused, a broad and a heavy session, against
+    // loading a 51K-token synthetic vault whole. The guide is pinned below.
+    result: {
+      text: {
+        en: 'On a synthetic vault, answering from Hive used 46–95% fewer tokens than loading the whole vault at session start, depending on the kind of session.',
+        es: 'Sobre una bóveda sintética, responder desde Hive gastó entre un 46 y un 95 % menos de tokens que cargar la bóveda entera al empezar la sesión, según el tipo de sesión.',
+      },
+      method:
+        'pytest tests/test_benchmark.py in mlorentedev/hive: three session types against a 51K-token synthetic vault loaded whole; tokens estimated at 4 characters each',
+      measured: '2026-03-05',
+      methodHref:
+        'https://github.com/mlorentedev/hive/blob/9626f1ab8be8c26824fd507f503a5261620646c5/site/src/content/docs/guides/benchmarks.md',
     },
     verify: {
       label: { en: 'The rules, quoted from their files', es: 'Las reglas, citadas de sus ficheros' },
