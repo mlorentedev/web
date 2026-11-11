@@ -22,11 +22,11 @@ const ignore = read('.dockerignore')
   .map((line) => line.trim())
   .filter((line) => line && !line.startsWith('#'));
 
-test('.dockerignore excludes everything, then lets back in only site/ and version.txt', () => {
+test('.dockerignore excludes everything, then lets back in only site/, version.txt and kubelab.yaml', () => {
   assert.equal(ignore[0], '*', 'the allowlist must start by excluding everything');
   assert.deepEqual(
     ignore.filter((line) => line.startsWith('!')),
-    ['!site/', '!version.txt'],
+    ['!site/', '!version.txt', '!kubelab.yaml'],
   );
 });
 
@@ -68,7 +68,7 @@ test('every path the Dockerfile copies from the context is let back in, and none
   const sources = [...dockerfile.matchAll(/^COPY\s+(?!--from)(?:--\S+\s+)*(.+)\s+\S+$/gm)].flatMap((m) => m[1].split(/\s+/));
   assert.ok(sources.length > 0, 'no COPY from the context found');
   for (const source of sources) {
-    assert.ok(source === 'version.txt' || source.startsWith('site/'), `${source} is not let back in by .dockerignore`);
+    assert.ok(['version.txt', 'kubelab.yaml'].includes(source) || source.startsWith('site/'), `${source} is not let back in by .dockerignore`);
     const hit = exclusions.find((pattern) => excludes(pattern, source));
     assert.equal(hit, undefined, `${source} is copied, but .dockerignore excludes it with ${hit}`);
   }
