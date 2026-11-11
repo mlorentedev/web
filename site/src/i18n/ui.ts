@@ -238,6 +238,7 @@ export const ui = {
     'lab.diagram.source': 'Rendered at build from {file}',
     'lab.diagram.scroll': 'Scrollable diagram: {label}',
     'lab.provenance': 'Inventory reconciled against the cluster on',
+    'lab.changelog.heading': 'Changelog',
 
     // Home sections
     'home.skills': 'What I do',
@@ -531,6 +532,7 @@ export const ui = {
     'lab.diagram.source': 'Generado en el build desde {file}',
     'lab.diagram.scroll': 'Diagrama desplazable: {label}',
     'lab.provenance': 'Inventario reconciliado contra el clúster el',
+    'lab.changelog.heading': 'Registro de cambios',
 
     // Home sections
     'home.skills': 'Qué hago',

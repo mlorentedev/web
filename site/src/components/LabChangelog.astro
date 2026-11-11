@@ -1,0 +1,39 @@
+---
+/**
+ * The Lab's dated changelog (#592), from `data/lab-changelog.ts`. Renders
+ * nothing while the list is empty.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { labChangelog } from '../data/lab-changelog';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  number: string;
+}
+
+const { number } = Astro.props;
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+---
+
+{labChangelog.length > 0 && (
+  <Section padding="py-10" data-lab-changelog>
+    <SectionHeading number={number} label={t('lab.changelog.heading')} />
+    <ol class="space-y-2 text-sm text-ink-600">
+      {labChangelog.map((change) => (
+        <li class="flex flex-col sm:flex-row sm:gap-4">
+          <time datetime={change.date} class="font-mono text-ink-500 shrink-0">{change.date}</time>
+          <span>
+            {lang === 'es' ? change.summaryEs : change.summary}{' '}
+            <a
+              href={`https://github.com/mlorentedev/kubelab/pull/${change.pr}`}
+              translate="no"
+              class="font-mono text-accent-700 hover:text-accent-900 underline underline-offset-2"
+            >kubelab#{change.pr}</a>
+          </span>
+        </li>
+      ))}
+    </ol>
+  </Section>
+)}
