@@ -20,9 +20,10 @@ interface Props {
   note: Note;
   prev: NoteLink;
   next: NoteLink;
+  related: { id: string; title: string }[];
 }
 
-const { lang, note, prev, next } = Astro.props;
+const { lang, note, prev, next, related } = Astro.props;
 const { Content, headings } = await render(note);
 // Before the reader commits (WEB-129): its length, and what a long note covers.
 const minutes = readingMinutes(note.body ?? '');
@@ -104,6 +105,21 @@ const schema = [
         </article>
       </div>
     </section>
+
+    {related.length > 0 && (
+      <nav data-note-related aria-labelledby="note-related-heading" class="py-12 md:py-14 border-t border-gray-200">
+        <div class="max-w-3xl mx-auto px-4">
+          <h2 id="note-related-heading" class="text-xs font-mono uppercase tracking-widest text-cyan-700">{t('note.related')}</h2>
+          <ul class="mt-4 space-y-2">
+            {related.map((r) => (
+              <li>
+                <a href={translatePath(`/notes/${r.id}`)} class="inline-block py-1 font-bold text-gray-800 hover:text-cyan-700 transition-colors">{r.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+    )}
 
     <NoteClosing lang={lang} />
 
