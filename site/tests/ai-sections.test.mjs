@@ -10,6 +10,7 @@
  *   02 / The Four Pillars of Deterministic Containment (pillars)
  *   03 / Autonomous Fleet & Automations (automations, migrated from lab-ai.json)
  *   04 / The rules, quoted from their files (artifacts)
+ *   06 / Reviews, and what was done with them (review-ledger)
  *
  * The page ships ZERO client JavaScript, like /lab since its probe console was retired (#280);
  * no-client-js.test.mjs asserts that for every page.
@@ -43,6 +44,7 @@ const SECTIONS = [
   { name: 'pillars', number: '02' },
   { name: 'automations', number: '03' },
   { name: 'artifacts', number: '04' },
+  { name: 'review-ledger', number: '06' },
 ];
 
 const pages = [

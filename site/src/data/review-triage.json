@@ -1,0 +1,134 @@
+{
+  "repo": "mlorentedev/web",
+  "fetchedAt": "2026-11-11T08:01:27Z",
+  "pulls": [
+    {
+      "number": 640,
+      "comments": [
+        {
+          "body": "## Review triage\n\nThe PR author did this triage. Reviewed at `0460f61`; the fix is `a838d3d`.\n\n| Reviewer | Finding | Disposition |\n|---|---|---|\n| PR-Agent | Brittle parsing: `frontmatterRelated` reads only the inline double-quoted form | **Applied** in `a838d3d`. Any other form of `related` now throws a parser error, instead of failing later as a rendering mismatch. Checked by rewriting a note as a block sequence: the test fails with `this test reads related only as an inline list of double-quoted ids`. |\n| PR-Agent | Silent skip when `dist/` is missing | **Declined.** CI builds before `npm test`, and the check ran on this PR: `ok 456 - every published note page renders its related notes…`. The skip follows the same convention as `nginx-cache.test.mjs`, so unit-only local runs still work. |\n| PR-Agent | DoD (a): claims without command output | **Applied.** The PR body now has an Evidence section with the CI TAP lines and the failing-build error. |\n| PR-Agent | DoD (b): the `related` convention is documented only in code | **Declined.** The schema in `content.config.ts` is where note authors find every frontmatter field (`tags`, `draft`, …), and no doc under `docs/` lists them. The resolver's error message names the rule when it is broken. |\n| PR-Agent | SDD: no spec | **Declined.** The plan is the ticket's acceptance criteria plus the related table approved there, before any code was written. The change is one optional field, one block and one build-time check; a spec would restate the ticket. |\n| CodeRabbit | Review still processing, no findings posted | Not reviewed. Declared here; no nudge. |\n\nCI is green on `0460f61`. Checks are re-running on `a838d3d`.\n",
+          "createdAt": "2026-11-11T04:37:41Z",
+          "id": 6787159941,
+          "url": "https://github.com/mlorentedev/web/pull/640#issuecomment-6787159941"
+        }
+      ]
+    },
+    {
+      "number": 634,
+      "comments": [
+        {
+          "body": "## Review triage\n\n| Item | Disposition | Reason |\n|---|---|---|\n| PR-Agent \"Fragile Fetch Chain\", `site/tests/lib/probe-assets.mjs` | skip | the behaviour is unchanged: a rejected request threw before this PR too, in the same step. The probe talks to a container on `localhost` in the same job, not over a network, and a stack trace there is as clear a failure as the old message |\n| PR-Agent \"More Requests, More Failure Surface\" | skip | measured on the current build: the walk stops at the 3rd of 17 notes (`/notes/proxmox-mini-pcs/`), so it makes 5 requests instead of 3, all to `localhost`. `probe-assets.test.mjs` now fails a PR that leaves no note with a diagram, so the full walk cannot reach the release |\n| CodeRabbit | not reviewed | rate limited; its check is green but no review ran |\n| CI | green | every required check passes on `6ae3bc64ca8e` |\n\nReviewer output dispositioned: github-actions[bot] (PR-Agent), 2026-11-11T02:55:54Z. The PR author did this triage.\n",
+          "createdAt": "2026-11-11T03:06:56Z",
+          "id": 6785777576,
+          "url": "https://github.com/mlorentedev/web/pull/634#issuecomment-6785777576"
+        }
+      ]
+    },
+    {
+      "number": 633,
+      "comments": [
+        {
+          "body": "## Review triage\n\nThe PR author did this triage, at `16dcc96`.\n\n| Source | Finding | Disposition |\n|---|---|---|\n| CI | All checks green at `16dcc96`, including `PR gate` and `review / review` | none needed |\n| PR-Agent | First review by the reusable workflow, on `1a1f324`: it published, which is the end-to-end proof this PR needed. Its state says `kind: partial` | noted |\n| PR-Agent | The re-review of `16dcc96` was skipped by the canon's push gate (`dotf pr` decided `run=false` for a test-only push) | declared: the last full review is at `1a1f324`; the only change since is the test fix below |\n| PR-Agent | Renamed check context `review` → `review / review` may break a required context | no change needed: branch protection requires only `PR gate` and `GitGuardian Security Checks` (read from `branches/master/protection/required_status_checks`); the repository has no rulesets |\n| PR-Agent | Narrowed permissions could 403 the callee | no change needed: the reusable job at `v0.4.0` declares exactly `contents: read`, `pull-requests: write`, `issues: write`, the three this caller grants, and the run on `1a1f324` published its review with them |\n| PR-Agent | Test gap: the no-steps check matched only `- name:`/`- uses:` and ran file-wide | applied in `16dcc96`: scoped to the `review` job and checks for any `steps:`; mutation-checked (a `- run:` step fails it, a separate job with steps does not) |\n| CodeRabbit | Review limit reached | no review ran; declared |\n",
+          "createdAt": "2026-11-11T03:05:07Z",
+          "id": 6785749407,
+          "url": "https://github.com/mlorentedev/web/pull/633#issuecomment-6785749407"
+        }
+      ]
+    },
+    {
+      "number": 632,
+      "comments": [
+        {
+          "body": "## Review triage\n\nThe PR author did this triage, at `e62e441`.\n\n| Source | Finding | Disposition |\n|---|---|---|\n| CI | All checks green at `e62e441`, including `PR gate`, `Validate build` (the new `Trivy gate on CRITICAL` step ran and passed on this image) and `review` | none needed |\n| PR-Agent | Gate fails on scanner outage; the claim that the database is shared is unbacked | declined, with the claim corrected in `e62e441`. The gate fails closed on purpose: a gate that passes when it cannot scan is not a gate. The sharing is now stated from evidence: the job log of `cbd53e7` shows both Trivy steps with `cache-dir: .cache/trivy` and both restoring `cache-trivy-2026-11-11` from the Actions cache, so the gate downloads no database, and it scans an image already in the runner's docker. The residual exposure is a day's first build hitting a feed outage, which fails the report scan's download first |\n| PR-Agent | Order assertion passes vacuously if the upload step is renamed | applied in `e62e441`: the check now requires the upload step to exist |\n| PR-Agent | AC1 not in this diff; AC2 not verifiable from code | no change needed: AC1 landed in WEB-119's earlier PR (the scan has had no `if:` since then, and the test asserts it); the AC2 baseline is the 2026-11-06 comment on the ticket (1 CRITICAL and 6 HIGH on the old digest, 0 on the current one) |\n| CodeRabbit | No review on this PR | no review ran; declared |\n",
+          "createdAt": "2026-11-11T02:27:57Z",
+          "id": 6785202484,
+          "url": "https://github.com/mlorentedev/web/pull/632#issuecomment-6785202484"
+        }
+      ]
+    },
+    {
+      "number": 631,
+      "comments": [
+        {
+          "body": "## Review triage\n\n| Item | Disposition | Reason |\n|---|---|---|\n| PR-Agent \"Fragile Parse\", `site/tests/lab-changelog.test.mjs` (THEORETICAL) | apply | the declaration is now found with a whitespace-tolerant regex that must match, and the parsed row count must equal the number of `date:` keys; a summary containing `{` was checked and goes red (fixed in `71d7d3233c4e`). Importing the array was not used: the tests are plain `.mjs` and the data is `.ts` |\n| CodeRabbit | not reviewed | rate limited; its check is green but no review ran |\n| CI | green | on `72513e7`; re-runs on `71d7d3233c4e` |\n\nReviewer output dispositioned: github-actions[bot] (PR-Agent), 2026-11-10T06:44:27Z. The PR author did this triage.\n",
+          "createdAt": "2026-11-10T06:49:16Z",
+          "id": 6761030450,
+          "url": "https://github.com/mlorentedev/web/pull/631#issuecomment-6761030450"
+        },
+        {
+          "body": "## Review triage\n\n| Item | Disposition | Reason |\n|---|---|---|\n| PR-Agent \"Locale Test Gap\", `site/tests/lab-changelog.test.mjs` (THEORETICAL) | skip | already guarded: if the component rendered `summary` on `/es/lab/`, the same text would appear on `/lab/`, and `tests/es-no-english.test.mjs` (\"/es/lab has no text that reads the same as /lab\") fails on exactly that. It fired on the `kubelab#N` link text during this PR's local run with placeholder rows |\n| PR-Agent \"Fragile Parse\" | resolved | applied in `71d7d32`; the reviewer marks it resolved |\n| CodeRabbit | not reviewed | rate limited; its check is green but no review ran |\n| CI | green | every required check passes on `71d7d32` |\n\nReviewer output dispositioned: github-actions[bot] (PR-Agent), 2026-11-10T06:51:03Z. The PR author did this triage.\n",
+          "createdAt": "2026-11-10T06:55:49Z",
+          "id": 6761128367,
+          "url": "https://github.com/mlorentedev/web/pull/631#issuecomment-6761128367"
+        }
+      ]
+    },
+    {
+      "number": 630,
+      "comments": [
+        {
+          "body": "## Review triage\n\n| Item | Disposition | Reason |\n|---|---|---|\n| PR-Agent, security note: `kubelab.yaml` is published unfiltered and could later carry secrets | apply | `tests/lab-contract.test.mjs` now fails unless the contract holds `secrets: []`, so adding one forces a decision on what the Lab shows; checked red with `secrets: [X]` (fixed in `2db9d8ee9871`) |\n| CodeRabbit, pre-merge \"Docstring Coverage\" | skip | a generic threshold, not a finding about this change; `contract.ts` and `LabContract.astro` carry module comments that explain the reading and the failure mode |\n| CodeRabbit review | none needed | it reviewed all 8 files and posted no actionable comments |\n| CI | green | on `9596764`; re-runs on `2db9d8ee9871` |\n\nReviewer output dispositioned: github-actions[bot] (PR-Agent), 2026-11-10T06:38:33Z; coderabbitai[bot]. The PR author did this triage.\n",
+          "createdAt": "2026-11-10T06:49:15Z",
+          "id": 6761030179,
+          "url": "https://github.com/mlorentedev/web/pull/630#issuecomment-6761030179"
+        },
+        {
+          "body": "## Review triage\n\n| Item | Disposition | Reason |\n|---|---|---|\n| PR-Agent re-review on the new head | none needed | \"No major issues detected\"; the secrets guard from the previous triage is in |\n| CI | green | every required check passes on the head |\n\nReviewer output dispositioned: github-actions[bot] (PR-Agent), 2026-11-10T06:51:19Z. The PR author did this triage.\n",
+          "createdAt": "2026-11-10T06:55:50Z",
+          "id": 6761128595,
+          "url": "https://github.com/mlorentedev/web/pull/630#issuecomment-6761128595"
+        }
+      ]
+    },
+    {
+      "number": 629,
+      "comments": [
+        {
+          "body": "## Review triage\n\nThe PR author did this triage, at `ed8f989`.\n\n| Source | Finding | Disposition |\n|---|---|---|\n| CI | All checks green, including `PR gate`, `Validate build` and `Trivy`; the PR's scan has 1 MEDIUM result against 54 on master | none needed |\n| PR-Agent | Completion claims stated without command output, digests ellipsized | applied: the body now carries the Trivy output for both full digests and the PR scan count |\n| PR-Agent | `--ignore-unfixed` may hide unfixed findings from a later full-severity gate | noted in the body; the AC3 gate is CRITICAL with `ignore-unfixed`, as today |\n| CodeRabbit | Summary only, no findings | none needed |\n",
+          "createdAt": "2026-11-10T04:11:44Z",
+          "id": 6758758077,
+          "url": "https://github.com/mlorentedev/web/pull/629#issuecomment-6758758077"
+        },
+        {
+          "body": "## Review triage\n\nThe PR author did this triage, at `ed8f989`. It follows the previous triage, which CodeRabbit's summary was updated after.\n\n| Source | Finding | Disposition |\n|---|---|---|\n| CodeRabbit | Updated summary: \"No actionable comments\", merge risk minimal; it links WEB-119 and the runtime-image audit as related, not closed | none needed |\n",
+          "createdAt": "2026-11-10T04:12:20Z",
+          "id": 6758766516,
+          "url": "https://github.com/mlorentedev/web/pull/629#issuecomment-6758766516"
+        }
+      ]
+    },
+    {
+      "number": 628,
+      "comments": [
+        {
+          "body": "## Review triage\n\n| Item | Disposition | Reason |\n|---|---|---|\n| PR-Agent review | none needed | the review ran on `e4e869658a15` and reported \"No major issues detected\" |\n| CodeRabbit | not reviewed | rate limited; its check is green but no review ran |\n| CI | green | every required check passes on `e4e869658a15` |\n\nReviewer output dispositioned: github-actions[bot] (PR-Agent), 2026-11-10T02:36:44Z. The PR author did this triage.\n",
+          "createdAt": "2026-11-10T02:42:12Z",
+          "id": 6757458053,
+          "url": "https://github.com/mlorentedev/web/pull/628#issuecomment-6757458053"
+        }
+      ]
+    },
+    {
+      "number": 627,
+      "comments": [
+        {
+          "body": "## Review triage\n\n| Item | Disposition | Reason |\n|---|---|---|\n| PR-Agent review | none needed | the review ran on `0f8c5a1f435e` and reported \"No major issues detected\" |\n| CodeRabbit | not reviewed | rate limited; its check is green but no review ran |\n| CI | green | every required check passes on `0f8c5a1f435e` |\n\nReviewer output dispositioned: github-actions[bot] (PR-Agent), 2026-11-10T02:35:41Z. The PR author did this triage.\n",
+          "createdAt": "2026-11-10T02:42:09Z",
+          "id": 6757457219,
+          "url": "https://github.com/mlorentedev/web/pull/627#issuecomment-6757457219"
+        }
+      ]
+    },
+    {
+      "number": 626,
+      "comments": [
+        {
+          "body": "## Review triage\n\n| Item | Disposition | Reason |\n|---|---|---|\n| PR-Agent \"Badge Color Tokens\", `site/src/components/AiArtifacts.astro:26` (THEORETICAL) | skip | `--color-panel-50: #f8fafc` is defined at `site/src/styles/tailwind.css:138`, and the same card already renders `bg-panel-50` on its footer (line 74), so the chip gets its fill |\n| CodeRabbit | not reviewed | rate limited; its check is green but no review ran |\n| CI | green | every required check passes on `9d3722a11cd7` |\n\nReviewer output dispositioned: github-actions[bot] (PR-Agent), 2026-11-10T02:41:08Z. The PR author did this triage.\n",
+          "createdAt": "2026-11-10T02:44:03Z",
+          "id": 6757486072,
+          "url": "https://github.com/mlorentedev/web/pull/626#issuecomment-6757486072"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+---
+/**
+ * Reviews and what was done with them (#593): the last merged pull requests
+ * with a written triage, who reviewed each, and how many findings the author
+ * applied or declined. Every row links the triage comment it is counted from.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { ledger, ledgerFetchedAt, ledgerRepo } from '../data/review-ledger';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  number: string;
+}
+
+const { number } = Astro.props;
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const sum = (key: 'applied' | 'declined') => ledger.reduce((n, row) => n + row[key], 0);
+const sub = t('ai.ledger.sub')
+  .replace('{n}', String(ledger.length))
+  .replace('{date}', ledgerFetchedAt)
+  .replace('{applied}', String(sum('applied')))
+  .replace('{declined}', String(sum('declined')));
+---
+
+<Section padding="py-14" id="review-ledger" data-ai-section="review-ledger">
+  <SectionHeading number={number} label={t('ai.ledger.heading')} margin="mb-2" />
+  <p class="text-sm text-ink-500 mb-6 max-w-2xl">{sub}</p>
+  <div class="overflow-x-auto rounded-lg border border-ink-200">
+    <table data-review-ledger class="w-full text-sm text-left">
+      <thead class="bg-panel-50 text-ink-500 font-mono text-xs">
+        <tr>
+          <th scope="col" class="px-4 py-2 font-medium">{t('ai.ledger.change')}</th>
+          <th scope="col" class="px-4 py-2 font-medium">{t('ai.ledger.reviewers')}</th>
+          <th scope="col" class="px-4 py-2 font-medium text-right">{t('ai.ledger.applied')}</th>
+          <th scope="col" class="px-4 py-2 font-medium text-right">{t('ai.ledger.declined')}</th>
+          <th scope="col" class="px-4 py-2 font-medium">{t('ai.ledger.triage')}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-ink-100 text-ink-700">
+        {
+          ledger.map((row) => (
+            <tr data-pr={row.number}>
+              <td class="px-4 py-2 font-mono" translate="no">
+                <a
+                  href={`https://github.com/${ledgerRepo}/pull/${row.number}`}
+                  class="text-accent-700 hover:text-accent-900 underline underline-offset-2"
+                >
+                  #{row.number}
+                </a>
+              </td>
+              <td class="px-4 py-2" translate="no">{row.reviewedBy.join(', ')}</td>
+              <td class="px-4 py-2 font-mono text-right">{row.applied}</td>
+              <td class="px-4 py-2 font-mono text-right">{row.declined}</td>
+              <td class="px-4 py-2">
+                <a href={row.triageUrl} class="text-accent-700 hover:text-accent-900 underline underline-offset-2">
+                  {t('ai.ledger.read')}
+                </a>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</Section>

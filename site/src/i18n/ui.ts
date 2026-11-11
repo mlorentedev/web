@@ -73,6 +73,15 @@ export const ui = {
     'ai.pillars.p4.i2': 'Strict zero auto-merge doctrine',
     'ai.pillars.p4.i3': 'CI regression & mutation suites',
     'ai.artifacts.heading': 'The rules, quoted from their files',
+    'ai.ledger.heading': 'Reviews, and what was done with them',
+    'ai.ledger.sub':
+      'The last {n} merged pull requests with a written triage, as of {date}. Each count comes from the triage comment, where every finding is applied or declined with its reason: {applied} applied, {declined} declined.',
+    'ai.ledger.change': 'Change',
+    'ai.ledger.reviewers': 'Reviewed by',
+    'ai.ledger.applied': 'Applied',
+    'ai.ledger.declined': 'Declined',
+    'ai.ledger.triage': 'Triage',
+    'ai.ledger.read': 'Read the triage',
     'ai.artifacts.sub':
       'Four excerpts, each quoted word for word from a public file and linked to the commit it was taken from.',
     'ai.automations.heading': 'Autonomous Fleet & Automations',
@@ -381,6 +390,15 @@ export const ui = {
     'ai.pillars.p4.i2': 'Doctrina estricta de cero auto-merge',
     'ai.pillars.p4.i3': 'Suites de regresión y mutación en CI',
     'ai.artifacts.heading': 'Las reglas, citadas de sus ficheros',
+    'ai.ledger.heading': 'Las revisiones, y qué se hizo con ellas',
+    'ai.ledger.sub':
+      'Las últimas {n} pull requests fusionadas con un triaje escrito, a fecha de {date}. Cada cifra sale del comentario de triaje, donde cada hallazgo se aplica o se rechaza con su motivo: {applied} aplicados, {declined} rechazados.',
+    'ai.ledger.change': 'Cambio',
+    'ai.ledger.reviewers': 'Revisado por',
+    'ai.ledger.applied': 'Aplicados',
+    'ai.ledger.declined': 'Rechazados',
+    'ai.ledger.triage': 'Triaje',
+    'ai.ledger.read': 'Leer el triaje',
     'ai.artifacts.sub':
       'Cuatro extractos, cada uno citado palabra por palabra de un fichero público y enlazado a la versión de la que se tomó.',
     'ai.automations.heading': 'Flota Autónoma y Automatizaciones',
