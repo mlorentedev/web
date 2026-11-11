@@ -240,6 +240,7 @@ export const ui = {
     'lab.provenance': 'Inventory reconciled against the cluster on',
     'lab.contract.label': 'The contract this site deploys under:',
     'lab.contract.source': 'The file on GitHub',
+    'lab.changelog.heading': 'Changelog',
 
     // Home sections
     'home.skills': 'What I do',
@@ -535,6 +536,7 @@ export const ui = {
     'lab.provenance': 'Inventario reconciliado contra el clúster el',
     'lab.contract.label': 'El contrato con el que se despliega esta web:',
     'lab.contract.source': 'El fichero en GitHub',
+    'lab.changelog.heading': 'Registro de cambios',
 
     // Home sections
     'home.skills': 'Qué hago',
