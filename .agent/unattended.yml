@@ -1,11 +1,11 @@
 # Arming envelope for one unattended run. The run reads this file from the
 # committed copy only, and halts if the working tree differs from it.
 version: 1
-run_id: "web-polish-tokens-20261111t0744z"
+run_id: "web-polish-tokens-20261111t1705z"
 armed_by: manu
-armed_at: 2026-11-11T07:44:09Z
-expires_at: 2026-11-11T19:44:09Z
-objective: "Open draft-then-ready PRs, each triaged, for the non-copy polish and CI tickets WEB-100/WEB-076 (colour tokens), WEB-113 and WEB-202, for the owner to merge."
+armed_at: 2026-11-11T17:02:07Z
+expires_at: 2026-11-12T05:02:07Z
+objective: "Finish WEB-076 (delete the raw colour ramps now that every call site uses the roles) and verify the stale CI tickets WEB-078 and WEB-104 against the current workflows, as triaged PRs or evidence comments for the owner."
 scope:
   write_paths:
     - "site/src/components/**"
@@ -13,6 +13,8 @@ scope:
     - "site/src/layouts/**"
     - "site/src/lib/**"
     - "site/src/data/**"
+    - "site/src/styles/**"           # freed by the content-review run (WEB-197 parked)
+    - "site/src/theme/**"
     - "site/src/i18n/ui.ts"          # new keys only: no existing string is rewritten
     - "site/scripts/**"
     - "site/tests/**"
@@ -27,8 +29,6 @@ scope:
     - "harness/**"
     - "**/AGENTS.md"
     - "site/src/content/**"
-    - "site/src/styles/**"            # the content-review run owns styles tonight (WEB-197)
-    - "site/src/layouts/BaseLayout.astro"
     - "site/src/pages/ai*"
     - "site/src/pages/es/ai*"
     - "site/src/components/Ai*"
@@ -39,7 +39,7 @@ scope:
 allowed_commands: [dotf, gh, git, make, npm, npx, node, bash, caffeinate, actionlint]
 queue:
   source: explicit
-  filter: "web#261 web#170 web#330 web#620"
+  filter: "web#170 web#172 web#288"
   max_items: 5
 budget:
   max_iterations: 10
