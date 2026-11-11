@@ -40,12 +40,12 @@ const inYear = (year: number) => notes.filter((note) => note.data.pubDate.getUTC
     <section class="pt-8 pb-12 md:pt-10 md:pb-14">
       <div class="max-w-3xl mx-auto px-4">
         <h1 class="text-2xl sm:text-3xl font-extrabold text-ink-900 tracking-tight mb-3">{t('notes.title')}</h1>
-        <p class="text-gray-600 mb-10">{t('notes.description')}</p>
+        <p class="text-ink-600 mb-10">{t('notes.description')}</p>
         {notes.length === 0 ? (
           lang === 'es' ? (
-            <p data-notes-in-english class="text-gray-500">{t('notes.inEnglish')} <a href="/notes/" lang="en" class="text-accent-700 hover:text-accent-800 underline">Notes</a></p>
+            <p data-notes-in-english class="text-ink-500">{t('notes.inEnglish')} <a href="/notes/" lang="en" class="text-accent-700 hover:text-accent-800 underline">Notes</a></p>
           ) : (
-            <p class="text-gray-500">{t('notes.empty')}</p>
+            <p class="text-ink-500">{t('notes.empty')}</p>
           )
         ) : (
           <>
@@ -65,9 +65,9 @@ const inYear = (year: number) => notes.filter((note) => note.data.pubDate.getUTC
                 <div class="grid gap-6 sm:grid-cols-2">
                   {shelves.map((shelf) => (
                     <div data-series-id={shelf.id}>
-                      <h3 class="font-bold text-gray-800">{shelf.title[lang]}</h3>
-                      <p class="text-xs font-mono text-gray-500 mb-2">{shelf.members.length === 1 ? t('notes.seriesCountOne') : t('notes.seriesCount').replace('{n}', String(shelf.members.length))}</p>
-                      <ol class="list-decimal list-inside space-y-1 text-sm text-gray-700">
+                      <h3 class="font-bold text-ink-800">{shelf.title[lang]}</h3>
+                      <p class="text-xs font-mono text-ink-500 mb-2">{shelf.members.length === 1 ? t('notes.seriesCountOne') : t('notes.seriesCount').replace('{n}', String(shelf.members.length))}</p>
+                      <ol class="list-decimal list-inside space-y-1 text-sm text-ink-700">
                         {shelf.members.map((note) => (
                           <li><a href={translatePath(`/notes/${note.id}`)} class="hover:text-accent-700 underline">{note.data.title}</a></li>
                         ))}
@@ -81,20 +81,20 @@ const inYear = (year: number) => notes.filter((note) => note.data.pubDate.getUTC
               <h2 id="archive" class="text-lg font-bold text-ink-900 mb-4">{t('notes.archive')}</h2>
               {years.map((year) => (
                 <div data-year={year} class="mb-8">
-                  <h3 class="text-sm font-mono text-gray-500 mb-2">{year}</h3>
-                  <div class="divide-y divide-gray-200">
+                  <h3 class="text-sm font-mono text-ink-500 mb-2">{year}</h3>
+                  <div class="divide-y divide-ink-200">
                     {inYear(year).map((note) => (
                       <div class="py-6 first:pt-2 last:pb-0">
                         <a href={translatePath(`/notes/${note.id}`)} class="group block">
-                          <time datetime={isoDate(note.data.pubDate)} class="text-xs text-gray-500">{formatDate(note.data.pubDate, lang)}</time>
-                          <h4 class="font-bold text-gray-800 mt-1 group-hover:text-cyan-700 transition-colors">
+                          <time datetime={isoDate(note.data.pubDate)} class="text-xs text-ink-500">{formatDate(note.data.pubDate, lang)}</time>
+                          <h4 class="font-bold text-ink-800 mt-1 group-hover:text-accent-700 transition-colors">
                             {note.data.title}
                           </h4>
-                          <p class="text-gray-600 text-sm mt-1.5 leading-relaxed">{note.data.description}</p>
+                          <p class="text-ink-600 text-sm mt-1.5 leading-relaxed">{note.data.description}</p>
                         </a>
                         <div class="flex flex-wrap gap-1.5 mt-3">
                           {note.data.tags.map((tag: string) => (
-                            <a href={translatePath(`/tags/${tag.toLowerCase()}`)} data-tag-chip class="inline-flex min-h-7 min-w-6 items-center justify-center px-2 text-xs rounded bg-gray-100 text-gray-600 hover:bg-cyan-700 hover:text-white transition-colors">
+                            <a href={translatePath(`/tags/${tag.toLowerCase()}`)} data-tag-chip class="inline-flex min-h-7 min-w-6 items-center justify-center px-2 text-xs rounded bg-ink-100 text-ink-600 hover:bg-accent-700 hover:text-white transition-colors">
                               {tag}
                             </a>
                           ))}

@@ -25,20 +25,20 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 ---
 
-<aside class="py-12 md:py-14 border-t border-gray-200" aria-labelledby="note-closing-heading">
+<aside class="py-12 md:py-14 border-t border-ink-200" aria-labelledby="note-closing-heading">
   <div class="max-w-3xl mx-auto px-4">
-    <h2 id="note-closing-heading" class="text-xs font-mono uppercase tracking-widest text-cyan-700">
+    <h2 id="note-closing-heading" class="text-xs font-mono uppercase tracking-widest text-accent-700">
       {t('note.closing.eyebrow')}
     </h2>
 
-    <p class="mt-3 text-gray-600 leading-relaxed">
+    <p class="mt-3 text-ink-600 leading-relaxed">
       {t('note.closing.body')}
     </p>
 
     <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
       <a
         href={translatePath('/contact')}
-        class="inline-flex items-center gap-2 text-sm font-bold text-cyan-700 hover:text-cyan-800 rounded px-1 -mx-1 transition-colors group"
+        class="inline-flex items-center gap-2 text-sm font-bold text-accent-700 hover:text-accent-800 rounded px-1 -mx-1 transition-colors group"
       >
         {t('note.closing.contact')}
         <span class="font-mono transition-transform duration-200 group-hover:translate-x-0.5">&rarr;</span>
@@ -48,7 +48,7 @@ const translatePath = useTranslatedPath(lang);
           and there is one feed, built from the English notes. */}
       <a
         href="/rss.xml"
-        class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-cyan-700 rounded px-1 -mx-1 transition-colors"
+        class="inline-flex items-center gap-2 text-sm text-ink-500 hover:text-accent-700 rounded px-1 -mx-1 transition-colors"
       >
         {t('note.closing.feed')}
       </a>
