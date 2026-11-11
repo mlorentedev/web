@@ -43,6 +43,7 @@ const SECTIONS = [
   { name: 'pillars', number: '02' },
   { name: 'automations', number: '03' },
   { name: 'artifacts', number: '04' },
+  { name: 'harness-tree', number: '05' },
 ];
 
 const pages = [
