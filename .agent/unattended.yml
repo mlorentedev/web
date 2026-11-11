@@ -1,0 +1,52 @@
+# Arming envelope for one unattended run. The run reads this file from the
+# committed copy only, and halts if the working tree differs from it.
+version: 1
+run_id: "web-polish-tokens-20261111t0744z"
+armed_by: manu
+armed_at: 2026-11-11T07:44:09Z
+expires_at: 2026-11-11T19:44:09Z
+objective: "Open draft-then-ready PRs, each triaged, for the non-copy polish and CI tickets WEB-100/WEB-076 (colour tokens), WEB-113 and WEB-202, for the owner to merge."
+scope:
+  write_paths:
+    - "site/src/components/**"
+    - "site/src/pages/**"
+    - "site/src/layouts/**"
+    - "site/src/lib/**"
+    - "site/src/data/**"
+    - "site/src/i18n/ui.ts"          # new keys only: no existing string is rewritten
+    - "site/scripts/**"
+    - "site/tests/**"
+    - "site/package.json"
+    - ".pre-commit-config.yaml"
+    - ".github/workflows/**"          # CI tickets only
+    - "scripts/**"
+    - "docs/**"
+    - "specs/**"
+  frozen_paths:
+    - ".github/merge-grant.yml"
+    - "harness/**"
+    - "**/AGENTS.md"
+    - "site/src/content/**"
+    - "site/src/styles/**"            # the content-review run owns styles tonight (WEB-197)
+    - "site/src/layouts/BaseLayout.astro"
+    - "site/src/pages/ai*"
+    - "site/src/pages/es/ai*"
+    - "site/src/components/Ai*"
+    - "kubelab.yaml"
+    - ".agent/unattended.yml"
+  max_files: 15
+  max_loc: 300
+allowed_commands: [dotf, gh, git, make, npm, npx, node, bash, caffeinate, actionlint]
+queue:
+  source: explicit
+  filter: "web#261 web#170 web#330 web#620"
+  max_items: 5
+budget:
+  max_iterations: 10
+  max_minutes_per_iteration: 60
+  max_consecutive_failures: 2
+authority:
+  merge: never                      # Manu merges every PR
+  push: true
+  open_pr: true
+  advisor_tier: top
