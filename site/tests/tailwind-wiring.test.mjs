@@ -75,8 +75,13 @@ test('the CSS declares exactly the pinned v3 palette, and nothing of Tailwind 4\
   const declared = Object.fromEntries(
     [...theme.matchAll(/--color-([a-z]+-\d+):\s*(#[0-9a-f]{3,8});/g)].map((m) => [m[1], m[2]]),
   );
+  // A ramp a token family aliases is declared only under the family's name, so
+  // `text-cyan-700` generates nothing and the role is the one way to the colour
+  // (WEB-076). A ramp no family aliases keeps its own name.
+  const aliased = new Set(Object.values(COLOR_FAMILIES));
   const expected = {};
   for (const [ramp, shades] of Object.entries(PALETTE)) {
+    if (aliased.has(ramp)) continue;
     for (const [shade, hex] of Object.entries(shades)) expected[`${ramp}-${shade}`] = hex;
   }
   for (const [family, ramp] of Object.entries(COLOR_FAMILIES)) {
