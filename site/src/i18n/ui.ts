@@ -73,6 +73,9 @@ export const ui = {
     'ai.pillars.p4.i2': 'Strict zero auto-merge doctrine',
     'ai.pillars.p4.i3': 'CI regression & mutation suites',
     'ai.artifacts.heading': 'The rules, quoted from their files',
+    'ai.tree.heading': 'The harness, as it is in the repository',
+    'ai.tree.sub': 'The output of git ls-tree on the harness directory at one commit, two levels deep: {n} files.',
+    'ai.tree.source': 'The tree on GitHub at that commit',
     'ai.ledger.heading': 'Reviews, and what was done with them',
     'ai.ledger.sub':
       'The last {n} merged pull requests with a written triage, as of {date}. Each count comes from the triage comment, where every finding is applied or declined with its reason: {applied} applied, {declined} declined.',
@@ -186,6 +189,7 @@ export const ui = {
     'proof.result': 'Measured result',
     'proof.verify': 'Where to verify',
     'proof.measured': 'Measured in',
+    'proof.method': 'How it was measured',
 
     'lab.hero.eyebrow': 'Where my AI agents run',
     'lab.hero.title': 'KubeLab Platform & Engineering Cockpit',
@@ -390,6 +394,9 @@ export const ui = {
     'ai.pillars.p4.i2': 'Doctrina estricta de cero auto-merge',
     'ai.pillars.p4.i3': 'Suites de regresión y mutación en CI',
     'ai.artifacts.heading': 'Las reglas, citadas de sus ficheros',
+    'ai.tree.heading': 'El arnés, tal como está en el repositorio',
+    'ai.tree.sub': 'La salida de git ls-tree sobre el directorio del arnés en un commit, a dos niveles: {n} ficheros.',
+    'ai.tree.source': 'El árbol en GitHub en ese commit',
     'ai.ledger.heading': 'Las revisiones, y qué se hizo con ellas',
     'ai.ledger.sub':
       'Las últimas {n} pull requests fusionadas con un triaje escrito, a fecha de {date}. Cada cifra sale del comentario de triaje, donde cada hallazgo se aplica o se rechaza con su motivo: {applied} aplicados, {declined} rechazados.',
@@ -491,6 +498,7 @@ export const ui = {
     'proof.result': 'Resultado medido',
     'proof.verify': 'Dónde comprobarlo',
     'proof.measured': 'Medido en',
+    'proof.method': 'Cómo se midió',
 
     'lab.hero.eyebrow': 'Donde corren mis agentes de IA',
     'lab.hero.title': 'Plataforma KubeLab y Cockpit de Ingeniería',

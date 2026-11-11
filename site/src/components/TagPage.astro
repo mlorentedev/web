@@ -41,15 +41,15 @@ const schema = [breadcrumbs([
   <main id="main-content" class="grow">
     <section class="pt-12 pb-6 md:pt-16 md:pb-10">
       <div class="max-w-3xl mx-auto px-4">
-        <a href={translatePath('/notes/')} class="text-sm text-gray-500 hover:text-cyan-700 transition-colors">&larr; {t('tags.all')}</a>
-        <h1 class="text-2xl font-extrabold text-gray-800 mt-4">{displayTag}</h1>
+        <a href={translatePath('/notes/')} class="text-sm text-ink-500 hover:text-accent-700 transition-colors">&larr; {t('tags.all')}</a>
+        <h1 class="text-2xl font-extrabold text-ink-800 mt-4">{displayTag}</h1>
       </div>
     </section>
 
     {matchingProjects.length > 0 && (
       <section class="py-12 md:py-16">
         <div class="max-w-3xl mx-auto px-4">
-          <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-8">{t('tags.projects')}</h2>
+          <h2 class="text-sm text-ink-500 tracking-wide uppercase mb-8">{t('tags.projects')}</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             {matchingProjects.map((rawProject) => (
               <ProjectCard project={localize(rawProject, lang)} lang={lang} />
@@ -62,12 +62,12 @@ const schema = [breadcrumbs([
     {matchingNotes.length > 0 && (
       <section class="py-12 md:py-16">
         <div class="max-w-3xl mx-auto px-4">
-          <h2 class="text-sm text-gray-500 tracking-wide uppercase mb-8">{t('tags.notes')}</h2>
-          <div class="divide-y divide-gray-100">
+          <h2 class="text-sm text-ink-500 tracking-wide uppercase mb-8">{t('tags.notes')}</h2>
+          <div class="divide-y divide-ink-100">
             {matchingNotes.map((note) => (
               <a href={translatePath(`/notes/${note.id}`)} class="group block py-3 first:pt-0">
-                <span class="text-xs text-gray-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
-                <span class="text-sm text-gray-700 group-hover:text-cyan-700 transition-colors">{note.data.title}</span>
+                <span class="text-xs text-ink-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
+                <span class="text-sm text-ink-700 group-hover:text-accent-700 transition-colors">{note.data.title}</span>
               </a>
             ))}
           </div>

@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 import { RANGES } from '../scripts/subset-fonts.mjs';
 
 const site = fileURLToPath(new URL('..', import.meta.url));
-const FALLBACK = new Set([...'─│└❌']);
+const FALLBACK = new Set([...'─│└├❌']);
 const MAX_BYTES = 30_000;
 
 const pages = (dir) =>
