@@ -316,5 +316,6 @@ test('every image build is scanned, pull requests included, and a CRITICAL findi
   // `exit-code: 1` under `continue-on-error: true` never fails the job.
   assert.doesNotMatch(gate, /continue-on-error/, 'the gate cannot fail the job');
   // After the upload, so a blocked build still shows what blocked it in the Security tab.
-  assert.ok(imageBuild.indexOf('- name: Trivy gate on CRITICAL') > imageBuild.indexOf('- name: Upload Trivy SARIF'), 'a blocked build uploads no SARIF');
+  const [gateAt, uploadAt] = ['Trivy gate on CRITICAL', 'Upload Trivy SARIF'].map((n) => imageBuild.indexOf(`- name: ${n}`));
+  assert.ok(uploadAt !== -1 && gateAt > uploadAt, 'a blocked build uploads no SARIF');
 });

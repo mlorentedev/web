@@ -149,8 +149,13 @@ jobs:
       # the base image would otherwise fail every PR until the next bump.
       # `ignore-unfixed` because no change in this repo can clear a finding
       # with no fixed version. It runs after the upload, so a blocked build
-      # still shows the finding in the Security tab. The database is cached
-      # by the scan above.
+      # still shows the finding in the Security tab.
+      #
+      # It fails closed: a scanner error fails the build too, since a gate
+      # that passes when it cannot scan is not a gate. Both Trivy steps share
+      # `.cache/trivy` and restore the day's database from the Actions cache
+      # (`cache-trivy-<date>`), so the gate downloads no database and scans
+      # an image already in the runner's docker.
       - name: Trivy gate on CRITICAL
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
         with:
