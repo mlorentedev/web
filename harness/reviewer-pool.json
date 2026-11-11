@@ -91,13 +91,13 @@
       "auth": "login"
     },
     {
-      "id": "nan/mimo-v2.5",
+      "id": "nan/mimo-v2.6-flash",
       "runner": "pi",
       "provider": "nan",
-      "model": "mimo-v2.5",
+      "model": "mimo-v2.6-flash",
       "secret_id": "NAN_API_KEY",
       "role": "fallback",
-      "why": "Admitted 2026-08-20 after the evaluation this file's bar requires, and the verdict is recorded honestly rather than as a pass. What WAS established: given the same planted-defect shell snippet, mimo returned a real, correct finding. It is reasoning-class by profile (1M context, reasoning chain) against qwen3.6 and gemma4's 262K, which is the line this pool draws. What was NOT established: a quality RANKING against deepseek. deepseek never produced content under the same harness — it spent 29,299 characters of reasoning and returned finish_reason=length with an EMPTY body at 8,000 output tokens, so there was nothing to compare against. That is an instrumentation result, not a capability one, and it is stated here so nobody reads this entry as 'mimo matched deepseek'. It is admitted as a SECOND fallback, after the provider-diverse one, because provider diversity remains the stronger property.",
+      "why": "Re-admitted 2026-09-30 in the SSOT (mlorentedev/dotfiles harness/reviewer-pool.json) on the bar that file requires, not renamed in. NaN retired its predecessor mimo-v2.5 that day: it hung, then answered 401 'This API key does not have access to the requested model'. The successor was given the same planted-defect test mimo-v2.5 was admitted on (a `((count++))` exit-status-1 case under `set -e`) and found it, named a failing input (count=0) and gave the fix. That is agreement on one planted defect, not a quality ranking against deepseek. It stays a SECOND fallback, after the provider-diverse one, because provider diversity is the stronger property. Profile: 1M context, reasoning chain.",
       "operational_note": "Reasoning models here emit reasoning_content BEFORE content. Under-provisioning max_tokens returns an empty body with finish_reason=length and no error — the same shape as a review that silently did not happen. Provision generously and check finish_reason; deepseek did not answer within 8,000 output tokens on a small prompt."
     },
     {
