@@ -9,18 +9,21 @@
  * stops the raw name from creeping back: a call site that names `cyan` picks a
  * shade by hand, and a palette change then misses it.
  *
- * The scan reads source, not the build, so the failure names the file and line
- * to fix. `src/styles/` and `src/theme/` are where the ramps are defined, and
+ * Two checks. The source scan names the file and line to fix. The audit of
+ * every built page, through the same helpers `lab-audit.test.mjs` runs on /lab,
+ * also catches a class that reaches the HTML another way (a data file, a
+ * plugin). `src/styles/` and `src/theme/` are where the ramps are defined, and
  * are the only places allowed to name them.
  */
 
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { COLOR_FAMILIES } from '../src/theme/tokens.mjs';
+import { COLOR_FAMILIES, HUED_FAMILIES } from '../src/theme/tokens.mjs';
+import { classNames, colourEscapes, offTokenFamilies } from './lib/audit.mjs';
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const srcDir = join(siteRoot, 'src');
@@ -60,4 +63,24 @@ test('no call site under src/ names a raw ramp instead of its role', () => {
   );
   const roles = Object.entries(COLOR_FAMILIES).map(([role, ramp]) => `${ramp} → ${role}`).join(', ');
   assert.deepEqual(found, [], `use the role names (${roles}):\n${found.join('\n')}`);
+});
+
+const distDir = join(siteRoot, 'dist');
+const builtPages = (dir) =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) return builtPages(path);
+    return entry.name.endsWith('.html') ? [path] : [];
+  });
+
+test('every built page uses only the token families for colour', { skip: !existsSync(distDir) }, () => {
+  const pages = builtPages(distDir);
+  assert.ok(pages.length > 0, 'dist/ holds no pages, so nothing is being checked');
+  const report = pages.flatMap((page) => {
+    const classes = classNames(readFileSync(page, 'utf8'));
+    const off = [...offTokenFamilies(classes).entries()].map(([family, used]) => `${family}: ${[...used].sort().join(', ')}`);
+    const escapes = colourEscapes(classes);
+    return [...off, ...escapes].map((finding) => `${relative(distDir, page)} ${finding}`);
+  });
+  assert.deepEqual(report, [], `colour outside the token families (${HUED_FAMILIES.join(', ')}):\n${report.join('\n')}`);
 });
