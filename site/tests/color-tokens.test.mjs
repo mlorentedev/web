@@ -13,7 +13,9 @@
  * every built page, through the same helpers `lab-audit.test.mjs` runs on /lab,
  * also catches a class that reaches the HTML another way (a data file, a
  * plugin). `src/styles/` and `src/theme/` are where the ramps are defined, and
- * are the only places allowed to name them.
+ * are the only places allowed to name them. `src/content/` is prose: a note may
+ * quote `text-gray-700` in a code sample, and a class it does render is caught
+ * by the built-page audit below.
  */
 
 import assert from 'node:assert/strict';
@@ -27,8 +29,8 @@ import { classNames, colourEscapes, offTokenFamilies } from './lib/audit.mjs';
 
 const siteRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const srcDir = join(siteRoot, 'src');
-const DEFINITIONS = ['styles', 'theme'].map((d) => join(srcDir, d));
-const SOURCE = /\.(astro|ts|tsx|mjs|js|md|mdx)$/;
+const SKIPPED = ['styles', 'theme', 'content'].map((d) => join(srcDir, d));
+const SOURCE = /\.(astro|ts|tsx|mjs|js)$/;
 
 const RAMPS = Object.values(COLOR_FAMILIES);
 // A utility naming a raw ramp shade: `text-cyan-700`, `hover:bg-gray-100`,
@@ -38,7 +40,7 @@ const RAW = new RegExp(`(?<![\\w-])[a-z]+(?:-[a-z]+)*-(${RAMPS.join('|')})-\\d{2
 function sources(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
-    if (entry.isDirectory()) return DEFINITIONS.includes(path) ? [] : sources(path);
+    if (entry.isDirectory()) return SKIPPED.includes(path) ? [] : sources(path);
     return SOURCE.test(entry.name) ? [path] : [];
   });
 }
