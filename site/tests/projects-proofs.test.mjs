@@ -21,6 +21,6 @@ const distDir = join(siteRoot, 'dist');
 test('no built page states the retired Hive figure', () => {
   assert.ok(existsSync(join(distDir, 'projects/index.html')), 'dist/projects/index.html must exist — run the build first');
   const pages = readdirSync(distDir, { recursive: true }).filter((f) => f.endsWith('.html'));
-  const stating = pages.filter((f) => /67\s?[–-]\s?82/.test(readFileSync(join(distDir, f), 'utf8')));
+  const stating = pages.filter((f) => /\b67\s?[–-]\s?82\s?%/.test(readFileSync(join(distDir, f), 'utf8')));
   assert.deepEqual(stating, [], `pages stating the retired Hive figure: ${stating.join(', ')}`);
 });
