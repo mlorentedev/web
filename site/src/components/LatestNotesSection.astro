@@ -26,22 +26,22 @@ const allHref = fallback ? '/notes/' : translatePath('/notes/');
 
 <Section data-home-block="notes">
   <SectionHeading label={t('home.latest')} href={allHref} margin="mb-6" />
-    {fallback && notes.length > 0 && <p data-notes-in-english class="text-sm text-gray-500 mb-3">{t('notes.inEnglish')}</p>}
+    {fallback && notes.length > 0 && <p data-notes-in-english class="text-sm text-ink-500 mb-3">{t('notes.inEnglish')}</p>}
     {notes.length > 0 ? (
-      <div class="divide-y divide-gray-100" lang={fallback ? 'en' : undefined}>
+      <div class="divide-y divide-ink-100" lang={fallback ? 'en' : undefined}>
         {notes.map((note) => (
           <a href={noteHref(note.id)} class="group block py-3 first:pt-0">
-            <span class="text-sm text-gray-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
-            <span class="text-base text-gray-700 group-hover:text-cyan-700 transition-colors">{note.data.title}</span>
+            <span class="text-sm text-ink-500 block tabular-nums">{note.data.pubDate.toISOString().slice(0, 10)}</span>
+            <span class="text-base text-ink-700 group-hover:text-accent-700 transition-colors">{note.data.title}</span>
           </a>
         ))}
       </div>
     ) : (
-      <p class="text-base text-gray-500">{t('notes.empty')}</p>
+      <p class="text-base text-ink-500">{t('notes.empty')}</p>
     )}
     <a
       href={allHref}
-      class="text-xs text-gray-500 hover:text-cyan-700 transition-colors mt-4 block"
+      class="text-xs text-ink-500 hover:text-accent-700 transition-colors mt-4 block"
     >
       {t('home.allNotes')} &rarr;
     </a>

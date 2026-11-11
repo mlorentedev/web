@@ -25,17 +25,17 @@ const link = (href: string) => (href.startsWith('/') ? translatePath(href) : hre
 // Whole class names, so Tailwind sees them at build time.
 const label: Record<Tone, string> = {
   accent: 'bg-accent-50 text-accent-800 ring-accent-200',
-  emerald: 'bg-emerald-50 text-emerald-800 ring-emerald-200',
-  purple: 'bg-purple-50 text-purple-800 ring-purple-200',
-  amber: 'bg-amber-50 text-amber-800 ring-amber-200',
-  rose: 'bg-rose-50 text-rose-800 ring-rose-200',
+  emerald: 'bg-ok-50 text-ok-800 ring-ok-200',
+  purple: 'bg-observe-50 text-observe-800 ring-observe-200',
+  amber: 'bg-warn-50 text-warn-800 ring-warn-200',
+  rose: 'bg-danger-50 text-danger-800 ring-danger-200',
 };
 const dot: Record<Tone, string> = {
   accent: 'bg-accent-500',
-  emerald: 'bg-emerald-500',
-  purple: 'bg-purple-500',
-  amber: 'bg-amber-500',
-  rose: 'bg-rose-500',
+  emerald: 'bg-ok-500',
+  purple: 'bg-observe-500',
+  amber: 'bg-warn-500',
+  rose: 'bg-danger-500',
 };
 ---
 
