@@ -49,8 +49,12 @@ test(`a note lists at most ${MAX_RELATED} related notes`, () => {
 
 const frontmatterRelated = (src) => {
   const block = src.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
-  const line = block.match(/^related:\s*\[(.*)\]\s*$/m)?.[1];
-  return line === undefined ? [] : [...line.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  if (!/^related:/m.test(block)) return [];
+  // The notes write `related` inline with double quotes. Any other YAML form
+  // fails here, naming the parser, instead of as a rendering mismatch.
+  const line = block.match(/^related:\s*\[((?:\s*"[^"]+"\s*,?)*)\]\s*$/m)?.[1];
+  if (line === undefined) throw new Error('this test reads `related` only as an inline list of double-quoted ids');
+  return [...line.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
 };
 
 test('every published note page renders its related notes, in order, as links that exist', { skip: !existsSync(DIST) }, () => {
