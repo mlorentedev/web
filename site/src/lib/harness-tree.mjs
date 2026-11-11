@@ -40,7 +40,7 @@ export function drawTree(entries, root, depth) {
     const items = [
       ...[...at.dirs].map(([name, child]) => ({ name, child })),
       ...at.files.map((name) => ({ name })),
-    ].sort((a, b) => a.name.localeCompare(b.name, 'en'));
+    ].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)); // byte order, as git sorts: no ICU dependence
     items.forEach(({ name, child }, i) => {
       const last = i === items.length - 1;
       const cut = child && level === depth;
