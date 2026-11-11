@@ -73,6 +73,9 @@ export const ui = {
     'ai.pillars.p4.i2': 'Strict zero auto-merge doctrine',
     'ai.pillars.p4.i3': 'CI regression & mutation suites',
     'ai.artifacts.heading': 'The rules, quoted from their files',
+    'ai.tree.heading': 'The harness, as it is in the repository',
+    'ai.tree.sub': 'The output of git ls-tree on the harness directory at one commit, two levels deep: {n} files.',
+    'ai.tree.source': 'The tree on GitHub at that commit',
     'ai.artifacts.sub':
       'Four excerpts, each quoted word for word from a public file and linked to the commit it was taken from.',
     'ai.automations.heading': 'Autonomous Fleet & Automations',
@@ -381,6 +384,9 @@ export const ui = {
     'ai.pillars.p4.i2': 'Doctrina estricta de cero auto-merge',
     'ai.pillars.p4.i3': 'Suites de regresión y mutación en CI',
     'ai.artifacts.heading': 'Las reglas, citadas de sus ficheros',
+    'ai.tree.heading': 'El arnés, tal como está en el repositorio',
+    'ai.tree.sub': 'La salida de git ls-tree sobre el directorio del arnés en un commit, a dos niveles: {n} ficheros.',
+    'ai.tree.source': 'El árbol en GitHub en ese commit',
     'ai.artifacts.sub':
       'Cuatro extractos, cada uno citado palabra por palabra de un fichero público y enlazado a la versión de la que se tomó.',
     'ai.automations.heading': 'Flota Autónoma y Automatizaciones',

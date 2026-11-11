@@ -1,0 +1,38 @@
+---
+/**
+ * The harness as it is in the repository (#593): `git ls-tree` of dotfiles'
+ * `harness/` at a pinned commit, two levels deep, linked to that tree. The
+ * drawing comes from `data/harness-tree.ts`; the test rebuilds git's tree id.
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { harnessDrawing, harnessEntries, harnessTree } from '../data/harness-tree';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  number: string;
+}
+
+const { number } = Astro.props;
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const href = `https://github.com/${harnessTree.repo}/tree/${harnessTree.commit}/${harnessTree.root}`;
+const label = `${harnessTree.repo.split('/')[1]}/${harnessTree.root}`;
+---
+
+<Section padding="py-14" id="harness-tree" data-ai-section="harness-tree">
+  <SectionHeading number={number} label={t('ai.tree.heading')} margin="mb-2" />
+  <p class="text-sm text-ink-500 mb-6 max-w-2xl">
+    {t('ai.tree.sub').replace('{n}', String(harnessEntries.length))}
+  </p>
+  <div class="rounded-lg bg-panel-950 p-4 border border-panel-800" translate="no">
+    <div class="flex items-center justify-between pb-2 mb-2 border-b border-panel-800 text-xs font-mono text-panel-400">
+      <span>{label}</span>
+      <span>{harnessTree.commit.slice(0, 7)}</span>
+    </div>
+    <pre data-harness-tree class="font-mono text-xs text-panel-100 leading-relaxed whitespace-pre-wrap break-words">{harnessDrawing}</pre>
+  </div>
+  <p class="mt-3 text-sm font-mono">
+    <a href={href} class="text-accent-700 hover:text-accent-900 underline underline-offset-2">{t('ai.tree.source')}</a>
+  </p>
+</Section>
