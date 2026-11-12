@@ -112,8 +112,15 @@ jobs:
           tags: ${{ env.IMAGE }}:${{ inputs.tag }}
           build-args: |
             SITE_COMMIT=${{ inputs.commit }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # The layer cache lives on the `buildcache` tag, not in the Actions
+          # cache: `type=gha,mode=max` held that at its 10 GB ceiling and got the
+          # npm and Playwright caches evicted between runs (WEB-202). Every
+          # build reads it (the repository is public, so a PR needs no login);
+          # only a pushed build writes it. registry-hygiene prunes `sha-*` only,
+          # so the tag is never deleted. A failed read is a warning and a cold
+          # build, never a failed one.
+          cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache
+          cache-to: ${{ inputs.push && format('type=registry,ref={0}:buildcache,mode=max', env.IMAGE) || '' }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}

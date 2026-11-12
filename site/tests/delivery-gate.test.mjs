@@ -319,3 +319,19 @@ test('every image build is scanned, pull requests included, and a CRITICAL findi
   const [gateAt, uploadAt] = ['Trivy gate on CRITICAL', 'Upload Trivy SARIF'].map((n) => imageBuild.indexOf(`- name: ${n}`));
   assert.ok(uploadAt !== -1 && gateAt > uploadAt, 'a blocked build uploads no SARIF');
 });
+
+test('the image build cache lives in the registry, and only a pushed build writes it (WEB-202)', () => {
+  // `type=gha,mode=max` kept the Actions cache at its 10 GB ceiling, so GitHub
+  // evicted the npm and Playwright caches between runs. The buildkit layers now
+  // sit on a `buildcache` tag that registry-hygiene never prunes (it touches
+  // only `sha-*`). A PR build reads that tag anonymously and writes nothing.
+  const build = step(imageBuild, 'Build and push');
+  assert.ok(build, 'build-image.yml has no "Build and push" step');
+  const code = build.split('\n').filter((l) => !/^\s*#/.test(l)).join('\n');
+  assert.doesNotMatch(code, /type=gha/, 'the image build still reads or writes the Actions cache');
+  const from = build.match(/^\s*cache-from:\s*(.+)$/m)?.[1] ?? '';
+  const to = build.match(/^\s*cache-to:\s*(.+)$/m)?.[1] ?? '';
+  assert.match(from, /type=registry,ref=\$\{\{ env\.IMAGE \}\}:buildcache\b/, 'cache-from does not read the buildcache tag');
+  assert.match(to, /^\$\{\{ inputs\.push && /, 'cache-to is not limited to pushed builds');
+  assert.match(to, /type=registry,ref=\{0\}:buildcache,mode=max/, 'cache-to does not write every stage to the buildcache tag');
+});
