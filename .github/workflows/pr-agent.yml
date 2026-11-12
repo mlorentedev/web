@@ -1,18 +1,7 @@
----
 name: pr-agent
 
-# The PR-Agent reviewer (TOOL-013 / ADR-032), called from the fleet's reusable
-# workflow in mlorentedev/ci-workflows (dotfiles TOOL-031) instead of a local
-# port. The local port had drifted from the dotfiles canon: one PR-Agent step
-# under a 15-minute job, so a primary model that stalled used up the job before
-# the fallback could answer, and the run was cancelled with no review (WEB-165).
-# The reusable workflow runs each model attempt as its own step with its own
-# budget, and its guard checks that a review was published. Decisions are
-# `dotf pr ...` at the release the pinned tag names; bumping the pin brings them.
-#
-# Kept here: the triggers, the per-PR concurrency, the permissions, and the
-# skips below. `.pr_agent.toml` (instructions, response language) and
-# `harness/review-attestation.json` are read from the default branch.
+# The reusable reviewer from mlorentedev/ci-workflows (CI-007). Repository-specific
+# review instructions live in .pr_agent.toml; this file only calls the shared job.
 
 on:
   pull_request:
@@ -21,16 +10,37 @@ on:
     types: [created]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number }}-${{ github.event_name }}
+  # The event name is part of the key: a PR comment is an issue_comment whose
+  # issue.number is the PR number, and without it a comment cancels the review.
+  # Only a comment the shared job runs (a slash command from an association it
+  # trusts) shares the /review group, so a newer /review supersedes an older one;
+  # any other comment gets its own group and cancels nothing (dotfiles #2855).
+  # The association list must equal the shared job's.
+  # A bot's push gets its own group too: the shared job ignores bot commits, so a
+  # bot run that cancelled a human run would leave the PR with no review.
+  group: >-
+    ${{ format('{0}-{1}-{2}{3}{4}', github.workflow,
+      github.event.pull_request.number || github.event.issue.number, github.event_name,
+      (github.event_name == 'issue_comment'
+        && !(startsWith(github.event.comment.body, '/')
+          && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)))
+      && format('-{0}', github.event.comment.id) || '',
+      (github.event_name == 'pull_request' && endsWith(github.actor, '[bot]'))
+      && format('-{0}', github.run_id) || '') }}
   cancel-in-progress: true
 
 permissions: {}
 
 jobs:
   review:
-    # Skipped before a runner is spent. The reusable workflow repeats the
-    # Dependabot and fork exclusions; the draft and release-please skips are
-    # its `dotf pr reviewable` decision too, but a skipped job costs nothing.
+    # Kept from this repository's earlier caller: skipped before a runner is
+    # spent. The shared job repeats the Dependabot, fork, draft and
+    # release-please exclusions; a job skipped here costs nothing.
+    # The draft flag is deliberately not read here: the payload's flag is a
+    # snapshot, and an `opened` draft run can cancel the `ready_for_review` run
+    # in the shared concurrency group and then skip itself, leaving the PR
+    # unreviewed (dotfiles#2591). The shared job asks the API instead.
+    # site/tests/pr-agent-dependabot.test.mjs reads this condition.
     #
     # Dependabot-triggered runs read the Dependabot secrets store, which is
     # empty here, so the credential is "" and the run fails (HARNESS-080,
@@ -39,8 +49,7 @@ jobs:
     # still gets a review, with the secrets present.
     if: >
       (github.event_name == 'pull_request'
-        && github.event.pull_request.draft == false
-        && github.actor != 'dependabot[bot]'
+              && github.actor != 'dependabot[bot]'
         && github.event.pull_request.head.repo.fork == false
         && !startsWith(github.head_ref, 'release-please--'))
       || (github.event_name == 'issue_comment'
@@ -52,11 +61,13 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
-    uses: mlorentedev/ci-workflows/.github/workflows/pr-agent.yml@d601782ceac77ad4dc52833cd94106245ee20f44 # v0.4.0
+    uses: mlorentedev/ci-workflows/.github/workflows/pr-agent.yml@2355330358344bb08c0b7a305be4ed6488f23d0c # v0.6.0
+    # dotf_version and the model chain take the tag's defaults: the dotf release it
+    # was tested with, and the chain read from the pool.
     with:
+      pool: embedded
+      # Release PRs restate commits each reviewed when it landed.
       skip_branch_prefixes: release-please--
     secrets:
       NAN_API_KEY: ${{ secrets.NAN_API_KEY }}
-      # Not set in this repository today, so every review routes to NaN. Set it
-      # (`dotf secrets sync ci`) to let the pool draw Anthropic models too.
       PR_AGENT_ANTHROPIC_API_KEY: ${{ secrets.PR_AGENT_ANTHROPIC_API_KEY }}

@@ -2,11 +2,12 @@
 # Backed by NaN cluster inference with zero per-hour account quota limits.
 
 [config]
-model = "openai/mimo-v2.6-flash"
-fallback_models = ["openai/deepseek-v4-flash"]
-model_weak = "openai/qwen3.6"
+# The model, its fallback and custom_model_max_tokens are set by the shared workflow
+# (mlorentedev/ci-workflows pr-agent.yml) through environment variables, which sit
+# above this file, so they are not repeated here.
 
-custom_model_max_tokens = 200000
+# The shared workflow's NaN step sets custom_model_max_tokens but not this cap,
+# whose upstream default (32000) would clip the diff, so it stays here.
 max_model_tokens = 200000
 
 response_language = "en-US"
@@ -20,6 +21,11 @@ persistent_comment = true
 final_update_message = false
 
 extra_instructions = """
+Classify each finding as REAL, THEORETICAL or SPECULATIVE. State the class as
+the first line of its issue_content, alone on that line and spelled exactly
+"Class: REAL", "Class: THEORETICAL" or "Class: SPECULATIVE". The triage reads
+only that line; a finding without it goes to a human unclassified.
+
 Open every review with a HARNESS COMPLIANCE pass over AGENTS.md, stating PASS or FAIL per item with the offending file and line. Report it even when everything passes:
 
 - English only in the durable record: commit messages, branch name, PR title and body, code comments.
@@ -36,7 +42,6 @@ Then continue with the substance.
 Do not restate what ESLint/Prettier/typecheck reports. Spend the budget on what static analysis cannot see:
 - Edge cases, subtle styling bugs, broken localized paths, race conditions in client islands.
 - Verify that health probe logic is non-blocking and degrades gracefully on network/CORS failure.
-- Classify each finding as REAL, THEORETICAL, or SPECULATIVE.
 - All review outputs, tables, findings, and suggestions must be authored strictly in English.
 """
 
