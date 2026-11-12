@@ -1,0 +1,57 @@
+# Arming envelope for one unattended run. The run reads this file from the
+# committed copy only, and halts if the working tree differs from it.
+version: 1
+run_id: "web-ci-deps-20261112"
+armed_by: manu
+armed_at: 2026-11-12T07:04:20Z
+expires_at: 2026-11-12T19:04:20Z
+objective: >-
+  Advance the non-copy web backlog: close the last Dependabot alerts (WEB-270),
+  report the cockpit manifest drift with evidence (WEB-073), build the
+  gateway-path diagram without touching the Lab page (WEB-147), and record the
+  WEB-104 and WEB-202 post-merge evidence, as triaged PRs or evidence comments.
+scope:
+  write_paths:
+    - "site/package.json"
+    - "site/package-lock.json"
+    - "site/src/diagrams/**"
+    - "site/src/data/service-access*"
+    - "site/src/i18n/ui.ts"          # new keys only: no existing string is rewritten
+    - "site/scripts/**"
+    - "site/tests/**"
+    - "site/public/diagrams/**"
+    - "scripts/**"
+    - "docs/**"
+  frozen_paths:
+    - ".github/**"                     # no workflow edit tonight
+    - "harness/**"
+    - "**/AGENTS.md"
+    - "kubelab.yaml"
+    - "site/src/content/**"
+    - "site/src/styles/**"             # content session: dark mode (WEB-197)
+    - "site/src/pages/**"              # content session owns /lab (WEB-195), home and /ai
+    - "site/src/components/**"         # the Lab include waits; content session's lane
+    - "site/src/data/platform.json"    # WEB-073 is evidence only: no sync
+    - ".agent/unattended.yml"
+  max_files: 15
+  max_loc: 300
+allowed_commands: [dotf, gh, git, make, npm, npx, node, bash, caffeinate, actionlint, python3, curl]
+queue:
+  source: explicit
+  filter: "web#270 web#162 web#427 web#288 web#620"
+  max_items: 5
+  notes: >-
+    #162 ends in an evidence comment: 121 value diffs against kubelab's export,
+    and which side is the source of truth is the owner's call. #427 stops
+    before any component or page include. #288 and #620 are post-merge
+    evidence only. #498 is the owner's release, a declared skip in every
+    triage-queue read. Peer run web-rework-20261112 owns its own worktree.
+budget:
+  max_iterations: 10
+  max_minutes_per_iteration: 60
+  max_consecutive_failures: 2
+authority:
+  merge: never                      # Manu merges every PR
+  push: true
+  open_pr: true
+  advisor_tier: top
