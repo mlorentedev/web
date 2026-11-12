@@ -1,0 +1,66 @@
+# Arming envelope for one unattended run. The run reads this file from the
+# committed copy only, and halts if the working tree differs from it.
+version: 1
+run_id: "web-rework-20261112"
+armed_by: manu
+armed_at: 2026-11-12T07:04:00Z
+expires_at: 2026-11-12T19:04:00Z
+objective: >-
+  Open triaged PRs, for the owner to merge, for the structure-and-data parts of the
+  WEB-186 rework still open: #594 dark mode (system setting only, palette as a
+  draft for the owner) and #592 (changelog generated from kubelab PRs, kubelab.yaml
+  shown on /lab); park anything that needs the owner's voice or a design decision.
+scope:
+  write_paths:
+    - "site/src/components/**"
+    - "site/src/layouts/**"
+    - "site/src/styles/**"
+    - "site/src/lib/**"
+    - "site/src/data/**"
+    - "site/src/pages/**"
+    - "site/src/i18n/ui.ts"          # new keys only: no existing string is rewritten
+    - "site/scripts/**"
+    - "site/tests/**"
+    - "docs/**"
+  frozen_paths:
+    - ".github/**"
+    - "harness/**"
+    - "**/AGENTS.md"
+    - "site/src/content/pages/**"
+    - "site/src/content/notes/**"
+    - "kubelab.yaml"                 # read only: /lab shows a copy guarded by a test
+    - "Dockerfile"
+    - "site/package.json"            # peer lane tonight (npm overrides)
+    - "site/src/components/Header.astro"
+    - ".agent/unattended.yml"
+  max_files: 15
+  max_loc: 300
+allowed_commands: [dotf, gh, git, npm, npx, node, bash, curl, jq]
+queue:
+  source: explicit
+  filter: "#594 WEB-197 (dark mode only; type families stay open), #592 WEB-195 (changelog option B, kubelab.yaml option B)"
+  max_items: 4
+  decisions: >-
+    Owner 2026-11-12: dark palette as a draft PR to review on staging; type families
+    tomorrow; changelog generated from merged kubelab PRs as a pinned JSON plus a
+    fetch script; kubelab.yaml as a copy under site/ kept equal by a test.
+  coordination: >-
+    Peer fix-focus-visible-52 takes #270, #620, #288 and maybe #427 (new /lab
+    section as its own component); it stays out of tailwind.css, copy, /ai and home.
+    Rebase on its LabPage change if it lands first.
+budget:
+  max_iterations: 8
+  max_minutes_per_iteration: 60
+  max_consecutive_failures: 2
+authority:
+  merge: never                       # no .github/merge-grant.yml on master; the owner merges
+  push: true
+  open_pr: true
+  advisor_tier: top
+constraints:
+  - "No copy in the owner's voice, no claim or figure about the owner; a figure only with its method."
+  - "Type families are not decided: no font change."
+  - "No kubelab or remote-state change. Release #498 is the owner's."
+  - "No force-push, no git reset --hard, no bare git stash; check the PR is open before every push."
+  - "GitHub artifacts in English, never naming an agent or this run."
+  - "Never an open issue's #N in a PR body unless the PR closes it."
