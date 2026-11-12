@@ -60,6 +60,7 @@ literal text on GitHub, which is where these are read.
 not written down is the one that recurs.
 
 After adding a file, run `dotf lessons fmt`; CI checks the result with
-`dotf lessons fmt --check`. No index is committed: `dotf lessons index` renders one on
-demand. A committed index was a line every lesson PR edited: two PRs that each bumped
+`dotf lessons fmt --check`. The formatter writes the H1 from the frontmatter `title`, so
+a heading change goes in `title`: an edited H1 alone is put back. No index is committed:
+`dotf lessons index` renders one on demand. A committed index was a line every lesson PR edited: two PRs that each bumped
 its count made the same edit, git merged it silently, and master ended a lesson short ([lesson 073](lesson-073-two-prs-that-make-the-same-edit-to-a-line-me.md)).
