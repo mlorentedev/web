@@ -31,6 +31,12 @@ export interface Layer {
   tone: Tone;
   /** A site path (`/lab/`, localised at render time) or a public artifact. */
   href: string;
+  /**
+   * A project this layer built, by its `portfolio.ts` title (#589). The home
+   * shows it once, as a `built/` line under the story, so the story itself
+   * must not name it (`tests/skills.test.mjs`).
+   */
+  built?: string;
   en: LayerCopy;
   es: LayerCopy;
 }
@@ -70,21 +76,23 @@ export const layers: Layer[] = [
     key: 'ai/agents',
     tone: 'purple',
     href: '/ai/',
+    built: 'Hive',
     en: {
       name: 'AI',
       terms: ['Agent harness', 'MCP servers', 'Agent orchestration'],
-      story: ['I build everything with AI agents, KubeLab included, and to trust them I built ', 'the harness they work in', ', with rules, reviews and memory, plus Hive, my open-source MCP server.'],
+      story: ['I build everything with AI agents, KubeLab included, and to trust them I built ', 'the harness they work in', ', with rules, reviews and memory.'],
     },
     es: {
       name: 'IA',
       terms: ['Harness de agentes', 'Servidores MCP', 'Orquestación de agentes'],
-      story: ['Lo desarrollo todo con agentes de IA, KubeLab incluido, y para fiarme de ellos construí ', 'el harness en el que trabajan', ', con reglas, revisiones y memoria, además de Hive, mi servidor MCP de código abierto.'],
+      story: ['Lo desarrollo todo con agentes de IA, KubeLab incluido, y para fiarme de ellos construí ', 'el harness en el que trabajan', ', con reglas, revisiones y memoria.'],
     },
   },
   {
     key: 'cloud/systems',
     tone: 'amber',
     href: 'https://github.com/zuidui/doc',
+    built: 'ts-bridge',
     en: {
       name: 'Cloud and systems design',
       terms: ['AWS, GCP and Hetzner', 'Microservices', 'Event-driven systems'],
@@ -117,5 +125,5 @@ export const languages = ['Python', 'Go', 'C', 'C++'];
 
 /** The layers flattened to one language, in order. */
 export function layersFor(lang: Lang): (LayerCopy & Omit<Layer, 'en' | 'es'>)[] {
-  return layers.map(({ key, tone, href, ...copy }) => ({ key, tone, href, ...copy[lang] }));
+  return layers.map(({ key, tone, href, built, ...copy }) => ({ key, tone, href, built, ...copy[lang] }));
 }

@@ -62,13 +62,16 @@ function items(html) {
 }
 
 const hrefs = (item) => [...item.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+/** A layer without its `built/` line: the story and its one link. */
+const story = (item) => item.replace(/<p[^>]*data-built[\s\S]*?<\/p>/g, '');
+const builtLines = (item) => [...item.matchAll(/<p[^>]*data-built[^>]*>([\s\S]*?)<\/p>/g)].map((m) => m[1]);
 const text = (html) => html.replace(/<[^>]*>|&#?\w+;/g, ' ').replace(/\s+/g, ' ').trim();
 
 for (const { lang, built: page, prefix } of homes) {
   test(`[${lang}] the skills block lists ${ITEMS} items, each with exactly one link`, () => {
     const list = items(built(page));
     assert.equal(list.length, ITEMS, `dist/${page}: expected ${ITEMS} skills, found ${list.length}`);
-    const wrong = list.filter((item) => hrefs(item).length !== 1).map(text);
+    const wrong = list.filter((item) => hrefs(story(item)).length !== 1).map(text);
     assert.deepEqual(wrong, [], `items without exactly one link: ${wrong.join(' | ')}`);
   });
 
@@ -114,9 +117,51 @@ for (const { lang, built: page, prefix } of homes) {
 test('both locales list the same proofs, in the same order', () => {
   const targets = ({ built: page, prefix }) =>
     items(built(page))
+      .map(story)
       .flatMap(hrefs)
       .map((href) => (prefix && href.startsWith(`${prefix}/`) ? href.slice(prefix.length) : href));
   const [en, es] = homes.map(targets);
   assert.ok(en.length === ITEMS, `the en list has ${en.length} links`);
   assert.deepEqual(es, en);
 });
+
+// ------------------------------------------------------------------ built/ lines (#589)
+
+const { layers } = await import('../src/data/skills.ts');
+const { projects } = await import('../src/data/portfolio.ts');
+
+/** The projects the home shows, by layer, as the owner chose them (2026-11-11). */
+const BUILT = { 'ai/agents': 'Hive', 'cloud/systems': 'ts-bridge' };
+
+test('the built/ lines are exactly the chosen projects, each one in the portfolio', () => {
+  const chosen = Object.fromEntries(layers.filter((l) => l.built).map((l) => [l.key, l.built]));
+  assert.deepEqual(chosen, BUILT);
+  for (const title of Object.values(BUILT)) {
+    assert.ok(projects.some((p) => p.en.title === title && p.github), `${title} is not a portfolio project with a repository`);
+  }
+});
+
+test('no story names the project its built/ line shows, so nothing is said twice', () => {
+  const twice = layers
+    .filter((l) => l.built)
+    .flatMap((l) => ['en', 'es'].filter((lang) => l[lang].story.join('').includes(l.built)).map((lang) => `${l.key} (${lang})`));
+  assert.deepEqual(twice, []);
+});
+
+for (const { lang, built: page } of homes) {
+  test(`[${lang}] each built/ project appears once in the skills block, linked to its repository`, () => {
+    const list = items(built(page));
+    for (const [key, title] of Object.entries(BUILT)) {
+      const item = list.find((i) => i.includes(`>${key}<`));
+      assert.ok(item, `no ${key} layer`);
+      const [line] = builtLines(item);
+      assert.ok(line, `${key} has no built/ line`);
+      const repo = projects.find((p) => p.en.title === title).github;
+      assert.deepEqual(hrefs(line), [repo]);
+    }
+    const words = text(block(built(page)));
+    for (const title of Object.values(BUILT)) {
+      assert.equal(words.split(title).length - 1, 1, `${title} is named more than once in the skills block`);
+    }
+  });
+}

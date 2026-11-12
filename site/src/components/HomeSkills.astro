@@ -9,6 +9,7 @@ import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { languages, layersFor, type Tone } from '../data/skills';
 import { ghchartSrc, site } from '../data/site';
+import { localize, projects } from '../data/portfolio';
 import type { Lang } from '../i18n/ui';
 import { useTranslations, useTranslatedPath } from '../i18n/utils';
 
@@ -21,6 +22,14 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
 const link = (href: string) => (href.startsWith('/') ? translatePath(href) : href);
+
+// A layer's `built/` line: the project by its portfolio title, linked to its
+// public repository, with the metric /projects already shows (#589).
+const project = (title?: string) => {
+  const found = title ? projects.find((p) => p.en.title === title) : undefined;
+  if (title && !found?.github) throw new Error(`skills: built project "${title}" has no portfolio entry with a repository`);
+  return found && { ...localize(found, lang), github: found.github as string };
+};
 
 // Whole class names, so Tailwind sees them at build time.
 const label: Record<Tone, string> = {
@@ -42,7 +51,7 @@ const dot: Record<Tone, string> = {
 <Section id="skills" data-home-block="skills">
   <SectionHeading label={t('home.skills')} margin="mb-6" />
   <dl data-skills class="max-w-3xl divide-y divide-ink-100 border-y border-ink-100">
-    {layersFor(lang).map(({ key, tone, name, terms, story: [before, words, after], href }) => (
+    {layersFor(lang).map(({ key, tone, name, terms, story: [before, words, after], href, built }) => (
       <div data-skill data-key={key} class="grid gap-2 py-4 md:grid-cols-[11rem_1fr] md:gap-6">
         <dt>
           <span class:list={['inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-xs font-medium ring-1 ring-inset', label[tone]]}>
@@ -59,6 +68,18 @@ const dot: Record<Tone, string> = {
           <p class="mt-2 text-base text-ink-700 leading-relaxed">
             {before}<a href={link(href)} class="text-accent-700 underline decoration-ink-300 hover:text-accent-800 transition-colors">{words}</a>{after}
           </p>
+          {
+            project(built) && (
+              <p data-built class="mt-1.5 font-mono text-sm text-ink-600">
+                <span translate="no">
+                  <span class="text-ink-500">built/</span>
+                  <a href={project(built)!.github} class="text-accent-700 underline decoration-ink-300 hover:text-accent-800 transition-colors">{project(built)!.title}</a>
+                </span>
+                <span aria-hidden="true"> · </span>
+                <span>{project(built)!.metric}</span>
+              </p>
+            )
+          }
         </dd>
       </div>
     ))}
