@@ -44,5 +44,11 @@
     "semver": "^7.8.6",
     "subset-font": "2.9.0",
     "typescript": "^5.8.2"
+  },
+  "overrides": {
+    "@tailwindcss/typography": {
+      "postcss-selector-parser": "^6.1.5"
+    },
+    "katex": "^0.18.2"
   }
 }
