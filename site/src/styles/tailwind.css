@@ -119,6 +119,162 @@
   --font-sans: Roboto, system-ui, sans-serif;
 }
 
+/* Dark mode follows the visitor's system setting, and only that: there is no
+   toggle (owner decision, 2026-11-11). Every colour on the site is a role
+   alias, so the dark palette redefines the same names and nothing else: each
+   ramp is read backwards (50 takes 950's hex, 100 takes 900's, …), white and
+   black swap, and step 500, which maps to itself, takes 400 instead. Measured:
+   `ink-500` is 4.83:1 on white but 4.34:1 on black, under the 4.5:1 that the
+   12px captions using it need. The names stay the ones `@theme` declares, so
+   `tailwind-wiring` still finds every `var(--color-*)` declared there.
+   `tests/dark-mode.test.mjs` holds this block to that mapping.
+
+   Unlayered on purpose: `@theme` writes its variables into `@layer theme`, and
+   an unlayered rule wins over any layer. The values are a first draft for the
+   owner to tune; pure black is the first thing to look at. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-white: #000;
+    --color-black: #fff;
+    --color-red-50: #450a0a;
+    --color-red-100: #7f1d1d;
+    --color-red-200: #991b1b;
+    --color-red-300: #b91c1c;
+    --color-red-400: #dc2626;
+    --color-red-500: #f87171;
+    --color-red-600: #f87171;
+    --color-red-700: #fca5a5;
+    --color-red-800: #fecaca;
+    --color-red-900: #fee2e2;
+    --color-red-950: #fef2f2;
+    --color-accent-50: #083344;
+    --color-accent-100: #164e63;
+    --color-accent-200: #155e75;
+    --color-accent-300: #0e7490;
+    --color-accent-400: #0891b2;
+    --color-accent-500: #22d3ee;
+    --color-accent-600: #22d3ee;
+    --color-accent-700: #67e8f9;
+    --color-accent-800: #a5f3fc;
+    --color-accent-900: #cffafe;
+    --color-accent-950: #ecfeff;
+    --color-ink-50: #030712;
+    --color-ink-100: #111827;
+    --color-ink-200: #1f2937;
+    --color-ink-300: #374151;
+    --color-ink-400: #4b5563;
+    --color-ink-500: #9ca3af;
+    --color-ink-600: #9ca3af;
+    --color-ink-700: #d1d5db;
+    --color-ink-800: #e5e7eb;
+    --color-ink-900: #f3f4f6;
+    --color-ink-950: #f9fafb;
+    --color-panel-50: #020617;
+    --color-panel-100: #0f172a;
+    --color-panel-200: #1e293b;
+    --color-panel-300: #334155;
+    --color-panel-400: #475569;
+    --color-panel-500: #94a3b8;
+    --color-panel-600: #94a3b8;
+    --color-panel-700: #cbd5e1;
+    --color-panel-800: #e2e8f0;
+    --color-panel-900: #f1f5f9;
+    --color-panel-950: #f8fafc;
+    --color-ok-50: #022c22;
+    --color-ok-100: #064e3b;
+    --color-ok-200: #065f46;
+    --color-ok-300: #047857;
+    --color-ok-400: #059669;
+    --color-ok-500: #34d399;
+    --color-ok-600: #34d399;
+    --color-ok-700: #6ee7b7;
+    --color-ok-800: #a7f3d0;
+    --color-ok-900: #d1fae5;
+    --color-ok-950: #ecfdf5;
+    --color-warn-50: #451a03;
+    --color-warn-100: #78350f;
+    --color-warn-200: #92400e;
+    --color-warn-300: #b45309;
+    --color-warn-400: #d97706;
+    --color-warn-500: #fbbf24;
+    --color-warn-600: #fbbf24;
+    --color-warn-700: #fcd34d;
+    --color-warn-800: #fde68a;
+    --color-warn-900: #fef3c7;
+    --color-warn-950: #fffbeb;
+    --color-danger-50: #4c0519;
+    --color-danger-100: #881337;
+    --color-danger-200: #9f1239;
+    --color-danger-300: #be123c;
+    --color-danger-400: #e11d48;
+    --color-danger-500: #fb7185;
+    --color-danger-600: #fb7185;
+    --color-danger-700: #fda4af;
+    --color-danger-800: #fecdd3;
+    --color-danger-900: #ffe4e6;
+    --color-danger-950: #fff1f2;
+    --color-observe-50: #3b0764;
+    --color-observe-100: #581c87;
+    --color-observe-200: #6b21a8;
+    --color-observe-300: #7e22ce;
+    --color-observe-400: #9333ea;
+    --color-observe-500: #c084fc;
+    --color-observe-600: #c084fc;
+    --color-observe-700: #d8b4fe;
+    --color-observe-800: #e9d5ff;
+    --color-observe-900: #f3e8ff;
+    --color-observe-950: #faf5ff;
+  }
+
+  /* The prose colours. The typography plugin is configured in
+     `tailwind.config.mjs` with literal hex, which no palette variable reaches,
+     so in dark they are named here by role. Only in dark, and only on an
+     element without a class of its own: these rules are unlayered and would
+     otherwise beat the utilities a link or a heading carries. Moving the
+     config's hex to `var()` would make this whole group unnecessary. */
+  .prose {
+    --tw-prose-body: var(--color-ink-700);
+    --tw-prose-headings: var(--color-ink-900);
+    --tw-prose-lead: var(--color-ink-600);
+    --tw-prose-links: var(--color-ink-900);
+    --tw-prose-bold: var(--color-ink-900);
+    --tw-prose-counters: var(--color-ink-500);
+    --tw-prose-bullets: var(--color-ink-300);
+    --tw-prose-hr: var(--color-ink-200);
+    --tw-prose-quotes: var(--color-ink-900);
+    --tw-prose-quote-borders: var(--color-ink-200);
+    --tw-prose-captions: var(--color-ink-500);
+    --tw-prose-kbd: var(--color-ink-900);
+    --tw-prose-code: var(--color-ink-900);
+    --tw-prose-th-borders: var(--color-ink-300);
+    --tw-prose-td-borders: var(--color-ink-200);
+    color: var(--color-panel-700);
+  }
+
+  .prose :is(h1, h2, h3, strong):not([class]) {
+    color: var(--color-panel-900);
+  }
+
+  .prose a:not([class]) {
+    color: var(--color-accent-700);
+  }
+
+  .prose :not(pre) > code:not([class]) {
+    background-color: var(--color-panel-100);
+    color: var(--color-accent-700);
+  }
+
+  /* Drawn artwork keeps the light ground it was drawn for: the generated
+     diagrams and the Mermaid figures carry their own literal colours, so they
+     sit on a literal white card rather than on the inverted page. */
+  .lab-diagram,
+  .prose figure.mermaid {
+    background-color: #fff;
+    color-scheme: light;
+  }
+}
+
 /* Tailwind 4 changed the default border colour to `currentcolor`. Every
    `border` utility on this site was written against v3's `gray-200` default,
    which `ink-200` aliases. */

@@ -132,14 +132,22 @@ for (const page of ['/lab/', '/es/lab/', '/ai/', '/es/ai/', '/notes/', '/']) {
  */
 const WIDTHS = [320, 1440];
 
+/**
+ * Both colour schemes. The site follows the visitor's system setting, and the
+ * dark palette is a second set of values for the same role names
+ * (`tailwind.css`): a pair that passes light can fail dark, as `ink-500` on
+ * black did at 4.34:1. Each page is audited in each.
+ */
+const SCHEMES = ['light', 'dark'];
+
 const { url: BASE, server } = await labBaseUrl();
 const browser = await chromium.launch();
 let failures = 0;
 
 for (const path of PATHS) {
-  for (const width of WIDTHS) {
-    const label = `${path} @ ${width}px`;
-    const page = await browser.newPage({ viewport: { width, height: 900 } });
+  for (const [width, colorScheme] of WIDTHS.flatMap((w) => SCHEMES.map((s) => [w, s]))) {
+    const label = `${path} @ ${width}px, ${colorScheme}`;
+    const page = await browser.newPage({ viewport: { width, height: 900 }, colorScheme });
     const elsewhere = [];
     await page.route('**', (route) => {
       const url = route.request().url();
@@ -217,6 +225,6 @@ if (failures > 0) {
   process.exit(1);
 }
 console.log(
-  `\n0 axe violations on ${PATHS.length} pages at 320 and 1440, ` +
+  `\n0 axe violations on ${PATHS.length} pages at 320 and 1440, light and dark, ` +
     'and no request to another origin from any page.',
 );

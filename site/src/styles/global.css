@@ -31,11 +31,11 @@
 }
 
 
-/* The UA paints its own dark form controls, scrollbars and autofill backgrounds
-   against this deliberately light page when the visitor's OS is in dark mode.
-   This is not dark-mode support; it declares which scheme the page is authored for. */
+/* The page is authored for both schemes and follows the visitor's system
+   setting (the dark palette is in `tailwind.css`), so the UA paints form
+   controls, scrollbars and autofill to match whichever one is in force. */
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
   /* Only anchor jumps need this now: the header is in flow and reserves its
      own height, so nothing has to guess at it for layout. Generous on purpose —
      overshooting a heading leaves a little air above it, undershooting hides it
