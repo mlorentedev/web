@@ -1,7 +1,8 @@
 ---
-id: lesson-035-a-green-delivery-job-is-the-pipelines-claim
+id: "lesson-035-a-green-delivery-job-is-the-pipelines-claim"
 type: lesson
 status: active
+title: "A green delivery job is the pipeline's claim, not the delivery"
 created: "2026-09-02"
 owner: manu
 tags: [web, delivery, ci-automation, verification]

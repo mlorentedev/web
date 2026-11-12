@@ -1,7 +1,8 @@
 ---
-id: lesson-054-a-push-to-a-merged-pr-s-branch-succeeds-and
+id: "lesson-054-a-push-to-a-merged-pr-s-branch-succeeds-and"
 type: lesson
 status: active
+title: "A push to a merged PR's branch succeeds and lands nowhere"
 created: "2026-09-23"
 owner: manu
 tags: [web, git, pull-requests, review]

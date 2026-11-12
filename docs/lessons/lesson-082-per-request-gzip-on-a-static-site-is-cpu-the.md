@@ -1,7 +1,8 @@
 ---
-id: lesson-082-per-request-gzip-on-a-static-site-is-cpu-the
+id: "lesson-082-per-request-gzip-on-a-static-site-is-cpu-the"
 type: lesson
 status: active
+title: "Per-request gzip on a static site is CPU the pod pays on every view"
 created: "2026-11-06"
 owner: manu
 tags: [web, nginx, performance, capacity]

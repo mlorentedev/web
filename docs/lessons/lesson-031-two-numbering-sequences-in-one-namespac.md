@@ -1,7 +1,8 @@
 ---
-id: lesson-031-two-numbering-sequences-in-one-namespac
+id: "lesson-031-two-numbering-sequences-in-one-namespac"
 type: lesson
 status: active
+title: "Two numbering sequences in one namespace, and nothing tells you which one you are in"
 created: "2026-09-02"
 owner: manu
 tags: [web, documentation, adr, knowledge-base]

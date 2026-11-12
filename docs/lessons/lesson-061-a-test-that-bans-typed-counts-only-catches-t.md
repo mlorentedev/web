@@ -1,7 +1,8 @@
 ---
-id: lesson-061-a-test-that-bans-typed-counts-only-catches-t
+id: "lesson-061-a-test-that-bans-typed-counts-only-catches-t"
 type: lesson
 status: active
+title: "A test that bans typed counts only catches the phrasings it lists"
 created: "2026-09-26"
 owner: manu
 tags: [web, lab, testing, copy]

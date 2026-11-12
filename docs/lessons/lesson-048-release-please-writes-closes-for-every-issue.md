@@ -1,7 +1,8 @@
 ---
-id: lesson-048-release-please-writes-closes-for-every-issue
+id: "lesson-048-release-please-writes-closes-for-every-issue"
 type: lesson
 status: active
+title: "release-please writes `closes` for every issue a commit mentions, `Refs` included"
 created: "2026-09-22"
 owner: manu
 tags: [web, release-please, github, ci-automation]

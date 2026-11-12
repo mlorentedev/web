@@ -1,7 +1,8 @@
 ---
-id: lesson-066-a-version-read-from-the-lockfile-in-its-own-
+id: "lesson-066-a-version-read-from-the-lockfile-in-its-own-"
 type: lesson
 status: active
+title: "A version read from the lockfile in its own stage keeps the cache a pinned literal bought"
 created: "2026-10-22"
 owner: manu
 tags: [web, docker, dependencies, ci]

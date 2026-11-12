@@ -1,7 +1,8 @@
 ---
-id: lesson-040-a-header-the-edge-replaces-cannot-be-verifie
+id: "lesson-040-a-header-the-edge-replaces-cannot-be-verifie"
 type: lesson
 status: active
+title: "A header the edge replaces cannot be verified end-to-end"
 created: "2026-09-05"
 owner: manu
 tags: [web, security, verification, nginx]

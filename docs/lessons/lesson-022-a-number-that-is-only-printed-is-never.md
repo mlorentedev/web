@@ -1,7 +1,8 @@
 ---
-id: lesson-022-a-number-that-is-only-printed-is-never
+id: "lesson-022-a-number-that-is-only-printed-is-never"
 type: lesson
 status: active
+title: "A number that is only printed is never questioned — and an assertion that cannot fail is worse"
 created: "2026-08-31"
 owner: manu
 tags: [web, testing, verification, WEB-080]

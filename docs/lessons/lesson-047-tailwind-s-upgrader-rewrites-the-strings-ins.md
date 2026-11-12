@@ -1,7 +1,8 @@
 ---
-id: lesson-047-tailwind-s-upgrader-rewrites-the-strings-ins
+id: "lesson-047-tailwind-s-upgrader-rewrites-the-strings-ins"
 type: lesson
 status: active
+title: "Tailwind's upgrader rewrites the strings inside tests, and a guard's inputs are strings"
 created: "2026-09-22"
 owner: manu
 tags: [web, tailwind, testing, codemods]

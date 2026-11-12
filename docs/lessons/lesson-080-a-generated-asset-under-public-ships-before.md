@@ -1,7 +1,8 @@
 ---
-id: lesson-080-a-generated-asset-under-public-ships-before
+id: "lesson-080-a-generated-asset-under-public-ships-before"
 type: lesson
 status: active
+title: "A generated asset under public/ ships before the note it belongs to is published"
 created: "2026-11-06"
 owner: manu
 tags: [web, astro, publishing, testing]

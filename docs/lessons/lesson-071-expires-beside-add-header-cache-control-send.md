@@ -1,7 +1,8 @@
 ---
-id: lesson-071-expires-beside-add-header-cache-control-send
+id: "lesson-071-expires-beside-add-header-cache-control-send"
 type: lesson
 status: active
+title: "expires beside add_header Cache-Control sends two headers, and immutable on a stable name keeps a new file away for a year"
 created: "2026-11-04"
 owner: manu
 tags: [web, nginx, caching, testing]

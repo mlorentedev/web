@@ -1,7 +1,8 @@
 ---
-id: lesson-011-a-job-with-no-timeout-turns-a-stalled-build
+id: "lesson-011-a-job-with-no-timeout-turns-a-stalled-build"
 type: lesson
 status: active
+title: "A job with no timeout turns one stalled build into a release that silently never publishes"
 created: "2026-08-24"
 owner: manu
 tags: [web, ci-automation, docker, release-please]

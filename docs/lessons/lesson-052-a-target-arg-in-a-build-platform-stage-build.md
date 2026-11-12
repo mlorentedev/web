@@ -1,7 +1,8 @@
 ---
-id: lesson-052-a-target-arg-in-a-build-platform-stage-build
+id: "lesson-052-a-target-arg-in-a-build-platform-stage-build"
 type: lesson
 status: active
+title: "A TARGET ARG in a build-platform stage builds it once per platform"
 created: "2026-09-23"
 owner: manu
 tags: [web, docker, buildkit, delivery]

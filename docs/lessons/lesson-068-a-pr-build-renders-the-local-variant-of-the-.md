@@ -1,7 +1,8 @@
 ---
-id: lesson-068-a-pr-build-renders-the-local-variant-of-the-
+id: "lesson-068-a-pr-build-renders-the-local-variant-of-the-"
 type: lesson
 status: active
+title: "A PR build renders the local variant of the footer, so a defect only the shipped variant carries passed every PR check"
 created: "2026-11-03"
 owner: manu
 tags: [web, testing, ci, build]

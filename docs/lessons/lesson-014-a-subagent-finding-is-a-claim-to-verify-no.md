@@ -1,7 +1,8 @@
 ---
-id: lesson-014-a-subagent-finding-is-a-claim-to-verify-no
+id: "lesson-014-a-subagent-finding-is-a-claim-to-verify-no"
 type: lesson
 status: active
+title: "A subagent's finding is a claim to verify, not a result to act on"
 created: "2026-08-25"
 owner: manu
 tags: [web, verification, agents, process]

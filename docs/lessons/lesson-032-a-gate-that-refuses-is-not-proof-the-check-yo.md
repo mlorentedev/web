@@ -1,7 +1,8 @@
 ---
-id: lesson-032-a-gate-that-refuses-is-not-proof-the-check-yo
+id: "lesson-032-a-gate-that-refuses-is-not-proof-the-check-yo"
 type: lesson
 status: active
+title: "A gate that refuses is not proof the check you added is the one that fired"
 created: "2026-09-02"
 owner: manu
 tags: [web, verification, spec-driven-development]

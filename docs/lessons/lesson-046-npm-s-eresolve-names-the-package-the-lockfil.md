@@ -1,7 +1,8 @@
 ---
-id: lesson-046-npm-s-eresolve-names-the-package-the-lockfil
+id: "lesson-046-npm-s-eresolve-names-the-package-the-lockfil"
 type: lesson
 status: active
+title: "npm's ERESOLVE names the package the lockfile anchors, not the one that conflicts"
 created: "2026-09-22"
 owner: manu
 tags: [web, dependencies, npm, verification]

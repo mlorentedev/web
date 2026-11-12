@@ -1,7 +1,8 @@
 ---
-id: lesson-029-a-gate-that-restates-its-needs-list-check
+id: "lesson-029-a-gate-that-restates-its-needs-list-check"
 type: lesson
 status: active
+title: "A gate that restates its `needs` list checks less than it waits for"
 created: "2026-09-02"
 owner: manu
 tags: [web, ci, github-actions, verification, WEB-080]

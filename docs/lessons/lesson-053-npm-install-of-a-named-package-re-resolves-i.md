@@ -1,7 +1,8 @@
 ---
-id: lesson-053-npm-install-of-a-named-package-re-resolves-i
+id: "lesson-053-npm-install-of-a-named-package-re-resolves-i"
 type: lesson
 status: active
+title: "npm install of a named package re-resolves its whole subtree"
 created: "2026-09-23"
 owner: manu
 tags: [web, npm, dependencies, lockfile]

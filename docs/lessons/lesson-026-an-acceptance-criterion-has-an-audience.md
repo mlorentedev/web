@@ -1,7 +1,8 @@
 ---
-id: lesson-026-an-acceptance-criterion-has-an-audience
+id: "lesson-026-an-acceptance-criterion-has-an-audience"
 type: lesson
 status: active
+title: "An acceptance criterion has an audience, and a spec that does not name it can be satisfied to the letter and still be wrong"
 created: "2026-09-01"
 owner: manu
 tags: [web, sdd, spec, WEB-080]

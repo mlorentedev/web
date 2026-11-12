@@ -278,7 +278,11 @@ test('the repo hygiene checks run inside the PR gate, once per pull request (WEB
   // Its own `pull_request` trigger would run every check twice per PR, under two names.
   assert.doesNotMatch(hygiene, /^ {2}pull_request:/m, 'repo-hygiene.yml still runs on pull_request by itself');
   assert.match(hygiene, /^ {2}push:\s*\n {4}branches: \[master\]/m, 'repo-hygiene.yml no longer checks master after a merge');
-  for (const script of ['check-lessons.sh', 'check-actions-pinned.sh', 'check-doc-refs.sh', 'check-agents-stack.sh']) {
+  // The lessons check is dotf's, run through the fleet's hygiene composite pinned by SHA (CI-005).
+  assert.match(hygiene, /uses: mlorentedev\/ci-workflows\/\.github\/actions\/hygiene@[0-9a-f]{40}\b/, 'repo-hygiene.yml no longer runs the hygiene composite');
+  // Its `lessons` input defaults to true; set false, the composite skips the lessons check.
+  assert.doesNotMatch(hygiene, /^\s*lessons:\s*['"]?false\b/m, 'repo-hygiene.yml turns off the composite lessons check');
+  for (const script of ['check-actions-pinned.sh', 'check-doc-refs.sh', 'check-agents-stack.sh']) {
     assert.match(hygiene, new RegExp(`run: bash scripts/${script.replace('.', '\\.')}`), `repo-hygiene.yml no longer runs ${script}`);
   }
 });

@@ -1,7 +1,8 @@
 ---
-id: lesson-072-a-target-size-check-without-the-spacing-exc
+id: "lesson-072-a-target-size-check-without-the-spacing-exc"
 type: lesson
 status: active
+title: "A target-size check without the spacing exception counts 2641 failures the standard does not"
 created: "2026-11-04"
 owner: manu
 tags: [web, accessibility, testing]

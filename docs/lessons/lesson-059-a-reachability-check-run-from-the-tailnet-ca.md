@@ -1,7 +1,8 @@
 ---
-id: lesson-059-a-reachability-check-run-from-the-tailnet-ca
+id: "lesson-059-a-reachability-check-run-from-the-tailnet-ca"
 type: lesson
 status: active
+title: "A reachability check run from the tailnet cannot see the mesh boundary"
 created: "2026-09-26"
 owner: manu
 tags: [web, lab, networking, testing]

@@ -1,7 +1,8 @@
 ---
-id: lesson-010-an-untranslated-default-prop-leaks-the-defau
+id: "lesson-010-an-untranslated-default-prop-leaks-the-defau"
 type: lesson
 status: active
+title: "An untranslated default prop leaks the default locale into every page that omits it"
 created: "2026-08-21"
 owner: manu
 tags: [web, i18n, astro]

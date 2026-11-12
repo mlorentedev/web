@@ -1,7 +1,8 @@
 ---
-id: lesson-038-a-guard-proposed-in-a-ticket-is-a-hypothesis
+id: "lesson-038-a-guard-proposed-in-a-ticket-is-a-hypothesis"
 type: lesson
 status: active
+title: "A guard proposed in a ticket is a hypothesis — backtest it against known-good history before building it"
 created: "2026-09-04"
 owner: manu
 tags: [web, verification, gitops-delivery, adr]

@@ -1,7 +1,8 @@
 ---
-id: lesson-008-a-bare-content-date-formatted-without-timezo
+id: "lesson-008-a-bare-content-date-formatted-without-timezo"
 type: lesson
 status: active
+title: "A bare content date formatted without `timeZone` renders a day early"
 created: "2026-08-21"
 owner: manu
 tags: [web, i18n, dates]
