@@ -14,6 +14,7 @@ lessons were filed and never change, so a citation stays valid.
 
 | # | Lesson | Date | Tags |
 |---|---|---|---|
+| 085 | [An unlayered CSS rule beats every Tailwind utility, so an override meant to sit under them cannot be unlayered](lesson-085-an-unlayered-css-rule-beats-every-tailwind-u.md) | 2026-11-12 | `#web` `#css` `#tailwind` `#accessibility` |
 | 084 | [A check that only runs after merge blocked every deploy for four days, with every PR green](lesson-084-a-check-that-only-runs-after-merge-blocked-e.md) | 2026-11-10 | `#ci` `#release` `#testing` |
 | 083 | [A job budget spent by one slow download reports a cancelled test, not the download](lesson-083-a-job-budget-spent-by-one-slow-download-repo.md) | 2026-11-06 | `#ci` `#github-actions` |
 | 082 | [Per-request gzip on a static site is CPU the pod pays on every view](lesson-082-per-request-gzip-on-a-static-site-is-cpu-the.md) | 2026-11-06 | `#nginx` `#performance` `#capacity` |
