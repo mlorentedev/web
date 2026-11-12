@@ -7,10 +7,11 @@ Peer run `web-rework-20261112` (content session) owns `chore-autopilot-run-2026-
 
 | Item | Outcome | Evidence |
 |---|---|---|
-| #270 | PR #656 (ready): npm overrides for postcss-selector-parser ^6.1.5 and katex ^0.18.2 | `npm audit --omit=dev` 0 vulnerabilities; `dist/` byte-identical to master (0 files differ); npm test 648/646/0 |
+| #270 | PR #656 (ready, triaged 07:50Z): npm overrides for postcss-selector-parser ^6.1.5 and katex ^0.18.2. PR-Agent's katex finding declined after a live render of mermaid math on katex 0.18.10; CodeRabbit's linked-issue check answered (open alerts are exactly 78 and 70) | `npm audit --omit=dev` 0 vulnerabilities; `dist/` byte-identical to master (0 files differ); npm test 648/646/0; issuecomment-6817951515 |
 | #162 | Owner chose A (advisor, delegated by Manu). Filed kubelab#3343 with the per-field table. Decision comment on #162 | Board: Blocked, confirmed by query |
 | #260 | Not in the queue; decided by its ACs: stays open. Comment: #289 guards the harm, the root cause is not fixed | issuecomment-6817235860 |
-| #427 | PR #657 (draft): gateway-path IR, SVG and drift test; the /lab include is left out on purpose (pages are frozen; the peer reworks /lab) | npm test 651/649/0; 7 diagrams verified; drift test proven red (grafana → public) |
+| #427 | PR #657 (draft; `gh pr ready` blocked by the GraphQL limit until ~08:25Z): gateway-path IR, SVG and drift test; the /lab include is left out on purpose (pages are frozen; the peer reworks /lab) | npm test 651/649/0; 7 diagrams verified; drift test proven red (grafana → public) |
+| #288 | Evidence posted: #656's PR-Agent review, the first after #653, has no ticket table. Close left to Manu (one AC half met) | issuecomment-6817954951 |
 | #620 | Dead tonight: Manu holds the release, so no master build will read `buildcache` | — |
 
 ## Incidents
