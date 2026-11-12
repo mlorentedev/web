@@ -75,8 +75,13 @@ test('the CSS declares exactly the pinned v3 palette, and nothing of Tailwind 4\
   const declared = Object.fromEntries(
     [...theme.matchAll(/--color-([a-z]+-\d+):\s*(#[0-9a-f]{3,8});/g)].map((m) => [m[1], m[2]]),
   );
+  // A ramp a token family aliases is declared only under the family's name, so
+  // `text-cyan-700` generates nothing and the role is the one way to the colour
+  // (WEB-076). A ramp no family aliases keeps its own name.
+  const aliased = new Set(Object.values(COLOR_FAMILIES));
   const expected = {};
   for (const [ramp, shades] of Object.entries(PALETTE)) {
+    if (aliased.has(ramp)) continue;
     for (const [shade, hex] of Object.entries(shades)) expected[`${ramp}-${shade}`] = hex;
   }
   for (const [family, ramp] of Object.entries(COLOR_FAMILIES)) {
@@ -100,4 +105,30 @@ test('every built page ships preflight and utilities, with global.css after them
     const global = css.indexOf(GLOBAL_CSS);
     assert.ok(global > preflight, `${page}: global.css must come after Tailwind's preflight`);
   }
+});
+
+// A colour variable `@theme` does not declare resolves to nothing at render
+// time, and the HTML stays the same, so no page diff shows it. After the
+// aliased ramps left `@theme` (WEB-076), a `var(--color-gray-600)` left in a
+// component <style>, an inline style or a generated SVG would drop its colour
+// without a sound. Every reference the build ships must name a declared one.
+test('every colour variable the built site references is declared in @theme', () => {
+  assert.ok(existsSync(distDir), 'run `npm run build` first — this test reads dist/');
+  const css = readFileSync(join(siteRoot, 'src', 'styles', 'tailwind.css'), 'utf8');
+  const theme = css.slice(css.indexOf('@theme {'), css.indexOf('}', css.indexOf('@theme {')));
+  const declared = new Set([...theme.matchAll(/--color-([a-z0-9-]+):/g)].map((m) => m[1]));
+
+  const shipped = (dir) =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) return shipped(path);
+      return /\.(html|css|svg|js)$/.test(entry.name) ? [path] : [];
+    });
+  const undeclared = new Set();
+  for (const file of shipped(distDir)) {
+    for (const m of readFileSync(file, 'utf8').matchAll(/var\(--color-([a-z0-9-]+)/g)) {
+      if (!declared.has(m[1])) undeclared.add(`${relative(distDir, file)}: --color-${m[1]}`);
+    }
+  }
+  assert.deepEqual([...undeclared].sort(), [], 'colour variables referenced but not declared in @theme');
 });
