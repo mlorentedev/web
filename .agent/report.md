@@ -17,3 +17,12 @@ Peer run `web-rework-20261112` (content session) owns `chore-autopilot-run-2026-
 ## Incidents
 
 - 07:03Z, worktree collision. This run's `dotf wt add chore-autopilot-run-2026-11-12 … | tail -1` failed because the peer had created that path seconds earlier. The pipe masked the exit code, and the chain went on to write `.agent/unattended.yml` in the peer's worktree. The commit failed yamllint, but my cleanup staged a deletion of the peer's committed envelope (`dcf901c`). I restored it from HEAD within a minute; the peer confirmed its tree matches origin. Root cause: piping a command whose failure must stop the chain. Rule from here: `set -e` and no pipe on `wt add`, then assert the branch before writing. No dotfiles ticket filed: the autopilot skill's own snippet already fails closed (`resolve_wt` + `exit 1`), and the defect was this run's ad-hoc command.
+
+## Outcome
+
+Ended 2026-11-12T12:25Z, `reason: queue-empty`: every queued item has a PR, a decision or a stated block. Nothing merged (merge: never).
+
+- #656 and #657 are open, green, clean and triaged; Manu merges them.
+- #657 head `f445b2c` is unreviewed by both bots. CodeRabbit was rate limited. PR-Agent's push gate skipped it by design: "1 new commit(s) since the reviewed commit 1c212e2…, below the threshold of 3". The `review` check is green because of that skip, not because of a review. Declared on the PR (issuecomment-6823361941).
+- #620: the first master build after #656 or #657 merges is the first warm read of `buildcache`; that merge is the trigger for the measurement.
+- Worktrees that stay: `fix-dependabot-overrides` (#656), `feat-gateway-path-diagram` (#657), this one (the report branch). Remove them with `dotf wt done` once the PRs merge.
