@@ -1,7 +1,8 @@
 ---
-id: lesson-027-a-record-that-something-was-done-is-not
+id: "lesson-027-a-record-that-something-was-done-is-not"
 type: lesson
 status: active
+title: "A record that something was done is not evidence that it was done — including a record you wrote"
 created: "2026-09-01"
 owner: manu
 tags: [web, verification, sdd, WEB-080]

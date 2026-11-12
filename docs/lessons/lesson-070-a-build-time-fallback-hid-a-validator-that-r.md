@@ -1,7 +1,8 @@
 ---
-id: lesson-070-a-build-time-fallback-hid-a-validator-that-r
+id: "lesson-070-a-build-time-fallback-hid-a-validator-that-r"
 type: lesson
 status: active
+title: "A build-time fallback hid a validator that rejected the real upstream response"
 created: "2026-11-04"
 owner: manu
 tags: [web, build, testing, privacy]

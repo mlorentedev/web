@@ -1,7 +1,8 @@
 ---
-id: lesson-063-a-drafted-claim-about-the-author-s-career-is
+id: "lesson-063-a-drafted-claim-about-the-author-s-career-is"
 type: lesson
 status: active
+title: "A drafted claim about the author's career is a question, not a fact"
 created: "2026-09-27"
 owner: manu
 tags: [web, content, copy, verification]

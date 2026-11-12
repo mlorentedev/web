@@ -1,7 +1,8 @@
 ---
-id: lesson-084-a-check-that-only-runs-after-merge-blocked-e
+id: "lesson-084-a-check-that-only-runs-after-merge-blocked-e"
 type: lesson
 status: active
+title: "A check that only runs after merge blocked every deploy for four days, with every PR green"
 created: "2026-11-10"
 owner: manu
 tags: [ci, release, testing]

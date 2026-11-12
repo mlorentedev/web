@@ -1,7 +1,8 @@
 ---
-id: lesson-039-api-quota-is-shared-state-and-spending-it-b
+id: "lesson-039-api-quota-is-shared-state-and-spending-it-b"
 type: lesson
 status: active
+title: "API quota is shared state, and spending it breaks other people's CI"
 created: "2026-09-05"
 owner: manu
 tags: [web, kubelab, verification, ci-automation, agents]

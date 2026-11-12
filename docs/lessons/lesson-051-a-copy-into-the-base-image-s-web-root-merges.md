@@ -1,7 +1,8 @@
 ---
-id: lesson-051-a-copy-into-the-base-image-s-web-root-merges
+id: "lesson-051-a-copy-into-the-base-image-s-web-root-merges"
 type: lesson
 status: active
+title: "A COPY into the base image's web root merges with what is already there"
 created: "2026-09-23"
 owner: manu
 tags: [web, docker, nginx, delivery]

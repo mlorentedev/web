@@ -1,7 +1,8 @@
 ---
-id: lesson-020-node-test-dir-resolves-the-directory-as
+id: "lesson-020-node-test-dir-resolves-the-directory-as"
 type: lesson
 status: active
+title: "`node --test <dir>` resolves the directory as a module on Node 26"
 created: "2026-08-27"
 owner: manu
 tags: [web, testing, node]

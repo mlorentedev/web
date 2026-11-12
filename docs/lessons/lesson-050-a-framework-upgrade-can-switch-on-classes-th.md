@@ -1,7 +1,8 @@
 ---
-id: lesson-050-a-framework-upgrade-can-switch-on-classes-th
+id: "lesson-050-a-framework-upgrade-can-switch-on-classes-th"
 type: lesson
 status: active
+title: "A framework upgrade can switch on classes the old version silently ignored"
 created: "2026-09-22"
 owner: manu
 tags: [web, tailwind, verification]

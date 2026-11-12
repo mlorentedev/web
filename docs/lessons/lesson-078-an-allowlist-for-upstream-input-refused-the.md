@@ -1,7 +1,8 @@
 ---
-id: lesson-078-an-allowlist-for-upstream-input-refused-the
+id: "lesson-078-an-allowlist-for-upstream-input-refused-the"
 type: lesson
 status: active
+title: "An allowlist for upstream input refused the site's own fallback, so the test failed under the wrong message"
 created: "2026-11-05"
 owner: manu
 tags: [web, testing, ci, security]

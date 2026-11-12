@@ -1,7 +1,8 @@
 ---
-id: lesson-062-a-doc-moved-out-of-a-repo-leaves-every-copie
+id: "lesson-062-a-doc-moved-out-of-a-repo-leaves-every-copie"
 type: lesson
 status: active
+title: "A doc moved out of a repo leaves every copied comment pointing at nothing"
 created: "2026-09-27"
 owner: manu
 tags: [web, docs, ci, hygiene]

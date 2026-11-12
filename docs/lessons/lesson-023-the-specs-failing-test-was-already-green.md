@@ -1,7 +1,8 @@
 ---
-id: lesson-023-the-specs-failing-test-was-already-green
+id: "lesson-023-the-specs-failing-test-was-already-green"
 type: lesson
 status: active
+title: "Measure the page before writing the spec's \"failing\" test"
 created: "2026-08-31"
 owner: manu
 tags: [web, sdd, testing, WEB-080]

@@ -1,7 +1,8 @@
 ---
-id: lesson-001-release-please-on-a-history-carrying-repo-re
+id: "lesson-001-release-please-on-a-history-carrying-repo-re"
 type: lesson
 status: active
+title: "release-please on a history-carrying repo replays the whole inherited log"
 created: "2026-06-25"
 owner: manu
 tags: [web, ci-automation, release-please]

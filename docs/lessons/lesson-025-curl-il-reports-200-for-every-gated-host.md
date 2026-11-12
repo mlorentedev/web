@@ -1,7 +1,8 @@
 ---
-id: lesson-025-curl-il-reports-200-for-every-gated-host
+id: "lesson-025-curl-il-reports-200-for-every-gated-host"
 type: lesson
 status: active
+title: "`curl -IL` reports 200 for every host behind a login, because a login page is a perfectly good 200"
 created: "2026-09-01"
 owner: manu
 tags: [web, verification, networking, WEB-080]

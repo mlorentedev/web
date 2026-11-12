@@ -1,7 +1,8 @@
 ---
-id: lesson-021-an-svg-generator-that-namespaces-no-ids
+id: "lesson-021-an-svg-generator-that-namespaces-no-ids"
 type: lesson
 status: active
+title: "An SVG generator that namespaces no ids is fine until you embed two of its outputs"
 created: "2026-08-31"
 owner: manu
 tags: [web, svg, accessibility, astro, WEB-080]

@@ -1,7 +1,8 @@
 ---
-id: lesson-049-a-screenshot-control-that-passes-once-is-not
+id: "lesson-049-a-screenshot-control-that-passes-once-is-not"
 type: lesson
 status: active
+title: "A screenshot control that passes once is not a determinism proof"
 created: "2026-09-22"
 owner: manu
 tags: [web, verification, playwright, testing]

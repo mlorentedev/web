@@ -1,7 +1,8 @@
 ---
-id: lesson-065-a-version-written-into-a-reviewer-s-rules-pa
+id: "lesson-065-a-version-written-into-a-reviewer-s-rules-pa"
 type: lesson
 status: active
+title: "A version written into a reviewer's rules passes the old stack after an upgrade"
 created: "2026-10-19"
 owner: manu
 tags: [web, review, agents, docs]

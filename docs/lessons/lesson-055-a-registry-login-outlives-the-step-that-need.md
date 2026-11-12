@@ -1,7 +1,8 @@
 ---
-id: lesson-055-a-registry-login-outlives-the-step-that-need
+id: "lesson-055-a-registry-login-outlives-the-step-that-need"
 type: lesson
 status: active
+title: "A registry login outlives the step that needed it"
 created: "2026-09-23"
 owner: manu
 tags: [web, ci, security, docker]

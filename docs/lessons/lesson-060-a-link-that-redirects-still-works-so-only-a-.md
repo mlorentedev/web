@@ -1,7 +1,8 @@
 ---
-id: lesson-060-a-link-that-redirects-still-works-so-only-a-
+id: "lesson-060-a-link-that-redirects-still-works-so-only-a-"
 type: lesson
 status: active
+title: "A link that redirects still works, so only a check that refuses redirects can see it"
 created: "2026-09-27"
 owner: manu
 tags: [web, lab, testing, links]

@@ -1,7 +1,8 @@
 ---
-id: lesson-037-a-mutation-you-did-not-verify-mutated-is-not
+id: "lesson-037-a-mutation-you-did-not-verify-mutated-is-not"
 type: lesson
 status: active
+title: "A mutation you did not verify actually mutated is not evidence — in either direction"
 created: "2026-09-02"
 owner: manu
 tags: [web, testing, verification]

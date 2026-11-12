@@ -1,7 +1,8 @@
 ---
-id: lesson-057-a-quote-on-a-proof-page-drifts-unless-it-is-
+id: "lesson-057-a-quote-on-a-proof-page-drifts-unless-it-is-"
 type: lesson
 status: active
+title: "A quote on a proof page drifts unless it is pinned to a blob"
 created: "2026-09-25"
 owner: manu
 tags: [web, verification, content, testing]

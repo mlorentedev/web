@@ -1,7 +1,8 @@
 ---
-id: lesson-034-a-release-pr-closes-every-issue-its-commits
+id: "lesson-034-a-release-pr-closes-every-issue-its-commits"
 type: lesson
 status: active
+title: "A release PR closes every issue its commits named, and `grep` cannot see which"
 created: "2026-09-03"
 owner: manu
 tags: [web, release-please, github, verification]

@@ -1,7 +1,8 @@
 ---
-id: lesson-081-a-node-modules-symlink-slips-past-a-trailing
+id: "lesson-081-a-node-modules-symlink-slips-past-a-trailing"
 type: lesson
 status: active
+title: "A node_modules symlink slips past an ignore pattern with a trailing slash"
 created: "2026-11-06"
 owner: manu
 tags: [web, git, worktrees]

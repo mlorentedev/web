@@ -1,7 +1,8 @@
 ---
-id: lesson-028-an-accessibility-rule-can-pass-by-accid
+id: "lesson-028-an-accessibility-rule-can-pass-by-accid"
 type: lesson
 status: active
+title: "An accessibility rule can pass by accident, so fixing a neighbouring one makes it fail"
 created: "2026-09-01"
 owner: manu
 tags: [web, accessibility, testing, WEB-080]

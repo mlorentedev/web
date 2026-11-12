@@ -1,7 +1,8 @@
 ---
-id: lesson-006-astro-inlines-small-module-scripts-grep-the
+id: "lesson-006-astro-inlines-small-module-scripts-grep-the"
 type: lesson
 status: active
+title: "Astro inlines small module scripts — grep the HTML, not for an `_astro/*.js` chunk"
 created: "2026-07-10"
 owner: manu
 tags: [web, astro, verification]

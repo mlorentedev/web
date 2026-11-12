@@ -1,7 +1,8 @@
 ---
-id: lesson-013-removing-a-theme-override-reveals-the-plug
+id: "lesson-013-removing-a-theme-override-reveals-the-plug"
 type: lesson
 status: active
+title: "Removing a theme override reveals the plugin default, it does not remove the property"
 created: "2026-08-24"
 owner: manu
 tags: [web, tailwind, css, verification]

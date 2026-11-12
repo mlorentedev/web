@@ -1,7 +1,8 @@
 ---
-id: lesson-024-a-generated-artefact-carries-its-generat
+id: "lesson-024-a-generated-artefact-carries-its-generat"
 type: lesson
 status: active
+title: "A generated artefact carries its generator's interaction model, not just its content"
 created: "2026-09-01"
 owner: manu
 tags: [web, svg, accessibility, astro, WEB-080]

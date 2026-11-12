@@ -1,7 +1,8 @@
 ---
-id: lesson-004-bilingual-data-is-a-type-contract-change-gre
+id: "lesson-004-bilingual-data-is-a-type-contract-change-gre"
 type: lesson
 status: active
+title: "Bilingual data is a type-contract change — grep ALL consumers, not the obvious ones"
 created: "2026-07-09"
 owner: manu
 tags: [web, i18n, typescript]

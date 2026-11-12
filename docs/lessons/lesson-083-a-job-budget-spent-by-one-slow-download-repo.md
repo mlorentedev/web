@@ -1,7 +1,8 @@
 ---
-id: lesson-083-a-job-budget-spent-by-one-slow-download-repo
+id: "lesson-083-a-job-budget-spent-by-one-slow-download-repo"
 type: lesson
 status: active
+title: "A job budget spent by one slow download reports a cancelled test, not the download"
 created: "2026-11-06"
 owner: manu
 tags: [web, ci, github-actions]

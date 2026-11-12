@@ -1,7 +1,8 @@
 ---
-id: lesson-007-dependabot-security-updates-bypass-ignore-a
+id: "lesson-007-dependabot-security-updates-bypass-ignore-a"
 type: lesson
 status: active
+title: "Dependabot security updates bypass `ignore` — a major-version ignore will not stop them"
 created: "2026-08-08"
 owner: manu
 tags: [web, ci-automation, dependencies]

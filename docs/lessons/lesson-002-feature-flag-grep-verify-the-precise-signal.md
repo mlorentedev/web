@@ -1,7 +1,8 @@
 ---
-id: lesson-002-feature-flag-grep-verify-the-precise-signal
+id: "lesson-002-feature-flag-grep-verify-the-precise-signal"
 type: lesson
 status: active
+title: "Feature-flag grep: verify the precise signal, not a broad token"
 created: "2026-06-28"
 owner: manu
 tags: [web, verification, feature-flags]

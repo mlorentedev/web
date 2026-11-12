@@ -1,7 +1,8 @@
 ---
-id: lesson-041-a-build-rendered-diagrams-width-is-set-by-it
+id: "lesson-041-a-build-rendered-diagrams-width-is-set-by-it"
 type: lesson
 status: active
+title: "A build-rendered diagram's width is set by its rank direction, not by CSS"
 created: "2026-09-04"
 owner: manu
 tags: [web, mermaid, astro, responsive, testing, verification]
