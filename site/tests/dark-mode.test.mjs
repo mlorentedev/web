@@ -76,6 +76,14 @@ function insideLayer(css, at) {
   return stack.includes(true);
 }
 
+/** The declarations of the first rule whose selector is exactly `selector`. */
+function ruleBody(css, selector) {
+  const at = css.indexOf(`${selector}{`) !== -1 ? css.indexOf(`${selector}{`) : css.indexOf(`${selector} {`);
+  assert.notEqual(at, -1, `no ${selector} rule in the dark block`);
+  const open = css.indexOf('{', at);
+  return css.slice(open + 1, css.indexOf('}', open));
+}
+
 test('the mapping mirrors each ramp and moves 500 to 400', () => {
   assert.deepEqual(
     STEPS.map(darkStep),
@@ -88,13 +96,15 @@ test('the shipped dark block redefines every palette name, and only those', () =
   assert.ok(shipped, 'no prefers-color-scheme: dark palette block in the built CSS: run the build first');
   assert.equal(shipped.layered, false, 'the dark block sits inside an @layer, where @layer theme can beat it');
   assert.match(shipped.query, /screen/, 'the dark block is not screen-only, so a print from a dark OS would use it');
-  const block = shipped.body;
+  // The palette proper is the `:root` rule; `.keep-dark` hands its subtree the
+  // light palette back and is checked on its own below.
+  const block = ruleBody(shipped.body, ':root');
 
   const declared = Object.fromEntries(
     [...block.matchAll(/--color-([a-z]+(?:-\d+)?):\s*(#[0-9a-fA-F]{3,8})/g)].map((m) => [m[1], m[2]]),
   );
 
-  const expected = { white: '#000', black: '#fff' };
+  const expected = { white: PALETTE.slate[950], black: '#fff' };
   for (const [family, ramp] of Object.entries(RAMPS)) {
     for (const step of STEPS) expected[`${family}-${step}`] = PALETTE[ramp][darkStep(step)];
   }
@@ -104,6 +114,21 @@ test('the shipped dark block redefines every palette name, and only those', () =
     assert.ok(sameHex(declared[name], hex), `--color-${name} is ${declared[name]} in dark, expected ${hex}`);
   }
   assert.match(block, /color-scheme:\s*dark/, 'the dark block does not set color-scheme: dark');
+});
+
+test('a keep-dark surface gets the light palette back, every name at its light hex', () => {
+  const block = ruleBody(shippedDarkBlock().body, '.keep-dark');
+  const declared = Object.fromEntries(
+    [...block.matchAll(/--color-([a-z]+(?:-\d+)?):\s*(#[0-9a-fA-F]{3,8})/g)].map((m) => [m[1], m[2]]),
+  );
+  const expected = { white: '#fff', black: '#000' };
+  for (const [family, ramp] of Object.entries(RAMPS)) {
+    for (const step of STEPS) expected[`${family}-${step}`] = PALETTE[ramp][step];
+  }
+  assert.deepEqual(Object.keys(declared).sort(), Object.keys(expected).sort());
+  for (const [name, hex] of Object.entries(expected)) {
+    assert.ok(sameHex(declared[name], hex), `--color-${name} is ${declared[name]} on keep-dark, expected ${hex}`);
+  }
 });
 
 test('dark mode keeps the drawn artwork and the brand marks on a light ground, and the prose by role', () => {

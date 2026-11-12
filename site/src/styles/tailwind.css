@@ -122,8 +122,9 @@
 /* Dark mode follows the visitor's system setting, and only that: there is no
    toggle (owner decision, 2026-11-11). Every colour on the site is a role
    alias, so the dark palette redefines the same names and nothing else: each
-   ramp is read backwards (50 takes 950's hex, 100 takes 900's, …), white and
-   black swap, and step 500, which maps to itself, takes 400 instead. Measured:
+   ramp is read backwards (50 takes 950's hex, 100 takes 900's, …), white
+   becomes `panel-950` (a blue-black ground, the owner's pick over pure black)
+   and black becomes white, and step 500, which maps to itself, takes 400. Measured:
    `ink-500` is 4.83:1 on white but 4.34:1 on black, under the 4.5:1 that the
    12px captions using it need. The names stay the ones `@theme` declares, so
    `tailwind-wiring` still finds every `var(--color-*)` declared there.
@@ -131,12 +132,12 @@
 
    Unlayered on purpose: `@theme` writes its variables into `@layer theme`, and
    an unlayered rule wins over any layer. The values are a first draft for the
-   owner to tune; pure black is the first thing to look at. Screen only:
+   owner to tune. Screen only:
    printing always uses the light palette, which `print-styles.mjs` checks. */
 @media screen and (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --color-white: #000;
+    --color-white: #020617;
     --color-black: #fff;
     --color-red-50: #450a0a;
     --color-red-100: #7f1d1d;
@@ -268,6 +269,103 @@
   .prose :not(pre) > code:not([class]) {
     background-color: var(--color-panel-100);
     color: var(--color-accent-700);
+  }
+
+  /* A surface that is dark in light mode stays dark: code panels, the
+     contract, the install line, the services table head and the AI bridge
+     card. `keep-dark` gives its subtree the light palette back, so the
+     classes inside it resolve exactly as they do in light mode. */
+  .keep-dark {
+    --color-white: #fff;
+    --color-black: #000;
+    --color-red-50: #fef2f2;
+    --color-red-100: #fee2e2;
+    --color-red-200: #fecaca;
+    --color-red-300: #fca5a5;
+    --color-red-400: #f87171;
+    --color-red-500: #ef4444;
+    --color-red-600: #dc2626;
+    --color-red-700: #b91c1c;
+    --color-red-800: #991b1b;
+    --color-red-900: #7f1d1d;
+    --color-red-950: #450a0a;
+    --color-accent-50: #ecfeff;
+    --color-accent-100: #cffafe;
+    --color-accent-200: #a5f3fc;
+    --color-accent-300: #67e8f9;
+    --color-accent-400: #22d3ee;
+    --color-accent-500: #06b6d4;
+    --color-accent-600: #0891b2;
+    --color-accent-700: #0e7490;
+    --color-accent-800: #155e75;
+    --color-accent-900: #164e63;
+    --color-accent-950: #083344;
+    --color-ink-50: #f9fafb;
+    --color-ink-100: #f3f4f6;
+    --color-ink-200: #e5e7eb;
+    --color-ink-300: #d1d5db;
+    --color-ink-400: #9ca3af;
+    --color-ink-500: #6b7280;
+    --color-ink-600: #4b5563;
+    --color-ink-700: #374151;
+    --color-ink-800: #1f2937;
+    --color-ink-900: #111827;
+    --color-ink-950: #030712;
+    --color-panel-50: #f8fafc;
+    --color-panel-100: #f1f5f9;
+    --color-panel-200: #e2e8f0;
+    --color-panel-300: #cbd5e1;
+    --color-panel-400: #94a3b8;
+    --color-panel-500: #64748b;
+    --color-panel-600: #475569;
+    --color-panel-700: #334155;
+    --color-panel-800: #1e293b;
+    --color-panel-900: #0f172a;
+    --color-panel-950: #020617;
+    --color-ok-50: #ecfdf5;
+    --color-ok-100: #d1fae5;
+    --color-ok-200: #a7f3d0;
+    --color-ok-300: #6ee7b7;
+    --color-ok-400: #34d399;
+    --color-ok-500: #10b981;
+    --color-ok-600: #059669;
+    --color-ok-700: #047857;
+    --color-ok-800: #065f46;
+    --color-ok-900: #064e3b;
+    --color-ok-950: #022c22;
+    --color-warn-50: #fffbeb;
+    --color-warn-100: #fef3c7;
+    --color-warn-200: #fde68a;
+    --color-warn-300: #fcd34d;
+    --color-warn-400: #fbbf24;
+    --color-warn-500: #f59e0b;
+    --color-warn-600: #d97706;
+    --color-warn-700: #b45309;
+    --color-warn-800: #92400e;
+    --color-warn-900: #78350f;
+    --color-warn-950: #451a03;
+    --color-danger-50: #fff1f2;
+    --color-danger-100: #ffe4e6;
+    --color-danger-200: #fecdd3;
+    --color-danger-300: #fda4af;
+    --color-danger-400: #fb7185;
+    --color-danger-500: #f43f5e;
+    --color-danger-600: #e11d48;
+    --color-danger-700: #be123c;
+    --color-danger-800: #9f1239;
+    --color-danger-900: #881337;
+    --color-danger-950: #4c0519;
+    --color-observe-50: #faf5ff;
+    --color-observe-100: #f3e8ff;
+    --color-observe-200: #e9d5ff;
+    --color-observe-300: #d8b4fe;
+    --color-observe-400: #c084fc;
+    --color-observe-500: #a855f7;
+    --color-observe-600: #9333ea;
+    --color-observe-700: #7e22ce;
+    --color-observe-800: #6b21a8;
+    --color-observe-900: #581c87;
+    --color-observe-950: #3b0764;
   }
 
   /* Drawn artwork keeps the light ground it was drawn for: the generated
