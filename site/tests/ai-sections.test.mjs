@@ -12,6 +12,7 @@
  *   04 / The rules, quoted from their files (artifacts)
  *   05 / The harness, as it is in the repository (harness-tree)
  *   06 / Reviews, and what was done with them (review-ledger)
+ *   07 / One task, from plan to merge (task-timeline)
  *
  * The page ships ZERO client JavaScript, like /lab since its probe console was retired (#280);
  * no-client-js.test.mjs asserts that for every page.
@@ -47,6 +48,7 @@ const SECTIONS = [
   { name: 'artifacts', number: '04' },
   { name: 'harness-tree', number: '05' },
   { name: 'review-ledger', number: '06' },
+  { name: 'task-timeline', number: '07' },
 ];
 
 const pages = [

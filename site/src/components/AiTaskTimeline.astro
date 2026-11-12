@@ -1,0 +1,68 @@
+---
+/**
+ * One real task, from plan to merge (#593): four phases, each between two
+ * GitHub events that the reader can open. Durations are figures, so each one
+ * carries its method and date (`lab-figures.test.mjs`).
+ */
+import Section from './Section.astro';
+import SectionHeading from './SectionHeading.astro';
+import { taskDate, taskPhases, taskTimeline } from '../data/task-timeline';
+import { duration } from '../lib/task-timeline.mjs';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  number: string;
+}
+
+const { number } = Astro.props;
+const lang = getLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+const method = 'GitHub API timestamps of the events linked beside it';
+const [year, month] = taskDate.split('-').map(Number);
+const shown = new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
+  new Date(Date.UTC(year, month - 1, 1)),
+);
+const sub = t('ai.task.sub').replace('{pr}', String(taskTimeline.pr)).replace('{issue}', String(taskTimeline.issue));
+// Literal keys, so the unused-key check can see each one read.
+const phaseName: Record<string, string> = {
+  work: t('ai.task.work'),
+  review: t('ai.task.review'),
+  fix: t('ai.task.fix'),
+  land: t('ai.task.land'),
+};
+const eventName: Record<string, string> = {
+  plan: t('ai.task.event.plan'),
+  opened: t('ai.task.event.opened'),
+  review: t('ai.task.event.review'),
+  commit: t('ai.task.event.commit'),
+  triage: t('ai.task.event.triage'),
+  merged: t('ai.task.event.merged'),
+};
+const event = (kind: string) => eventName[kind] ?? kind;
+const link = 'text-accent-700 underline decoration-ink-300 hover:text-accent-800';
+---
+
+<Section padding="py-14" id="task-timeline" data-ai-section="task-timeline">
+  <SectionHeading number={number} label={t('ai.task.heading')} margin="mb-2" />
+  <p class="text-sm text-ink-500 mb-6 max-w-2xl">{sub}</p>
+  <ol data-task-timeline class="max-w-3xl divide-y divide-ink-100 border-y border-ink-100">
+    {
+      taskPhases.map((p) => (
+        <li data-phase={p.phase} class="grid gap-1 py-3 sm:grid-cols-[8rem_7rem_1fr] sm:gap-4 text-sm">
+          <span class="font-medium text-ink-900">{phaseName[p.phase]}</span>
+          <span class="font-mono text-ink-900" translate="no" data-figure data-method={method} data-date={taskDate}>
+            {duration(p.minutes)}
+          </span>
+          <span class="text-ink-600">
+            <a href={p.from.url} class={link}>{event(p.from.kind)}</a>
+            <span aria-hidden="true"> → </span>
+            <a href={p.to.url} class={link}>{event(p.to.kind)}</a>
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="mt-3 text-sm text-ink-500">
+    {t('proof.measured')} <time datetime={taskDate}>{shown}</time>
+  </p>
+</Section>

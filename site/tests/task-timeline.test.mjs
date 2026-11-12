@@ -6,7 +6,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -56,3 +56,18 @@ test('a fix phase ends at the last commit or triage after the review, before the
   const p = phases([ev('plan', '00:00'), ev('opened', '01:00'), ev('review', '01:10'), ev('commit', '01:20'), ev('triage', '01:25'), ev('merged', '02:00')]);
   assert.deepEqual(p.map((x) => x.minutes), [60, 10, 15, 35]);
 });
+
+for (const path of ['ai', 'es/ai']) {
+  const file = join(siteRoot, 'dist', path, 'index.html');
+  test(`/${path} draws each phase as a dated figure between its two linked events`, { skip: !existsSync(file) }, () => {
+    const html = readFileSync(file, 'utf8');
+    const list = html.match(/<ol data-task-timeline[\s\S]*?<\/ol>/)?.[0];
+    assert.ok(list, 'no task timeline');
+    for (const p of phases(task.events)) {
+      const item = list.match(new RegExp(`<li data-phase="${p.phase}"[\\s\\S]*?</li>`))?.[0];
+      assert.ok(item, `no ${p.phase} phase`);
+      assert.match(item, new RegExp(`data-figure[^>]*>\\s*${duration(p.minutes)}\\s*<`));
+      assert.ok(item.includes(`href="${p.from.url}"`) && item.includes(`href="${p.to.url}"`), `${p.phase}: event links missing`);
+    }
+  });
+}
