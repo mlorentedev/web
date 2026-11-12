@@ -17,6 +17,10 @@ repo_context_files = ["AGENTS.md"]
 require_score_review = false
 require_tests_review = true
 require_security_review = true
+# Off: the table read every issue a PR mentions, `Refs` included, as requirements
+# the diff had to meet, and resolved PR numbers as issues. Its signal was zero
+# (WEB-104); site/tests/pr-agent-config.test.mjs keeps it off.
+require_ticket_analysis_review = false
 persistent_comment = true
 final_update_message = false
 
