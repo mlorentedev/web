@@ -36,6 +36,10 @@ jobs:
     # Kept from this repository's earlier caller: skipped before a runner is
     # spent. The shared job repeats the Dependabot, fork, draft and
     # release-please exclusions; a job skipped here costs nothing.
+    # The draft flag is deliberately not read here: the payload's flag is a
+    # snapshot, and an `opened` draft run can cancel the `ready_for_review` run
+    # in the shared concurrency group and then skip itself, leaving the PR
+    # unreviewed (dotfiles#2591). The shared job asks the API instead.
     # site/tests/pr-agent-dependabot.test.mjs reads this condition.
     #
     # Dependabot-triggered runs read the Dependabot secrets store, which is
@@ -45,8 +49,7 @@ jobs:
     # still gets a review, with the secrets present.
     if: >
       (github.event_name == 'pull_request'
-        && github.event.pull_request.draft == false
-        && github.actor != 'dependabot[bot]'
+              && github.actor != 'dependabot[bot]'
         && github.event.pull_request.head.repo.fork == false
         && !startsWith(github.head_ref, 'release-please--'))
       || (github.event_name == 'issue_comment'
