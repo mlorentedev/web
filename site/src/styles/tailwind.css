@@ -131,8 +131,9 @@
 
    Unlayered on purpose: `@theme` writes its variables into `@layer theme`, and
    an unlayered rule wins over any layer. The values are a first draft for the
-   owner to tune; pure black is the first thing to look at. */
-@media (prefers-color-scheme: dark) {
+   owner to tune; pure black is the first thing to look at. Screen only:
+   printing always uses the light palette, which `print-styles.mjs` checks. */
+@media screen and (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
     --color-white: #000;
@@ -260,6 +261,10 @@
     color: var(--color-accent-700);
   }
 
+  .prose a:not([class]):hover {
+    color: var(--color-accent-800);
+  }
+
   .prose :not(pre) > code:not([class]) {
     background-color: var(--color-panel-100);
     color: var(--color-accent-700);
@@ -272,6 +277,13 @@
   .prose figure.mermaid {
     background-color: #fff;
     color-scheme: light;
+  }
+
+  /* Brand marks are drawn in their own colours, several of them near-black,
+     so each sits on a small literal white chip. */
+  [data-service-icon] {
+    background-color: #fff;
+    border-radius: 0.125rem;
   }
 }
 

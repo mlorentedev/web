@@ -38,23 +38,42 @@ function sameHex(a, b) {
   return long(a) === long(b);
 }
 
-/** The body of the first dark media block in the built CSS, or null. */
+/**
+ * The dark palette block in the built CSS: the `prefers-color-scheme: dark`
+ * media block that redefines `--color-ink-50`, with whether it sits inside an
+ * `@layer` (it must not: an unlayered rule is what beats `@layer theme`).
+ */
 function shippedDarkBlock() {
   const astro = join(distDir, '_astro');
   const css = readdirSync(astro)
     .filter((f) => f.endsWith('.css'))
     .map((f) => readFileSync(join(astro, f), 'utf8'))
     .join('\n');
-  const start = css.search(/@media\s*\(\s*prefers-color-scheme\s*:\s*dark\s*\)/);
-  if (start === -1) return null;
-  // Balanced braces from the media query's own opening brace.
-  const open = css.indexOf('{', start);
-  let depth = 0;
-  for (let i = open; i < css.length; i++) {
-    if (css[i] === '{') depth++;
-    if (css[i] === '}' && --depth === 0) return css.slice(open + 1, i);
+  for (const m of css.matchAll(/@media[^{]*prefers-color-scheme\s*:\s*dark[^{]*\{/g)) {
+    const open = m.index + m[0].length - 1;
+    let depth = 0;
+    for (let i = open; i < css.length; i++) {
+      if (css[i] === '{') depth++;
+      if (css[i] === '}' && --depth === 0) {
+        const body = css.slice(open + 1, i);
+        if (!body.includes('--color-ink-50')) break;
+        return { query: m[0], body, layered: insideLayer(css, m.index) };
+      }
+    }
   }
   return null;
+}
+
+/** Whether position `at` in `css` is inside an open `@layer … { }` block. */
+function insideLayer(css, at) {
+  const stack = [];
+  for (let i = 0; i < at; i++) {
+    if (css[i] === '{') {
+      const head = css.slice(Math.max(0, css.lastIndexOf('}', i - 1) + 1, css.lastIndexOf(';', i - 1) + 1), i);
+      stack.push(/@layer\b/.test(head));
+    } else if (css[i] === '}') stack.pop();
+  }
+  return stack.includes(true);
 }
 
 test('the mapping mirrors each ramp and moves 500 to 400', () => {
@@ -65,8 +84,11 @@ test('the mapping mirrors each ramp and moves 500 to 400', () => {
 });
 
 test('the shipped dark block redefines every palette name, and only those', () => {
-  const block = shippedDarkBlock();
-  assert.ok(block, 'no prefers-color-scheme: dark block in the built CSS: run the build first');
+  const shipped = shippedDarkBlock();
+  assert.ok(shipped, 'no prefers-color-scheme: dark palette block in the built CSS: run the build first');
+  assert.equal(shipped.layered, false, 'the dark block sits inside an @layer, where @layer theme can beat it');
+  assert.match(shipped.query, /screen/, 'the dark block is not screen-only, so a print from a dark OS would use it');
+  const block = shipped.body;
 
   const declared = Object.fromEntries(
     [...block.matchAll(/--color-([a-z]+(?:-\d+)?):\s*(#[0-9a-fA-F]{3,8})/g)].map((m) => [m[1], m[2]]),
@@ -84,7 +106,14 @@ test('the shipped dark block redefines every palette name, and only those', () =
   assert.match(block, /color-scheme:\s*dark/, 'the dark block does not set color-scheme: dark');
 });
 
-test('the page declares both schemes, so the UA paints its controls to match', () => {
+test('dark mode keeps the drawn artwork and the brand marks on a light ground, and the prose by role', () => {
+  const { body } = shippedDarkBlock();
+  for (const selector of ['.lab-diagram', '[data-service-icon]', '.prose a:not([class]):hover']) {
+    assert.ok(body.includes(selector), `the dark block lost its ${selector} rule`);
+  }
+});
+
+test('the source declares both schemes, so the UA paints its controls to match', () => {
   const global = readFileSync(join(siteRoot, 'src', 'styles', 'global.css'), 'utf8');
   assert.match(global, /color-scheme:\s*light dark;/);
 });
