@@ -334,4 +334,12 @@ test('the image build cache lives in the registry, and only a pushed build write
   assert.match(from, /type=registry,ref=\$\{\{ env\.IMAGE \}\}:buildcache\b/, 'cache-from does not read the buildcache tag');
   assert.match(to, /^\$\{\{ inputs\.push && /, 'cache-to is not limited to pushed builds');
   assert.match(to, /type=registry,ref=\{0\}:buildcache,mode=max/, 'cache-to does not write every stage to the buildcache tag');
+
+  // `mode=max` publishes every intermediate layer on a public tag, so nothing
+  // secret may reach the build: no secret inputs on the step, and no build
+  // argument beyond the commit sha, which is public anyway.
+  assert.doesNotMatch(code, /^\s*(secrets|secret-files|secret-envs):/m, 'the image build receives a secret');
+  const dockerfile = readFileSync(join(root, 'Dockerfile'), 'utf8');
+  const args = [...dockerfile.matchAll(/^ARG\s+(\w+)/gm)].map((m) => m[1]);
+  assert.deepEqual(args, ['SITE_COMMIT'], 'a new build argument would be published in the cache layers');
 });
