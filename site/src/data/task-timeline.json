@@ -1,0 +1,43 @@
+{
+  "repo": "mlorentedev/web",
+  "pr": 640,
+  "issue": 356,
+  "fetchedAt": "2026-11-12T01:46:01Z",
+  "events": [
+    {
+      "kind": "plan",
+      "at": "2026-11-11T02:32:47Z",
+      "url": "https://github.com/mlorentedev/web/issues/356#issuecomment-6785275282"
+    },
+    {
+      "at": "2026-11-11T04:13:38Z",
+      "kind": "commit",
+      "url": "https://github.com/mlorentedev/web/commit/0460f61669065d4a919a2419f32dd71b1e19e565"
+    },
+    {
+      "kind": "opened",
+      "at": "2026-11-11T04:13:44Z",
+      "url": "https://github.com/mlorentedev/web/pull/640"
+    },
+    {
+      "at": "2026-11-11T04:35:38Z",
+      "kind": "review",
+      "url": "https://github.com/mlorentedev/web/pull/640#issuecomment-6787130614"
+    },
+    {
+      "at": "2026-11-11T04:37:18Z",
+      "kind": "commit",
+      "url": "https://github.com/mlorentedev/web/commit/a838d3ddc225be2681c180bbcc9ab133c4c9942d"
+    },
+    {
+      "at": "2026-11-11T04:37:41Z",
+      "kind": "triage",
+      "url": "https://github.com/mlorentedev/web/pull/640#issuecomment-6787159941"
+    },
+    {
+      "kind": "merged",
+      "at": "2026-11-11T04:52:29Z",
+      "url": "https://github.com/mlorentedev/web/pull/640"
+    }
+  ]
+}
