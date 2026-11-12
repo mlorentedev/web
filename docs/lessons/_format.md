@@ -59,6 +59,7 @@ literal text on GitHub, which is where these are read.
 **Protocol**: write the lesson in the session that produced it. A correction noticed and
 not written down is the one that recurs.
 
-After adding a file, add its row to the top of [`_index.md`](_index.md). The index
-states no count: two PRs that each bumped one made the same edit, git merged it
-silently, and master ended a lesson short ([lesson 073](lesson-073-two-prs-that-make-the-same-edit-to-a-line-me.md)).
+After adding a file, run `dotf lessons fmt`; CI checks the result with
+`dotf lessons fmt --check`. No index is committed: `dotf lessons index` renders one on
+demand. A committed index was a line every lesson PR edited: two PRs that each bumped
+its count made the same edit, git merged it silently, and master ended a lesson short ([lesson 073](lesson-073-two-prs-that-make-the-same-edit-to-a-line-me.md)).

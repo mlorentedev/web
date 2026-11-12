@@ -54,7 +54,7 @@ local dev only (`site/src/data/site.ts`). `make help` lists repo tasks.
 
 Build/operate docs live in [`docs/`](docs/) (docs-as-code): ADRs in `docs/adr/`,
 runbooks, troubleshooting, and project lessons one file each under
-[`docs/lessons/`](docs/lessons/_index.md) — format in
+[`docs/lessons/`](docs/lessons/) — format in
 [`docs/lessons/_format.md`](docs/lessons/_format.md), never appended to the
 `docs/lessons.md` stub.
 What counts as a reviewed PR, and which models may sign an adversarial review, is
