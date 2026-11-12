@@ -70,6 +70,8 @@ jobs:
       digest: ${{ steps.build.outputs.digest }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       # The SARIF upload below sends whatever trivy-results.sarif it finds. A
       # pull request could commit one, and if the scan then failed before
