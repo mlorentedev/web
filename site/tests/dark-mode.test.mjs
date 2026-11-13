@@ -155,3 +155,10 @@ test('the source declares both schemes, so the UA paints its controls to match',
   const global = readFileSync(join(siteRoot, 'src', 'styles', 'global.css'), 'utf8');
   assert.match(global, /color-scheme:\s*light dark;/);
 });
+
+test('the dark theme-color is the dark page ground, so browser chrome matches the page', () => {
+  const html = readFileSync(join(siteRoot, 'dist', 'index.html'), 'utf8');
+  const dark = html.match(/<meta name="theme-color" content="([^"]+)" media="\(prefers-color-scheme: dark\)"/)?.[1];
+  assert.ok(dark, 'no dark theme-color in the built home page; run the build first');
+  assert.ok(sameHex(dark, PALETTE.slate[950]), `dark theme-color is ${dark}, the ground is ${PALETTE.slate[950]}`);
+});

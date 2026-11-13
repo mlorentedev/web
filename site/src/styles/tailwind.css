@@ -133,7 +133,7 @@
 }
 
 /* Dark mode follows the visitor's system setting, and only that: there is no
-   toggle (owner decision, 2026-11-11). Every colour on the site is a role
+   toggle (owner decision, 2026-11-12). Every colour on the site is a role
    alias, so the dark palette redefines the same names and nothing else: each
    ramp is read backwards (50 takes 950's hex, 100 takes 900's, …), white
    becomes `panel-950` (a blue-black ground, the owner's pick over pure black)
