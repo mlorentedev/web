@@ -117,6 +117,19 @@
   --color-observe-950: #3b0764;
 
   --font-sans: Roboto, system-ui, sans-serif;
+  --font-display: Archivo, Roboto, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Headings are set in Archivo, prose ones included. In the base layer, so a
+   `font-*` utility on a heading still wins. */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+  }
 }
 
 /* Tailwind 4 changed the default border colour to `currentcolor`. Every
