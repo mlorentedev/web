@@ -1,7 +1,8 @@
 ---
-id: lesson-085-an-unlayered-css-rule-beats-every-tailwind-u
+id: "lesson-085-an-unlayered-css-rule-beats-every-tailwind-u"
 type: lesson
 status: active
+title: "An unlayered CSS rule beats every Tailwind utility, so an override meant to sit under them cannot be unlayered"
 created: "2026-11-12"
 owner: manu
 tags: [web, css, tailwind, accessibility]

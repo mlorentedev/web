@@ -131,11 +131,24 @@ test('a keep-dark surface gets the light palette back, every name at its light h
   }
 });
 
+/** The declarations of every rule in `css` whose selector list names `selector`, joined. */
+function declarationsFor(css, selector) {
+  const found = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .filter(([, list]) => list.split(',').map((s) => s.trim()).includes(selector))
+    .map(([, , decls]) => decls);
+  assert.ok(found.length, `the dark block lost its ${selector} rule`);
+  return found.join(';');
+}
+
 test('dark mode keeps the drawn artwork and the brand marks on a light ground, and the prose by role', () => {
   const { body } = shippedDarkBlock();
-  for (const selector of ['.lab-diagram', '[data-service-icon]', '.prose a:not([class]):hover']) {
-    assert.ok(body.includes(selector), `the dark block lost its ${selector} rule`);
+  for (const artwork of ['.lab-diagram', '.prose figure.mermaid']) {
+    const decls = declarationsFor(body, artwork);
+    assert.match(decls, /background-color:\s*#fff(?:fff)?\b/, `${artwork} is not kept on white`);
+    assert.match(decls, /color-scheme:\s*light\b/, `${artwork} is not kept in the light scheme`);
   }
+  assert.match(declarationsFor(body, '[data-service-icon]'), /background-color:\s*#fff(?:fff)?\b/, 'the brand marks lost their white ground');
+  assert.match(declarationsFor(body, '.prose a:not([class]):hover'), /color:\s*var\(--color-accent-800\)/, 'the prose link hover is not set by role');
 });
 
 test('the source declares both schemes, so the UA paints its controls to match', () => {
