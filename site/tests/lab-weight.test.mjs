@@ -77,7 +77,9 @@ for (const [locale, page] of PAGES) {
 }
 
 const IDP_CATALOG_BUDGET_BYTES = 80_000;
-const IDP_ARCH_BUDGET_BYTES = 120_000;
+// 140 KB, the site-wide raw budget (html-budget.test.mjs), since the page took a
+// fourth inline diagram, gateway-path (133 KB built).
+const IDP_ARCH_BUDGET_BYTES = 140_000;
 const IDP_PAGES = [
   ['en catalog', join(distDir, 'lab/idp/index.html'), IDP_CATALOG_BUDGET_BYTES],
   ['es catalog', join(distDir, 'es/lab/idp/index.html'), IDP_CATALOG_BUDGET_BYTES],

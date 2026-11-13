@@ -160,6 +160,11 @@ export const ui = {
     'idp.arch.secretFlow.heading': 'Zero-Trust Secret Lifecycle & Cryptography',
     'idp.arch.secretFlow.caption': 'Age envelope encryption, in-memory derivation, and ephemeral Kubernetes projections.',
     'idp.arch.secretFlow.legend': 'No plaintext credentials ever touch version control or developer disks. Sensitive configurations are encrypted at rest using Age asymmetric keys through Mozilla SOPS. When deployed, toolkit secrets streams and decrypts the envelopes entirely in volatile memory, executes one-way cryptographic key derivation (Argon2id for Authelia user databases and bcrypt for Argo CD administrative access), and creates namespace-scoped Kubernetes Secret resources. Workload containers mount credentials exclusively via memory-backed tmpfs projections to guarantee zero disk persistence and prevent inadvertent secret exposure.',
+    'idp.arch.gatewayPath.heading': 'How a request reaches each service',
+    'idp.arch.gatewayPath.caption':
+      "Every service the cluster serves, grouped by the access the Lab's service table states for it: public, behind Authelia's forward-auth, its own login, or reachable only over the mesh.",
+    'idp.arch.gatewayPath.legend':
+      'The groups come from the same measured access table as the badges on the Lab page, and a test fails if a service moves group in one and not the other. Services hosted off the cluster, like GitHub Pages, never cross the gateway and are not drawn.',
     'idp.arch.source': 'Reconciled from mlorentedev/kubelab · custom.js operational architecture · zero-addressing compliant (ADR-056 §3)',
 
     // Lab teaser (section 08)
@@ -483,6 +488,11 @@ export const ui = {
     'idp.arch.secretFlow.heading': 'Ciclo de Vida de Secretos Zero-Trust y Criptografía',
     'idp.arch.secretFlow.caption': 'Cifrado de sobre con Age, derivación en memoria y proyecciones efímeras en Kubernetes.',
     'idp.arch.secretFlow.legend': 'Ninguna credencial en texto claro toca jamás el control de versiones ni los discos locales. Las configuraciones sensibles se cifran en reposo mediante claves asimétricas de Age a través de Mozilla SOPS. En el despliegue, toolkit secrets procesa y descifra los sobres íntegramente en memoria volátil, aplica derivación criptográfica unidireccional (Argon2id para bases de datos de Authelia y bcrypt para el acceso de administración de Argo CD) y genera objetos K8s Secret con ámbito estricto de namespace. Los contenedores montan las credenciales exclusivamente mediante proyecciones tmpfs en memoria para garantizar cero persistencia en disco y evitar fugas involuntarias.',
+    'idp.arch.gatewayPath.heading': 'Cómo llega una petición a cada servicio',
+    'idp.arch.gatewayPath.caption':
+      'Cada servicio que sirve el clúster, agrupado por el acceso que le atribuye la tabla de servicios del Lab: público, tras el forward-auth de Authelia, con su propio login o accesible solo por la malla.',
+    'idp.arch.gatewayPath.legend':
+      'Los grupos salen de la misma tabla de accesos medidos que las etiquetas de la página del Lab, y un test falla si un servicio cambia de grupo en una y no en la otra. Los servicios alojados fuera del clúster, como GitHub Pages, nunca pasan por el gateway y no se dibujan.',
     'idp.arch.source': 'Reconciliado desde mlorentedev/kubelab · arquitectura operativa custom.js · conforme con zero-addressing (ADR-056 §3)',
 
     // Lab teaser (section 08)
