@@ -162,8 +162,9 @@ export function report(verdict, { advisory = false } = {}) {
     `::error::this PR would close ${verdict.open.length} issue(s) that are still open`,
     ...listed,
     '',
-    'release-please copied a `closes #N` from a commit subject into the changelog it',
-    'puts in this PR body. Edit that line from `closes` to `refs` and re-run this check.',
+    'The release notes in this PR body are GitHub\'s list of merged PR titles, so a',
+    'title that says `closes #N` reaches them verbatim. Edit that line from `closes` to',
+    '`refs` and re-run this check.',
     'The edit is undone by the next push to master, so it belongs immediately before',
     'the merge — see WEB-103.',
   ];
