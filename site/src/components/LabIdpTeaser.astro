@@ -8,6 +8,7 @@
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import SpendFigure from './SpendFigure.astro';
+import StatTile from './StatTile.astro';
 import { cloudSpend, formatSpendMonth, totalMethod, totalSpend } from '../data/cloud-spend';
 import { getLocale, useTranslations, useTranslatedPath } from '../i18n/utils';
 
@@ -33,21 +34,11 @@ const translatePath = useTranslatedPath(lang);
   <div class="rounded-lg bg-panel-50 border border-panel-200 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
     <div class="space-y-3">
       <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
-        <div>
-          <span class="block text-xs font-mono uppercase tracking-wider text-ink-500 mb-0.5">
-            {t('lab.idp.spendLabel')}
-          </span>
-          <SpendFigure
-            amount={totalSpend}
-            method={totalMethod}
-            date={cloudSpend.month}
-            lang={lang}
-            class="text-base font-bold font-mono text-ink-900"
-          />
-          <span class="text-xs text-ink-500 ml-1.5 font-mono">
-            ({t('spend.basis').replace('{month}', formatSpendMonth(lang))})
-          </span>
-        </div>
+        <ul>
+          <StatTile name="spend" unit={`${t('lab.idp.spendLabel')} (${t('spend.basis').replace('{month}', formatSpendMonth(lang))})`}>
+            <SpendFigure amount={totalSpend} method={totalMethod} date={cloudSpend.month} lang={lang} />
+          </StatTile>
+        </ul>
 
         <div class="hidden sm:block w-px h-8 bg-panel-200"></div>
 
