@@ -1,7 +1,8 @@
 ---
-id: lesson-077-a-second-astro-build-over-fixture-content-wr
+id: "lesson-077-a-second-astro-build-over-fixture-content-wr"
 type: lesson
 status: active
+title: "A second astro build over fixture content writes the fixtures into the content store the next real build reads"
 created: "2026-11-04"
 owner: manu
 tags: [web, astro, testing, worktrees]

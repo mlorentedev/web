@@ -1,7 +1,8 @@
 ---
-id: lesson-045-under-a-graphql-rate-limit-the-gh-cli-does-n
+id: "lesson-045-under-a-graphql-rate-limit-the-gh-cli-does-n"
 type: lesson
 status: active
+title: "Under a GraphQL rate limit the gh CLI does not fail loudly, it answers wrongly"
 created: "2026-09-07"
 owner: manu
 tags: [web, github, verification, tooling]

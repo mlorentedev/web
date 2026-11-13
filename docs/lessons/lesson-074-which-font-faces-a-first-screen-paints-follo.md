@@ -1,7 +1,8 @@
 ---
-id: lesson-074-which-font-faces-a-first-screen-paints-follo
+id: "lesson-074-which-font-faces-a-first-screen-paints-follo"
 type: lesson
 status: active
+title: "Which font faces a first screen paints follows the content, so a preload scoped to a breakpoint misses"
 created: "2026-11-04"
 owner: manu
 tags: [web, performance, fonts, testing]

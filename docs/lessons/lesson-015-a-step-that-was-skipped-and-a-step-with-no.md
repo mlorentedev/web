@@ -1,7 +1,8 @@
 ---
-id: lesson-015-a-step-that-was-skipped-and-a-step-with-no
+id: "lesson-015-a-step-that-was-skipped-and-a-step-with-no"
 type: lesson
 status: active
+title: "A step that was skipped and a step with nothing to do look identical"
 created: "2026-08-26"
 owner: manu
 tags: [web, ci, delivery, observability, process]

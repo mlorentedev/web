@@ -68,13 +68,15 @@ repos:
     hooks:
       - id: hadolint-docker
 
-  # Lessons numbering and index integrity (scripts/check-lessons.sh)
+  # Lessons format and numbering: the same dotf check CI runs through the fleet's
+  # hygiene composite. dotf is the fleet's tool; a clone without it fails this hook
+  # rather than skipping it.
   - repo: local
     hooks:
-      - id: check-lessons
-        name: check-lessons
-        language: script
-        entry: scripts/check-lessons.sh
+      - id: lessons-fmt
+        name: Check docs/lessons format and that no index is committed
+        language: system
+        entry: dotf lessons fmt --check --dir docs/lessons
         pass_filenames: false
         files: ^docs/lessons/
 

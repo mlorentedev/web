@@ -1,7 +1,8 @@
 ---
-id: lesson-076-a-noindex-page-named-as-a-twin-s-alternate-i
+id: "lesson-076-a-noindex-page-named-as-a-twin-s-alternate-i"
 type: lesson
 status: active
+title: "A noindex page named as a twin's alternate is a hreflang error, and a per-page noindex rule misses it"
 created: "2026-11-04"
 owner: manu
 tags: [web, seo, i18n, sitemap]

@@ -1,7 +1,8 @@
 ---
-id: lesson-069-a-contrast-check-that-compares-nan-passes-ev
+id: "lesson-069-a-contrast-check-that-compares-nan-passes-ev"
 type: lesson
 status: active
+title: "A contrast check that compares NaN passes every page"
 created: "2026-11-04"
 owner: manu
 tags: [web, testing, accessibility]

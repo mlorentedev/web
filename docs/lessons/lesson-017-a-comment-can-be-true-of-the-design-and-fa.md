@@ -1,7 +1,8 @@
 ---
-id: lesson-017-a-comment-can-be-true-of-the-design-and-fa
+id: "lesson-017-a-comment-can-be-true-of-the-design-and-fa"
 type: lesson
 status: active
+title: "A comment can be true of the design and false of the deployment"
 created: "2026-08-26"
 owner: manu
 tags: [web, documentation, verification, process]

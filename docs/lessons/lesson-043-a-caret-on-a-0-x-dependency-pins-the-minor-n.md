@@ -1,7 +1,8 @@
 ---
-id: lesson-043-a-caret-on-a-0-x-dependency-pins-the-minor-n
+id: "lesson-043-a-caret-on-a-0-x-dependency-pins-the-minor-n"
 type: lesson
 status: active
+title: "A caret on a `0.x` dependency pins the minor, not the major"
 created: "2026-09-06"
 owner: manu
 tags: [web, dependencies, npm, semver]

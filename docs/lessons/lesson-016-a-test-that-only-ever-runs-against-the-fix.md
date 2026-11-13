@@ -1,7 +1,8 @@
 ---
-id: lesson-016-a-test-that-only-ever-runs-against-the-fix
+id: "lesson-016-a-test-that-only-ever-runs-against-the-fix"
 type: lesson
 status: active
+title: "A test that only ever runs against the fix proves nothing"
 created: "2026-08-26"
 owner: manu
 tags: [web, verification, testing, method]

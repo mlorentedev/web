@@ -1,0 +1,385 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Gateway path: how a request reaches each service, by access",
+    "quality_profile": "showcase",
+    "viewBox": [
+      880,
+      780
+    ]
+  },
+  "components": [
+    {
+      "id": "visitor",
+      "type": "cloud",
+      "label": "Internet",
+      "sublabel": "any browser",
+      "tag": "HTTPS",
+      "pos": [
+        250,
+        40
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "edge",
+      "type": "cloud",
+      "label": "Cloudflare DNS",
+      "sublabel": "proxied records",
+      "tag": "edge",
+      "pos": [
+        460,
+        40
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "gateway",
+      "type": "frontend",
+      "label": "Traefik on the VPS",
+      "sublabel": "CrowdSec \u00b7 rate limit \u00b7 headers",
+      "tag": "ingress",
+      "pos": [
+        40,
+        160
+      ],
+      "size": [
+        580,
+        64
+      ]
+    },
+    {
+      "id": "forward-auth",
+      "type": "security",
+      "label": "Authelia forward-auth",
+      "sublabel": "session or login redirect",
+      "tag": "middleware",
+      "pos": [
+        250,
+        320
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "tailnet",
+      "type": "cloud",
+      "label": "Tailnet device",
+      "sublabel": "joined through Headscale",
+      "tag": "WireGuard",
+      "pos": [
+        670,
+        320
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "kubelab-api",
+      "type": "backend",
+      "label": "KubeLab API",
+      "sublabel": "api.kubelab.live",
+      "tag": "public",
+      "pos": [
+        40,
+        320
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "traefik",
+      "type": "backend",
+      "label": "Traefik dashboard",
+      "sublabel": "traefik.kubelab.live",
+      "tag": "authelia",
+      "pos": [
+        250,
+        440
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "grafana",
+      "type": "backend",
+      "label": "Grafana",
+      "sublabel": "grafana.kubelab.live",
+      "tag": "authelia",
+      "pos": [
+        250,
+        560
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "uptime-kuma",
+      "type": "backend",
+      "label": "Uptime Kuma",
+      "sublabel": "status.kubelab.live",
+      "tag": "authelia",
+      "pos": [
+        250,
+        680
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "headscale",
+      "type": "security",
+      "label": "Headscale",
+      "sublabel": "vpn.kubelab.live",
+      "tag": "app-login",
+      "pos": [
+        460,
+        320
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "authelia",
+      "type": "security",
+      "label": "Authelia portal",
+      "sublabel": "auth.kubelab.live",
+      "tag": "app-login",
+      "pos": [
+        460,
+        440
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "argocd",
+      "type": "backend",
+      "label": "Argo CD",
+      "sublabel": "argo.kubelab.live",
+      "tag": "app-login",
+      "pos": [
+        460,
+        560
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "gitea",
+      "type": "backend",
+      "label": "Gitea",
+      "sublabel": "gitea.kubelab.live",
+      "tag": "app-login",
+      "pos": [
+        460,
+        680
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "loki",
+      "type": "database",
+      "label": "Loki",
+      "sublabel": "no public record",
+      "tag": "mesh",
+      "pos": [
+        670,
+        440
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "minio",
+      "type": "database",
+      "label": "MinIO",
+      "sublabel": "no public record",
+      "tag": "mesh",
+      "pos": [
+        670,
+        560
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "coredns",
+      "type": "backend",
+      "label": "CoreDNS",
+      "sublabel": "no public record",
+      "tag": "mesh",
+      "pos": [
+        670,
+        680
+      ],
+      "size": [
+        160,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Public edge",
+      "wraps": [
+        "visitor",
+        "edge",
+        "gateway"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "Public",
+      "wraps": [
+        "kubelab-api"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Behind forward-auth",
+      "wraps": [
+        "forward-auth",
+        "traefik",
+        "grafana",
+        "uptime-kuma"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Their own login",
+      "wraps": [
+        "headscale",
+        "authelia",
+        "argocd",
+        "gitea"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Mesh only",
+      "wraps": [
+        "tailnet",
+        "loki",
+        "minio",
+        "coredns"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "visitor-edge",
+      "from": "visitor",
+      "to": "edge",
+      "label": "DNS"
+    },
+    {
+      "id": "edge-gateway",
+      "from": "edge",
+      "to": "gateway",
+      "label": "TLS",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "gateway-api",
+      "from": "gateway",
+      "to": "kubelab-api",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          330,
+          272
+        ],
+        [
+          120,
+          272
+        ]
+      ]
+    },
+    {
+      "id": "gateway-auth",
+      "from": "gateway",
+      "to": "forward-auth",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "gateway-headscale",
+      "from": "gateway",
+      "to": "headscale",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [
+          330,
+          272
+        ],
+        [
+          540,
+          272
+        ]
+      ]
+    },
+    {
+      "id": "auth-traefik",
+      "from": "forward-auth",
+      "to": "traefik",
+      "label": "session ok",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        330,
+        412
+      ]
+    },
+    {
+      "id": "tailnet-loki",
+      "from": "tailnet",
+      "to": "loki",
+      "label": "mesh only",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        750,
+        412
+      ]
+    }
+  ]
+}

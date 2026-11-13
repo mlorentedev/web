@@ -1,7 +1,8 @@
 ---
-id: lesson-044-a-parallel-fan-out-has-no-completion-account
+id: "lesson-044-a-parallel-fan-out-has-no-completion-account"
 type: lesson
 status: active
+title: "A parallel fan-out has no completion accounting, so a lost deliverable is silent"
 created: "2026-08-26"
 owner: manu
 tags: [web, verification, subagents, knowledge-placement]

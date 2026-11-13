@@ -1,7 +1,8 @@
 ---
-id: lesson-030-github-s-answer-about-a-merge-is-not-gro
+id: "lesson-030-github-s-answer-about-a-merge-is-not-gro"
 type: lesson
 status: active
+title: "GitHub's answer about a merge is not ground truth, and neither is `git`'s ancestry"
 created: "2026-09-02"
 owner: manu
 tags: [web, git, github, verification, WEB-080]

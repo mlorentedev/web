@@ -1,7 +1,8 @@
 ---
-id: lesson-079-grep-q-at-the-end-of-a-pipe-under-pipefail-fa
+id: "lesson-079-grep-q-at-the-end-of-a-pipe-under-pipefail-fa"
 type: lesson
 status: active
+title: "grep -q at the end of a pipe under pipefail fails at random once its input outgrows one pipe write"
 created: "2026-11-05"
 owner: manu
 tags: [web, bash, ci, testing]

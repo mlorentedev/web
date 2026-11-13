@@ -1,7 +1,8 @@
 ---
-id: lesson-012-html-entities-inside-a-t-value-render-liter
+id: "lesson-012-html-entities-inside-a-t-value-render-liter"
 type: lesson
 status: active
+title: "HTML entities inside a `t()` value render literally — the escaping happens twice"
 created: "2026-08-24"
 owner: manu
 tags: [web, i18n, astro]

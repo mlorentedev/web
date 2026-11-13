@@ -1,7 +1,8 @@
 ---
-id: lesson-033-a-re-run-that-overwrites-its-predecessor-dest
+id: "lesson-033-a-re-run-that-overwrites-its-predecessor-dest"
 type: lesson
 status: active
+title: "A re-run that overwrites its predecessor destroys the evidence that justified it"
 created: "2026-09-02"
 owner: manu
 tags: [web, spec-driven-development, verification]

@@ -1,7 +1,8 @@
 ---
-id: lesson-073-two-prs-that-make-the-same-edit-to-a-line-me
+id: "lesson-073-two-prs-that-make-the-same-edit-to-a-line-me"
 type: lesson
 status: active
+title: "Two PRs that make the same edit to a line merge without a conflict, so a hand-kept count ends one short"
 created: "2026-11-04"
 owner: manu
 tags: [web, git, ci, testing]

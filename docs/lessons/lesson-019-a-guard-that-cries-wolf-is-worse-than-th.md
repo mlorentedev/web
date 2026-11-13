@@ -1,7 +1,8 @@
 ---
-id: lesson-019-a-guard-that-cries-wolf-is-worse-than-th
+id: "lesson-019-a-guard-that-cries-wolf-is-worse-than-th"
 type: lesson
 status: active
+title: "A guard that cries wolf is worse than the hazard it guards, and an untested guard will"
 created: "2026-08-27"
 owner: manu
 tags: [web, verification, testing, review]

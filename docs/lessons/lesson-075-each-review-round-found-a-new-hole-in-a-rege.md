@@ -1,7 +1,8 @@
 ---
-id: lesson-075-each-review-round-found-a-new-hole-in-a-rege
+id: "lesson-075-each-review-round-found-a-new-hole-in-a-rege"
 type: lesson
 status: active
+title: "Each review round found a new hole in a regex HTML tokenizer; the parser already in the tree closed them all"
 created: "2026-11-04"
 owner: manu
 tags: [web, testing, html]

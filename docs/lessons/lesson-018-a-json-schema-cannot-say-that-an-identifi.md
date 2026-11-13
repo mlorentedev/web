@@ -1,7 +1,8 @@
 ---
-id: lesson-018-a-json-schema-cannot-say-that-an-identifi
+id: "lesson-018-a-json-schema-cannot-say-that-an-identifi"
 type: lesson
 status: active
+title: "A JSON Schema cannot say that an identifier resolves, only that it looks like one"
 created: "2026-08-27"
 owner: manu
 tags: [web, validation, json-schema, verification]

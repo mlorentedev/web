@@ -1,7 +1,8 @@
 ---
-id: lesson-036-a-black-box-probe-tells-you-what-happens-nev
+id: "lesson-036-a-black-box-probe-tells-you-what-happens-nev"
 type: lesson
 status: active
+title: "A black-box probe tells you what happens, never why — and \"this looks accidental\" is not a finding"
 created: "2026-09-02"
 owner: manu
 tags: [web, verification, security, review]

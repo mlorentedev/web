@@ -1,7 +1,8 @@
 ---
-id: lesson-058-astro-drops-the-line-break-between-an-expres
+id: "lesson-058-astro-drops-the-line-break-between-an-expres"
 type: lesson
 status: active
+title: "Astro drops the line break between an expression and the next node"
 created: "2026-09-26"
 owner: manu
 tags: [web, astro, templates, copy]

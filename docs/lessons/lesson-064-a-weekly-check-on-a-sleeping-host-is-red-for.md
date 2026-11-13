@@ -1,7 +1,8 @@
 ---
-id: lesson-064-a-weekly-check-on-a-sleeping-host-is-red-for
+id: "lesson-064-a-weekly-check-on-a-sleeping-host-is-red-for"
 type: lesson
 status: active
+title: "A weekly check on a sleeping host is red for the schedule, not the service"
 created: "2026-10-18"
 owner: manu
 tags: [web, testing, ci, lab]

@@ -1,7 +1,8 @@
 ---
-id: lesson-009-obsidian-wikilinks-render-as-literal-text-on
+id: "lesson-009-obsidian-wikilinks-render-as-literal-text-on"
 type: lesson
 status: active
+title: "Obsidian wikilinks render as literal text on GitHub"
 created: "2026-08-21"
 owner: manu
 tags: [web, docs, github]

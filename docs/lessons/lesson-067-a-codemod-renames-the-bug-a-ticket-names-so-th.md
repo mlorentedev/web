@@ -1,7 +1,8 @@
 ---
-id: lesson-067-a-codemod-renames-the-bug-a-ticket-names-so-th
+id: "lesson-067-a-codemod-renames-the-bug-a-ticket-names-so-th"
 type: lesson
 status: active
+title: "A codemod renames the bug a ticket names, so the ticket's own search reports it fixed"
 created: "2026-11-01"
 owner: manu
 tags: [web, accessibility, testing, tailwind]

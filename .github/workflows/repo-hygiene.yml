@@ -1,8 +1,8 @@
 name: Repo hygiene
 
-# Four guards that need no toolchain: lesson numbering/index integrity,
-# SHA-pinned actions, docs paths that exist, and the AGENTS.md stack majors.
-# All four run under bash and zsh and print what failed.
+# Four guards: the lessons check runs dotf through the fleet's hygiene composite
+# (ci-workflows CI-005); SHA-pinned actions, docs paths that exist and the
+# AGENTS.md stack majors are scripts that run under bash and zsh.
 #
 # Two callers, as with test.yml (WEB-124):
 #   - pr-validation.yml calls it as `hygiene`, a job in `gate.needs`, so a red
@@ -29,8 +29,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - name: Lessons numbering and index
-        run: bash scripts/check-lessons.sh
+      - name: Lessons numbering and format
+        uses: mlorentedev/ci-workflows/.github/actions/hygiene@2355330358344bb08c0b7a305be4ed6488f23d0c # v0.6.0
       - name: Actions pinned to commit SHAs
         run: bash scripts/check-actions-pinned.sh
       - name: Docs paths named in the repo exist

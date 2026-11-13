@@ -1,7 +1,8 @@
 ---
-id: lesson-042-a-dependency-alert-names-a-package-not-the-c
+id: "lesson-042-a-dependency-alert-names-a-package-not-the-c"
 type: lesson
 status: active
+title: "A dependency alert names a package, not the copy that is vulnerable"
 created: "2026-09-06"
 owner: manu
 tags: [web, dependencies, verification, npm]

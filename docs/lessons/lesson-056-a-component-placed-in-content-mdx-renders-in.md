@@ -1,7 +1,8 @@
 ---
-id: lesson-056-a-component-placed-in-content-mdx-renders-in
+id: "lesson-056-a-component-placed-in-content-mdx-renders-in"
 type: lesson
 status: active
+title: "A component placed in content MDX renders in the page's locale"
 created: "2026-09-24"
 owner: manu
 tags: [web, astro, mdx, i18n, content]
