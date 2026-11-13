@@ -46,8 +46,12 @@ jobs:
         run: |
           set -uo pipefail
           gh api --paginate "repos/$REPO/issues?state=all&per_page=100" | jq -s add > "$RUNNER_TEMP/issues.json" || exit 2
+          # The step runs under `bash -e`, which would stop on a clash (exit 1)
+          # before the comment below is posted, so errexit is off for this line.
+          set +e
           node scripts/check-issue-ids.mjs --issue "$NUMBER" < "$RUNNER_TEMP/issues.json" | tee "$RUNNER_TEMP/verdict.txt"
           code=${PIPESTATUS[0]}
+          set -e
           if [ "$code" -eq 1 ]; then
             gh issue comment "$NUMBER" --repo "$REPO" --body-file "$RUNNER_TEMP/verdict.txt"
           fi

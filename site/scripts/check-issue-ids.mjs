@@ -62,7 +62,12 @@ export function decide(listing, number) {
   if (id === null) return { code: OK, id, others: [], reason: 'the title carries no identifier' };
 
   const others = issues.filter((i) => i.number !== number && idOf(i.title) === id);
-  if (others.length > 0) return { code: CLASH, id, others, reason: `${id} already names another issue` };
+  if (others.length > 0) {
+    // Issue numbers grow with filing time, so the lowest number filed first and
+    // keeps the identifier: citations written before the clash meant it.
+    const keeper = Math.min(number, ...others.map((i) => i.number));
+    return { code: CLASH, id, others, number, keeper, reason: `${id} already names another issue` };
+  }
   return { code: OK, id, others, reason: `${id} names no other issue` };
 }
 
@@ -70,12 +75,16 @@ export function decide(listing, number) {
 export function report(verdict) {
   if (verdict.code === UNANSWERABLE) return [`::error::cannot check the identifier: ${verdict.reason}`];
   if (verdict.code === OK) return [verdict.reason];
+  const renumber = [verdict.number, ...verdict.others.map((i) => i.number)]
+    .filter((n) => n !== verdict.keeper)
+    .sort((a, b) => a - b);
   return [
     `${verdict.id} already names ${verdict.others.length === 1 ? 'another issue' : 'other issues'}:`,
     ...verdict.others.map((i) => `- #${i.number} (${i.state}): ${i.title}`),
     '',
     'A citation of this identifier no longer says which issue it means.',
-    'Retitle this issue with the next free number, which a fresh scan of the issue list gives.',
+    `#${verdict.keeper} filed first and keeps ${verdict.id}.`,
+    `Retitle ${renumber.map((n) => `#${n}`).join(', ')} with the next free number, which a fresh scan of the issue list gives.`,
   ];
 }
 

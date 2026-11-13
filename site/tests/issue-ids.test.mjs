@@ -19,7 +19,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { CLASH, OK, UNANSWERABLE, decide, idOf } from '../scripts/check-issue-ids.mjs';
+import { CLASH, OK, UNANSWERABLE, decide, idOf, report } from '../scripts/check-issue-ids.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const script = join(here, '../scripts/check-issue-ids.mjs');
@@ -53,6 +53,17 @@ test('a second issue on a used identifier is a clash, closed or not', () => {
   assert.equal(verdict.code, CLASH);
   assert.equal(verdict.id, 'WEB-078');
   assert.deepEqual(verdict.others.map((i) => i.number), [175]);
+});
+
+// The earlier-filed issue keeps the identifier, so the advice depends on which
+// side of the clash the event was about.
+test('the earlier issue keeps the identifier, so only the later one is told to renumber', () => {
+  const holder = report(decide(listing, 172)).join('\n');
+  assert.match(holder, /#172 filed first and keeps WEB-078\./);
+  assert.match(holder, /Retitle #175/);
+  assert.doesNotMatch(holder, /Retitle #172/);
+  const later = report(decide(listing, 175)).join('\n');
+  assert.match(later, /Retitle #175/);
 });
 
 test('lettered children are identifiers of their own', () => {
