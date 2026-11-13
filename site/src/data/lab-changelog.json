@@ -1,0 +1,67 @@
+{
+  "repo": "mlorentedev/kubelab",
+  "fetchedAt": "2026-11-13T02:49:15Z",
+  "filter": "^feat\\((?!(spec|docs|staging)\\))[a-z0-9-]+\\): ",
+  "rows": [
+    {
+      "pr": 3391,
+      "date": "2026-11-12",
+      "title": "feat(dev-node): register ace2's forge key on the agents' account"
+    },
+    {
+      "pr": 3309,
+      "date": "2026-11-11",
+      "title": "feat(load-test): judge each step after a warm-up and report the cold burst apart"
+    },
+    {
+      "pr": 3239,
+      "date": "2026-11-10",
+      "title": "feat(api): read every repository of the personal GitHub account in the forge view"
+    },
+    {
+      "pr": 3203,
+      "date": "2026-11-09",
+      "title": "feat(toolkit): diagnose, provision and gate the Ansible controller"
+    },
+    {
+      "pr": 3176,
+      "date": "2026-11-06",
+      "title": "feat(obs): prove the ACME failure rule stays quiet on Traefik's heartbeat"
+    },
+    {
+      "pr": 3110,
+      "date": "2026-11-05",
+      "title": "feat(renovate): read the engine version from common.yaml"
+    },
+    {
+      "pr": 3092,
+      "date": "2026-11-04",
+      "title": "feat(backup): retire an R2 pair by revoking its token before unsetting it"
+    },
+    {
+      "pr": 3047,
+      "date": "2026-11-03",
+      "title": "feat(r2): add a locked bucket for product source documents"
+    },
+    {
+      "pr": 2991,
+      "date": "2026-11-02",
+      "title": "feat(alerting): split disk-watcher liveness out of the PVC rule"
+    },
+    {
+      "pr": 2899,
+      "date": "2026-11-01",
+      "title": "feat(k8s): probe the web /api route after every Argo CD sync"
+    },
+    {
+      "pr": 2658,
+      "date": "2026-10-31",
+      "title": "feat(api): read Gitea issues and pull requests behind the forge-neutral reader"
+    },
+    {
+      "pr": 2850,
+      "date": "2026-10-30",
+      "title": "feat(toolkit): store a structured value with secrets set --json"
+    }
+  ]
+}
