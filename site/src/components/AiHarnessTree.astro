@@ -25,7 +25,7 @@ const label = `${harnessTree.repo.split('/')[1]}/${harnessTree.root}`;
   <p class="text-sm text-ink-500 mb-6 max-w-2xl">
     {t('ai.tree.sub').replace('{n}', String(harnessEntries.length))}
   </p>
-  <div class="rounded-lg bg-panel-950 p-4 border border-panel-800" translate="no">
+  <div class="keep-dark rounded-lg bg-panel-950 p-4 border border-panel-800" translate="no">
     <div class="flex items-center justify-between pb-2 mb-2 border-b border-panel-800 text-xs font-mono text-panel-400">
       <span>{label}</span>
       <span>{harnessTree.commit.slice(0, 7)}</span>
