@@ -266,6 +266,7 @@ export const ui = {
     'lab.contract.label': 'The contract this site deploys under:',
     'lab.contract.source': 'The file on GitHub',
     'lab.changelog.heading': 'Changelog',
+    'lab.changelog.source': 'For each of the last days with one, the newest kubelab pull request that added a feature, its title as written; fetched on',
 
     // Home sections
     'home.skills': 'What I do',
@@ -588,6 +589,7 @@ export const ui = {
     'lab.contract.label': 'El contrato con el que se despliega esta web:',
     'lab.contract.source': 'El fichero en GitHub',
     'lab.changelog.heading': 'Registro de cambios',
+    'lab.changelog.source': 'Para cada uno de los últimos días que la tienen, la última pull request de kubelab que añadió una funcionalidad, con su título tal cual; obtenido el',
 
     // Home sections
     'home.skills': 'Qué hago',
