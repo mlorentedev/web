@@ -30,6 +30,25 @@
   font-display: swap;
 }
 
+/* One variable file each, pinned to 600-800 and 400-600 (scripts/subset-fonts.mjs).
+   The ranges below are what the markup asks for: a heading at 500 is served the
+   file's lightest instance, 600. */
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/Archivo.woff2') format('woff2');
+  font-weight: 500 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 
 /* The page is authored for both schemes and follows the visitor's system
    setting (the dark palette is in `tailwind.css`), so the UA paints form
