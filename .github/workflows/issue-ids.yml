@@ -1,0 +1,54 @@
+name: Issue identifier
+
+# An issue title starts with its identifier (`WEB-078: …`), and the next number
+# is picked by reading the issue list. Two sessions filing at once can pick the
+# same one: WEB-078, WEB-079 and WEB-084 each named two issues (WEB-110).
+# Filing happens outside this repository, so nothing here can refuse it. This
+# checks the issue as soon as it is opened or retitled. A red run on an issue
+# event is seen by nobody, so a clash is also said in a comment on the issue.
+# The rule and its tests are in site/scripts/check-issue-ids.mjs.
+
+on:
+  issues:
+    types: [opened, reopened, edited]
+
+permissions: {}
+
+jobs:
+  unique:
+    # An edit that leaves the title alone cannot change the identifier.
+    if: github.event.action != 'edited' || github.event.changes.title != null
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+          # Cone mode keeps the root files, .nvmrc among them.
+          sparse-checkout: site/scripts
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+          check-latest: true
+
+      # Closed issues are listed too: a citation does not say whether its issue
+      # was open. `jq -s add` joins the pages into the one array the script reads.
+      - name: Check the title's identifier against every other issue
+        working-directory: site
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -uo pipefail
+          gh api --paginate "repos/$REPO/issues?state=all&per_page=100" | jq -s add > "$RUNNER_TEMP/issues.json" || exit 2
+          node scripts/check-issue-ids.mjs --issue "$NUMBER" < "$RUNNER_TEMP/issues.json" | tee "$RUNNER_TEMP/verdict.txt"
+          code=${PIPESTATUS[0]}
+          if [ "$code" -eq 1 ]; then
+            gh issue comment "$NUMBER" --repo "$REPO" --body-file "$RUNNER_TEMP/verdict.txt"
+          fi
+          exit "$code"
