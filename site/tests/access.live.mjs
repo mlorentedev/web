@@ -35,6 +35,7 @@ const MESH_HOSTS = {
   loki: 'loki.kubelab.live',
   minio: 'minio.kubelab.live',
   coredns: 'pihole.kubelab.live',
+  gitea: 'gitea.kubelab.live',
 };
 
 async function addresses(host) {
