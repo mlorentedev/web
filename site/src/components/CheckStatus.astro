@@ -1,0 +1,39 @@
+---
+/**
+ * One services row's status cell: what the weekly access check saw (WEB-173).
+ *
+ * The dot is in the status families, because this is real status. `asleep`
+ * takes `ink`, as the reserve node does in `LabInfra.astro`: an on-demand host
+ * that is switched off is not a fault. The word carries the state; the dot
+ * supports it (ADR-060).
+ */
+import type { CheckOutcome } from '../data/access-status';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  check: CheckOutcome;
+  /** ISO date of the check. */
+  checked: string;
+}
+
+const { check, checked } = Astro.props;
+const t = useTranslations(getLocale(Astro.currentLocale));
+
+const DOT: Record<CheckOutcome, string> = {
+  verified: 'bg-ok-500',
+  asleep: 'bg-ink-300',
+  failing: 'bg-danger-500',
+};
+
+const LABEL: Record<CheckOutcome, string> = {
+  verified: t('lab.check.verified'),
+  asleep: t('lab.check.asleep'),
+  failing: t('lab.check.failing'),
+};
+---
+
+<span
+  data-check={check}
+  data-checked={checked}
+  class="flex items-center gap-1.5 font-mono text-xs text-ink-500"
+><span class:list={['h-1.5 w-1.5 rounded-full shrink-0', DOT[check]]}></span>{LABEL[check]}</span>

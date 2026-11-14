@@ -29,11 +29,13 @@
  * `public` takes `accent` because it is a link you can follow; the gates and
  * `mesh` take the neutral `panel`. Status keeps the status families.
  */
+import AccessBadge from './AccessBadge.astro';
+import CheckStatus from './CheckStatus.astro';
 import ServiceIcon from './ServiceIcon.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { platform, type PlatformService } from '../data/platform';
-import { accessStatus, checkFor, type CheckOutcome } from '../data/access-status';
+import { accessStatus, checkFor } from '../data/access-status';
 import { accessFor, serviceAccess, type ServiceAccess } from '../data/service-access';
 import { getLocale, useTranslations } from '../i18n/utils';
 
@@ -88,22 +90,6 @@ const checkedOn = new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: '
   new Date(`${accessStatus.checked}T00:00:00Z`),
 );
 
-/**
- * What the weekly check saw, in the status families: this is real status.
- * `asleep` takes `ink`, as the reserve node does in `LabInfra.astro`: an
- * on-demand host that is switched off is not a fault.
- */
-const CHECK_DOT: Record<CheckOutcome, string> = {
-  verified: 'bg-ok-500',
-  asleep: 'bg-ink-300',
-  failing: 'bg-danger-500',
-};
-
-const CHECK_LABEL: Record<CheckOutcome, string> = {
-  verified: t('lab.check.verified'),
-  asleep: t('lab.check.asleep'),
-  failing: t('lab.check.failing'),
-};
 ---
 
 <Section padding="py-10" id="services" data-lab-section="services">
@@ -190,11 +176,7 @@ const CHECK_LABEL: Record<CheckOutcome, string> = {
               class="hover:bg-ink-50/80 transition-colors"
             >
               <td class="py-2.5 px-3 whitespace-nowrap">
-                <span
-                  data-check={check}
-                  data-checked={accessStatus.checked}
-                  class="flex items-center gap-1.5 font-mono text-xs text-ink-500"
-                ><span class:list={['h-1.5 w-1.5 rounded-full shrink-0', CHECK_DOT[check]]}></span>{CHECK_LABEL[check]}</span>
+                <CheckStatus check={check} checked={accessStatus.checked} />
               </td>
 
               <td class="py-2.5 px-3 whitespace-nowrap">
@@ -211,22 +193,7 @@ const CHECK_LABEL: Record<CheckOutcome, string> = {
               </td>
 
               <td class="py-2.5 px-3 whitespace-nowrap">
-                <span
-                  data-access-badge
-                  class:list={[
-                    'inline-block px-1.5 py-0.5 rounded text-xs font-semibold border',
-                    access.access === 'public'
-                      ? 'bg-accent-50 text-accent-800 border-accent-200'
-                      : 'bg-panel-100 text-panel-700 border-panel-200',
-                  ]}
-                >{ACCESS_LABEL[access.access]}</span>
-                {access.onDemand && (
-                  <span
-                    data-on-demand
-                    class="ml-1 inline-block px-1.5 py-0.5 rounded text-xs font-medium border bg-panel-50 text-panel-700 border-panel-200"
-                    title={t('lab.access.onDemandHint')}
-                  >{t('lab.access.onDemand')}</span>
-                )}
+                <AccessBadge access={access.access} label={ACCESS_LABEL[access.access]} onDemand={access.onDemand} />
               </td>
 
               <td class="py-2.5 px-3 whitespace-nowrap">

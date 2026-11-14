@@ -1,0 +1,38 @@
+---
+/**
+ * One services row's access cell: who can reach the service, and whether its
+ * machine is powered on only when needed (ADR-028).
+ *
+ * Access is not painted in the status families (#251): `public` takes `accent`
+ * because it is a link you can follow, and the gates take the neutral `panel`.
+ */
+import type { ServiceAccess } from '../data/service-access';
+import { getLocale, useTranslations } from '../i18n/utils';
+
+interface Props {
+  access: ServiceAccess;
+  /** The access, in the page's locale. */
+  label: string;
+  onDemand?: boolean;
+}
+
+const { access, label, onDemand } = Astro.props;
+const t = useTranslations(getLocale(Astro.currentLocale));
+---
+
+<span
+  data-access-badge
+  class:list={[
+    'inline-block px-1.5 py-0.5 rounded text-xs font-semibold border',
+    access === 'public'
+      ? 'bg-accent-50 text-accent-800 border-accent-200'
+      : 'bg-panel-100 text-panel-700 border-panel-200',
+  ]}
+>{label}</span>
+{onDemand && (
+  <span
+    data-on-demand
+    class="ml-1 inline-block px-1.5 py-0.5 rounded text-xs font-medium border bg-panel-50 text-panel-700 border-panel-200"
+    title={t('lab.access.onDemandHint')}
+  >{t('lab.access.onDemand')}</span>
+)}
