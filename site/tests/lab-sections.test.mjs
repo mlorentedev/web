@@ -227,8 +227,11 @@ for (const { locale, html } of built) {
       .filter((m) => /\bdata-on-demand\b/.test(m[2]))
       .map((m) => m[1])
       .sort();
+    // The table may mark no row: gitea, the only on-demand row, became mesh-only
+    // when kubelab published its name on the tailnet address alone, and a mesh
+    // row is never on demand. The comparison stays exact, so with no row marked
+    // no service may carry the marker.
     const expected = accessTable.services.filter((row) => row.onDemand).map((row) => row.slug).sort();
-    assert.ok(expected.length > 0, 'the access table marks no row on demand');
     assert.deepEqual(marked, expected);
   });
 

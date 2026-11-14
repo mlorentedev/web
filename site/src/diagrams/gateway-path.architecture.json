@@ -6,7 +6,7 @@
     "quality_profile": "showcase",
     "viewBox": [
       880,
-      780
+      900
     ]
   },
   "components": [
@@ -44,7 +44,7 @@
       "id": "gateway",
       "type": "frontend",
       "label": "Traefik on the VPS",
-      "sublabel": "CrowdSec \u00b7 rate limit \u00b7 headers",
+      "sublabel": "CrowdSec · rate limit · headers",
       "tag": "ingress",
       "pos": [
         40,
@@ -194,11 +194,11 @@
       "id": "gitea",
       "type": "backend",
       "label": "Gitea",
-      "sublabel": "gitea.kubelab.live",
-      "tag": "app-login",
+      "sublabel": "tailnet address only",
+      "tag": "mesh",
       "pos": [
-        460,
-        680
+        670,
+        800
       ],
       "size": [
         160,
@@ -284,8 +284,7 @@
       "wraps": [
         "headscale",
         "authelia",
-        "argocd",
-        "gitea"
+        "argocd"
       ]
     },
     {
@@ -295,7 +294,8 @@
         "tailnet",
         "loki",
         "minio",
-        "coredns"
+        "coredns",
+        "gitea"
       ]
     }
   ],
