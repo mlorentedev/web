@@ -72,3 +72,27 @@ export function classify({ addresses, root, probeStatus }, expectedProbe) {
 export function matches(measured, row) {
   return measured === row.access || (row.onDemand === true && measured === 'silent');
 }
+
+/** Every value `classify` can return: the states a status record may hold. */
+export const STATES = [...ACCESS, 'unreachable', 'silent', 'elsewhere'];
+
+/**
+ * The record of one check (WEB-173): for every row of the table, the state
+ * `classify` saw and whether the row still holds. Pure, so the live check and
+ * the report share one set of rules and the offline test can feed it recorded
+ * observations.
+ *
+ * @param {{services: Array<{slug: string, access: string, probe?: {status: number}, onDemand?: true}>}} table
+ * @param {Record<string, object>} observations  What `observe` returned, by slug.
+ * @param {Date} when  The time of the check. Only its UTC date is kept.
+ */
+export function buildReport(table, observations, when) {
+  const rows = {};
+  for (const row of table.services) {
+    const seen = observations[row.slug];
+    if (!seen) throw new Error(`no observation for "${row.slug}"`);
+    const state = classify(seen, row.probe?.status);
+    rows[row.slug] = { state, ok: matches(state, row) };
+  }
+  return { checked: when.toISOString().slice(0, 10), rows };
+}
