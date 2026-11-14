@@ -230,7 +230,8 @@ for (const { locale, html } of built) {
     // The table may mark no row: gitea, the only on-demand row, became mesh-only
     // when kubelab published its name on the tailnet address alone, and a mesh
     // row is never on demand. The comparison stays exact, so with no row marked
-    // no service may carry the marker.
+    // no service may carry the marker. The marker itself is rendered from a
+    // forced on-demand row in `lab-on-demand-render.test.mjs` (WEB-206).
     const expected = accessTable.services.filter((row) => row.onDemand).map((row) => row.slug).sort();
     assert.deepEqual(marked, expected);
   });
