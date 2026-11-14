@@ -39,8 +39,25 @@ jobs:
           check-latest: true
 
       # Node built-ins only: no install step.
+      # One reading, two uses (WEB-173): this step records what each host
+      # answered in `src/data/access-status.json`, and the next one asserts on
+      # the same observations, so the record and the verdict cannot disagree.
+      - name: Record every row
+        working-directory: site
+        run: npm run access:report -- --observations "$RUNNER_TEMP/access-observations.json"
+
+      - name: Upload the record
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: access-status
+          path: site/src/data/access-status.json
+          if-no-files-found: error
+
       - name: Re-measure every row
         working-directory: site
+        env:
+          ACCESS_OBSERVATIONS: ${{ runner.temp }}/access-observations.json
         run: npm run test:access
 
       # The /lab/idp catalog: no card opens a redirect (WEB-141 AC3).

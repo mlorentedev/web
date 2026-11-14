@@ -1,0 +1,57 @@
+{
+  "checked": "2026-11-14",
+  "rows": {
+    "pollex": {
+      "state": "public",
+      "ok": true
+    },
+    "hive": {
+      "state": "public",
+      "ok": true
+    },
+    "kubelab-api": {
+      "state": "public",
+      "ok": true
+    },
+    "traefik": {
+      "state": "authelia",
+      "ok": true
+    },
+    "headscale": {
+      "state": "app-login",
+      "ok": true
+    },
+    "authelia": {
+      "state": "app-login",
+      "ok": true
+    },
+    "argocd": {
+      "state": "app-login",
+      "ok": true
+    },
+    "gitea": {
+      "state": "mesh",
+      "ok": true
+    },
+    "grafana": {
+      "state": "authelia",
+      "ok": true
+    },
+    "loki": {
+      "state": "mesh",
+      "ok": true
+    },
+    "uptime-kuma": {
+      "state": "authelia",
+      "ok": true
+    },
+    "minio": {
+      "state": "mesh",
+      "ok": true
+    },
+    "coredns": {
+      "state": "mesh",
+      "ok": true
+    }
+  }
+}
