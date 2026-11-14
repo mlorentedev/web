@@ -1,5 +1,146 @@
 # Changelog
 
+## 1.17.0 (2026-11-14)
+
+## What's Changed
+* chore(deps-dev): bump dompurify from 3.4.16 to 3.4.17 in /site by @dependabot[bot] in https://github.com/mlorentedev/web/pull/495
+* chore(deps): bump the actions group with 4 updates by @dependabot[bot] in https://github.com/mlorentedev/web/pull/494
+* chore(deps): bump fast-uri from 3.1.8 to 3.1.9 in /site by @dependabot[bot] in https://github.com/mlorentedev/web/pull/496
+* chore(deps): bump the npm group across 1 directory with 4 updates by @dependabot[bot] in https://github.com/mlorentedev/web/pull/493
+* fix(a11y): give every page one leading h1 and an unbroken heading outline by @mlorentedev in https://github.com/mlorentedev/web/pull/497
+* fix(a11y): draw one visible focus indicator on every keyboard stop by @mlorentedev in https://github.com/mlorentedev/web/pull/500
+* fix(i18n): serve a Spanish 404 from markup instead of swapping strings in the browser by @mlorentedev in https://github.com/mlorentedev/web/pull/502
+* fix(footer): link the privacy policy and the feed from every page by @mlorentedev in https://github.com/mlorentedev/web/pull/503
+* fix(header): lay out the avatar instead of floating it over the nav by @mlorentedev in https://github.com/mlorentedev/web/pull/504
+* fix(ci): resolve the latest Node 22 instead of the runner's cached one by @mlorentedev in https://github.com/mlorentedev/web/pull/508
+* fix(subscribe): restore the button label after a failed submit by @mlorentedev in https://github.com/mlorentedev/web/pull/506
+* fix(seo): give every page one URL, with its links, nginx and the sitemap agreeing by @mlorentedev in https://github.com/mlorentedev/web/pull/505
+* test(visual-diff): stop animations before reading computed styles by @mlorentedev in https://github.com/mlorentedev/web/pull/511
+* fix(subscribe): keep the address out of the URL when the script has not run by @mlorentedev in https://github.com/mlorentedev/web/pull/512
+* chore(deps): make the audit and the version in package.json mean what they say by @mlorentedev in https://github.com/mlorentedev/web/pull/513
+* fix(a11y): announce the current page in the header nav by @mlorentedev in https://github.com/mlorentedev/web/pull/514
+* feat(contact): one way in, and a fixed-price session after a yes by @mlorentedev in https://github.com/mlorentedev/web/pull/510
+* fix(diagrams): pin archify to v2.16.0 by @mlorentedev in https://github.com/mlorentedev/web/pull/515
+* feat(contact): drop the paid session and keep one way to write by @mlorentedev in https://github.com/mlorentedev/web/pull/518
+* feat(home): rewrite the home around the career timeline and skill layers by @mlorentedev in https://github.com/mlorentedev/web/pull/509
+* perf(fonts): subset the Roboto faces from a script by @mlorentedev in https://github.com/mlorentedev/web/pull/519
+* fix(fonts): declare the weights in use and preload the headline's face by @mlorentedev in https://github.com/mlorentedev/web/pull/520
+* test(diagrams): report a missing install command as a failure by @mlorentedev in https://github.com/mlorentedev/web/pull/521
+* test(a11y): cover the AI link in the current-page test by @mlorentedev in https://github.com/mlorentedev/web/pull/522
+* feat(home): name the employer in the timeline and leave the current role open by @mlorentedev in https://github.com/mlorentedev/web/pull/523
+* fix(llms): describe the site as it is and drop the paid session by @mlorentedev in https://github.com/mlorentedev/web/pull/524
+* fix(projects): drop the unpublished Hive figure and point pdf-modifier at live pages by @mlorentedev in https://github.com/mlorentedev/web/pull/525
+* fix(notes): show the English notes on the Spanish home and keep the empty /es/notes out of search by @mlorentedev in https://github.com/mlorentedev/web/pull/526
+* perf(nginx): compress HTML and text assets by @mlorentedev in https://github.com/mlorentedev/web/pull/527
+* chore(es): remove the course and newsletter pages and redirect them to the Spanish home by @mlorentedev in https://github.com/mlorentedev/web/pull/528
+* feat(home): draw the timeline as a line and state the current role by @mlorentedev in https://github.com/mlorentedev/web/pull/530
+* fix(contact): drop the address repeated under the button by @mlorentedev in https://github.com/mlorentedev/web/pull/531
+* feat(home): draw the career on the DevOps loop under the hero by @mlorentedev in https://github.com/mlorentedev/web/pull/537
+* feat(home): label each skills layer with a path-style key by @mlorentedev in https://github.com/mlorentedev/web/pull/538
+* feat(home): mark the ongoing role with a HEAD ref by @mlorentedev in https://github.com/mlorentedev/web/pull/539
+* fix(home): name the hardware layer embedded systems by @mlorentedev in https://github.com/mlorentedev/web/pull/540
+* feat(footer): show the build that served the page as a sync chip by @mlorentedev in https://github.com/mlorentedev/web/pull/541
+* fix(footer): ship the build chip's deployed variant within the site's rules by @mlorentedev in https://github.com/mlorentedev/web/pull/542
+* feat(home): open on the full-stack path and the way in, then the parallel track by @mlorentedev in https://github.com/mlorentedev/web/pull/543
+* chore(deps): bump the npm group in /site with 3 updates by @dependabot[bot] in https://github.com/mlorentedev/web/pull/550
+* chore(pre-commit): run each hook once per commit by @mlorentedev in https://github.com/mlorentedev/web/pull/545
+* fix(a11y): audit every built page with axe, and fix what it finds by @mlorentedev in https://github.com/mlorentedev/web/pull/544
+* docs(adr): map every ADR cited here to the repository it lives in by @mlorentedev in https://github.com/mlorentedev/web/pull/547
+* fix(home): keep the phone loop labels at size and name the bio region by @mlorentedev in https://github.com/mlorentedev/web/pull/548
+* feat(seo): describe notes, projects and tag pages in JSON-LD by @mlorentedev in https://github.com/mlorentedev/web/pull/552
+* chore(docker): send only site/ to the build, drop dead ARGs and pin base images by @mlorentedev in https://github.com/mlorentedev/web/pull/553
+* ci: deploy bitácora workflows (OPS-002) by @mlorentedev in https://github.com/mlorentedev/web/pull/562
+* chore(deps): bump nginx from 1.27-alpine to 1.31-alpine in the docker group by @dependabot[bot] in https://github.com/mlorentedev/web/pull/563
+* fix(privacy): serve the GitHub chart from the site instead of a third party by @mlorentedev in https://github.com/mlorentedev/web/pull/566
+* feat(home): tell each skill layer as a short story and fold the GitHub chart into it by @mlorentedev in https://github.com/mlorentedev/web/pull/549
+* feat(home): tell each role in the timeline in Manu's words by @mlorentedev in https://github.com/mlorentedev/web/pull/561
+* fix(privacy): name only what the site uses, the same in both locales by @mlorentedev in https://github.com/mlorentedev/web/pull/568
+* test(a11y): check the contrast of text drawn inside SVGs by @mlorentedev in https://github.com/mlorentedev/web/pull/560
+* fix(nginx): send one Cache-Control per response, immutable only on hashed names by @mlorentedev in https://github.com/mlorentedev/web/pull/564
+* fix(diagrams): paint type labels with a text shade at AA, not the line shade by @mlorentedev in https://github.com/mlorentedev/web/pull/565
+* fix(a11y): bring nav links, language switch and tag chips to 24 px on their own box by @mlorentedev in https://github.com/mlorentedev/web/pull/569
+* fix(a11y): set descriptive copy at text-sm, keep text-xs for metadata by @mlorentedev in https://github.com/mlorentedev/web/pull/570
+* feat(projects): add the Spanish intro for /es/projects by @mlorentedev in https://github.com/mlorentedev/web/pull/574
+* fix(ci): drop the hand-kept lesson count that two green PRs merged wrong by @mlorentedev in https://github.com/mlorentedev/web/pull/575
+* feat(nav): put the nav behind a menu below sm, with no client script by @mlorentedev in https://github.com/mlorentedev/web/pull/578
+* fix(nav): link /projects from the header in both locales and fail the build on orphan pages by @mlorentedev in https://github.com/mlorentedev/web/pull/579
+* test(site): hold every page's HTML to a raw and a gzipped byte budget by @mlorentedev in https://github.com/mlorentedev/web/pull/582
+* refactor(i18n): give each page built in both locales one body, in a shared component by @mlorentedev in https://github.com/mlorentedev/web/pull/584
+* fix(a11y): set diagram captions at 14 px, and check every text block for 12 px sentences by @mlorentedev in https://github.com/mlorentedev/web/pull/583
+* fix(notes): print a note without the site chrome, with legible code by @mlorentedev in https://github.com/mlorentedev/web/pull/596
+* test(site): assert the no-client-JS invariant on every page by @mlorentedev in https://github.com/mlorentedev/web/pull/580
+* feat(contact): list the work I take on and keep the door mail to a subject by @mlorentedev in https://github.com/mlorentedev/web/pull/598
+* ci: deploy bitácora workflows (OPS-002) by @mlorentedev in https://github.com/mlorentedev/web/pull/605
+* test(no-js): refuse a data: document only where it loads as one by @mlorentedev in https://github.com/mlorentedev/web/pull/604
+* fix(seo): give tag pages their own names, titles and descriptions, and keep thin ones out of the index by @mlorentedev in https://github.com/mlorentedev/web/pull/601
+* fix(ui): draw every call-to-action with one Button component by @mlorentedev in https://github.com/mlorentedev/web/pull/600
+* fix(a11y): open every link in the same tab by @mlorentedev in https://github.com/mlorentedev/web/pull/599
+* perf(fonts): preload Medium and check every preload against the faces the first screen paints by @mlorentedev in https://github.com/mlorentedev/web/pull/581
+* feat(notes): ship a note on its date, and let it say when it was written by @mlorentedev in https://github.com/mlorentedev/web/pull/602
+* feat(projects): show five projects, Hive first, with year and install line by @mlorentedev in https://github.com/mlorentedev/web/pull/603
+* fix(github-chart): tell the empty chart apart from upstream, and fail CI only when upstream was refused by @mlorentedev in https://github.com/mlorentedev/web/pull/608
+* fix(lessons): stop check-lessons reporting a listed lesson as missing when grep -q closes the pipe early by @mlorentedev in https://github.com/mlorentedev/web/pull/610
+* docs(notes): draft the staging load-test note by @mlorentedev in https://github.com/mlorentedev/web/pull/611
+* fix(notes,lab): show the notes title and say which figures the lab footer dates by @mlorentedev in https://github.com/mlorentedev/web/pull/597
+* feat(projects): show each card's state, start year and install line by @mlorentedev in https://github.com/mlorentedev/web/pull/614
+* fix(nginx): serve gzip precompressed at build, not per request by @mlorentedev in https://github.com/mlorentedev/web/pull/616
+* ci(test): give the Test job 20 minutes; the browser's apt fetch alone took 8 by @mlorentedev in https://github.com/mlorentedev/web/pull/617
+* feat(notes): declare when each note was last modified, in its meta, its BlogPosting and the sitemap by @mlorentedev in https://github.com/mlorentedev/web/pull/618
+* feat(notes): give each note its own social card, in og:image, twitter:image and its BlogPosting by @mlorentedev in https://github.com/mlorentedev/web/pull/612
+* feat(notes): show each note's reading time, and a table of contents on long notes by @mlorentedev in https://github.com/mlorentedev/web/pull/621
+* fix(ci): run the repo hygiene checks as a job of the PR gate by @mlorentedev in https://github.com/mlorentedev/web/pull/622
+* ci(test): cache Chromium by Playwright version and give each install step its own budget by @mlorentedev in https://github.com/mlorentedev/web/pull/619
+* fix(ci): scan pull-request image builds with Trivy, and date the non-blocking exception by @mlorentedev in https://github.com/mlorentedev/web/pull/623
+* feat(notes): show the series and an archive by year on the notes index by @mlorentedev in https://github.com/mlorentedev/web/pull/624
+* feat(lab): link each Lab section to the notes behind it by @mlorentedev in https://github.com/mlorentedev/web/pull/625
+* fix(lab): keep the English notes link when a section is only partly translated by @mlorentedev in https://github.com/mlorentedev/web/pull/628
+* fix(notes): say "1 note" for a series with one note in the locale by @mlorentedev in https://github.com/mlorentedev/web/pull/627
+* feat(ai): quote the review-triage skill as a fifth artifact card by @mlorentedev in https://github.com/mlorentedev/web/pull/626
+* fix(docker): pin nginx 1.31-alpine to the digest without the brotli CRITICAL by @mlorentedev in https://github.com/mlorentedev/web/pull/629
+* feat(lab): add a curated changelog section, empty until its rows are written by @mlorentedev in https://github.com/mlorentedev/web/pull/631
+* feat(lab): show web's platform contract, kubelab.yaml, as the build read it by @mlorentedev in https://github.com/mlorentedev/web/pull/630
+* fix(ci): block an image build on a fixable CRITICAL finding by @mlorentedev in https://github.com/mlorentedev/web/pull/632
+* fix(ci): run PR-Agent from the fleet's reusable workflow instead of a local port by @mlorentedev in https://github.com/mlorentedev/web/pull/633
+* fix(ci): find a diagram on any note, not only the first, and check the search in every PR by @mlorentedev in https://github.com/mlorentedev/web/pull/634
+* chore(deps): bump node from `4b150b4` to `5ec23b7` in the docker group by @dependabot[bot] in https://github.com/mlorentedev/web/pull/636
+* chore(deps): bump the npm group in /site with 7 updates by @dependabot[bot] in https://github.com/mlorentedev/web/pull/637
+* chore(deps): bump the actions group across 1 directory with 2 updates by @dependabot[bot] in https://github.com/mlorentedev/web/pull/639
+* chore(deps): bump fast-xml-parser from 5.11.0 to 5.12.0 in /site by @dependabot[bot] in https://github.com/mlorentedev/web/pull/638
+* feat(notes): link each note to the notes written alongside it, and fail the build on a dead link by @mlorentedev in https://github.com/mlorentedev/web/pull/640
+* feat(ai): draw the dotfiles harness tree as git lists it at a pinned commit by @mlorentedev in https://github.com/mlorentedev/web/pull/641
+* refactor(theme): name the palette roles at every call site, and fail on a raw ramp by @mlorentedev in https://github.com/mlorentedev/web/pull/642
+* chore(deps): move dependency updates from Dependabot to Renovate by @mlorentedev in https://github.com/mlorentedev/web/pull/643
+* feat(ai): publish the Hive token figure in the /ai proof, linked to its method by @mlorentedev in https://github.com/mlorentedev/web/pull/645
+* chore(harness): replace retired mimo-v2.5 in the reviewer pool by @mlorentedev in https://github.com/mlorentedev/web/pull/647
+* refactor(theme): declare the aliased ramps only under their role names by @mlorentedev in https://github.com/mlorentedev/web/pull/648
+* feat(ai): count each merged PR's review findings from its triage comments by @mlorentedev in https://github.com/mlorentedev/web/pull/644
+* feat(home): name what each layer built once, as a built/ line under its story by @mlorentedev in https://github.com/mlorentedev/web/pull/649
+* feat(ai): show one real task's phases, from plan to merge, each between linked events by @mlorentedev in https://github.com/mlorentedev/web/pull/650
+* chore(deps): pin the Renovate preset to v0.6.0 by @mlorentedev in https://github.com/mlorentedev/web/pull/651
+* chore(ci): call the shared PR-Agent workflow from ci-workflows by @mlorentedev in https://github.com/mlorentedev/web/pull/652
+* fix(review): register PR-Agent's incremental review heading by @mlorentedev in https://github.com/mlorentedev/web/pull/655
+* ci(image): keep the build cache on a registry tag instead of the Actions cache by @mlorentedev in https://github.com/mlorentedev/web/pull/654
+* chore(review): turn off PR-Agent's ticket-compliance table by @mlorentedev in https://github.com/mlorentedev/web/pull/653
+* feat(lab): draw the gateway path behind the access badges by @mlorentedev in https://github.com/mlorentedev/web/pull/657
+* fix(deps): override the two build-time packages Dependabot still flags by @mlorentedev in https://github.com/mlorentedev/web/pull/656
+* ci: check lessons with the shared hygiene composite by @mlorentedev in https://github.com/mlorentedev/web/pull/661
+* ci: meet the fleet CI standard checked by dotf lint fleet by @mlorentedev in https://github.com/mlorentedev/web/pull/660
+* ci(pr-agent): move to shared v0.7.0 and share the comment group only for /review by @mlorentedev in https://github.com/mlorentedev/web/pull/663
+* ci: flag an issue that takes an identifier another issue already has by @mlorentedev in https://github.com/mlorentedev/web/pull/662
+* feat(theme): follow the system dark setting with the palette read backwards by role by @mlorentedev in https://github.com/mlorentedev/web/pull/658
+* feat(type): set headings in Archivo and metadata in JetBrains Mono by @mlorentedev in https://github.com/mlorentedev/web/pull/664
+* feat(lab): generate the changelog from kubelab's merged feature PRs by @mlorentedev in https://github.com/mlorentedev/web/pull/665
+* fix(dark): match the dark theme-color to the page ground by @mlorentedev in https://github.com/mlorentedev/web/pull/666
+* fix(release): take the release notes from GitHub so a Refs is not a close by @mlorentedev in https://github.com/mlorentedev/web/pull/667
+* feat(lab): show the fleet counts and the monthly spend as stat tiles by @mlorentedev in https://github.com/mlorentedev/web/pull/670
+* feat(lab): show the gateway path on the IDP architecture page by @mlorentedev in https://github.com/mlorentedev/web/pull/669
+* revert(type): set the whole site in Roboto again by @mlorentedev in https://github.com/mlorentedev/web/pull/668
+* fix(lab): list gitea as mesh-only now that its name resolves to the tailnet by @mlorentedev in https://github.com/mlorentedev/web/pull/671
+* feat(lab): record what the weekly access check saw for each host by @mlorentedev in https://github.com/mlorentedev/web/pull/673
+
+
+**Full Changelog**: https://github.com/mlorentedev/web/compare/v1.16.3...v1.17.0
+
 ## [1.16.3](https://github.com/mlorentedev/web/compare/v1.16.2...v1.16.3) (2026-10-23)
 
 
