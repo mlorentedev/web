@@ -22,7 +22,8 @@
  */
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
-import { platform, withCounts, type NodeTopology } from '../data/platform';
+import StatTile from './StatTile.astro';
+import { fleet, platform, withCounts, type NodeTopology } from '../data/platform';
 import { getLocale, useTranslations } from '../i18n/utils';
 
 interface Props {
@@ -106,9 +107,11 @@ const STANDBY_ROW = 'bg-ink-50 px-3 -mx-3';
   <p class="text-sm text-ink-600 leading-relaxed max-w-3xl mb-2" data-count>
     {withCounts(t('lab.infra.intro'))}
   </p>
-  <p class="text-xs font-mono text-ink-500 mb-8" data-count>
-    {withCounts(t('lab.infra.count'))}
-  </p>
+  <ul class="grid grid-cols-1 min-[420px]:grid-cols-3 gap-3 mb-8 max-w-2xl" data-lab-figures>
+    <StatTile name="machines" unit={t('lab.infra.tile.machines')} count>{fleet.n}</StatTile>
+    <StatTile name="k8s" unit={t('lab.infra.tile.k8s')} count>{fleet.k8s}</StatTile>
+    <StatTile name="reserve" unit={t('lab.infra.tile.reserve')} count>{fleet.reserve}</StatTile>
+  </ul>
 
   <ul class="border-t border-ink-100">
     {platform.nodes.map((node) => (

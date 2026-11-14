@@ -1,0 +1,33 @@
+---
+/**
+ * One figure as a stat tile: a large mono number over its unit (ADR-060, the
+ * `/lab` figures row). The number comes in the slot, already rendered from the
+ * data by the caller, so the tile holds no figure of its own.
+ *
+ * The tile is a list item and reads as one phrase, "8 machines", so a screen
+ * reader gets the same sentence the old count line gave. Which marker the
+ * figure needs (`data-count` for a count, `data-figure` for a measurement) stays
+ * with the caller: `count` puts `data-count` on the tile.
+ */
+interface Props {
+  /** Stable key, read by `tests/lab-stat-tiles.test.mjs`. */
+  name: string;
+  /** The unit or noun after the number, already translated. */
+  unit: string;
+  /** Marks the tile as a count from `platform.json` (`lab-counts.test.mjs`). */
+  count?: boolean;
+}
+
+const { name, unit, count = false } = Astro.props;
+---
+
+<li
+  data-stat-tile={name}
+  data-count={count ? '' : undefined}
+  class="flex flex-col gap-1 rounded-lg border border-panel-200 bg-panel-50 px-4 py-3"
+>
+  <span data-stat-value class="font-mono text-2xl sm:text-3xl font-bold leading-none text-ink-900 tabular-nums">
+    <slot />
+  </span>
+  <span data-stat-unit class="font-mono text-xs text-ink-600">{unit}</span>
+</li>

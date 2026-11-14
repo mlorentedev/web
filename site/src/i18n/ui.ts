@@ -246,7 +246,10 @@ export const ui = {
     'lab.infra.heading': 'The machines underneath',
     'lab.infra.intro':
       '{n} machines: {rented} rented from {providers} cloud providers and {home} sitting in my house, plus {reserve} reserve on AWS that Terraform recreates when it is needed. Only {k8s} of them run Kubernetes, each as its own single-node cluster rather than part of a shared one — a shared control plane that can take the whole fleet down with it is not a homelab, it is one failure with extra steps.',
-    'lab.infra.count': '{n} machines · {k8s} independent K3s clusters · {reserve} reserve',
+    // The figures row: each unit follows its number in a stat tile (ADR-060).
+    'lab.infra.tile.machines': 'machines',
+    'lab.infra.tile.k8s': 'independent K3s clusters',
+    'lab.infra.tile.reserve': 'reserve',
 
     // Status is prose, not an identifier. `k3s`, `ARM64` and `docker` stay as
     // they are on both locales because they are names; `healthy` and `standby`
@@ -569,7 +572,10 @@ export const ui = {
     'lab.infra.heading': 'Las máquinas de debajo',
     'lab.infra.intro':
       '{n} máquinas: {rented} alquiladas a {providers} proveedores en la nube y {home} en mi casa, más {reserve} de reserva en AWS que Terraform recrea cuando hace falta. Solo {k8s} ejecutan Kubernetes, cada una como su propio clúster de un solo nodo en vez de formar parte de uno compartido: un plano de control compartido que puede llevarse por delante toda la flota no es un homelab, es un único punto de fallo con pasos de más.',
-    'lab.infra.count': '{n} máquinas · {k8s} clústeres K3s independientes · {reserve} de reserva',
+    // La fila de cifras: cada unidad sigue a su número en una tarjeta (ADR-060).
+    'lab.infra.tile.machines': 'máquinas',
+    'lab.infra.tile.k8s': 'clústeres K3s independientes',
+    'lab.infra.tile.reserve': 'de reserva',
 
     // El estado es prosa, no un identificador. `k3s`, `ARM64` y `docker` se
     // quedan igual en los dos idiomas porque son nombres; `healthy` y `standby`
