@@ -34,6 +34,9 @@ export function isInternalAddress(address) {
  * @param {string[]} seen.addresses  A records from a public resolver.
  * @param {{status: number, url: string, location?: string}} [seen.root]  The root as requested, redirects not followed.
  * @param {number} [seen.probeStatus]  The status of the row's probe path, when it has one.
+ * @param {string} [seen.dnsError]  The resolver's error code when the public DNS lookup itself failed
+ *   (SERVFAIL, a timeout). Then nothing was learned, so the row is `unreachable`, never
+ *   `mesh`: an empty answer from a failed lookup is not a claim that nothing resolves.
  * @param {number} [expectedProbe]  The status the row says its probe path answers.
  * @returns {'public' | 'authelia' | 'app-login' | 'mesh' | 'unreachable' | 'silent' | 'elsewhere'}
  *
@@ -46,7 +49,8 @@ export function isInternalAddress(address) {
  * It matches no row on purpose, so the weekly check goes red and a person looks
  * instead of it passing as `public` (#426 review).
  */
-export function classify({ addresses, root, probeStatus }, expectedProbe) {
+export function classify({ addresses, root, probeStatus, dnsError }, expectedProbe) {
+  if (dnsError) return 'unreachable';
   if (addresses.length === 0 || addresses.every(isInternalAddress)) return 'mesh';
   if (!root) return 'silent';
   if (root.status >= 300 && root.status < 400 && root.location) {

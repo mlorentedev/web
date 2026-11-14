@@ -26,12 +26,17 @@ export const MESH_HOSTS = {
 
 export const hostOf = (row) => (row.url ? new URL(row.url).host : MESH_HOSTS[row.slug]);
 
-async function addresses(host) {
+/**
+ * The public A records, or the error code when the lookup itself failed. A
+ * failed lookup is recorded on its row instead of thrown, so one resolver error
+ * cannot void the whole check (#673 review).
+ */
+async function lookup(host) {
   try {
-    return await resolver.resolve4(host);
+    return { addresses: await resolver.resolve4(host) };
   } catch (error) {
-    if (['ENOTFOUND', 'ENODATA'].includes(error.code)) return [];
-    throw error;
+    if (['ENOTFOUND', 'ENODATA'].includes(error.code)) return { addresses: [] };
+    return { addresses: [], dnsError: error.code ?? String(error) };
   }
 }
 
@@ -46,8 +51,8 @@ async function get(url) {
 
 /** One row's observation, in the shape `classify` takes. */
 export async function observe(row) {
-  const seen = { addresses: await addresses(hostOf(row)) };
-  if (row.url) {
+  const seen = await lookup(hostOf(row));
+  if (row.url && !seen.dnsError) {
     seen.root = await get(row.url);
     if (row.probe) seen.probeStatus = (await get(new URL(row.probe.path, row.url)))?.status;
   }

@@ -51,6 +51,14 @@ test('buildReport records each row as classify sees it, and whether the row stil
   });
 });
 
+test('buildReport records a row whose DNS lookup failed as unreachable, and keeps the others', () => {
+  const report = buildReport({ services: [rows[0], rows[3]] }, {
+    pollex: { addresses: PUBLIC_IP, root: { status: 200, url: 'https://pollex.example/' } },
+    loki: { addresses: [], dnsError: 'ETIMEOUT' },
+  }, new Date('2026-11-16T06:17:00Z'));
+  assert.deepEqual(report.rows, { pollex: { state: 'public', ok: true }, loki: { state: 'unreachable', ok: false } });
+});
+
 test('buildReport refuses a row with no observation rather than recording a guess', () => {
   assert.throws(() => buildReport({ services: rows }, {}, new Date()), /pollex/);
 });

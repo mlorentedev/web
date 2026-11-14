@@ -97,6 +97,7 @@ test('classify: the responses recorded on 2026-09-26', () => {
     ['a public host that errors', { addresses: PUBLIC, root: { status: 502 } }, undefined, 'unreachable'],
     ['a public host that gives no response (timeout, refused)', { addresses: PUBLIC }, undefined, 'silent'],
     ['a gate in front that sends visitors to another login', { addresses: PUBLIC, root: { status: 302, url: 'https://grafana.kubelab.live/', location: 'https://login.example.com/oauth' } }, undefined, 'elsewhere'],
+    ['public DNS failed (SERVFAIL, timeout): not mesh, whatever addresses came back', { addresses: [], dnsError: 'ESERVFAIL' }, undefined, 'unreachable'],
     ['a relative redirect stays on its own host', { addresses: PUBLIC, root: { status: 302, url: 'https://status.kubelab.live/', location: '/dashboard' } }, undefined, 'public'],
   ];
   for (const [name, seen, expectedProbe, expected] of cases) {
