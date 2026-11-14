@@ -13,7 +13,8 @@ tags: [web, performance, fonts]
 **Context**: WEB-197 added two families to Roboto: Archivo for headings and JetBrains
 Mono for everything in `font-mono`. Roboto ships one static subset per weight (four
 files of about 27 KB each, #138). The markup asks the mono face for 400, 500 and 600, and
-the headings for 500 to 800.
+the headings for 500 to 800. The families shipped in #664 and were reverted after a look at the live site, back to
+Roboto alone; the measurements below hold for the next family the site takes.
 
 **Problem**: The static route repeats every outline once per weight. Three static
 JetBrains Mono subsets came to 69 KB. The full variable file instead keeps axes nobody
