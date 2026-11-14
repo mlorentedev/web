@@ -33,6 +33,7 @@ import ServiceIcon from './ServiceIcon.astro';
 import Section from './Section.astro';
 import SectionHeading from './SectionHeading.astro';
 import { platform, type PlatformService } from '../data/platform';
+import { accessStatus, checkFor, type CheckOutcome } from '../data/access-status';
 import { accessFor, serviceAccess, type ServiceAccess } from '../data/service-access';
 import { getLocale, useTranslations } from '../i18n/utils';
 
@@ -83,18 +84,25 @@ const measuredOn = new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: 
   new Date(`${serviceAccess.measured}T00:00:00Z`),
 );
 
-/** Real status, in the status families. Access lives elsewhere, on purpose. */
-const STATUS_DOT: Record<PlatformService['status'], string> = {
-  operational: 'bg-ok-500',
-  degraded: 'bg-warn-500',
-  maintenance: 'bg-observe-500',
+const checkedOn = new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: 'UTC' }).format(
+  new Date(`${accessStatus.checked}T00:00:00Z`),
+);
+
+/**
+ * What the weekly check saw, in the status families: this is real status.
+ * `asleep` takes `ink`, as the reserve node does in `LabInfra.astro`: an
+ * on-demand host that is switched off is not a fault.
+ */
+const CHECK_DOT: Record<CheckOutcome, string> = {
+  verified: 'bg-ok-500',
+  asleep: 'bg-ink-300',
+  failing: 'bg-danger-500',
 };
 
-/** Translated, for the same reason as in `LabInfra.astro`: status is prose. */
-const STATUS_LABEL: Record<PlatformService['status'], string> = {
-  operational: t('lab.status.operational'),
-  degraded: t('lab.status.degraded'),
-  maintenance: t('lab.status.maintenance'),
+const CHECK_LABEL: Record<CheckOutcome, string> = {
+  verified: t('lab.check.verified'),
+  asleep: t('lab.check.asleep'),
+  failing: t('lab.check.failing'),
 };
 ---
 
@@ -121,9 +129,13 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
       >{`${ACCESS_LABEL[access]} `}<span class="font-mono">{n}</span></li>
     ))}
   </ul>
-  <p class="text-xs text-ink-500 mb-8">
+  <p class="text-xs text-ink-500">
     {t('lab.services.measured')}{' '}
-    <time datetime={serviceAccess.measured}>{measuredOn}</time>.
+    <time datetime={serviceAccess.measured} data-date-of="measured">{measuredOn}</time>.
+  </p>
+  <p class="text-xs text-ink-500 mb-8">
+    {t('lab.services.checked')}{' '}
+    <time datetime={accessStatus.checked} data-date-of="checked">{checkedOn}</time>.
   </p>
 
   <div
@@ -135,8 +147,8 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
     <table class="ep-table w-full text-left border-collapse font-mono text-xs">
       <thead class="keep-dark bg-ink-900 text-ink-100 border-b border-ink-800">
         <tr class="uppercase tracking-wider text-xs">
-          <th scope="col" class="py-2.5 px-3 w-8 text-center">
-            <span class="sr-only">{t('lab.services.th.status')}</span>
+          <th scope="col" class="py-2.5 px-3 font-semibold whitespace-nowrap">
+            {t('lab.services.th.status')}
           </th>
           <th scope="col" class="py-2.5 px-3 font-semibold whitespace-nowrap">
             {t('lab.services.th.service')}
@@ -170,18 +182,19 @@ const STATUS_LABEL: Record<PlatformService['status'], string> = {
               // {group.label}
             </th>
           </tr>
-          {group.services.map((svc) => ({ svc, access: accessFor(svc.slug) })).map(({ svc, access }) => (
+          {group.services.map((svc) => ({ svc, access: accessFor(svc.slug), check: checkFor(svc.slug) })).map(({ svc, access, check }) => (
             <tr
               data-service-row={svc.env}
               data-service-slug={svc.slug}
               data-access={access.access}
               class="hover:bg-ink-50/80 transition-colors"
             >
-              <td class="py-2.5 px-3 text-center whitespace-nowrap">
+              <td class="py-2.5 px-3 whitespace-nowrap">
                 <span
-                  class:list={['inline-block w-2 h-2 rounded-full', STATUS_DOT[svc.status]]}
-                  title={STATUS_LABEL[svc.status]}
-                ></span>
+                  data-check={check}
+                  data-checked={accessStatus.checked}
+                  class="flex items-center gap-1.5 font-mono text-xs text-ink-500"
+                ><span class:list={['h-1.5 w-1.5 rounded-full shrink-0', CHECK_DOT[check]]}></span>{CHECK_LABEL[check]}</span>
               </td>
 
               <td class="py-2.5 px-3 whitespace-nowrap">

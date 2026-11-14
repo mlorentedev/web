@@ -30,7 +30,8 @@ const DIST = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 // 146 paragraphs with text-xs on their own, and the 4 IDP provenance footers that inherit it.
 // Each new page adds one: the footer's copyright line (the last was /es/projects).
 // 151: the gateway-path diagram's "Rendered at build from" source line, metadata.
-const BASELINE = 151;
+// 153: the date of the last access check on /lab and /es/lab (WEB-173), metadata.
+const BASELINE = 153;
 const SENTENCE_WORDS = 12;
 
 /** True when the class list sets 12 px at some breakpoint, with or without a `/<line-height>`. */

@@ -44,7 +44,6 @@ export interface PlatformService {
   node: string;
   env: 'common' | 'prod' | 'staging' | 'Production' | 'Staging' | 'Both' | 'Edge';
   tech: string[];
-  status: 'operational' | 'degraded' | 'maintenance';
 }
 
 export interface PlatformManifest {

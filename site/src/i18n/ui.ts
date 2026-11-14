@@ -246,6 +246,10 @@ export const ui = {
     'lab.access.onDemand': 'On demand',
     'lab.access.onDemandHint': 'Its machine is switched on only when needed. While it sleeps, the service does not answer.',
     'lab.services.measured': 'Access measured from outside the mesh on',
+    'lab.services.checked': 'Last checked on',
+    'lab.check.verified': 'verified',
+    'lab.check.asleep': 'asleep',
+    'lab.check.failing': 'failing',
     'lab.access.private': 'Private repo',
 
     'lab.infra.heading': 'The machines underneath',
@@ -264,9 +268,6 @@ export const ui = {
     'lab.status.warning': 'degraded',
     'lab.status.offline': 'offline',
     'lab.status.standby': 'reserve',
-    'lab.status.operational': 'operational',
-    'lab.status.degraded': 'degraded',
-    'lab.status.maintenance': 'maintenance',
 
     'lab.diagram.source': 'Rendered at build from {file}',
     'lab.diagram.scroll': 'Scrollable diagram: {label}',
@@ -577,6 +578,10 @@ export const ui = {
     'lab.access.onDemand': 'Bajo demanda',
     'lab.access.onDemandHint': 'Su máquina solo se enciende cuando hace falta. Mientras duerme, el servicio no responde.',
     'lab.services.measured': 'Acceso medido desde fuera de la malla el',
+    'lab.services.checked': 'Última comprobación el',
+    'lab.check.verified': 'verificado',
+    'lab.check.asleep': 'apagado',
+    'lab.check.failing': 'con fallo',
     'lab.access.private': 'Repo privado',
 
     'lab.infra.heading': 'Las máquinas de debajo',
@@ -595,9 +600,6 @@ export const ui = {
     'lab.status.warning': 'degradado',
     'lab.status.offline': 'caído',
     'lab.status.standby': 'en reserva',
-    'lab.status.operational': 'operativo',
-    'lab.status.degraded': 'degradado',
-    'lab.status.maintenance': 'en mantenimiento',
 
     'lab.diagram.source': 'Generado en el build desde {file}',
     'lab.diagram.scroll': 'Diagrama desplazable: {label}',
