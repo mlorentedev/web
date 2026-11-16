@@ -5,7 +5,7 @@
 # copies only the one-line result, and COPY is cached by content, so the
 # install-deps layer reruns when Playwright's version moves, not on every
 # lockfile edit.
-FROM --platform=$BUILDPLATFORM node:22-bookworm-slim@sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d AS playwright-version
+FROM --platform=$BUILDPLATFORM node:22-bookworm-slim@sha256:e9f565d32859f0cbfb52125eafe8be39390f24dac302dc3cdf566e8ba3ab21ee AS playwright-version
 COPY site/package-lock.json /tmp/package-lock.json
 RUN node -p "require('/tmp/package-lock.json').packages['node_modules/playwright'].version" \
       > /playwright-version \
@@ -31,7 +31,7 @@ RUN node -p "require('/tmp/package-lock.json').packages['node_modules/playwright
 # different files (36 of 116, measured on sha-641b26a). Without them the stage
 # runs once and both platforms copy the same dist/ — which the release workflow
 # asserts before testing it (#376).
-FROM --platform=$BUILDPLATFORM node:22-bookworm-slim@sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d AS build
+FROM --platform=$BUILDPLATFORM node:22-bookworm-slim@sha256:e9f565d32859f0cbfb52125eafe8be39390f24dac302dc3cdf566e8ba3ab21ee AS build
 
 # Site settings are source, in site/src/data/site.ts: no build argument
 # configures the site. The one ARG, SITE_COMMIT, is declared next to the build
@@ -82,7 +82,7 @@ ARG SITE_COMMIT
 RUN npm run build
 
 # ---------- Runtime Stage — Nginx static serving ----------
-FROM nginx:1.31-alpine@sha256:713fc2ebfd92e8217db451477182ee91944b123d2b1ee9fd5a8c6e91ca6c3a11
+FROM nginx:1.31-alpine@sha256:fed7e14be83cbd2661a75cdc5b872d936cf155d46c327084d30b8df19ae88d72
 
 # The base image ships its own index.html and 50x.html in the web root, and the
 # COPY below merges into that directory rather than replacing it. index.html is
