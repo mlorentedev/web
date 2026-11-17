@@ -65,6 +65,9 @@ const upstream = (text, name, seen = new Set()) => {
   return seen;
 };
 
+/** ci-workflows' shared publish, pinned by a full commit SHA (CI-010). */
+const PUBLISH = /^ {4}uses: mlorentedev\/ci-workflows\/\.github\/workflows\/docker-publish\.yml@[0-9a-f]{40}(?:\s+#.*)?$/m;
+
 const release = workflow('release.yml');
 const validation = workflow('pr-validation.yml');
 const suite = workflow('test.yml');
@@ -141,10 +144,10 @@ test('the image that ships is the one the suite tested (#376)', () => {
     );
   }
 
-  // The digest has to exist to be passed on.
-  assert.match(imageBuild, /^ {6}digest:\s*$[\s\S]*?value: \$\{\{ jobs\.build\.outputs\.digest \}\}/m);
-  assert.match(imageBuild, /^ {6}digest: \$\{\{ steps\.build\.outputs\.digest \}\}\s*$/m);
-  assert.match(step(imageBuild, 'Build and push'), /^ {8}id: build\s*$/m);
+  // The digest has to exist to be passed on. `build` is ci-workflows' shared
+  // publish, pinned by commit: its `digest` output is the index the
+  // `sha-<short>` tag names, applied only after every platform's scan passed.
+  assert.match(job(release, 'build'), PUBLISH, '`build` must be the shared docker-publish, pinned by a full commit SHA');
 
   // In the suite, an image replaces the build instead of running beside it:
   // with both, the tests would read whichever wrote `dist/` last.
@@ -289,26 +292,34 @@ test('the repo hygiene checks run inside the PR gate, once per pull request (WEB
 
 test('every image build is scanned, pull requests included, and a CRITICAL finding blocks it (WEB-119)', () => {
   // `if: inputs.push` scanned only images already published: never the one a PR could still stop.
-  const build = step(imageBuild, 'Build and push');
+  const build = step(imageBuild, 'Build');
   const scan = step(imageBuild, 'Trivy image scan');
   const upload = step(imageBuild, 'Upload Trivy SARIF');
   assert.ok(build && scan && upload, 'build-image.yml lost its build, scan or SARIF step');
   assert.doesNotMatch(scan, /^ {8}if:/m, 'the scan is conditional again: PR builds go unscanned');
-  // A build that is not pushed must be loaded into the runner's docker, or there is nothing to scan.
-  assert.match(build, /^ {10}load: \$\{\{ !inputs\.push \}\}$/m, 'an unpushed build is not loaded, so the scan finds no image');
+  // The PR build is not pushed, so it must be loaded into the runner's docker, or there is nothing to scan.
+  assert.match(build, /^ {10}load: ['"]?true['"]?$/m, 'the PR build is not loaded, so the scan finds no image');
+  assert.doesNotMatch(build, /^ {10}push(-by-digest)?:/m, 'the PR build pushes an image nobody scanned on master');
   assert.match(upload, /^ {8}if: \$\{\{ hashFiles\('trivy-results\.sarif'\) != '' \}\}$/m, 'the SARIF upload is gated on more than the report existing, so PR builds can be dropped');
   // The upload sends any file by that name, so one committed in the checkout must be gone before the scan.
   const discard = imageBuild.indexOf('rm -f trivy-results.sarif');
   assert.ok(discard !== -1 && discard < imageBuild.indexOf('- name: Trivy image scan'), 'a SARIF committed in the checkout could be uploaded as the scan');
   assert.match(upload, /continue-on-error: true/, 'a SARIF endpoint hiccup fails the build');
-  // `load` cannot take more than one platform, so every caller that does not push builds one.
-  for (const caller of [validation, release]) {
-    for (const [, body] of caller.matchAll(/uses: \.\/\.github\/workflows\/build-image\.yml\n([\s\S]*?)(?=\n {2}[A-Za-z0-9_-]+:\s*\n|$)/g)) {
-      if (!/push: false/.test(body)) continue;
-      const platforms = body.match(/platforms:\s*(\S+)/)?.[1] ?? '';
-      assert.ok(platforms && !platforms.includes(','), `an unpushed build asks for platforms "${platforms}", which load cannot take`);
-    }
+  // `load` cannot take more than one platform, so every caller of the PR build asks for one.
+  const callers = [validation, release].flatMap((caller) => [
+    ...caller.matchAll(/uses: \.\/\.github\/workflows\/build-image\.yml\n([\s\S]*?)(?=\n {2}[A-Za-z0-9_-]+:\s*\n|$)/g),
+  ]);
+  assert.ok(callers.length > 0, 'nothing calls build-image.yml: pull requests go unscanned');
+  for (const [, body] of callers) {
+    const platforms = body.match(/platforms:\s*(\S+)/)?.[1] ?? '';
+    assert.ok(platforms && !platforms.includes(','), `a loaded build asks for platforms "${platforms}", which load cannot take`);
   }
+  // The image that ships is scanned by the shared publish, every platform, before it is tagged.
+  const publish = job(release, 'build');
+  assert.match(publish, PUBLISH, 'the image that ships is not built by the shared publish, which scans before tagging');
+  assert.match(publish, /^ {6}sarif-category: trivy-web\s*$/m, 'the shipped image\'s scan is not reported under trivy-web');
+  // docker-publish appends the platform, so the PR report shares linux/amd64's category and has a base to compare with.
+  assert.match(upload, /^ {10}category: trivy-web-linux-amd64\s*$/m, 'the PR report has no master analysis to compare with');
   // The SARIF scan reports CRITICAL and HIGH and never fails the job; a second step blocks on CRITICAL alone.
   assert.doesNotMatch(scan, /exit-code: ['"]?1/, 'the report scan blocks, so a HIGH fails the build');
   const gate = step(imageBuild, 'Trivy gate on CRITICAL');
@@ -329,20 +340,29 @@ test('the image build cache lives in the registry, and only a pushed build write
   // evicted the npm and Playwright caches between runs. The buildkit layers now
   // sit on a `buildcache` tag that registry-hygiene never prunes (it touches
   // only `sha-*`). A PR build reads that tag anonymously and writes nothing.
-  const build = step(imageBuild, 'Build and push');
-  assert.ok(build, 'build-image.yml has no "Build and push" step');
+  // Both builds run ci-workflows' docker-build, whose default cache is `type=gha`,
+  // so the absence of `type=gha` proves nothing: each must name the registry.
+  const build = step(imageBuild, 'Build');
+  assert.ok(build, 'build-image.yml has no "Build" step');
   const code = build.split('\n').filter((l) => !/^\s*#/.test(l)).join('\n');
-  assert.doesNotMatch(code, /type=gha/, 'the image build still reads or writes the Actions cache');
   const from = build.match(/^\s*cache-from:\s*(.+)$/m)?.[1] ?? '';
-  const to = build.match(/^\s*cache-to:\s*(.+)$/m)?.[1] ?? '';
-  assert.match(from, /type=registry,ref=\$\{\{ env\.IMAGE \}\}:buildcache\b/, 'cache-from does not read the buildcache tag');
-  assert.match(to, /^\$\{\{ inputs\.push && /, 'cache-to is not limited to pushed builds');
-  assert.match(to, /type=registry,ref=\{0\}:buildcache,mode=max/, 'cache-to does not write every stage to the buildcache tag');
+  assert.match(from, /^type=registry,ref=\$\{\{ env\.IMAGE \}\}:buildcache\s*$/, 'the PR build does not read the buildcache tag');
+  assert.match(build, /^ {10}cache-write: ['"]?false['"]?\s*$/m, 'a PR build writes the layer cache');
+  assert.doesNotMatch(code, /^\s*cache-to:/m, 'a PR build names a cache destination');
+
+  const publish = job(release, 'build');
+  const pubFrom = publish.match(/^ {6}cache-from:\s*(.+)$/m)?.[1] ?? '';
+  const pubTo = publish.match(/^ {6}cache-to:\s*(.+)$/m)?.[1] ?? '';
+  assert.equal(pubFrom.trim(), 'type=registry,ref=docker.io/mlorentedev/kubelab-web:buildcache', 'the release build does not read the buildcache tag');
+  assert.equal(pubTo.trim(), 'type=registry,ref=docker.io/mlorentedev/kubelab-web:buildcache,mode=max', 'the release build does not write every stage to the buildcache tag');
 
   // `mode=max` publishes every intermediate layer on a public tag, so nothing
   // secret may reach the build: no secret inputs on the step, and no build
   // argument beyond the commit sha, which is public anyway.
   assert.doesNotMatch(code, /^\s*(secrets|secret-files|secret-envs):/m, 'the image build receives a secret');
+  // The release build's inputs are public: its only secrets are the registry login, mapped by name.
+  const inputs = publish.split(/^ {4}secrets:\s*$/m)[0];
+  assert.doesNotMatch(inputs, /secrets\./, 'a secret reaches the release build\'s inputs, and mode=max would publish it');
   const dockerfile = readFileSync(join(root, 'Dockerfile'), 'utf8');
   const args = [...dockerfile.matchAll(/^ARG\s+(\w+)/gm)].map((m) => m[1]);
   assert.deepEqual(args, ['SITE_COMMIT'], 'a new build argument would be published in the cache layers');
