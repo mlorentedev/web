@@ -1,5 +1,5 @@
 ---
-id: "lesson-088-an-absent-setting-proves-nothing-behind-a-shared-default"
+id: "lesson-088-once-a-build-runs-a-shared-action-an-absent"
 type: lesson
 status: active
 title: "Once a build runs a shared action, an absent setting proves nothing: the action's default fills it"

@@ -80,9 +80,14 @@ test('every ARG is one both image builds pass, or one BuildKit sets', () => {
   // would leave the other image saying "local" in /version.json (WEB-150).
   const declared = [...dockerfile.matchAll(/^ARG\s+([A-Z_]+)/gm)].map((m) => m[1]);
   const release = read('.github/workflows/release.yml');
+  // The release build is the `build` job, up to the next top-level job key.
+  // A missing anchor fails here rather than widening the slice to the whole file.
+  const start = release.indexOf('\n  build:\n');
+  assert.ok(start !== -1, "release.yml has no `build` job");
+  const next = release.slice(start + 1).search(/\n {2}[A-Za-z0-9_-]+:\s*\n/);
   const builds = {
     'build-image.yml': read('.github/workflows/build-image.yml'),
-    "release.yml's build": release.slice(release.indexOf('\n  build:\n'), release.indexOf('\n  test-image:\n')),
+    "release.yml's build": next === -1 ? release.slice(start) : release.slice(start, start + 1 + next),
   };
   for (const [name, text] of Object.entries(builds)) {
     assert.ok(text.length > 0, `${name} not found`);
