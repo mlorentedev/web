@@ -45,11 +45,7 @@ jobs:
     uses: ./.github/workflows/build-image.yml
     with:
       tag: pr-${{ github.event.pull_request.number }}
-      push: false
       platforms: linux/amd64
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   # WEB-103. release-please builds the release PR body from the changelog, and
   # the changelog reproduces each commit subject *including its closing

@@ -1,48 +1,34 @@
 ---
 name: Build Image
 
-# Reusable image build (ADR-053 / ADR-046 / ADR-055). Builds the Astro site image
-# and optionally pushes it to Docker Hub `<user>/kubelab-web:<tag>`, then scans it
-# with Trivy (SARIF -> Security tab). Callers:
-#   - release.yml       -> tag=sha-<short>, push on master (staging; the same
-#                          digest is re-tagged to the semver release for prod)
-#   - pr-validation.yml -> tag=pr-<n>,      no push        (Dockerfile validation)
+# Pull request image build (ADR-053 / ADR-046 / ADR-055): builds the Astro site
+# image without pushing it, loads it into the runner's docker and scans it with
+# Trivy, so a PR is scanned before it can reach master (WEB-119). Its one
+# caller is pr-validation.yml (tag=pr-<n>).
 #
-# `commit` becomes the `SITE_COMMIT` build arg, which the site states as
-# `commit` in /version.json (WEB-150). release.yml passes the tag minus `sha-`;
-# pr-validation.yml passes nothing, and the image then says "local".
+# The master build that ships is not here: release.yml calls ci-workflows'
+# shared docker-publish.yml (CI-010), which pushes by digest, scans every
+# platform and tags only after the scans pass.
+#
+# The build is ci-workflows' docker-build composite. `commit` becomes the
+# `SITE_COMMIT` build arg, which the site states as `commit` in /version.json
+# (WEB-150); pr-validation.yml passes nothing, and the image then says "local".
 
 on:
   workflow_call:
     inputs:
       tag:
-        description: Image tag to build (e.g. sha-abc1234 or 1.2.3)
+        description: Image tag to build (e.g. pr-123)
         type: string
         required: true
       commit:
         description: Short sha the site states as `commit` (empty = "local", for untagged builds)
         type: string
         default: ''
-      push:
-        description: Push to Docker Hub (false = PR validation build only)
-        type: boolean
-        default: false
       platforms:
-        description: Target platforms (comma-separated)
+        description: Target platform. One only, since the image is loaded into the runner's docker.
         type: string
         default: linux/amd64
-    secrets:
-      DOCKERHUB_USERNAME:
-        required: false
-      DOCKERHUB_TOKEN:
-        required: false
-    outputs:
-      digest:
-        # The manifest digest of what was pushed: the index when several
-        # platforms were built. release.yml tests and promotes by this, never by
-        # the tag, which can be pointed elsewhere after the fact (#376).
-        description: Digest of the built image (sha256:…)
-        value: ${{ jobs.build.outputs.digest }}
 
 permissions:
   contents: read
@@ -56,18 +42,10 @@ jobs:
     name: Build ${{ inputs.tag }}
     runs-on: ubuntu-latest
     # Without this the job inherits GitHub's 6h ceiling. A build that stalls
-    # rather than fails then burns six hours of runner before anyone notices —
-    # which is exactly how v1.10.1 was tagged and released with no image ever
-    # pushed (docs/lessons/lesson-011).
-    #
-    # 20 min is sized against the slowest healthy run this job has, not the
-    # typical one: it serves both callers, and they are not comparable. PR
-    # validation builds linux/amd64 alone and lands around 20 s; a release
-    # builds linux/amd64,linux/arm64 and has been measured from ~30 s warm to
-    # 4m34s cold. Keep the cap a few times that worst case, not the average.
+    # rather than fails then burns six hours of runner before anyone notices
+    # (docs/lessons/lesson-011). A PR build is linux/amd64 alone and lands
+    # around 20 s warm; 20 min is several times the cold worst case.
     timeout-minutes: 20
-    outputs:
-      digest: ${{ steps.build.outputs.digest }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -79,58 +57,35 @@ jobs:
       - name: Discard a SARIF report the checkout carries
         run: rm -f trivy-results.sarif
 
-      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4
-      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
-
-      - name: Login to Docker Hub
-        if: inputs.push
-        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4
-        with:
-          registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
+      - name: Build
         id: build
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
+        uses: mlorentedev/ci-workflows/.github/actions/docker-build@9b34f5b2815a3090d77d7589ef8bcc5087045544 # v0.8.0
         env:
-          # The action uploads a `.dockerbuild` build record after every build —
-          # `DOCKER_BUILD_RECORD_UPLOAD` defaults to true. Keep it: it carries the
-          # cache and timing telemetry worth having right after a build misbehaves,
-          # which is not hypothetical here (see timeout-minutes above).
-          #
-          # Bound it instead. At the repo's 90-day retention these had piled up to
-          # 211 artefacts, none of them ever downloaded. A week outlives any
-          # investigation that would open one.
+          # The build uploads a `.dockerbuild` record after every build. Keep it
+          # (it carries the cache and timing telemetry worth having right after
+          # a build misbehaves), but for a week, not the repo's 90 days: they had
+          # piled up to 211 artefacts, none ever downloaded.
           DOCKER_BUILD_RECORD_RETENTION_DAYS: 7
         with:
-          context: .
-          file: ./Dockerfile
-          platforms: ${{ inputs.platforms }}
-          push: ${{ inputs.push }}
-          # A PR build is not pushed, so it is loaded into the runner's docker
-          # for the scan below. PR builds are single-platform, which `load` needs.
-          load: ${{ !inputs.push }}
+          image: ${{ env.IMAGE }}
           tags: ${{ env.IMAGE }}:${{ inputs.tag }}
+          platforms: ${{ inputs.platforms }}
+          # Not pushed, so loaded into the runner's docker for the scan below.
+          load: 'true'
           build-args: |
             SITE_COMMIT=${{ inputs.commit }}
           # The layer cache lives on the `buildcache` tag, not in the Actions
           # cache: `type=gha,mode=max` held that at its 10 GB ceiling and got the
-          # npm and Playwright caches evicted between runs (WEB-202). Every
-          # build reads it (the repository is public, so a PR needs no login);
-          # only a pushed build writes it. registry-hygiene prunes `sha-*` only,
-          # so the tag is never deleted. A failed read is a warning and a cold
-          # build, never a failed one.
+          # npm and Playwright caches evicted between runs (WEB-202). A PR reads
+          # it anonymously (the repository is public) and writes nothing; only
+          # release.yml's push writes it. A failed read is a cold build.
           cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache
-          cache-to: ${{ inputs.push && format('type=registry,ref={0}:buildcache,mode=max', env.IMAGE) || '' }}
+          cache-write: 'false'
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ inputs.tag }}
 
-      # Image security scan, on every build: a PR build is scanned from the
-      # runner's docker before it can reach master (WEB-119).
-      #
       # This step only reports: CRITICAL and HIGH go to the Security tab, and
       # `continue-on-error` keeps a scanner failure (a database download, say)
       # from failing the job. Blocking is the gate step after the upload.
@@ -144,27 +99,27 @@ jobs:
           severity: CRITICAL,HIGH
           ignore-unfixed: true
 
+      # The category is the one release.yml's linux/amd64 scan uploads under
+      # (docker-publish appends the platform), so a PR's alerts are compared
+      # with master's.
       - name: Upload Trivy SARIF
         if: ${{ hashFiles('trivy-results.sarif') != '' }}
         uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4
         continue-on-error: true
         with:
           sarif_file: trivy-results.sarif
-          category: trivy-web
+          category: trivy-web-linux-amd64
 
       # Blocks on CRITICAL since 2026-11-10 (WEB-119 AC3), once the base image
-      # scanned clean: the nginx digest bump took master from 1 CRITICAL and
-      # 6 HIGH to none. HIGH stays advisory in the report above: a new HIGH in
+      # scanned clean. HIGH stays advisory in the report above: a new HIGH in
       # the base image would otherwise fail every PR until the next bump.
       # `ignore-unfixed` because no change in this repo can clear a finding
       # with no fixed version. It runs after the upload, so a blocked build
-      # still shows the finding in the Security tab.
+      # still shows the finding in the Security tab. docker-publish's gate on
+      # master is the same: CRITICAL, unfixed ignored, failing closed.
       #
       # It fails closed: a scanner error fails the build too, since a gate
-      # that passes when it cannot scan is not a gate. Both Trivy steps share
-      # `.cache/trivy` and restore the day's database from the Actions cache
-      # (`cache-trivy-<date>`), so the gate downloads no database and scans
-      # an image already in the runner's docker.
+      # that passes when it cannot scan is not a gate.
       - name: Trivy gate on CRITICAL
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
         with:

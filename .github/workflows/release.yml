@@ -129,21 +129,41 @@ jobs:
       contents: read
     uses: ./.github/workflows/test.yml
 
+  # The fleet's shared publish (ci-workflows CI-010): push by digest, scan every
+  # platform with Trivy (CRITICAL and HIGH to the Security tab, blocking on a
+  # fixable CRITICAL, WEB-119), and only then tag `sha-<short>`. A blocked
+  # image stays an untagged digest that nothing pulls by tag. `digest` is the
+  # index digest the tag names, which `test-image`, the staging guard and the
+  # prod re-tag all read (#376). Its jobs carry their own timeouts (30, 15 and
+  # 10 minutes), the ceiling lesson-011 asks for.
+  #
+  # The layer cache stays on the registry's `buildcache` tag, not the Actions
+  # cache (WEB-202). Only this push writes it; registry-hygiene prunes `sha-*`
+  # only. `SITE_COMMIT` is the only build argument, so `mode=max` publishes
+  # nothing secret.
   build:
     name: Build staging image
     needs: [meta, test]
     permissions:
       contents: read
       security-events: write
-    uses: ./.github/workflows/build-image.yml
+    uses: mlorentedev/ci-workflows/.github/workflows/docker-publish.yml@9b34f5b2815a3090d77d7589ef8bcc5087045544 # v0.8.0
     with:
-      tag: ${{ needs.meta.outputs.sha_tag }}
-      commit: ${{ needs.meta.outputs.commit }}
-      push: true
+      image: docker.io/mlorentedev/kubelab-web
+      tags: ${{ needs.meta.outputs.sha_tag }}
+      sarif-category: trivy-web
       platforms: linux/amd64,linux/arm64
+      build-args: |
+        SITE_COMMIT=${{ needs.meta.outputs.commit }}
+      cache-from: type=registry,ref=docker.io/mlorentedev/kubelab-web:buildcache
+      cache-to: type=registry,ref=docker.io/mlorentedev/kubelab-web:buildcache,mode=max
+      labels: |
+        org.opencontainers.image.source=https://github.com/${{ github.repository }}
+        org.opencontainers.image.revision=${{ github.sha }}
+        org.opencontainers.image.version=${{ needs.meta.outputs.sha_tag }}
     secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      REGISTRY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      REGISTRY_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   # The suite again, on the bytes that ship (#376). `test` above checked a
   # runner build of this commit; the image carries a second build of it, and
