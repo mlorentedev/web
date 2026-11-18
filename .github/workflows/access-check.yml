@@ -14,6 +14,13 @@ name: Access check
 # change the row (and `measured`) or change the service. A red "Check every
 # catalog link" step names the card and where its redirect lands: point the
 # card's `url` in `site/src/data/idp-catalog.json` there.
+#
+# The "publish" job turns the record into a pull request against
+# `site/src/data/access-status.json`, so the states and the date on /lab follow
+# the check (WEB-173). A pull request opened with GITHUB_TOKEN runs no CI, so
+# that job alone holds a token from web's own CI GitHub App, scoped to this
+# repository, its contents and its pull requests. The job that measures holds
+# no credential. `tests/access-status-publish.test.mjs` keeps it that way.
 
 on:
   schedule:
@@ -65,3 +72,88 @@ jobs:
         if: ${{ !cancelled() }}
         working-directory: site
         run: npm run test:links
+
+  publish:
+    name: Open the record as a pull request
+    needs: access
+    # A red check is still recorded: the record is what was seen, and the red
+    # step above is the alarm. Without an uploaded record there is nothing to do.
+    if: ${{ !cancelled() && needs.access.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Get a token from web's CI App
+        id: app
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ secrets.WEB_CI_APP_CLIENT_ID }}
+          private-key: ${{ secrets.WEB_CI_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: web
+          permission-contents: write
+          permission-pull-requests: write
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: master
+          persist-credentials: false
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: access-status
+          path: site/src/data
+
+      - name: Open the pull request
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          APP_SLUG: ${{ steps.app.outputs.app-slug }}
+        run: |
+          set -euo pipefail
+          file=site/src/data/access-status.json
+          if git diff --quiet -- "$file"; then
+            echo "The record matches master: nothing to open."
+            exit 0
+          fi
+          checked=$(node -p "require('./$file').checked")
+          branch="chore/access-status-$checked"
+          if git ls-remote --exit-code origin "refs/heads/$branch" >/dev/null; then
+            echo "$branch already exists: the record of $checked is already proposed."
+            exit 0
+          fi
+          # shellcheck disable=SC2016 # JavaScript template literal, not shell
+          failing=$(node -e '
+            const { rows } = require(process.argv[1]);
+            const bad = Object.entries(rows).filter(([, r]) => !r.ok).map(([s, r]) => `${s} (${r.state})`);
+            console.log(bad.join(", ") || "none");
+          ' "./$file")
+
+          user_id=$(gh api "/users/${APP_SLUG}%5Bbot%5D" --jq .id)
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add site/src/data/access-status.json
+          git commit -m "chore(lab): record the access check of $checked"
+          # The token goes to this one push only, never into .git/config.
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin "$branch"
+
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          {
+            echo "The weekly access check ran on $checked: $run_url"
+            echo
+            echo "This commits its record, \`$file\`, as that run uploaded it,"
+            echo "so the states and the date on /lab follow the check."
+            echo
+            echo "Rows that did not hold: $failing."
+          } > "$RUNNER_TEMP/body.md"
+          url=$(gh pr create --base master --head "$branch" \
+            --title "chore(lab): record the access check of $checked" --body-file "$RUNNER_TEMP/body.md")
+          echo "Opened $url"
+
+          # An older weekly record still open is superseded by this one.
+          gh pr list --state open --json number,headRefName \
+            --jq '.[] | select(.headRefName | startswith("chore/access-status-")) | [.number, .headRefName] | @tsv' \
+          | while IFS=$'\t' read -r old head; do
+              [ "$head" = "$branch" ] && continue
+              gh pr close "$old" --delete-branch --comment "Superseded by $url."
+            done
