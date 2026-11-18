@@ -116,8 +116,9 @@ jobs:
           fi
           checked=$(node -p "require('./$file').checked")
           branch="chore/access-status-$checked"
-          if git ls-remote --exit-code origin "refs/heads/$branch" >/dev/null; then
-            echo "$branch already exists: the record of $checked is already proposed."
+          open_pr=$(gh pr list --state open --head "$branch" --json url --jq '.[0].url // empty')
+          if [ -n "$open_pr" ]; then
+            echo "The record of $checked is already proposed: $open_pr"
             exit 0
           fi
           # shellcheck disable=SC2016 # JavaScript template literal, not shell
@@ -127,15 +128,21 @@ jobs:
             console.log(bad.join(", ") || "none");
           ' "./$file")
 
-          user_id=$(gh api "/users/${APP_SLUG}%5Bbot%5D" --jq .id)
-          git config user.name "${APP_SLUG}[bot]"
-          git config user.email "${user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
-          git switch -c "$branch"
-          git add site/src/data/access-status.json
-          git commit -m "chore(lab): record the access check of $checked"
-          # The token goes to this one push only, never into .git/config.
-          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
-          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin "$branch"
+          # A run that pushed the branch and then failed to open its pull
+          # request leaves the branch behind: open the pull request on it.
+          if git ls-remote --exit-code origin "refs/heads/$branch" >/dev/null; then
+            echo "$branch exists without an open pull request: opening one on it."
+          else
+            user_id=$(gh api "/users/${APP_SLUG}%5Bbot%5D" --jq .id)
+            git config user.name "${APP_SLUG}[bot]"
+            git config user.email "${user_id}+${APP_SLUG}[bot]@users.noreply.github.com"
+            git switch -c "$branch"
+            git add site/src/data/access-status.json
+            git commit -m "chore(lab): record the access check of $checked"
+            # The token goes to this one push only, never into .git/config.
+            auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+            git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin "$branch"
+          fi
 
           run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           {

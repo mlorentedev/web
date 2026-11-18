@@ -66,11 +66,19 @@ test('only the publishing job reads the App, scoped to this repository, contents
   assert.doesNotMatch(publish, /permission-(?!contents|pull-requests)[\w-]+:/, 'the token asks for more than contents and pull requests');
 });
 
+test('a branch left without its pull request gets one, not a silent exit', () => {
+  const publish = job('publish');
+  assert.match(publish, /gh pr list --state open --head "\$branch"/, 'the rerun asks whether the pull request exists');
+  assert.doesNotMatch(publish, /ls-remote[^\n]*\n[^\n]*exit 0/, 'a pushed branch is not proof that its pull request was opened');
+});
+
 test('the publishing job waits for the record and commits that one file', () => {
   const publish = job('publish');
   assert.match(publish, /^\s+needs: access$/m);
   assert.match(publish, /uses: actions\/download-artifact@[0-9a-f]{40} # v\d/);
   const adds = [...publish.matchAll(/git add (.+)$/gm)].map((m) => m[1].trim());
   assert.deepEqual(adds, ['site/src/data/access-status.json']);
-  assert.doesNotMatch(publish, /git push\b[^\n]*(--force|-f\b)/, 'the job never rewrites a branch');
+  const pushes = [...publish.matchAll(/^.*\bgit\b.*\bpush\b.*$/gm)].map((m) => m[0]);
+  assert.ok(pushes.length > 0, 'the job pushes nothing: the next check would pass vacuously');
+  for (const push of pushes) assert.doesNotMatch(push, /\s(--force\S*|-f)(\s|$)|\s\+\S/, `the job rewrites a branch: ${push.trim()}`);
 });
